@@ -1,0 +1,406 @@
+/* Visualizer feature: drawer + trigger button + drag/minimize affordances. */
+
+/* --- Trigger button in the player card --- */
+
+.viz-trigger-btn {
+  position: absolute;
+  top: var(--space-2);
+  right: calc(var(--space-2) + 38px); /* leave room for the minimize button next to it */
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+.viz-trigger-btn:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+}
+.viz-trigger-btn svg,
+.viz-trigger-btn svg * {
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+
+@media (pointer: coarse) {
+  .viz-trigger-btn { display: none; }
+}
+
+/* --- Player card drag handle + minimize --- */
+
+.player-card-drag-handle {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  cursor: grab;
+  user-select: none;
+  z-index: 3;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+.player-card-drag-handle:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+}
+.player-card-drag-handle.is-dragging {
+  cursor: grabbing;
+}
+.player-card-drag-handle svg {
+  width: 16px;
+  height: 16px;
+}
+@media (pointer: coarse) {
+  .player-card-drag-handle { display: none; }
+}
+
+.player-card-minimize-btn {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+.player-card-minimize-btn:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+}
+.player-card-minimize-btn svg { width: 14px; height: 14px; }
+@media (pointer: coarse) {
+  .player-card-minimize-btn { display: none; }
+}
+
+/* Card position override (when dragged at least once) */
+.player-section.is-dragged {
+  position: fixed;
+  left: var(--card-x, 50%);
+  top: var(--card-y, 50%);
+  margin: 0;
+  z-index: 5;
+  transform: none;
+}
+
+/* Minimized mini-pill */
+.player-section.is-minimized .player-card {
+  padding: 6px 12px;
+  min-height: 0;
+}
+.player-section.is-minimized .player-info {
+  gap: var(--space-2);
+}
+.player-section.is-minimized .station-logo-container {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+}
+.player-section.is-minimized .station-logo,
+.player-section.is-minimized .station-initials {
+  width: 28px;
+  height: 28px;
+  font-size: 12px;
+}
+.player-section.is-minimized .station-details .station-country-line,
+.player-section.is-minimized .now-playing {
+  display: none;
+}
+.player-section.is-minimized .station-name {
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+.player-section.is-minimized .player-card-drag-handle {
+  display: none;
+}
+.player-section.is-minimized .viz-trigger-btn {
+  display: none;
+}
+.player-section.is-minimized + .volume-controls {
+  display: none;
+}
+
+/* --- Drawer --- */
+
+.viz-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  pointer-events: none;
+}
+.viz-drawer.show {
+  display: block;
+  pointer-events: auto;
+}
+
+.viz-drawer__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+.viz-drawer.show .viz-drawer__backdrop {
+  opacity: 1;
+}
+
+.viz-drawer__panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 340px;
+  max-width: 92vw;
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 240ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  box-shadow: -16px 0 32px rgba(0, 0, 0, 0.4);
+}
+.viz-drawer.show .viz-drawer__panel {
+  transform: translateX(0);
+}
+
+.viz-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+.viz-drawer__header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.viz-drawer__close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.viz-drawer__close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+}
+
+.viz-drawer__body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: var(--space-3) var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.viz-drawer__toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.viz-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+}
+.viz-toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--text);
+}
+
+.viz-drawer__status {
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-list-active);
+  border-radius: var(--radius-sm);
+}
+.viz-drawer__connect-btn {
+  align-self: flex-start;
+  padding: 6px 12px;
+  background: var(--text);
+  color: var(--bg);
+  border: none;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.viz-drawer__connect-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.viz-drawer__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.viz-drawer__group-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-1);
+}
+.viz-drawer__group-credit {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.viz-drawer__group-credit:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.viz-drawer__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background: var(--bg-list-active);
+  color: var(--text);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+.viz-drawer__item:hover {
+  background: var(--bg-list-hover);
+}
+.viz-drawer__item.is-active {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: var(--bg-list-hover);
+}
+.viz-drawer__item-check {
+  opacity: 0;
+  color: var(--text);
+  font-size: 13px;
+}
+.viz-drawer__item.is-active .viz-drawer__item-check {
+  opacity: 1;
+}
+
+.viz-drawer__controls-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-1);
+}
+
+.viz-control {
+  display: grid;
+  grid-template-columns: 100px 1fr 44px;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 12px;
+  margin-bottom: var(--space-2);
+}
+.viz-control__label {
+  color: var(--text-muted);
+}
+.viz-control input[type="range"] {
+  width: 100%;
+  accent-color: var(--text);
+}
+.viz-control__readout {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.viz-control select,
+.viz-control__button {
+  grid-column: 2 / 4;
+  background: var(--bg-list-active);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+  font-size: 12px;
+}
+.viz-control__button {
+  cursor: pointer;
+}
+.viz-control__button:hover {
+  background: var(--bg-list-hover);
+}
+.viz-control .viz-toggle {
+  grid-column: 2 / 4;
+}
+
+.viz-drawer__empty {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.viz-drawer__footer {
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.viz-drawer__footer a {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+/* --- Canvases (engine.js creates and styles these inline, but allow
+       backdrop-filter on the player card to still work above them) --- */
+
+#vizCanvas2d,
+#vizCanvasGl,
+#vizCanvasMilkdrop {
+  z-index: -1;
+}

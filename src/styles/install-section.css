@@ -1,7 +1,38 @@
+/* ---- Base / shared ---- */
+
 .install-section {
-  margin-top: 4px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  padding-top: 12px;
+  position: relative;
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.install-section.is-dismissed {
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+  pointer-events: none;
+}
+
+.install-section__close {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  z-index: 1;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.install-section__close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
 }
 
 .install-section__toggle {
@@ -9,7 +40,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 6px 4px;
+  padding: 6px 32px 6px 4px; /* right padding leaves room for the × */
   background: none;
   border: 0;
   color: var(--text-muted);
@@ -43,20 +74,34 @@
   margin: 0 0 12px;
   color: var(--text-muted);
   font-size: 13px;
+  line-height: 1.45;
+}
+
+.install-section__row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.install-section__label {
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
 }
 
 .install-section__buttons {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .install-section__btn {
   background: var(--bg-list-active);
   color: var(--text);
   border: 1px solid transparent;
-  border-radius: 10px;
-  padding: 10px 8px;
+  border-radius: var(--radius-pill);
+  padding: 6px 12px;
   font-size: 12px;
   font-weight: 500;
   font-family: inherit;
@@ -69,12 +114,9 @@
   background: var(--bg-list-hover);
 }
 
-/* The button that matches the user's current platform — distinct but not
-   shouty. Subtle red border + slight glow. */
 .install-section__btn.is-current {
   border-color: var(--red);
   box-shadow: 0 0 0 1px rgba(205, 0, 37, 0.2) inset;
-  color: var(--text);
 }
 
 .install-section__btn.is-current::after {
@@ -83,12 +125,62 @@
   margin-left: 4px;
   color: var(--red);
   font-weight: 600;
-  letter-spacing: 0.02em;
 }
 
-/* Narrow screens: stack buttons vertically if labels would otherwise wrap. */
-@media (max-width: 380px) {
+/* ---- Mobile presentation (≤699 px) ---- */
+/* Inline block at the bottom of the main scroll area. Collapsible. The ×
+   is hidden on mobile — the chevron toggle is the primary affordance. */
+@media (max-width: 699px) {
+  .install-section {
+    margin-top: 4px;
+    padding: 12px 0 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .install-section__close {
+    display: none;
+  }
   .install-section__buttons {
-    grid-template-columns: 1fr;
+    width: 100%;
+  }
+  .install-section__btn {
+    flex: 1;
+  }
+}
+
+/* ---- Desktop presentation (≥700 px) ---- */
+/* A small floating info badge in the bottom-right corner. The chevron
+   toggle is hidden — it's small enough that collapsing adds no value;
+   the × dismisses the whole thing when the user is done with it. */
+@media (min-width: 700px) {
+  .install-section {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 340px;
+    max-width: calc(100vw - 40px);
+    padding: 14px 16px 16px;
+    background: #1f1f1f;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    z-index: 60;
+  }
+
+  /* Hide the chevron-toggle header — there's no benefit to collapsing
+     a 100-px tall badge. Force the body open. */
+  .install-section__toggle {
+    display: none;
+  }
+  .install-section__body {
+    display: block !important;
+    margin-top: 0;
+  }
+
+  /* Small title via the close button area instead. */
+  .install-section__intro {
+    margin: 0 0 10px;
+    padding-right: 24px; /* room for the × */
+    font-size: 13px;
+    color: var(--text);
   }
 }
