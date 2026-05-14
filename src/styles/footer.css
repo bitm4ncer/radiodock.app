@@ -1,20 +1,5 @@
-.site-footer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 0 16px max(16px, env(safe-area-inset-bottom));
-  margin-top: 8px;
-}
-
-.footer-row {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-}
-
+/* Footer pill — shared base for GitHub / Issues / BMC / Legal in both
+   the desktop footer below the fold and the mobile off-canvas drawer. */
 .footer-pill {
   display: inline-flex;
   align-items: center;
@@ -34,35 +19,43 @@
   background: var(--bg-list-hover);
 }
 
-.footer-bmc {
-  display: inline-flex;
-  align-items: center;
-  line-height: 0; /* prevent inline-image baseline gap */
+.footer-pill__icon {
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  opacity: 0.85;
 }
 
-.footer-bmc img {
-  height: 36px;
-  width: auto;
-  display: block;
-}
-
-.footer-legal-link {
-  background: none;
-  border: 0;
-  color: var(--text-muted);
+/* Compact variant used in the one-line desktop footer. */
+.footer-pill--sm {
+  padding: 6px 12px;
   font-size: 12px;
-  padding: 4px 8px;
-  cursor: pointer;
-  text-decoration: underline;
-  text-decoration-color: rgba(255, 255, 255, 0.16);
-  text-underline-offset: 3px;
-  transition: color 120ms ease, text-decoration-color 120ms ease;
 }
 
-.footer-legal-link:hover {
+/* Ghost pill for low-emphasis links like "Legal Notice". */
+.footer-pill--ghost {
+  background: transparent;
+  color: var(--text-muted);
+}
+.footer-pill--ghost:hover {
+  background: rgba(255, 255, 255, 0.06);
   color: var(--text);
-  text-decoration-color: rgba(255, 255, 255, 0.4);
 }
 
-/* Legal Notice link is an <a> not a button now — same visual styling.
-   The actual Impressum lives at /legal.html (noindex'd). */
+/* Desktop footer bar. Slightly darker than the body; below the fold by
+   default (the .page above it is min-height: 100dvh). */
+.site-footer-desktop {
+  background: #0d0d0d;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 14px 24px;
+}
+
+.site-footer-desktop__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}

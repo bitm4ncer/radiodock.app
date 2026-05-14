@@ -1,5 +1,20 @@
 # Roadmap
 
+## v2.0 — Platform-native layouts ✅
+
+- [x] **V0** Umami Cloud analytics in `<head>` (defer, cookieless) + BMC button restyled as muted pill matching GitHub/Issues (no more yellow)
+- [x] **V1** CSS regime split: new `app-mobile.css` + `app-desktop.css` files behind media queries; component CSS unchanged
+- [x] **V2** Desktop container tint (`padding: 59px 34px; background: #0000002b; border-radius: 25px`) + real `<footer class="site-footer-desktop">` below the page (#0d0d0d, smaller pills, one-line) revealed by scroll
+- [x] **V3** New `install-section.js` collapsible block with three buttons — current platform highlighted with red border + "· you" suffix; persists collapse state in IndexedDB; Chrome Ext → direct link; Desktop / Mobile → `install-info` modal seeded to the right branch; hidden when in standalone mode
+- [x] **V4** Mobile top bar (hamburger / logo / search icon) + left off-canvas drawer with Install / GitHub / Issues / BMC / Legal items; backdrop / Escape / swipe-left close
+- [x] **V5** Mobile bottom-fixed player section with horizontal volume strip above it (5 dots spread across full width, 14×14 tap targets); station-list bottom-padding reserves room so last row stays reachable
+- [x] **V6** Mobile fullscreen search overlay slides in from the right when 🔍 is tapped; re-parents the existing `.search-section` so callbacks work unchanged; closes via × / Escape / resize-to-desktop
+- [x] **V7** Verified both viewports (1280×800 desktop, 375×812 mobile); tagged v2.0.0
+
+---
+
+## v1.0 — Initial PWA build
+
 Each milestone is a working slice that can be deployed and tested before moving on.
 
 ## M0 — Repo, scaffold, live URL ✅

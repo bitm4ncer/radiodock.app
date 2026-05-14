@@ -1,0 +1,89 @@
+/* Mobile (≤699 px) layout regime.
+   Everything here is wrapped in a max-width media query so it only applies
+   on small viewports. Treat the app as a real mobile app: fixed bottom
+   player, fullscreen overlays, off-canvas drawer. */
+
+@media (max-width: 699px) {
+  /* The desktop dock-title row (logo + dropdown) is hidden — the mobile
+     top bar takes its job. */
+  .desktop-only {
+    display: none !important;
+  }
+
+  /* Page becomes a vertical stack with the top bar pinned. The container
+     no longer needs to center its content vertically — content fills the
+     space between top bar and the fixed bottom player. */
+  .page {
+    justify-content: flex-start;
+    min-height: 100dvh;
+  }
+
+  .container {
+    padding: 12px 0 0;
+    gap: 12px;
+  }
+
+  /* Station list stretches to fill remaining height. Bottom inset reserves
+     room for the volume row + player card so the last list row is fully
+     reachable when scrolled all the way down. */
+  .favorites-section {
+    padding: 0 16px;
+  }
+
+  .favorites-list {
+    max-height: none;
+    /* 60 px volume row + ~92 px player + safe-area */
+    padding-bottom: calc(160px + env(safe-area-inset-bottom));
+  }
+
+  /* Search section is repositioned into the search overlay; hide its
+     in-line form on mobile. The overlay re-parents the elements. */
+  .search-section {
+    display: none;
+  }
+
+  /* Player section becomes a fixed bottom bar. Volume dots are promoted
+     to a sibling row above the player card and stretch across the full
+     width — thumb-reachable. */
+  .player-section {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    /* Reverse so the volume strip (.volume-controls is the second DOM
+       child) sits ABOVE the player card. */
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 0;
+    background: var(--bg);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 8px 12px calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .player-section .player-card {
+    border-radius: 14px;
+    margin: 0;
+    width: 100%;
+  }
+
+  /* Volume row: pull out of its absolute-right position from desktop and
+     make it a horizontal strip ABOVE the player card. */
+  .volume-controls {
+    position: static;
+    right: auto;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 8px 10px;
+    gap: 0;
+    width: 100%;
+  }
+
+  .volume-dot {
+    width: 14px;
+    height: 14px;
+    /* The default state is dim; the active-up-to-N classes light up the
+       leftmost dots, matching the player-card.css cascade. */
+  }
+}

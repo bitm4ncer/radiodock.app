@@ -1,0 +1,172 @@
+/* Mobile top bar. Sticky to the viewport top so list scrolling doesn't
+   hide it. Hidden on desktop. */
+.mobile-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  padding-top: calc(8px + env(safe-area-inset-top));
+  background: var(--bg);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.mobile-topbar__btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 0;
+  border-radius: 10px;
+  color: var(--text);
+  cursor: pointer;
+  padding: 0;
+}
+
+.mobile-topbar__btn:hover {
+  background: var(--bg-list-hover);
+}
+
+.mobile-topbar__btn svg {
+  width: 22px;
+  height: 22px;
+}
+
+.mobile-topbar__logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.mobile-topbar__logo img {
+  height: 14px;
+  width: auto;
+}
+
+/* Off-canvas drawer. Slides in from the left. */
+.off-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.off-canvas.is-open {
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.off-canvas__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.off-canvas.is-open .off-canvas__backdrop {
+  opacity: 1;
+}
+
+.off-canvas__panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: min(82vw, 320px);
+  background: var(--bg);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  transform: translateX(-100%);
+  transition: transform 220ms ease;
+  display: flex;
+  flex-direction: column;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.off-canvas.is-open .off-canvas__panel {
+  transform: translateX(0);
+}
+
+.off-canvas__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px 8px;
+}
+
+.off-canvas__logo {
+  height: 14px;
+  width: auto;
+}
+
+.off-canvas__close {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  color: var(--text-muted);
+  font-size: 22px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.off-canvas__close:hover {
+  background: var(--bg-list-hover);
+  color: var(--text);
+}
+
+.off-canvas__nav {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 8px;
+  gap: 2px;
+  flex: 1;
+}
+
+.off-canvas__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 14px;
+  color: var(--text);
+  text-decoration: none;
+  background: none;
+  border: 0;
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+.off-canvas__item:hover {
+  background: var(--bg-list-hover);
+}
+
+.off-canvas__item--muted {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-top: auto;
+}
+
+.off-canvas__icon {
+  width: 16px;
+  height: 16px;
+}
+
+.off-canvas__chev {
+  margin-left: auto;
+  color: var(--text-muted);
+  font-size: 16px;
+}

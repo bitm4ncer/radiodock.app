@@ -1,0 +1,23 @@
+/* Desktop (≥700 px) layout regime.
+   Mobile-only chrome (top bar, off-canvas, search overlay, fixed bottom
+   player) is hidden here; everything is the centered-column experience
+   inside a tinted card. */
+
+@media (min-width: 700px) {
+  .mobile-only {
+    display: none !important;
+  }
+
+  /* Tinted card around the main column. */
+  .container {
+    padding: 59px 34px;
+    background: #0000002b;
+    border-radius: 25px;
+  }
+
+  /* Push the desktop footer just below the fold by guaranteeing the page
+     content fills 100dvh. The footer is a sibling of .page (below it). */
+  .page {
+    min-height: 100dvh;
+  }
+}

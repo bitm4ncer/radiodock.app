@@ -1,0 +1,74 @@
+/* Mobile fullscreen search overlay. Slides in from the right when the
+   top-bar magnifier is tapped. Hosts the live search section's elements
+   (the same DOM nodes used on desktop) for the duration of the overlay. */
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: var(--bg);
+  transform: translateX(100%);
+  transition: transform 220ms ease;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.search-overlay.is-open {
+  transform: translateX(0);
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.search-overlay__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  padding-top: calc(8px + env(safe-area-inset-top));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.search-overlay__close {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 0;
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.search-overlay__close:hover {
+  background: var(--bg-list-hover);
+}
+
+.search-overlay__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.search-overlay__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
+}
+
+/* When the search-section is re-parented into the overlay body, override
+   the mobile rule that hid it on the main page. */
+.search-overlay .search-section {
+  display: block !important;
+}
+
+/* Make the result list fill the overlay body. */
+.search-overlay .search-results {
+  margin-top: 12px;
+}

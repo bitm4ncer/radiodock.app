@@ -4,6 +4,9 @@ import { attachRecovery } from './player/recovery.js';
 import { attachMetadataPoller } from './player/metadata-poller.js';
 import { attachMediaSession } from './player/media-session.js';
 import { mountInstallInfo } from './ui/install-info.js';
+import { mountInstallSection } from './ui/install-section.js';
+import { mountOffCanvas } from './ui/off-canvas.js';
+import { mountSearchOverlay } from './ui/search-overlay.js';
 import { mountPlayerCard } from './ui/player-card.js';
 import { mountStationList } from './ui/station-list.js';
 import { mountListDropdown } from './ui/list-dropdown.js';
@@ -80,16 +83,32 @@ const search = mountSearch({
 document.getElementById('dockLogoBtn')?.addEventListener('click', () => openModal('infoModal'));
 // Legal Notice now lives on its own /legal.html page (noindex'd) — see footer.
 
-// Add-to-Home-Screen onboarding
+// Add-to-Home-Screen onboarding. The modal is opened from the Install
+// Section — no more auto-show or floating button.
 const installInfo = mountInstallInfo();
+mountInstallSection({
+  container: document.getElementById('app'),
+  installInfo,
+});
 
-// Surface a manual "Install RadioDock →" badge at the bottom of the page.
-// Hidden when the app is already installed (display-mode: standalone).
-const installBadgeEl = document.getElementById('installBadge');
-if (installBadgeEl && installInfo.platform && installInfo.platform !== 'installed') {
-  installBadgeEl.hidden = false;
-  installBadgeEl.addEventListener('click', () => installInfo.open());
-}
+// Mobile off-canvas drawer
+mountOffCanvas({
+  triggerBtn: document.getElementById('menuBtn'),
+  panel: document.getElementById('mobileMenu'),
+  onInstallClick: () => {
+    // Hand off to the install-section's first applicable platform — for
+    // a phone user this resolves to the mobile branch of the modal.
+    const ua = navigator.userAgent;
+    const branch = /android/i.test(ua) ? 'android' : 'ios-safari';
+    installInfo.open(branch);
+  },
+});
+
+// Mobile fullscreen search overlay
+mountSearchOverlay({
+  triggerBtn: document.getElementById('searchTriggerBtn'),
+  overlay: document.getElementById('searchOverlay'),
+});
 
 // --- Helpers ---
 function allListsForDropdown() {

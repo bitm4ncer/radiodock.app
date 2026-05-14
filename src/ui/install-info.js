@@ -118,17 +118,14 @@ export function mountInstallInfo() {
     });
   }
 
-  function open() {
-    document.getElementById('installInfoBody').innerHTML = html(platform);
+  function open(overridePlatform) {
+    // Callers may force a specific platform branch (e.g. the install
+    // section's "Desktop App" button always opens the desktop branch
+    // regardless of which device the user is currently on).
+    const p = overridePlatform ?? platform;
+    document.getElementById('installInfoBody').innerHTML = html(p);
     openModal(modalEl);
   }
 
-  async function autoShow() {
-    const seen = await storage.getPref('seenInstallHint', false);
-    if (seen) return;
-    // Don't open during the bootstrap thrash; give the UI a beat to settle.
-    setTimeout(open, 1200);
-  }
-
-  return { open, autoShow, platform };
+  return { open, platform };
 }

@@ -1,0 +1,94 @@
+.install-section {
+  margin-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 12px;
+}
+
+.install-section__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 6px 4px;
+  background: none;
+  border: 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.install-section__toggle:hover {
+  color: var(--text);
+}
+
+.install-section__chevron {
+  width: 14px;
+  height: 14px;
+  color: var(--text-muted);
+  transition: transform 200ms ease;
+}
+
+.install-section.is-collapsed .install-section__chevron {
+  transform: rotate(-90deg);
+}
+
+.install-section__body {
+  margin-top: 8px;
+}
+
+.install-section__intro {
+  margin: 0 0 12px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.install-section__buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.install-section__btn {
+  background: var(--bg-list-active);
+  color: var(--text);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 10px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: center;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.install-section__btn:hover {
+  background: var(--bg-list-hover);
+}
+
+/* The button that matches the user's current platform — distinct but not
+   shouty. Subtle red border + slight glow. */
+.install-section__btn.is-current {
+  border-color: var(--red);
+  box-shadow: 0 0 0 1px rgba(205, 0, 37, 0.2) inset;
+  color: var(--text);
+}
+
+.install-section__btn.is-current::after {
+  content: '· you';
+  display: inline;
+  margin-left: 4px;
+  color: var(--red);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Narrow screens: stack buttons vertically if labels would otherwise wrap. */
+@media (max-width: 380px) {
+  .install-section__buttons {
+    grid-template-columns: 1fr;
+  }
+}

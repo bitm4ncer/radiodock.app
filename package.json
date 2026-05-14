@@ -15,6 +15,9 @@
     "vite": "^5.4.10"
   },
   "dependencies": {
-    "hls.js": "^1.6.16"
+    "butterchurn": "^2.6.7",
+    "butterchurn-presets": "^2.4.7",
+    "hls.js": "^1.6.16",
+    "regl": "^2.1.1"
   }
 }

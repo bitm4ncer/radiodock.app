@@ -10,9 +10,66 @@
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="preload" as="font" href="/fonts/InterVariable.woff2" type="font/woff2" crossorigin />
     <title>RadioDock</title>
+    <!-- Privacy-friendly, cookieless analytics. -->
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="73fcaa06-875f-43c4-9cb0-6e33b78f0647"></script>
     <script type="module" src="/src/main.js"></script>
   </head>
   <body>
+    <!-- Mobile-only top bar. Hidden on desktop via .mobile-only. -->
+    <header class="mobile-topbar mobile-only">
+      <button type="button" id="menuBtn" class="mobile-topbar__btn" aria-label="Menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <a href="/" class="mobile-topbar__logo" aria-label="RadioDock">
+        <img src="/logo-text.svg" alt="RadioDock" />
+      </a>
+      <button type="button" id="searchTriggerBtn" class="mobile-topbar__btn" aria-label="Search">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Mobile-only fullscreen search overlay. The actual search input,
+         filter tabs and results list elements live in .search-section and
+         are re-parented into this overlay's body when it opens. -->
+    <div id="searchOverlay" class="search-overlay mobile-only" aria-hidden="true">
+      <header class="search-overlay__header">
+        <button type="button" class="search-overlay__close" data-action="close" aria-label="Close search">×</button>
+        <h2 class="search-overlay__title">Search</h2>
+      </header>
+      <div class="search-overlay__body" id="searchOverlayBody"></div>
+    </div>
+
+    <!-- Mobile-only off-canvas drawer. -->
+    <aside id="mobileMenu" class="off-canvas mobile-only" aria-hidden="true">
+      <div class="off-canvas__backdrop" data-action="close"></div>
+      <div class="off-canvas__panel" role="dialog" aria-modal="true" aria-label="Menu">
+        <div class="off-canvas__header">
+          <img src="/logo-text.svg" alt="RadioDock" class="off-canvas__logo" />
+          <button type="button" class="off-canvas__close" data-action="close" aria-label="Close menu">×</button>
+        </div>
+        <nav class="off-canvas__nav">
+          <button type="button" class="off-canvas__item" id="offCanvasInstall">
+            <span>Install RadioDock</span>
+            <span class="off-canvas__chev">→</span>
+          </button>
+          <a class="off-canvas__item" href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener">GitHub</a>
+          <a class="off-canvas__item" href="https://github.com/bitm4ncer/radiodock.app/issues" target="_blank" rel="noopener">Issues</a>
+          <a class="off-canvas__item" href="https://buymeacoffee.com/bitmancer" target="_blank" rel="noopener">
+            <svg class="off-canvas__icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor" d="M5 8h11a3 3 0 0 1 3 3v1a3 3 0 0 1-3 3v0a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V8Z"/>
+            </svg>
+            Buy me a coffee
+          </a>
+          <a class="off-canvas__item off-canvas__item--muted" href="/legal.html" target="_blank" rel="noopener">Legal Notice</a>
+        </nav>
+      </div>
+    </aside>
+
     <div class="page">
       <main class="container" id="app">
         <!-- Player section -->
@@ -145,30 +202,25 @@
         </section>
       </main>
 
-      <div class="bottom-actions">
-        <button type="button" id="installBadge" class="store-badge store-badge--install" hidden>
-          Install RadioDock →
-        </button>
-        <a class="store-badge store-badge--ext" href="https://chromewebstore.google.com/detail/radiodock/dcjmegapbbplapeghilpbdddhkgndbbh" target="_blank" rel="noopener">
-          Also available as a Chrome extension →
-        </a>
-      </div>
-
-      <footer class="site-footer">
-        <div class="footer-row">
-          <a class="footer-pill" href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener">GitHub</a>
-          <a class="footer-pill" href="https://github.com/bitm4ncer/radiodock.app/issues" target="_blank" rel="noopener">Issues</a>
-          <a class="footer-bmc" href="https://buymeacoffee.com/bitmancer" target="_blank" rel="noopener" aria-label="Buy me a coffee">
-            <img
-              src="https://img.buymeacoffee.com/button-api/?text=Buy+me+a+coffee&emoji=&slug=bitmancer&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"
-              alt="Buy me a coffee"
-              height="36"
-            />
-          </a>
-        </div>
-        <a class="footer-legal-link" href="/legal.html" target="_blank" rel="noopener">Legal Notice</a>
-      </footer>
     </div>
+
+    <!-- Desktop-only footer; sits below the centered .page so it's just
+         below the fold by default and revealed when the user scrolls.
+         Hidden on mobile — the same links live in the off-canvas drawer. -->
+    <footer class="site-footer-desktop desktop-only">
+      <div class="site-footer-desktop__inner">
+        <a class="footer-pill footer-pill--sm" href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener">GitHub</a>
+        <a class="footer-pill footer-pill--sm" href="https://github.com/bitm4ncer/radiodock.app/issues" target="_blank" rel="noopener">Issues</a>
+        <a class="footer-pill footer-pill--sm footer-pill--bmc" href="https://buymeacoffee.com/bitmancer" target="_blank" rel="noopener">
+          <svg class="footer-pill__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M5 8h11a3 3 0 0 1 3 3v1a3 3 0 0 1-3 3v0a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V8Zm12 2v3a1 1 0 0 0 1-1v-1a1 1 0 0 0-1-1ZM5 20h12v2H5z"/>
+            <path fill="currentColor" d="M8 3c.6 1 .6 2 0 3M11 3c.6 1 .6 2 0 3M14 3c.6 1 .6 2 0 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+          Buy me a coffee
+        </a>
+        <a class="footer-pill footer-pill--sm footer-pill--ghost" href="/legal.html" target="_blank" rel="noopener">Legal Notice</a>
+      </div>
+    </footer>
 
     <!-- Toast for notifications -->
     <div id="toast" class="toast" role="status" aria-live="polite"></div>

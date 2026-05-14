@@ -7,4 +7,11 @@
 @import './search.css';
 @import './modals.css';
 @import './install-info.css';
+@import './install-section.css';
+@import './off-canvas.css';
+@import './search-overlay.css';
 @import './footer.css';
+/* Regime files come last so their media-query rules can override
+   component-level defaults. */
+@import './app-mobile.css';
+@import './app-desktop.css';
