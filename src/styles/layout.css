@@ -1,103 +1,113 @@
-#app {
+/* Inter variable font (subset).
+   Loaded from /public/fonts so the file path stays stable across Vite hashing. */
+@font-face {
+  font-family: 'Inter';
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/InterVariable.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/InterVariable-Italic.woff2') format('woff2');
+}
+
+/* Page shell: dark gray, centered narrow column, mobile-first. */
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', var(--font-stack);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* iOS rubber-band background */
+  background-attachment: fixed;
+}
+
+.page {
   min-height: 100dvh;
   display: flex;
-  justify-content: center;
-  padding: var(--space-4);
-  padding-top: max(var(--space-4), env(safe-area-inset-top));
-  padding-bottom: max(var(--space-4), env(safe-area-inset-bottom));
+  flex-direction: column;
+  align-items: center;
+  padding-top: max(0px, env(safe-area-inset-top));
+  padding-bottom: max(0px, env(safe-area-inset-bottom));
 }
 
-/* M1 developer shell. Real UI lands in M2. */
-.dev-shell {
+.container {
   width: 100%;
   max-width: var(--col-width);
-  margin: auto;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: 16px;
+  flex: 1 1 auto;
 }
 
-.dev-shell__header h1 {
-  margin: 0 0 var(--space-1);
-  font-weight: 600;
-  letter-spacing: -0.01em;
+/* Custom scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a transparent;
+}
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: #4a4a4a;
+  border-radius: 3px;
 }
 
-.dev-shell__status {
-  margin: 0;
-  color: var(--text-muted);
-  font-size: 13px;
-}
-
-.dev-shell__now {
-  margin: var(--space-1) 0 0;
-  font-size: 14px;
-  min-height: 1.2em;
-}
-
-.dev-shell__controls {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.dev-shell__btn {
-  padding: var(--space-2) var(--space-4);
-  background: var(--surface);
-  border-radius: var(--radius-pill);
-  color: var(--text);
-  font-weight: 500;
-}
-
-.dev-shell__btn:hover {
-  background: var(--surface-2);
-}
-
-#volume {
-  flex: 1;
-  accent-color: var(--text);
-}
-
-.dev-shell__stations {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  max-height: 60dvh;
-  overflow-y: auto;
-}
-
-.dev-shell__station {
-  width: 100%;
-  text-align: left;
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  background: var(--surface);
-  border-radius: var(--radius-md);
-  color: var(--text);
-}
-
-.dev-shell__station:hover {
-  background: var(--surface-2);
-}
-
-.dev-shell__station span {
-  color: var(--text-muted);
-  font-size: 12px;
-  letter-spacing: 0.04em;
-}
-
-.dev-shell__hint {
-  color: var(--text-muted);
-  font-size: 13px;
-  padding: var(--space-3) var(--space-4);
-}
-
-.dev-shell__hint--error {
+/* Visit homepage / heart icon helpers */
+.text-link {
   color: var(--accent);
+}
+
+/* Desktop-only Chrome Web Store link, sits at the bottom under the player */
+.store-badge {
+  display: none;
+  margin: 8px auto 24px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  transition: color 120ms ease, border-color 120ms ease;
+}
+.store-badge:hover {
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+@media (min-width: 700px) {
+  .store-badge {
+    display: inline-flex;
+  }
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom) + 16px);
+  left: 50%;
+  transform: translateX(-50%) translateY(120%);
+  background: var(--surface);
+  color: var(--text);
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity 180ms ease, transform 180ms ease;
+  pointer-events: none;
+  z-index: 1000;
+}
+.toast.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }

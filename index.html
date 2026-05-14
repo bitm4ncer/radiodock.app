@@ -8,12 +8,214 @@
     <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="preload" as="font" href="/fonts/InterVariable.woff2" type="font/woff2" crossorigin />
     <title>RadioDock</title>
     <script type="module" src="/src/main.js"></script>
   </head>
   <body>
-    <main id="app">
-      <p class="boot">RadioDock</p>
-    </main>
+    <div class="page">
+      <main class="container" id="app">
+        <!-- Player section -->
+        <section class="player-section">
+          <article class="player-card" id="playerCard">
+            <div class="player-info">
+              <button type="button" class="station-logo-container" id="stationLogoBtn" title="Visit station homepage">
+                <img id="stationLogo" class="station-logo" src="" alt="" style="display: none;" />
+                <div id="stationInitials" class="station-initials"></div>
+              </button>
+
+              <div class="station-details">
+                <div id="stationName" class="station-name">No station selected</div>
+                <div id="nowPlaying" class="now-playing">
+                  <span id="nowPlayingText" class="now-playing-text"></span>
+                </div>
+                <div class="station-country-line">
+                  <div id="stationCountry" class="station-country"></div>
+                  <a id="visitStationBtn" class="visit-btn" href="#" target="_blank" rel="noopener" style="display: none;">Visit Station</a>
+                  <button id="addToFavoritesBtn" class="btn-icon btn-add-favorite" title="Add to favorites" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="heart-icon" aria-hidden="true">
+                      <path d="M16.5 3C19.5376 3 22 5.5 22 9C22 16 14.5 20 12 21.5C9.5 20 2 16 2 9C2 5.5 4.5 3 7.5 3C9.35997 3 11 4 12 5C13 4 14.64 3 16.5 3Z"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="player-controls">
+              <button id="playPauseBtn" class="play-pause-btn" title="Play / Pause" aria-label="Play">
+                <span class="play-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M19.376 12.416 8.777 19.482a.5.5 0 0 1-.777-.416V4.934a.5.5 0 0 1 .777-.416l10.6 7.066a.5.5 0 0 1 0 .832z" />
+                  </svg>
+                </span>
+                <span class="pause-icon" style="display: none;">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="6" y="5" width="4" height="14" rx="0.85" />
+                    <rect x="14" y="5" width="4" height="14" rx="0.85" />
+                  </svg>
+                </span>
+                <span class="buffering-icon" style="display: none;">
+                  <span class="spinner"><span></span><span></span><span></span></span>
+                </span>
+              </button>
+            </div>
+          </article>
+
+          <!-- Volume dots -->
+          <div class="volume-controls volume-100" id="volumeControls" role="slider" aria-label="Volume" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+            <button type="button" class="volume-dot" data-volume="100" aria-label="Volume 100%"></button>
+            <button type="button" class="volume-dot" data-volume="80" aria-label="Volume 80%"></button>
+            <button type="button" class="volume-dot" data-volume="60" aria-label="Volume 60%"></button>
+            <button type="button" class="volume-dot" data-volume="40" aria-label="Volume 40%"></button>
+            <button type="button" class="volume-dot" data-volume="20" aria-label="Volume 20%"></button>
+          </div>
+        </section>
+
+        <!-- Favorites / lists section -->
+        <section class="favorites-section">
+          <header class="favorites-header">
+            <div class="list-selector">
+              <div class="list-header">
+                <div class="dock-title">
+                  <button type="button" id="dockLogoBtn" class="dock-logo-btn" title="About RadioDock">
+                    <img src="/logo-text.svg" alt="RadioDock" class="dock-logo" />
+                  </button>
+                </div>
+                <div class="list-dropdown">
+                  <button id="listDropdownBtn" class="list-dropdown-btn" title="Switch station list">
+                    <span id="currentListName">Community Radios</span>
+                    <span class="dropdown-arrow">▼</span>
+                  </button>
+                  <div id="listDropdownMenu" class="list-dropdown-menu" style="display: none;">
+                    <div id="listItems" class="list-items"></div>
+                    <div class="list-actions">
+                      <button id="addListBtn" class="add-list-btn">
+                        <span class="plus-icon">+</span>
+                        <span>New List</span>
+                      </button>
+                      <button id="importListBtn" class="import-list-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="import-icon" aria-hidden="true">
+                          <path d="M3 19H21V21H3V19ZM13 5.82843V17H11V5.82843L4.92893 11.8995L3.51472 10.4853L12 2L20.4853 10.4853L19.0711 11.8995L13 5.82843Z" />
+                        </svg>
+                        <span>Import List</span>
+                      </button>
+                      <input type="file" id="importListFile" accept=".json" style="display: none;" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
+          <div id="favoritesList" class="favorites-list">
+            <div class="empty-state" id="emptyState">
+              <p>Loading stations…</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Search section -->
+        <section class="search-section">
+          <div class="search-input-container">
+            <input type="text" id="searchInput" placeholder="Search Stations..." autocomplete="off" />
+            <button type="button" id="clearSearchBtn" class="clear-search-btn" aria-label="Clear search">×</button>
+          </div>
+
+          <div id="searchFilters" class="search-filters" style="display: none;">
+            <button type="button" class="filter-btn active" data-filter="name">Name</button>
+            <button type="button" class="filter-btn" data-filter="tag">Genre</button>
+            <button type="button" class="filter-btn" data-filter="country">Country</button>
+          </div>
+
+          <div id="searchResults" class="search-results" style="display: none;">
+            <div class="search-loading" id="searchLoading" style="display: none;">
+              <div class="loading-spinner"></div>
+              <p>Searching stations…</p>
+            </div>
+            <div id="searchResultsList" class="search-results-list"></div>
+            <div class="search-error" id="searchError" style="display: none;">
+              <p>Error loading stations. Please try again.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <a class="store-badge" href="https://chromewebstore.google.com/detail/radiodock/dcjmegapbbplapeghilpbdddhkgndbbh" target="_blank" rel="noopener">
+        Also available as a Chrome extension →
+      </a>
+    </div>
+
+    <!-- Toast for notifications -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <!-- Modals -->
+    <div id="newListModal" class="modal" aria-hidden="true">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Create New Station List</h3>
+          <button id="closeModalBtn" class="modal-close-btn" aria-label="Close">×</button>
+        </div>
+        <div class="modal-body">
+          <label for="newListNameInput">List Name:</label>
+          <input type="text" id="newListNameInput" placeholder="Enter list name…" maxlength="50" />
+          <div id="listNameError" class="error-message" style="display: none;"></div>
+        </div>
+        <div class="modal-footer">
+          <button id="cancelListBtn" class="btn-secondary">Cancel</button>
+          <button id="createListBtn" class="btn-primary">Create List</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="infoModal" class="modal" aria-hidden="true">
+      <div class="modal-content">
+        <div class="modal-header">
+          <img src="/logo-text.svg" alt="RadioDock" class="dock-logo-modal" />
+          <h3>v1.0.0</h3>
+          <button id="closeInfoModalBtn" class="modal-close-btn" aria-label="Close">×</button>
+        </div>
+        <div class="modal-body">
+          <p>RadioDock is an internet-radio app for discovering, playing and managing your favourite stations from around the world.</p>
+          <p>Stations come from the <a href="https://www.radio-browser.info" target="_blank" rel="noopener" class="text-link"><strong>Radio Browser</strong></a> community database — a free, open API with 50,000+ stations.</p>
+          <div class="modal-links">
+            <a href="https://chromewebstore.google.com/detail/radiodock/dcjmegapbbplapeghilpbdddhkgndbbh" target="_blank" rel="noopener" class="modal-link">Also available as a Chrome extension</a>
+            <a href="https://buymeacoffee.com/bitmancer" target="_blank" rel="noopener" class="modal-link">Buy me a coffee</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="confirmModal" class="modal" aria-hidden="true">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="confirmTitle">Confirm Action</h3>
+          <button id="closeConfirmModalBtn" class="modal-close-btn" aria-label="Close">×</button>
+        </div>
+        <div class="modal-body">
+          <p id="confirmMessage">Are you sure you want to proceed?</p>
+        </div>
+        <div class="modal-footer">
+          <button id="cancelConfirmBtn" class="btn-secondary">Cancel</button>
+          <button id="confirmActionBtn" class="btn-primary btn-danger">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="promptModal" class="modal" aria-hidden="true">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="promptTitle">Enter Value</h3>
+          <button id="closePromptModalBtn" class="modal-close-btn" aria-label="Close">×</button>
+        </div>
+        <div class="modal-body">
+          <label for="promptInput" id="promptLabel">Enter value:</label>
+          <input type="text" id="promptInput" maxlength="50" />
+          <div id="promptError" class="error-message" style="display: none;"></div>
+        </div>
+        <div class="modal-footer">
+          <button id="cancelPromptBtn" class="btn-secondary">Cancel</button>
+          <button id="confirmPromptBtn" class="btn-primary">OK</button>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

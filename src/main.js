@@ -1,116 +1,86 @@
 import './styles/index.css';
 import { player } from './player/audio.js';
 import { attachRecovery } from './player/recovery.js';
+import { mountPlayerCard } from './ui/player-card.js';
+import { mountStationList } from './ui/station-list.js';
+import { mountListDropdown } from './ui/list-dropdown.js';
+import { mountSearch } from './ui/search.js';
+import { initModals, openModal, closeModal } from './ui/modals.js';
+import { toast } from './ui/toast.js';
 
-const app = document.getElementById('app');
+const COMMUNITY_LIST_ID = '__community__';
 
-app.innerHTML = `
-  <section class="dev-shell">
-    <header class="dev-shell__header">
-      <h1>RadioDock</h1>
-      <p class="dev-shell__status" id="status">Idle</p>
-      <p class="dev-shell__now" id="now-playing"></p>
-    </header>
-
-    <div class="dev-shell__controls">
-      <button id="play-pause" type="button" class="dev-shell__btn">Play</button>
-      <input id="volume" type="range" min="0" max="1" step="0.05" value="0.7" />
-    </div>
-
-    <ul class="dev-shell__stations" id="stations" aria-label="Community stations">
-      <li class="dev-shell__hint">Loading community stations…</li>
-    </ul>
-  </section>
-`;
-
-const statusEl = document.getElementById('status');
-const nowEl = document.getElementById('now-playing');
-const stationsEl = document.getElementById('stations');
-const playPauseBtn = document.getElementById('play-pause');
-const volumeEl = document.getElementById('volume');
-
+// --- Boot UI modules ---
 attachRecovery(player);
+initModals();
 
-player.on('loading', () => (statusEl.textContent = 'Loading…'));
-player.on('playing', () => {
-  statusEl.textContent = 'Playing';
-  playPauseBtn.textContent = 'Pause';
-});
-player.on('paused', () => {
-  statusEl.textContent = 'Paused';
-  playPauseBtn.textContent = 'Play';
-});
-player.on('error', (evt) => {
-  statusEl.textContent = `Error: ${evt.detail.message}`;
-});
-player.on('stationchange', (evt) => {
-  nowEl.textContent = `${evt.detail.station.name}${evt.detail.station.countrycode ? ` · ${evt.detail.station.countrycode}` : ''}`;
-});
-player.on('metadata', (evt) => {
-  const { artist, title } = evt.detail;
-  const text = [artist, title].filter(Boolean).join(' – ');
-  if (text) nowEl.textContent = text;
+// Player card uses opacity:0 by default, expects a `.loaded` class once UI is wired.
+document.getElementById('playerCard').classList.add('loaded');
+
+const playerCard = mountPlayerCard({ player });
+const stationList = mountStationList({ container: 'favoritesList' });
+const listDropdown = mountListDropdown();
+const search = mountSearch({
+  onQuery: ({ query }) => {
+    // M4 will wire this to the Radio Browser API.
+    if (query) toast(`Search arrives in M4 — typed: "${query}"`);
+  },
 });
 
-player.setVolume(parseFloat(volumeEl.value));
-volumeEl.addEventListener('input', () => player.setVolume(parseFloat(volumeEl.value)));
+// --- Wire about/info modal via the logo button ---
+document.getElementById('dockLogoBtn')?.addEventListener('click', () => openModal('infoModal'));
 
-playPauseBtn.addEventListener('click', () => {
-  if (player.isPlaying()) {
-    player.pause();
-  } else {
-    const station = player.getCurrentStation();
-    if (station) player.resume();
-  }
+// --- Wire "New List" placeholder (real flow in M3) ---
+listDropdown.onAddList(() => {
+  openModal('newListModal');
+});
+listDropdown.onImport(() => {
+  toast('Import lands in M3');
+});
+document.getElementById('cancelListBtn').addEventListener('click', () => closeModal('newListModal'));
+document.getElementById('createListBtn').addEventListener('click', () => {
+  closeModal('newListModal');
+  toast('Custom lists arrive in M3');
 });
 
-async function loadCommunityStations() {
+// --- Station click → play ---
+stationList.onClick((station) => {
+  stationList.setActive(station.id);
+  player.playStation(station);
+});
+
+// --- Volume restore (defaults to 80%) ---
+const INITIAL_VOLUME_PCT = 80;
+player.setVolume(INITIAL_VOLUME_PCT / 100);
+playerCard.setVolumePct(INITIAL_VOLUME_PCT);
+
+// --- Highlight playing station on stationchange ---
+player.on('stationchange', (evt) => stationList.setActive(evt.detail.station.id));
+
+// --- Load community radios JSON and seed the lists ---
+async function bootstrap() {
   try {
     const res = await fetch('/community-radios.json');
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    renderStations(data.stations ?? []);
+    const community = {
+      id: COMMUNITY_LIST_ID,
+      name: data.listName ?? 'Community Radios',
+      stations: data.stations ?? [],
+      readOnly: true,
+    };
+    // In M3 we'll merge in user-created lists from IndexedDB.
+    const lists = [community];
+    listDropdown.setLists(lists);
+    listDropdown.setCurrent(community.id);
+    stationList.setStations(community.stations);
   } catch (err) {
-    stationsEl.innerHTML = `<li class="dev-shell__hint dev-shell__hint--error">Failed to load stations: ${err.message}</li>`;
+    console.error('Failed to load community radios:', err);
+    toast('Could not load community stations');
   }
 }
 
-function renderStations(stations) {
-  if (!stations.length) {
-    stationsEl.innerHTML = `<li class="dev-shell__hint">No stations.</li>`;
-    return;
-  }
-  stationsEl.innerHTML = stations
-    .map(
-      (s) => `
-        <li>
-          <button type="button" class="dev-shell__station" data-id="${s.id}">
-            <strong>${escapeHtml(s.name)}</strong>
-            <span>${escapeHtml(s.countrycode ?? '')}</span>
-          </button>
-        </li>`,
-    )
-    .join('');
+bootstrap();
 
-  stationsEl.addEventListener('click', (evt) => {
-    const btn = evt.target.closest('[data-id]');
-    if (!btn) return;
-    const station = stations.find((s) => s.id === btn.dataset.id);
-    if (station) player.playStation(station);
-  });
-}
-
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, (c) => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;',
-  }[c]));
-}
-
-loadCommunityStations();
-
-// Expose for ad-hoc devtools tinkering during M1.
-window.__radiodock = { player };
+// Expose for ad-hoc debugging
+window.__radiodock = { player, playerCard, stationList, listDropdown, search };

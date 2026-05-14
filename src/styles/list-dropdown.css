@@ -1,0 +1,292 @@
+.list-dropdown {
+  position: relative;
+}
+
+.list-dropdown-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text);
+  transition: background-color 0.2s ease;
+}
+
+.list-dropdown-btn:hover {
+  background-color: var(--background-hover);
+}
+
+.dropdown-arrow {
+  font-size: 10px;
+  transition: transform 0.2s ease;
+}
+
+.list-dropdown-btn.open .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.list-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 10px;
+  min-width: 250px;
+  background: var(--bg);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  overflow: hidden;
+  animation: dropdownSlide 0.2s ease;
+}
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.list-items {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text);
+  transition: background-color 0.2s ease;
+  position: relative;
+}
+
+.list-item:hover {
+  background-color: var(--bg-list-hover);
+}
+
+.list-item.active {
+  background-color: var(--red);
+  color: var(--text);
+}
+
+.list-item.active:hover {
+  background-color: var(--red-dark, var(--red));
+}
+
+.list-item-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  flex: 1;
+}
+
+.list-name {
+  cursor: pointer;
+  flex: 1;
+}
+
+.list-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.action-icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.7;
+  color: var(--text-muted);
+}
+
+.list-export-btn {
+  opacity: 0;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+}
+
+.list-item:hover .list-export-btn {
+  opacity: 1;
+}
+
+.list-export-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.list-export-btn:hover .action-icon {
+  opacity: 1;
+  color: var(--text);
+}
+
+.list-edit-btn {
+  opacity: 0;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+}
+
+.list-item:hover .list-edit-btn {
+  opacity: 1;
+}
+
+.list-edit-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.list-edit-btn:hover .action-icon {
+  opacity: 1;
+  color: var(--text);
+}
+
+.list-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  min-width: 20px;
+  text-align: right;
+}
+
+.list-remove-btn {
+  opacity: 0;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  font-size: 19px;
+  line-height: 1;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+}
+
+.list-item:hover .list-remove-btn {
+  opacity: 1;
+}
+
+.list-remove-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--red);
+}
+
+.list-item.active .list-count {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.list-item.active .list-remove-btn {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.list-item.active .list-remove-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: var(--text);
+}
+
+.list-actions {
+  border-top: 1px solid #2a2a2a;
+  padding: 8px;
+  display: flex;
+  gap: 0;
+}
+
+.add-list-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+}
+
+.add-list-btn:hover {
+  background-color: var(--bg-list-hover);
+  color: var(--text);
+}
+
+.plus-icon {
+  font-size: 14px;
+  font-weight: bold;
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.list-actions-divider {
+  width: 1px;
+  background: #2a2a2a;
+  margin: 4px 0;
+}
+
+.import-list-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+}
+
+.import-list-btn:hover {
+  background-color: var(--bg-list-hover);
+  color: var(--text);
+}
+
+.import-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--text-muted);
+}
+
+.import-list-btn:hover .import-icon {
+  color: var(--text);
+}
