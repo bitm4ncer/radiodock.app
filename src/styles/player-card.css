@@ -284,6 +284,13 @@
   background: var(--bg-dark);
   cursor: pointer;
   transition: all 0.2s ease;
+  /* Override <button> defaults that would otherwise widen the dot beyond 6px. */
+  padding: 0;
+  border: 0;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .volume-dot:hover {

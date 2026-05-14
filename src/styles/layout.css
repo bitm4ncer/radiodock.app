@@ -25,13 +25,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
   /* iOS rubber-band background */
   background-attachment: fixed;
+  /* Belt-and-braces against accidental horizontal scroll on mobile */
+  overflow-x: hidden;
 }
 
 .page {
   min-height: 100dvh;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;          /* vertically centered when content fits */
   padding-top: max(0px, env(safe-area-inset-top));
   padding-bottom: max(0px, env(safe-area-inset-bottom));
 }
@@ -39,11 +43,12 @@ body {
 .container {
   width: 100%;
   max-width: var(--col-width);
-  padding: 16px;
+  /* The player card's volume dots float at right:-25px; reserve room for them
+     so they never push the content past the viewport on narrow screens. */
+  padding: 16px 28px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  flex: 1 1 auto;
 }
 
 /* Custom scrollbar */
@@ -68,24 +73,39 @@ body {
   color: var(--accent);
 }
 
-/* Desktop-only Chrome Web Store link, sits at the bottom under the player */
+/* Bottom actions: install button + Chrome extension link */
+.bottom-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 max(16px, env(safe-area-inset-bottom));
+}
+
 .store-badge {
-  display: none;
-  margin: 8px auto 24px;
+  display: inline-flex;
+  align-items: center;
   padding: 8px 14px;
   border-radius: var(--radius-pill);
   font-size: 13px;
   color: var(--text-muted);
   text-decoration: none;
+  background: none;
   border: 1px solid var(--border);
+  cursor: pointer;
   transition: color 120ms ease, border-color 120ms ease;
 }
 .store-badge:hover {
   color: var(--text);
   border-color: rgba(255, 255, 255, 0.16);
 }
+
+/* Chrome-extension link is desktop-only — irrelevant on phones */
+.store-badge--ext {
+  display: none;
+}
 @media (min-width: 700px) {
-  .store-badge {
+  .store-badge--ext {
     display: inline-flex;
   }
 }

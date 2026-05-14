@@ -81,21 +81,13 @@ document.getElementById('dockLogoBtn')?.addEventListener('click', () => openModa
 
 // Add-to-Home-Screen onboarding
 const installInfo = mountInstallInfo();
-// Surface a link inside the about modal so users can re-open it.
-const aboutModalLinks = document.querySelector('#infoModal .modal-links');
-if (aboutModalLinks) {
-  const installLink = document.createElement('button');
-  installLink.type = 'button';
-  installLink.className = 'modal-link';
-  installLink.style.background = 'none';
-  installLink.style.border = 0;
-  installLink.style.padding = 0;
-  installLink.textContent = 'How to install RadioDock';
-  installLink.addEventListener('click', () => {
-    closeModal('infoModal');
-    installInfo.open();
-  });
-  aboutModalLinks.prepend(installLink);
+
+// Surface a manual "Install RadioDock →" badge at the bottom of the page.
+// Hidden when the app is already installed (display-mode: standalone).
+const installBadgeEl = document.getElementById('installBadge');
+if (installBadgeEl && installInfo.platform && installInfo.platform !== 'installed') {
+  installBadgeEl.hidden = false;
+  installBadgeEl.addEventListener('click', () => installInfo.open());
 }
 
 // --- Helpers ---
@@ -335,11 +327,26 @@ async function bootstrap() {
   }
 }
 
-bootstrap().then(() => {
-  // Show the install hint after boot settles. Skipped if user already
-  // dismissed or the app is in standalone mode.
-  installInfo.autoShow?.();
-});
+bootstrap();
+
+// Standalone (PWA) desktop launches: shrink the window once to match the
+// Chrome-extension popup dimensions. Skipped on mobile (window manager
+// ignores it anyway) and skipped after the user has manually resized
+// (we only do it on first launch per session-stored pref).
+async function fitWindowToExtensionSize() {
+  const inStandalone =
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true;
+  if (!inStandalone) return;
+  // Heuristic: only fire on desktop-class viewports; mobile installs are full-screen.
+  if (matchMedia('(pointer: coarse)').matches) return;
+  if (await storage.getPref('didFitWindow', false)) return;
+  try {
+    window.resizeTo(440, 760);
+    await storage.setPref('didFitWindow', true);
+  } catch {}
+}
+fitWindowToExtensionSize();
 
 // Register the service worker in production. The dev server already serves
 // fresh modules and a SW only gets in the way during development.

@@ -44,14 +44,20 @@
             <div class="player-controls">
               <button id="playPauseBtn" class="play-pause-btn" title="Play / Pause" aria-label="Play">
                 <span class="play-icon">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M19.376 12.416 8.777 19.482a.5.5 0 0 1-.777-.416V4.934a.5.5 0 0 1 .777-.416l10.6 7.066a.5.5 0 0 1 0 .832z" />
+                  <svg width="100%" height="100%" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+                    <g transform="matrix(0.633173,0,0,0.633173,4.26264,4.40187)">
+                      <path d="M19.376,12.416L8.777,19.482C8.548,19.635 8.237,19.573 8.084,19.343C8.029,19.261 8,19.165 8,19.066L8,4.934C8,4.658 8.224,4.434 8.5,4.434C8.599,4.434 8.695,4.464 8.777,4.518L19.376,11.584C19.606,11.737 19.668,12.048 19.515,12.277C19.478,12.332 19.431,12.38 19.376,12.416Z" style="fill-rule:nonzero;"/>
+                    </g>
                   </svg>
                 </span>
                 <span class="pause-icon" style="display: none;">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <rect x="6" y="5" width="4" height="14" rx="0.85" />
-                    <rect x="14" y="5" width="4" height="14" rx="0.85" />
+                  <svg width="100%" height="100%" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+                    <g transform="matrix(0.551906,0,0,0.551906,5.61846,5.51123)">
+                      <path d="M8.493,4.799L8.493,18.715C8.493,19.185 8.112,19.566 7.643,19.566L5.942,19.566C5.472,19.566 5.091,19.185 5.091,18.715L5.091,4.799C5.091,4.329 5.472,3.948 5.942,3.948L7.643,3.948C8.112,3.948 8.493,4.329 8.493,4.799Z"/>
+                      <g transform="matrix(1,0,0,1,9.5414,0)">
+                        <path d="M8.493,4.799L8.493,18.715C8.493,19.185 8.112,19.566 7.643,19.566L5.942,19.566C5.472,19.566 5.091,19.185 5.091,18.715L5.091,4.799C5.091,4.329 5.472,3.948 5.942,3.948L7.643,3.948C8.112,3.948 8.493,4.329 8.493,4.799Z"/>
+                      </g>
+                    </g>
                   </svg>
                 </span>
                 <span class="buffering-icon" style="display: none;">
@@ -139,9 +145,14 @@
         </section>
       </main>
 
-      <a class="store-badge" href="https://chromewebstore.google.com/detail/radiodock/dcjmegapbbplapeghilpbdddhkgndbbh" target="_blank" rel="noopener">
-        Also available as a Chrome extension →
-      </a>
+      <div class="bottom-actions">
+        <button type="button" id="installBadge" class="store-badge store-badge--install" hidden>
+          Install RadioDock →
+        </button>
+        <a class="store-badge store-badge--ext" href="https://chromewebstore.google.com/detail/radiodock/dcjmegapbbplapeghilpbdddhkgndbbh" target="_blank" rel="noopener">
+          Also available as a Chrome extension →
+        </a>
+      </div>
     </div>
 
     <!-- Toast for notifications -->
