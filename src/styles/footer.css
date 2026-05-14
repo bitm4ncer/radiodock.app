@@ -64,52 +64,5 @@
   text-decoration-color: rgba(255, 255, 255, 0.4);
 }
 
-/* Legal-notice modal layout — wider, denser, scrollable body */
-.modal-content.legal-notice {
-  max-width: 560px;
-  width: calc(100% - 32px);
-  max-height: calc(100dvh - 64px);
-  display: flex;
-  flex-direction: column;
-}
-
-.legal-notice .modal-body {
-  overflow-y: auto;
-  padding-right: 8px;
-  font-size: 13px;
-  line-height: 1.55;
-  color: var(--text-muted);
-}
-
-.legal-notice .modal-body h4 {
-  color: var(--text);
-  font-size: 14px;
-  margin: 14px 0 8px;
-}
-.legal-notice .modal-body h4:first-child {
-  margin-top: 0;
-}
-
-.legal-notice .modal-body p {
-  margin: 0 0 10px;
-}
-
-.legal-notice .modal-body ul {
-  margin: 0 0 12px;
-  padding-left: 20px;
-}
-.legal-notice .modal-body li {
-  margin-bottom: 8px;
-}
-
-.legal-notice .modal-body code {
-  background: rgba(255, 255, 255, 0.06);
-  padding: 1px 5px;
-  border-radius: 4px;
-  font-size: 12px;
-}
-
-.legal-notice .modal-body em {
-  color: var(--red);
-  font-style: italic;
-}
+/* Legal Notice link is an <a> not a button now — same visual styling.
+   The actual Impressum lives at /legal.html (noindex'd). */

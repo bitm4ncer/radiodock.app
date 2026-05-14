@@ -78,9 +78,7 @@ const search = mountSearch({
 
 // About modal
 document.getElementById('dockLogoBtn')?.addEventListener('click', () => openModal('infoModal'));
-
-// Legal Notice
-document.getElementById('legalNoticeBtn')?.addEventListener('click', () => openModal('legalNoticeModal'));
+// Legal Notice now lives on its own /legal.html page (noindex'd) — see footer.
 
 // Add-to-Home-Screen onboarding
 const installInfo = mountInstallInfo();

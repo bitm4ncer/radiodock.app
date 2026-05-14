@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#1a1a1a" />
+    <meta name="description" content="Legal notice (Impressum) and privacy policy for RadioDock." />
+    <!-- Keep this page out of search-engine indexes; the operator's address
+         is on this page and should not surface in Google results. -->
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+    <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet" />
+    <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
+    <title>Legal Notice — RadioDock</title>
+    <style>
+      :root {
+        --bg: #1A1A1A;
+        --bg-dark: #0D0D0D;
+        --bg-list-hover: #333;
+        --text: #E0E0E0;
+        --text-muted: #a7a7a7;
+        --accent: #cd0025;
+      }
+      *,
+      *::before,
+      *::after { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        line-height: 1.55;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      .wrap {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 32px 20px 80px;
+      }
+      .back-link {
+        display: inline-block;
+        margin-bottom: 28px;
+        color: var(--text-muted);
+        font-size: 13px;
+        text-decoration: none;
+      }
+      .back-link:hover { color: var(--text); }
+      h1 {
+        margin: 0 0 24px;
+        font-size: 22px;
+        letter-spacing: -0.01em;
+      }
+      h2 {
+        margin: 28px 0 10px;
+        font-size: 16px;
+        color: var(--text);
+      }
+      p, ul { margin: 0 0 12px; color: var(--text-muted); font-size: 14px; }
+      ul { padding-left: 20px; }
+      li { margin-bottom: 6px; }
+      .addr {
+        background: var(--bg-dark);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        padding: 16px 18px;
+        color: var(--text);
+      }
+      .reveal-email {
+        background: var(--bg-dark);
+        color: var(--text);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 13px;
+        cursor: pointer;
+        font-family: inherit;
+      }
+      .reveal-email:hover { background: var(--bg-list-hover); }
+      code {
+        background: rgba(255, 255, 255, 0.06);
+        padding: 1px 5px;
+        border-radius: 4px;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <a class="back-link" href="/">← Back to RadioDock</a>
+
+      <h1>Legal Notice &amp; Privacy Policy</h1>
+
+      <h2>Impressum</h2>
+      <p>Information according to § 5 TMG (German Telemedia Act):</p>
+      <div class="addr">
+        Jannes Becherer<br />
+        Degerstraße 46<br />
+        40235 Düsseldorf<br />
+        Germany
+      </div>
+      <p style="margin-top: 14px;">
+        <strong>Contact:</strong>
+        <button type="button" class="reveal-email" id="revealEmail"
+                data-u="a29udGFrdA=="
+                data-d="amFubmVzYmVjaGVyZXIuZGU=">
+          Show email
+        </button>
+      </p>
+      <p>Responsible for content under § 55 Abs. 2 RStV: as above.</p>
+
+      <h2>Privacy Policy</h2>
+      <p>
+        RadioDock (<a href="https://radiodock.app">radiodock.app</a>) is operated by the person named above and hosted on GitHub Pages. The application itself does not collect personal data. Your favourites and custom station lists are stored locally in your browser via IndexedDB and never leave your device.
+      </p>
+
+      <h2>Third-party services accessed when you use the app</h2>
+      <ul>
+        <li>
+          <strong>Radio Browser API</strong> (<code>*.api.radio-browser.info</code>) — when you search for stations, your query is sent to this community-run service.
+          <a href="https://www.radio-browser.info/" target="_blank" rel="noopener">Privacy info</a>.
+        </li>
+        <li>
+          <strong>RadioDock Metadata Proxy</strong> (<code>radiodock-metadata-proxy-1.onrender.com</code>) — when you play a station, the stream URL is sent to this proxy to fetch "now playing" metadata. The proxy is operated by the same person; source code is open at
+          <a href="https://github.com/bitm4ncer/RadioDock-metadata-proxy" target="_blank" rel="noopener">GitHub</a>. The proxy logs only IP / timestamp / request path for operational diagnostics; logs are not retained long-term.
+        </li>
+        <li>
+          <strong>Radio stream servers</strong> — your browser connects directly to each station's stream server when you press play. We are not the operator of those servers; refer to each station's own privacy notice.
+        </li>
+        <li>
+          <strong>GitHub Pages</strong> (host of this site) and <strong>Render.com</strong> (host of the metadata proxy) record standard server logs (IP address, browser type, timestamp). See
+          <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener">GitHub's privacy statement</a>
+          and
+          <a href="https://render.com/privacy" target="_blank" rel="noopener">Render's privacy statement</a>.
+        </li>
+        <li>
+          <strong>Buy Me a Coffee</strong> — only accessed if you click the "Buy me a coffee" link in the footer. See
+          <a href="https://www.buymeacoffee.com/privacy-policy" target="_blank" rel="noopener">their privacy policy</a>.
+        </li>
+      </ul>
+
+      <h2>Cookies, analytics, tracking</h2>
+      <p>None. The app does not use cookies, does not run analytics, and does not track you. IndexedDB is used only for your favourites/lists and stays on your device.</p>
+
+      <h2>Your rights under GDPR / DSGVO</h2>
+      <p>
+        You have the right to access, correct, delete, restrict processing of, and obtain a copy of any personal data held about you, as well as to object to processing and to lodge a complaint with a supervisory authority. Because the RadioDock app itself holds no personal data, these requests apply to the third-party services listed above; please contact them directly.
+      </p>
+
+      <h2>Disclaimer</h2>
+      <p>RadioDock provides links to external radio streams and third-party services. We are not responsible for the content of those external sources.</p>
+    </main>
+
+    <script>
+      // Click-to-reveal email. The address is stored split across two Base64
+      // attributes (local-part and domain) so the page source contains no
+      // 'mailto:' string and no email-shaped substring that a basic scraper
+      // would grep. The address is assembled and exposed only after a user
+      // gesture.
+      (function () {
+        var btn = document.getElementById('revealEmail');
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+          try {
+            var u = atob(btn.dataset.u);
+            var d = atob(btn.dataset.d);
+            var addr = u + '@' + d;
+            var a = document.createElement('a');
+            a.href = 'mailto:' + addr;
+            a.textContent = addr;
+            btn.replaceWith(a);
+          } catch (e) {
+            btn.textContent = 'Email reveal failed';
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

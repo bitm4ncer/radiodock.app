@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+# Legal Notice page carries the operator's postal address. Keep it
+# out of search-engine indexes (also enforced by <meta name="robots" noindex>
+# on the page itself).
+Disallow: /legal.html
+
+Sitemap: https://radiodock.app/sitemap.xml
