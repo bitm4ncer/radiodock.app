@@ -1,0 +1,115 @@
+.site-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px max(16px, env(safe-area-inset-bottom));
+  margin-top: 8px;
+}
+
+.footer-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.footer-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--bg-list-active);
+  text-decoration: none;
+  border: 0;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.footer-pill:hover {
+  background: var(--bg-list-hover);
+}
+
+.footer-bmc {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0; /* prevent inline-image baseline gap */
+}
+
+.footer-bmc img {
+  height: 36px;
+  width: auto;
+  display: block;
+}
+
+.footer-legal-link {
+  background: none;
+  border: 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  padding: 4px 8px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.16);
+  text-underline-offset: 3px;
+  transition: color 120ms ease, text-decoration-color 120ms ease;
+}
+
+.footer-legal-link:hover {
+  color: var(--text);
+  text-decoration-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Legal-notice modal layout — wider, denser, scrollable body */
+.modal-content.legal-notice {
+  max-width: 560px;
+  width: calc(100% - 32px);
+  max-height: calc(100dvh - 64px);
+  display: flex;
+  flex-direction: column;
+}
+
+.legal-notice .modal-body {
+  overflow-y: auto;
+  padding-right: 8px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.legal-notice .modal-body h4 {
+  color: var(--text);
+  font-size: 14px;
+  margin: 14px 0 8px;
+}
+.legal-notice .modal-body h4:first-child {
+  margin-top: 0;
+}
+
+.legal-notice .modal-body p {
+  margin: 0 0 10px;
+}
+
+.legal-notice .modal-body ul {
+  margin: 0 0 12px;
+  padding-left: 20px;
+}
+.legal-notice .modal-body li {
+  margin-bottom: 8px;
+}
+
+.legal-notice .modal-body code {
+  background: rgba(255, 255, 255, 0.06);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.legal-notice .modal-body em {
+  color: var(--red);
+  font-style: italic;
+}
