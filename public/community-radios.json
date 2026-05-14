@@ -1,0 +1,119 @@
+{
+  "version": "2.0",
+  "exportDate": "2025-09-08T16:31:16.470Z",
+  "listName": "Community Radios",
+  "stations": [
+    {
+      "countrycode": "GB",
+      "favicon": "http://www.nts.live/favicon.ico",
+      "homepage": "http://www.nts.live/",
+      "id": "961e6cac-0601-11e8-ae97-52543be04c81",
+      "name": "NTS Radio 1",
+      "url": "http://stream-relay-geo.ntslive.net/stream"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "http://www.nts.live/apple-touch-icon.png?v=47re43rrzb",
+      "homepage": "http://www.nts.live/",
+      "id": "9634ab94-0601-11e8-ae97-52543be04c81",
+      "name": "NTS Radio 2",
+      "url": "http://stream-relay-geo.ntslive.net/stream2"
+    },
+    {
+      "countrycode": "DE",
+      "favicon": "https://cdn.sanity.io/images/0smxd0yv/production/e21c49aec89f19279ac0b5d37a283e0a5be838c1-500x500.svg?w=500&h=500&fm=png&fit=max&auto=format",
+      "homepage": "https://callshopradio.com/",
+      "id": "8f18579b-ffe4-49cb-970c-16712b154392",
+      "name": "Callshop Radio",
+      "url": "https://icecast.callshopradio.com/callshopradio"
+    },
+    {
+      "id": "652e1061-5de4-442f-8b7e-cd0dfbd37048",
+      "name": "dublab DE",
+      "url": "https://dublabde.out.airtime.pro/dublabde_a",
+      "homepage": "https://dublab.de/",
+      "favicon": "https://pbs.twimg.com/profile_images/882223798275231745/rEbH-Yry_400x400.jpg",
+      "countrycode": "DE"
+    },
+    {
+      "countrycode": "GE",
+      "favicon": "https://www.mutantradio.net/icon?e5faaecf67dfe01a",
+      "homepage": "https://www.mutantradio.net/",
+      "id": "e81caf1f-5049-48ad-99b7-b5ebdd03d3f3",
+      "name": "Mutant Radio",
+      "url": "https://listen.radioking.com/radio/282820/stream/328621"
+    },
+    {
+      "countrycode": "DE",
+      "favicon": "https://www.radio80k.de/app/uploads/2022/10/cropped-favicon-8000-192x192.gif",
+      "homepage": "https://www.radio80k.de/",
+      "id": "6b4c2748-07ee-11e8-ae97-52543be04c81",
+      "name": "Radio 80000",
+      "url": "https://radio80k.out.airtime.pro:8000/radio80k_a"
+    },
+    {
+      "countrycode": "BE",
+      "favicon": "https://kioskradio.com/favicon.png",
+      "homepage": "https://kioskradio.com/",
+      "id": "bae70c5c-9f3f-42fc-a83d-6c13920590e0",
+      "name": "Kiosk Radio",
+      "url": "https://kioskradiobxl.out.airtime.pro/kioskradiobxl_b"
+    },
+    {
+      "countrycode": "FR",
+      "favicon": "https://lyl.live/favicon.ico",
+      "homepage": "https://lyl.live/",
+      "id": "lyl-radio-london-2025",
+      "name": "LYL Radio",
+      "url": "https://icecast.lyl.live/live"
+    },
+    {
+      "countrycode": "DE",
+      "favicon": "https://backstage.cashmereradio.com/wp-content/themes/cashmereradio/icons/android-icon-192x192.png",
+      "homepage": "https://cashmereradio.com/",
+      "id": "356a337d-4552-4b2d-bfdb-d381a6d85a9d",
+      "name": "Cashmere Radio",
+      "url": "https://cashmereradio.out.airtime.pro/cashmereradio_a"
+    },
+    {
+      "countrycode": "DE",
+      "favicon": "https://refugeworldwide.com/apple-touch-icon.png",
+      "homepage": "https://refugeworldwide.com/",
+      "id": "edb81cbf-0645-4944-a376-554b8299ff27",
+      "name": "Refuge Worldwide",
+      "url": "https://streaming.radio.co/s3699c5e49/listen"
+    },
+    {
+      "countrycode": "NL",
+      "favicon": "https://operator-radio.com/favicon.ico",
+      "homepage": "https://operator-radio.com/",
+      "id": "f5f9d68a-b14d-4e23-8de0-b1ea6e2151bf",
+      "name": "Operator Radio",
+      "url": "https://origin.streamnerd.nl/operator/operator/icecast.audio"
+    },
+    {
+      "countrycode": "GR",
+      "favicon": "",
+      "homepage": "https://stegi.radio/",
+      "id": "6e2a1c0a-4c87-498e-9371-86e571f21eb9",
+      "name": "Stegi Radio",
+      "url": "https://movementathens.out.airtime.pro/movementathens_a"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://i1.sndcdn.com/avatars-HFUM5iVBOYInWEED-oro7Vg-t200x200.jpg",
+      "homepage": "https://www.rinse.fm/channels/uk/",
+      "id": "9c100db7-ba97-4e6f-821f-dba1ed08ad52",
+      "name": "Rinse UK",
+      "url": "https://admin.stream.rinse.fm/proxy/rinse_uk/stream"
+    },
+    {
+      "countrycode": "DE",
+      "favicon": "https://www.thfradio.de/favicon.ico",
+      "homepage": "https://www.thfradio.de/",
+      "id": "d8dc455e-761f-436c-aa71-5de8b689690c",
+      "name": "THF Radio",
+      "url": "https://thfradio2.out.airtime.pro/thfradio2_a"
+    }
+  ]
+}
