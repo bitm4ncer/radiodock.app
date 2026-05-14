@@ -11,6 +11,7 @@ import { promptDialog, confirmDialog } from './ui/modal-helpers.js';
 import * as listsApi from './data/lists.js';
 import * as storage from './data/storage.js';
 import { downloadList, parseExport, applyImport } from './data/import-export.js';
+import { searchStations } from './data/radio-browser.js';
 
 const COMMUNITY_LIST_ID = listsApi.COMMUNITY_LIST_ID;
 
@@ -30,10 +31,34 @@ document.getElementById('playerCard').classList.add('loaded');
 const playerCard = mountPlayerCard({ player });
 const stationList = mountStationList({ container: 'favoritesList' });
 const listDropdown = mountListDropdown();
-mountSearch({
-  onQuery: ({ query }) => {
-    if (query) toast(`Search arrives in M4 — typed: "${query}"`);
+const search = mountSearch({
+  onSearch: ({ query, filter }, transport) => searchStations({ query, filter }, transport),
+  onPlay: (station) => player.playStation(station),
+  onAdd: async (station) => {
+    // Add to the currently-active editable list. Fall back to Favorites when
+    // viewing Community Radios (the heart already targets Favorites).
+    const targetList = (findList(state.currentListId)?.readOnly === false
+      ? findList(state.currentListId)
+      : favoritesList());
+    if (!targetList) return;
+    try {
+      await listsApi.addStationToList(targetList.id, station);
+      targetList.stations = [...targetList.stations, station];
+      if (state.currentListId === targetList.id) renderActiveList();
+      else listDropdown.setLists(allListsForDropdown());
+      search.refreshAddedFlags();
+      toast(`Added to "${targetList.name}"`);
+    } catch (err) {
+      toast(err.message);
+    }
   },
+  isAlreadyInActiveList: (stationId) => {
+    const list = (findList(state.currentListId)?.readOnly === false
+      ? findList(state.currentListId)
+      : favoritesList());
+    return !!list?.stations.some((s) => s.id === stationId);
+  },
+  canAddToActiveList: () => true,
 });
 
 // About modal
