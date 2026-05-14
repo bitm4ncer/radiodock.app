@@ -371,14 +371,20 @@
 .heart-icon {
   width: 12px;
   height: 12px;
-  fill: var(--red);
-  transition: fill 0.2s ease;
+  fill: transparent;
+  stroke: var(--text-muted);
+  stroke-width: 2;
+  transition: fill 0.2s ease, stroke 0.2s ease;
   margin-bottom: -1.5px;
 }
 
 .btn-add-favorite:hover .heart-icon {
+  stroke: var(--red);
+}
+
+.btn-add-favorite.is-favorited .heart-icon {
   fill: var(--red);
-  opacity: 0.8;
+  stroke: var(--red);
 }
 
 .btn-icon {

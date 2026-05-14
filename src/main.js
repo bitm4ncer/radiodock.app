@@ -7,80 +7,276 @@ import { mountListDropdown } from './ui/list-dropdown.js';
 import { mountSearch } from './ui/search.js';
 import { initModals, openModal, closeModal } from './ui/modals.js';
 import { toast } from './ui/toast.js';
+import { promptDialog, confirmDialog } from './ui/modal-helpers.js';
+import * as listsApi from './data/lists.js';
+import * as storage from './data/storage.js';
+import { downloadList, parseExport, applyImport } from './data/import-export.js';
 
-const COMMUNITY_LIST_ID = '__community__';
+const COMMUNITY_LIST_ID = listsApi.COMMUNITY_LIST_ID;
+
+// --- App state ---
+const state = {
+  community: { id: COMMUNITY_LIST_ID, name: 'Community Radios', stations: [], readOnly: true },
+  userLists: [],            // [{id, name, stations, order, ...}]
+  currentListId: null,      // active list (community or a user list)
+  currentStation: null,
+};
 
 // --- Boot UI modules ---
 attachRecovery(player);
 initModals();
-
-// Player card uses opacity:0 by default, expects a `.loaded` class once UI is wired.
 document.getElementById('playerCard').classList.add('loaded');
 
 const playerCard = mountPlayerCard({ player });
 const stationList = mountStationList({ container: 'favoritesList' });
 const listDropdown = mountListDropdown();
-const search = mountSearch({
+mountSearch({
   onQuery: ({ query }) => {
-    // M4 will wire this to the Radio Browser API.
     if (query) toast(`Search arrives in M4 — typed: "${query}"`);
   },
 });
 
-// --- Wire about/info modal via the logo button ---
+// About modal
 document.getElementById('dockLogoBtn')?.addEventListener('click', () => openModal('infoModal'));
 
-// --- Wire "New List" placeholder (real flow in M3) ---
-listDropdown.onAddList(() => {
-  openModal('newListModal');
-});
-listDropdown.onImport(() => {
-  toast('Import lands in M3');
-});
-document.getElementById('cancelListBtn').addEventListener('click', () => closeModal('newListModal'));
-document.getElementById('createListBtn').addEventListener('click', () => {
-  closeModal('newListModal');
-  toast('Custom lists arrive in M3');
+// --- Helpers ---
+function allListsForDropdown() {
+  return [state.community, ...state.userLists];
+}
+
+function findList(id) {
+  if (id === COMMUNITY_LIST_ID) return state.community;
+  return state.userLists.find((l) => l.id === id);
+}
+
+function renderActiveList() {
+  const list = findList(state.currentListId) ?? state.community;
+  state.currentListId = list.id;
+  listDropdown.setLists(allListsForDropdown());
+  listDropdown.setCurrent(list.id);
+  stationList.setStations(list.stations, { editable: !list.readOnly });
+  stationList.setActive(state.currentStation?.id ?? null);
+  updateFavoriteHeart();
+}
+
+function favoritesList() {
+  // Convention: the first user list is "Favorites" (created lazily by getUserLists).
+  return state.userLists[0];
+}
+
+function isStationFavorited(station) {
+  if (!station) return false;
+  const fav = favoritesList();
+  return !!fav?.stations.some((s) => s.id === station.id);
+}
+
+function updateFavoriteHeart() {
+  playerCard.setFavoriteState(isStationFavorited(state.currentStation));
+}
+
+// --- Player events ---
+player.on('stationchange', async (evt) => {
+  state.currentStation = evt.detail.station;
+  stationList.setActive(state.currentStation.id);
+  updateFavoriteHeart();
+  await storage.setPref('currentStationId', state.currentStation.id);
 });
 
-// --- Station click → play ---
+// --- Volume restore ---
+async function restoreVolume() {
+  const v = await storage.getPref('volume', 0.8);
+  player.setVolume(v);
+  playerCard.setVolumePct(Math.round(v * 100));
+}
+player.on('volumechange', async (evt) => {
+  await storage.setPref('volume', evt.detail.volume);
+});
+
+// --- Station list interactions ---
 stationList.onClick((station) => {
-  stationList.setActive(station.id);
   player.playStation(station);
 });
 
-// --- Volume restore (defaults to 80%) ---
-const INITIAL_VOLUME_PCT = 80;
-player.setVolume(INITIAL_VOLUME_PCT / 100);
-playerCard.setVolumePct(INITIAL_VOLUME_PCT);
+stationList.onRemove(async (stationId) => {
+  const list = findList(state.currentListId);
+  if (!list || list.readOnly) return;
+  try {
+    await listsApi.removeStationFromList(list.id, stationId);
+    list.stations = list.stations.filter((s) => s.id !== stationId);
+    renderActiveList();
+  } catch (err) {
+    toast(err.message);
+  }
+});
 
-// --- Highlight playing station on stationchange ---
-player.on('stationchange', (evt) => stationList.setActive(evt.detail.station.id));
+stationList.onReorder(async (orderedIds) => {
+  const list = findList(state.currentListId);
+  if (!list || list.readOnly) return;
+  try {
+    const updated = await listsApi.reorderStationsInList(list.id, orderedIds);
+    list.stations = updated.stations;
+    renderActiveList();
+  } catch (err) {
+    toast(err.message);
+  }
+});
 
-// --- Load community radios JSON and seed the lists ---
+// --- Favorites heart on player card ---
+playerCard.onFavoriteClick(async (station) => {
+  if (!station) return;
+  const fav = favoritesList();
+  if (!fav) return;
+  const has = fav.stations.some((s) => s.id === station.id);
+  try {
+    if (has) {
+      await listsApi.removeStationFromList(fav.id, station.id);
+      fav.stations = fav.stations.filter((s) => s.id !== station.id);
+      toast('Removed from Favorites');
+    } else {
+      await listsApi.addStationToList(fav.id, station);
+      fav.stations = [...fav.stations, station];
+      toast('Added to Favorites');
+    }
+    updateFavoriteHeart();
+    if (state.currentListId === fav.id) renderActiveList();
+    else listDropdown.setLists(allListsForDropdown());
+  } catch (err) {
+    toast(err.message);
+  }
+});
+
+// --- List dropdown ---
+listDropdown.onSelect(async (list) => {
+  state.currentListId = list.id;
+  renderActiveList();
+  await storage.setPref('currentListId', list.id);
+});
+
+listDropdown.onAddList(async () => {
+  const name = await promptDialog({
+    title: 'Create New Station List',
+    label: 'List Name:',
+    placeholder: 'Enter list name…',
+    confirmLabel: 'Create List',
+    validate: (v) => {
+      if (!v) return 'List name is required.';
+      if (v.length > 50) return 'Too long (max 50 characters).';
+      return null;
+    },
+  });
+  if (!name) return;
+  try {
+    const created = await listsApi.createList(name);
+    state.userLists.push(created);
+    state.currentListId = created.id;
+    renderActiveList();
+    await storage.setPref('currentListId', created.id);
+    toast(`Created "${created.name}"`);
+  } catch (err) {
+    toast(err.message);
+  }
+});
+
+listDropdown.onRename(async (list) => {
+  const next = await promptDialog({
+    title: 'Rename List',
+    label: 'New name:',
+    defaultValue: list.name,
+    confirmLabel: 'Rename',
+  });
+  if (!next || next === list.name) return;
+  try {
+    const updated = await listsApi.renameList(list.id, next);
+    list.name = updated.name;
+    renderActiveList();
+    toast(`Renamed to "${updated.name}"`);
+  } catch (err) {
+    toast(err.message);
+  }
+});
+
+listDropdown.onExport((list) => {
+  downloadList(list);
+});
+
+listDropdown.onDelete(async (list) => {
+  const ok = await confirmDialog({
+    title: 'Delete List',
+    message: `Delete "${list.name}"? This cannot be undone.`,
+    confirmLabel: 'Delete',
+  });
+  if (!ok) return;
+  try {
+    await listsApi.deleteList(list.id);
+    state.userLists = state.userLists.filter((l) => l.id !== list.id);
+    if (state.currentListId === list.id) {
+      state.currentListId = favoritesList()?.id ?? COMMUNITY_LIST_ID;
+      await storage.setPref('currentListId', state.currentListId);
+    }
+    renderActiveList();
+    toast(`Deleted "${list.name}"`);
+  } catch (err) {
+    toast(err.message);
+  }
+});
+
+listDropdown.onImport(async (file) => {
+  try {
+    const text = await file.text();
+    const parsed = parseExport(text);
+    const created = await applyImport(parsed);
+    state.userLists = await listsApi.getUserLists();
+    if (created[0]) state.currentListId = created[0].id;
+    renderActiveList();
+    toast(created.length === 1 ? `Imported "${created[0].name}"` : `Imported ${created.length} lists`);
+  } catch (err) {
+    toast(`Import failed: ${err.message}`);
+  }
+});
+
+// --- Bootstrap ---
 async function bootstrap() {
   try {
-    const res = await fetch('/community-radios.json');
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    const community = {
+    const [communityRes, userLists, prefs] = await Promise.all([
+      fetch('/community-radios.json').then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))),
+      listsApi.getUserLists(),
+      storage.getAllPrefs(),
+    ]);
+
+    state.community = {
       id: COMMUNITY_LIST_ID,
-      name: data.listName ?? 'Community Radios',
-      stations: data.stations ?? [],
+      name: communityRes.listName ?? 'Community Radios',
+      stations: communityRes.stations ?? [],
       readOnly: true,
     };
-    // In M3 we'll merge in user-created lists from IndexedDB.
-    const lists = [community];
-    listDropdown.setLists(lists);
-    listDropdown.setCurrent(community.id);
-    stationList.setStations(community.stations);
+    state.userLists = userLists;
+    state.currentListId = prefs.currentListId ?? COMMUNITY_LIST_ID;
+    if (!findList(state.currentListId)) state.currentListId = COMMUNITY_LIST_ID;
+
+    await restoreVolume();
+    renderActiveList();
+
+    // Restore current station view (without auto-playing — first play needs user gesture).
+    if (prefs.currentStationId) {
+      const all = [
+        ...state.community.stations,
+        ...state.userLists.flatMap((l) => l.stations),
+      ];
+      const station = all.find((s) => s.id === prefs.currentStationId);
+      if (station) {
+        state.currentStation = station;
+        playerCard.setStation(station);
+        stationList.setActive(station.id);
+        updateFavoriteHeart();
+      }
+    }
   } catch (err) {
-    console.error('Failed to load community radios:', err);
-    toast('Could not load community stations');
+    console.error('Bootstrap failed:', err);
+    toast('Could not load app state');
   }
 }
 
 bootstrap();
 
-// Expose for ad-hoc debugging
-window.__radiodock = { player, playerCard, stationList, listDropdown, search };
+// Debug handle
+window.__radiodock = { player, playerCard, stationList, listDropdown, state, listsApi, storage };
