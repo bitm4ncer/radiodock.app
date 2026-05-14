@@ -19,6 +19,7 @@ import * as storage from './data/storage.js';
 import { downloadList, parseExport, applyImport } from './data/import-export.js';
 import { searchStations } from './data/radio-browser.js';
 import { mountVisualizer } from './visualizer/bootstrap.js';
+import { mountPlayerCardDragMinimize } from './ui/player-card-drag.js';
 
 const COMMUNITY_LIST_ID = listsApi.COMMUNITY_LIST_ID;
 
@@ -113,6 +114,9 @@ mountSearchOverlay({
 
 // Visualizer (desktop only; mounts trigger button into the player card).
 mountVisualizer({ player }).catch((err) => console.warn('Visualizer mount failed:', err));
+
+// Drag + minimize for the player card (desktop only).
+mountPlayerCardDragMinimize().catch((err) => console.warn('Player card drag mount failed:', err));
 
 // --- Helpers ---
 function allListsForDropdown() {

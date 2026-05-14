@@ -1,9 +1,19 @@
-// "Add to Home Screen" onboarding. Detects platform and shows tailored
-// instructions. Auto-opens once on first visit (unless already installed)
-// and is also reachable via the info-modal credit line.
+// Install-info popover. Five content branches:
+//   browser-ext  — direct path to the Chrome Web Store (extension)
+//   desktop      — PWA install on a desktop browser (Chromium-family only)
+//   ios-safari   — Add to Home Screen via Safari
+//   ios-other    — explainer + deep link out to Safari
+//   android      — beforeinstallprompt-driven install, with manual fallback
+//
+// On desktop the popover slides out from the install badge into the
+// bottom-left corner of the viewport. On mobile it's a centered modal.
+// All transitions live in install-info.css.
 
 import { openModal, closeModal } from './modals.js';
 import * as storage from '../data/storage.js';
+
+const CHROME_STORE_URL =
+  'https://chromewebstore.google.com/detail/radiodock/dcjmegapbbplapeghilpbdddhkgndbbh';
 
 const ANDROID_PLATFORMS = /android/i;
 const IOS_PLATFORMS = /iphone|ipad|ipod/i;
@@ -12,13 +22,10 @@ function detectPlatform() {
   const ua = navigator.userAgent;
   const isStandalone =
     window.matchMedia('(display-mode: standalone)').matches ||
-    // iOS Safari standalone (pre-display-mode-standalone era)
     window.navigator.standalone === true;
   if (isStandalone) return 'installed';
 
   if (IOS_PLATFORMS.test(ua)) {
-    // Safari on iOS is the only iOS browser that can install. We sniff via
-    // "Version/x" + Safari, and absence of Chrome/Firefox/Edg/FxiOS/CriOS.
     const isiOSSafari =
       /Safari/.test(ua) && !/(CriOS|FxiOS|EdgiOS|OPiOS|Brave|YaBrowser)/.test(ua);
     return isiOSSafari ? 'ios-safari' : 'ios-other';
@@ -27,55 +34,105 @@ function detectPlatform() {
   return 'desktop';
 }
 
+const SHARE_ICON_SVG = `<svg class="install-info__inline-icon" viewBox="0 0 24 24" aria-hidden="true">
+  <path d="M12 3v12m0-12-4 4m4-4 4 4M5 14v4a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>`;
+
 function html(platform) {
   switch (platform) {
+    case 'browser-ext':
+      return `
+        <h3 class="install-info__title">Browser Extension</h3>
+        <p class="install-info__lead">
+          Install RadioDock from the Chrome Web Store. Works with
+          <strong>Chrome</strong>, <strong>Edge</strong>, <strong>Brave</strong>,
+          <strong>Opera</strong>, and <strong>Vivaldi</strong>.
+        </p>
+        <ul class="install-info__benefits">
+          <li>One-click access from your browser toolbar</li>
+          <li>Plays in the background even when the popup is closed</li>
+          <li>Same UI and station list as this web app</li>
+        </ul>
+        <a class="install-info__primary" href="${CHROME_STORE_URL}" target="_blank" rel="noopener" data-action="dismiss">
+          Open Chrome Web Store →
+        </a>
+        <button type="button" class="install-info__secondary" data-action="dismiss">Maybe later</button>
+      `;
+
+    case 'desktop':
+      return `
+        <h3 class="install-info__title">Desktop App</h3>
+        <p class="install-info__lead">
+          Install RadioDock as a standalone app. It opens in its own window —
+          no browser chrome, no tab clutter — and pins to your dock or taskbar.
+        </p>
+        <ul class="install-info__benefits">
+          <li>Dedicated window, dedicated dock icon</li>
+          <li>Works on Windows, macOS, and Linux</li>
+          <li>Requires <strong>Chrome</strong>, <strong>Edge</strong>, <strong>Brave</strong>, <strong>Opera</strong>, or <strong>Vivaldi</strong></li>
+        </ul>
+        <button type="button" class="install-info__primary" data-action="install">Install Now</button>
+        <p class="install-info__hint">
+          Button greyed out? Open your browser's <strong>⋮</strong> menu and choose <strong>Install app</strong> (or <strong>Apps → Install this site as an app</strong>).
+        </p>
+        <button type="button" class="install-info__secondary" data-action="dismiss">Maybe later</button>
+      `;
+
     case 'ios-safari':
       return `
-        <h3>Add RadioDock to your home screen</h3>
-        <ol class="install-steps">
-          <li>Tap the <strong>Share</strong> icon at the bottom of Safari (the square with the arrow).</li>
-          <li>Scroll down and tap <strong>Add to Home Screen</strong>.</li>
-          <li>Tap <strong>Add</strong>. RadioDock now lives on your home screen like a real app — perfect for listening in your pocket with the screen locked.</li>
+        <h3 class="install-info__title">Add to iPhone Home Screen</h3>
+        <p class="install-info__lead">
+          RadioDock lives on your home screen like a real app — full screen,
+          lock-screen controls, audio that keeps playing in your pocket.
+        </p>
+        <ol class="install-info__steps">
+          <li>Tap the ${SHARE_ICON_SVG} <strong>Share</strong> icon at the bottom of Safari</li>
+          <li>Scroll and tap <strong>Add to Home Screen</strong></li>
+          <li>Tap <strong>Add</strong> in the top-right</li>
         </ol>
-        <button type="button" class="btn-primary" data-action="dismiss">Got it</button>
+        <button type="button" class="install-info__primary" data-action="dismiss">Got it</button>
       `;
+
     case 'ios-other':
       return `
-        <h3>Open in Safari to install</h3>
-        <p>iPhone only lets <strong>Safari</strong> add apps to the home screen. You're using a different browser, so you'll need to switch.</p>
-        <p>
-          <a class="btn-primary" href="${location.href}" target="_blank" rel="noopener">Open in Safari</a>
+        <h3 class="install-info__title">Open in Safari to Install</h3>
+        <p class="install-info__lead">
+          iPhone only lets <strong>Safari</strong> add apps to the home screen.
+          You're using a different browser — open this page in Safari first.
         </p>
-        <p class="install-hint">Or: copy <code>radiodock.app</code>, open Safari, and paste it into the address bar. Then tap Share → Add to Home Screen.</p>
-        <button type="button" class="btn-secondary" data-action="dismiss">Skip for now</button>
+        <a class="install-info__primary" href="${location.href}" target="_blank" rel="noopener" data-action="dismiss">
+          Open in Safari →
+        </a>
+        <p class="install-info__hint">
+          Or: copy <code>radiodock.app</code>, open Safari, paste it in the address bar,
+          then follow the iOS Safari instructions.
+        </p>
+        <button type="button" class="install-info__secondary" data-action="dismiss">Skip for now</button>
       `;
+
     case 'android':
-      return `
-        <h3>Install RadioDock</h3>
-        <p>Get the full-screen app experience and proper lock-screen controls.</p>
-        <p>
-          <button type="button" class="btn-primary" data-action="install">Install</button>
-        </p>
-        <p class="install-hint">If the button does nothing, tap the browser's <strong>⋮ menu</strong> and choose <strong>Add to Home Screen</strong> or <strong>Install app</strong>.</p>
-        <button type="button" class="btn-secondary" data-action="dismiss">Skip for now</button>
-      `;
-    case 'desktop':
     default:
       return `
-        <h3>Install RadioDock as an app</h3>
-        <p>Pin RadioDock to your dock or taskbar — it opens in its own window without browser chrome.</p>
-        <p>
-          <button type="button" class="btn-primary" data-action="install">Install</button>
+        <h3 class="install-info__title">Install on Android</h3>
+        <p class="install-info__lead">
+          Add RadioDock as a real Android app — full screen, lock-screen
+          media controls, no browser bar.
         </p>
-        <p class="install-hint">If the button is greyed out, your browser doesn't support installable PWAs (Firefox, Safari on macOS). Chrome, Edge, Brave, and Arc all do.</p>
-        <button type="button" class="btn-secondary" data-action="dismiss">Skip for now</button>
+        <button type="button" class="install-info__primary" data-action="install">Install</button>
+        <p class="install-info__hint">
+          Button does nothing? Open the browser's <strong>⋮</strong> menu and tap
+          <strong>Add to Home screen</strong> or <strong>Install app</strong>.
+        </p>
+        <button type="button" class="install-info__secondary" data-action="dismiss">Skip for now</button>
       `;
   }
 }
 
 export function mountInstallInfo() {
   const platform = detectPlatform();
-  if (platform === 'installed') return { open() {}, autoShow() {} };
+  // Note: even when platform === 'installed' we still mount the popover so
+  // the .open(branch) API works from the install section — but the section
+  // hides itself in that case, so this code path is rarely exercised.
 
   let deferredPrompt = null;
   window.addEventListener('beforeinstallprompt', (evt) => {
@@ -83,13 +140,11 @@ export function mountInstallInfo() {
     deferredPrompt = evt;
   });
 
-  // Reuse the existing #infoModal shell but swap its body.
-  // We use a dedicated modal instead so the about-modal stays untouched.
   let modalEl = document.getElementById('installInfoModal');
   if (!modalEl) {
     modalEl = document.createElement('div');
     modalEl.id = 'installInfoModal';
-    modalEl.className = 'modal';
+    modalEl.className = 'modal install-info-modal-root';
     modalEl.setAttribute('aria-hidden', 'true');
     modalEl.innerHTML = `
       <div class="modal-content install-info-modal">
@@ -119,9 +174,6 @@ export function mountInstallInfo() {
   }
 
   function open(overridePlatform) {
-    // Callers may force a specific platform branch (e.g. the install
-    // section's "Desktop App" button always opens the desktop branch
-    // regardless of which device the user is currently on).
     const p = overridePlatform ?? platform;
     document.getElementById('installInfoBody').innerHTML = html(p);
     openModal(modalEl);

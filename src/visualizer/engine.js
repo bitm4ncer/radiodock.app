@@ -47,7 +47,11 @@ export function createEngine({ audioSource }) {
       inset: '0',
       width: '100vw',
       height: '100vh',
-      zIndex: '-1',
+      // z-index: 0 stacks the canvas above body's background painting layer
+      // but below any positioned page content (which we lift to z-index: 1
+      // via .viz-active rules). Using -1 here would put it BEHIND body,
+      // never visible if body has a background color.
+      zIndex: '0',
       pointerEvents: 'none',
       display: 'none',
     });

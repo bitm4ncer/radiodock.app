@@ -34,16 +34,16 @@ export async function mountVisualizer({ player }) {
     initialEnabled: enabled,
     initialVisualizerId: initialViz.id,
     initialControls: controls,
-    onEnabledChange: async (next) => {
-      await setPref(PREF_ENABLED, next);
+    onEnabledChange: (next) => {
       if (next) startEverything();
       else stopEverything();
+      setPref(PREF_ENABLED, next).catch(() => {});
     },
-    onVisualizerChange: async (id) => {
-      await setPref(PREF_VIZ_ID, id);
+    onVisualizerChange: (id) => {
+      setPref(PREF_VIZ_ID, id).catch(() => {});
     },
-    onControlsChange: async (map) => {
-      await setPref(PREF_CONTROLS, map);
+    onControlsChange: (map) => {
+      setPref(PREF_CONTROLS, map).catch(() => {});
     },
   });
 
@@ -52,10 +52,12 @@ export async function mountVisualizer({ player }) {
     engine.setControls(drawer.getControlsFor(drawer.getCurrentVisualizerId()));
     engine.setVisualizer(findVisualizer(drawer.getCurrentVisualizerId()) ?? visualizers[0]);
     engine.start();
+    document.body.classList.add('viz-active');
   }
 
   function stopEverything() {
     engine.stop();
+    document.body.classList.remove('viz-active');
   }
 
   // Insert the trigger button into the player card area at runtime.
@@ -72,14 +74,12 @@ export async function mountVisualizer({ player }) {
 }
 
 function mountTriggerButton(onClick) {
-  const card = document.getElementById('playerCard');
-  if (!card) return;
+  const section = document.querySelector('.player-section');
+  if (!section) return;
 
-  // Make the card position:relative so absolute children anchor to it.
-  if (getComputedStyle(card).position === 'static') {
-    card.style.position = 'relative';
-  }
-
+  // .player-section is already position:relative (its volume-controls child
+  // relies on that). Add the viz trigger as a sibling of .player-card so it
+  // sits in the section but never overlaps with controls inside the card.
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'viz-trigger-btn';
@@ -95,5 +95,5 @@ function mountTriggerButton(onClick) {
     </svg>
   `;
   btn.addEventListener('click', onClick);
-  card.appendChild(btn);
+  section.appendChild(btn);
 }

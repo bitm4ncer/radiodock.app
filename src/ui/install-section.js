@@ -10,9 +10,6 @@
 
 import * as storage from '../data/storage.js';
 
-const CHROME_STORE_URL =
-  'https://chromewebstore.google.com/detail/radiodock/dcjmegapbbplapeghilpbdddhkgndbbh';
-
 function detectPlatform() {
   const ua = navigator.userAgent;
   const isStandalone =
@@ -21,16 +18,20 @@ function detectPlatform() {
   if (isStandalone) return 'installed';
   if (/iphone|ipad|ipod/i.test(ua)) return 'ios';
   if (/android/i.test(ua)) return 'android';
-  if (/Chrome|Edg|Brave|OPR/i.test(ua) && !/Firefox/i.test(ua)) return 'chrome-ext';
+  // Chromium family: Chrome, Edge, Brave, Opera, Vivaldi. All support both
+  // the Web Store extension AND PWA install.
+  if (/Chrome|Edg|Brave|OPR|Vivaldi/i.test(ua) && !/Firefox/i.test(ua)) return 'chromium-desktop';
   return 'desktop';
 }
 
-// Map detection result → which button to highlight as "you".
-function highlightTargetFor(platform) {
-  if (platform === 'ios') return 'ios';
-  if (platform === 'android') return 'ios'; // closest match in the 3-button UI
-  if (platform === 'chrome-ext') return 'chrome-ext';
-  return 'desktop';
+// Which buttons to highlight as the user's relevant install path(s). Returns
+// an array so multiple buttons can be highlighted at once (Chromium desktop
+// users have both the extension AND PWA-install paths available, so both
+// get highlighted).
+function highlightTargetsFor(platform) {
+  if (platform === 'ios' || platform === 'android') return ['ios'];
+  if (platform === 'chromium-desktop') return ['chrome-ext', 'desktop'];
+  return ['desktop'];
 }
 
 const CHEVRON_SVG = `<svg class="install-section__chevron" viewBox="0 0 24 24" aria-hidden="true">
@@ -53,7 +54,8 @@ export async function mountInstallSection({ container, installInfo }) {
     return { destroy() {} };
   }
 
-  const highlight = highlightTargetFor(platform);
+  const highlights = highlightTargetsFor(platform);
+  const isCurrent = (target) => (highlights.includes(target) ? ' is-current' : '');
 
   const section = document.createElement('section');
   section.className = 'install-section';
@@ -71,13 +73,13 @@ export async function mountInstallSection({ container, installInfo }) {
       <div class="install-section__row">
         <span class="install-section__label">Install:</span>
         <div class="install-section__buttons" role="group">
-          <button type="button" class="install-section__btn${highlight === 'chrome-ext' ? ' is-current' : ''}" data-target="chrome-ext">
+          <button type="button" class="install-section__btn${isCurrent('chrome-ext')}" data-target="chrome-ext">
             Browser Extension
           </button>
-          <button type="button" class="install-section__btn${highlight === 'desktop' ? ' is-current' : ''}" data-target="desktop">
+          <button type="button" class="install-section__btn${isCurrent('desktop')}" data-target="desktop">
             Desktop
           </button>
-          <button type="button" class="install-section__btn${highlight === 'ios' ? ' is-current' : ''}" data-target="ios">
+          <button type="button" class="install-section__btn${isCurrent('ios')}" data-target="ios">
             iOS
           </button>
         </div>
@@ -125,17 +127,12 @@ export async function mountInstallSection({ container, installInfo }) {
     const btn = evt.target.closest('[data-target]');
     if (!btn) return;
     const target = btn.dataset.target;
-    if (target === 'chrome-ext') {
-      window.open(CHROME_STORE_URL, '_blank', 'noopener');
-      return;
-    }
-    if (target === 'desktop') {
-      installInfo.open('desktop');
-      return;
-    }
-    if (target === 'ios') {
-      installInfo.open('ios-safari');
-    }
+    // All three buttons open the install-info popover so the user gets a
+    // short explanation + the right action button rather than being yanked
+    // straight to an external page.
+    if (target === 'chrome-ext') return installInfo.open('browser-ext');
+    if (target === 'desktop') return installInfo.open('desktop');
+    if (target === 'ios') return installInfo.open('ios-safari');
   });
 
   return {

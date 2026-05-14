@@ -116,15 +116,8 @@
 
 .install-section__btn.is-current {
   border-color: var(--red);
-  box-shadow: 0 0 0 1px rgba(205, 0, 37, 0.2) inset;
-}
-
-.install-section__btn.is-current::after {
-  content: '· you';
-  display: inline;
-  margin-left: 4px;
-  color: var(--red);
-  font-weight: 600;
+  box-shadow: 0 0 0 1px rgba(205, 0, 37, 0.2) inset, 0 0 12px rgba(205, 0, 37, 0.18);
+  color: var(--text);
 }
 
 /* ---- Mobile presentation (≤699 px) ---- */

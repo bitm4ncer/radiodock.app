@@ -3,9 +3,15 @@
 /* --- Trigger button in the player card --- */
 
 .viz-trigger-btn {
+  /* Lives in .player-section as a sibling of .player-card, mirroring the
+     positioning approach used by .volume-controls (which sits at right: -25px
+     of the section). We park the trigger just outside the LEFT edge of the
+     card so it never collides with the card's internal controls (play/pause,
+     minimize, etc.). */
   position: absolute;
-  top: var(--space-2);
-  right: calc(var(--space-2) + 38px); /* leave room for the minimize button next to it */
+  top: 50%;
+  left: -34px;
+  transform: translateY(-50%);
   width: 28px;
   height: 28px;
   border: none;
@@ -396,11 +402,35 @@
   text-decoration: underline;
 }
 
-/* --- Canvases (engine.js creates and styles these inline, but allow
-       backdrop-filter on the player card to still work above them) --- */
+/* --- Canvases ---
+   Engine creates them inline (position: fixed; inset: 0; z-index: -1).
+   For them to be visible behind page content, body background must be
+   transparent while the visualizer is active. The html element keeps the
+   dark fallback so the page looks correct when the visualizer is off. */
+
+html {
+  background: var(--bg);
+}
+body.viz-active {
+  background: transparent;
+}
 
 #vizCanvas2d,
 #vizCanvasGl,
 #vizCanvasMilkdrop {
-  z-index: -1;
+  z-index: 0;
+}
+
+/* Lift main content above the canvas. The page already uses position:relative
+   in places — these declarations make sure the visualizer doesn't paint
+   over interactive UI. */
+body.viz-active .page,
+body.viz-active .mobile-topbar,
+body.viz-active .site-footer-desktop,
+body.viz-active .search-overlay,
+body.viz-active .off-canvas,
+body.viz-active .modal,
+body.viz-active .toast {
+  position: relative;
+  z-index: 1;
 }

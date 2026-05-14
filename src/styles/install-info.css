@@ -1,65 +1,207 @@
+/* Install-info popover content + transitions.
+   On desktop it overrides the modal's centering: it slides out from the
+   left edge into the bottom-left corner, as a companion to the install
+   badge anchored bottom-right. On mobile it stays a centered modal. */
+
+/* Override the modal backdrop on the install-info root only — a lighter
+   dim works better for the popover affordance (the user can still see the
+   badge and other UI behind it). */
+.install-info-modal-root.modal {
+  background: rgba(0, 0, 0, 0.4);
+}
+
 .install-info-modal {
   max-width: 420px;
-  padding: 28px 24px 20px;
-  text-align: center;
+  padding: 24px 22px 20px;
+  text-align: left;
+  border-radius: 16px;
+  background: #1f1f1f;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
 }
 
-.install-info-modal h3 {
-  margin: 0 0 12px;
+.install-info__title {
+  margin: 0 0 8px;
   font-size: 18px;
   font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--text);
 }
 
-.install-info-modal p {
+.install-info__lead {
   margin: 0 0 14px;
-  font-size: 14px;
   color: var(--text-muted);
-  line-height: 1.5;
-}
-
-.install-info-modal .btn-primary,
-.install-info-modal .btn-secondary {
-  width: 100%;
-  margin: 6px 0 0;
-}
-
-.install-info-modal a.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  padding: 10px 16px;
-  border-radius: var(--radius-pill);
-  background: var(--text);
-  color: var(--bg-dark);
-  font-weight: 500;
-}
-
-.install-steps {
-  text-align: left;
-  margin: 14px 0 22px;
-  padding-left: 22px;
   font-size: 14px;
   line-height: 1.55;
 }
 
-.install-steps li {
-  margin-bottom: 10px;
+.install-info__lead strong,
+.install-info__benefits strong,
+.install-info__hint strong,
+.install-info__steps strong {
+  color: var(--text);
+  font-weight: 600;
 }
 
-.install-steps strong {
+.install-info__benefits {
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.install-info__benefits li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 13.5px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.install-info__benefits li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 9px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--red);
+  opacity: 0.85;
+}
+
+.install-info__steps {
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.install-info__steps li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 30px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 22px;
+}
+
+.install-info__steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(205, 0, 37, 0.15);
+  color: var(--red);
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.install-info__inline-icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: -3px;
+  margin: 0 2px;
+}
+
+.install-info__primary,
+.install-info__secondary {
+  display: block;
+  width: 100%;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  border: 0;
+  border-radius: var(--radius-pill);
+  margin-top: 6px;
+  transition: background 120ms ease, color 120ms ease;
+  text-decoration: none;
+}
+
+.install-info__primary {
+  padding: 11px 18px;
+  background: var(--red);
+  color: #fff;
+  font-size: 14px;
+}
+
+.install-info__primary:hover {
+  background: #b50020;
+}
+
+.install-info__secondary {
+  padding: 9px 18px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.install-info__secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
   color: var(--text);
 }
 
-.install-hint {
+.install-info__hint {
+  margin: 8px 0 6px;
   font-size: 12px;
   color: var(--text-muted);
-  margin-top: 8px;
+  line-height: 1.5;
 }
 
-.install-hint code {
+.install-info__hint code {
   background: rgba(255, 255, 255, 0.08);
   padding: 1px 6px;
   border-radius: 4px;
   font-size: 12px;
+}
+
+/* ---- Desktop bottom-left popover behaviour ---- */
+@media (min-width: 700px) {
+  /* viz-active body class (from src/styles/visualizer.css) sets position:
+     relative on .modal so it layers above the visualizer canvas via flow.
+     The install-info popover needs to stay anchored to the viewport, so we
+     force it back to fixed with a more specific selector that wins both
+     against viz-active and against unrelated .modal positioning. */
+  .install-info-modal-root.modal,
+  body.viz-active .install-info-modal-root.modal {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* It's a popover anchored to the install badge, not a blocking modal —
+       no backdrop dim, and clicks outside the card pass through to the
+       page (the user can keep interacting with stations, search, etc.). */
+    background: transparent;
+    pointer-events: none;
+    justify-content: flex-start;
+    align-items: flex-end;
+  }
+
+  .install-info-modal-root.modal .install-info-modal {
+    pointer-events: auto; /* the card itself receives clicks */
+    margin: 0 0 20px 20px;
+    transform: translateX(-20px);
+    opacity: 0;
+    transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease;
+  }
+
+  .install-info-modal-root.modal.show .install-info-modal {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
