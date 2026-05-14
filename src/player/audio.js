@@ -193,6 +193,7 @@ export const player = {
   getCurrentStation,
   isPlaying,
   on,
-  // exposed for recovery module
+  // exposed for recovery + metadata-poller modules
   _element: getElement,
+  events,
 };

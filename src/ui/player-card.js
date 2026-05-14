@@ -131,9 +131,12 @@ export function mountPlayerCard({ player }) {
   player.on('paused', () => setPlayState('play'));
   player.on('loading', () => setPlayState('buffering'));
   player.on('metadata', (evt) => {
-    const { artist, title } = evt.detail;
-    const text = [artist, title].filter(Boolean).join(' – ');
-    if (text) setNowPlaying(text);
+    const { artist, title, nowPlaying } = evt.detail;
+    // Prefer the structured artist + title; fall back to the proxy's free-form
+    // `display` string (e.g. "Offline", station-specific show name).
+    const structured = [artist, title].filter(Boolean).join(' – ');
+    const text = structured || nowPlaying || '';
+    setNowPlaying(text);
   });
   player.on('error', () => setPlayState('play'));
 

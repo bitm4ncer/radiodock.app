@@ -1,6 +1,7 @@
 import './styles/index.css';
 import { player } from './player/audio.js';
 import { attachRecovery } from './player/recovery.js';
+import { attachMetadataPoller } from './player/metadata-poller.js';
 import { mountPlayerCard } from './ui/player-card.js';
 import { mountStationList } from './ui/station-list.js';
 import { mountListDropdown } from './ui/list-dropdown.js';
@@ -25,8 +26,19 @@ const state = {
 
 // --- Boot UI modules ---
 attachRecovery(player);
+attachMetadataPoller(player);
 initModals();
 document.getElementById('playerCard').classList.add('loaded');
+
+// Fire-and-forget warm-up ping to the metadata proxy. Render's free tier
+// spins down after 15 min of inactivity; the GitHub Actions cron keeps it
+// warm most of the time, but if a ping was skipped, this one wakes the
+// dyno before the user picks a station. Errors are silently ignored.
+fetch('https://radiodock-metadata-proxy-1.onrender.com/health', {
+  method: 'GET',
+  cache: 'no-store',
+  keepalive: true,
+}).catch(() => {});
 
 const playerCard = mountPlayerCard({ player });
 const stationList = mountStationList({ container: 'favoritesList' });
