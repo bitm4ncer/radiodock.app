@@ -71,12 +71,13 @@ Each milestone is a working slice that can be deployed and tested before moving 
 - [x] `src/ui/install-info.js` — onboarding modal with platform branches: iOS Safari (Share → Add to Home Screen), iOS non-Safari ("Open in Safari" deep link), Android (`beforeinstallprompt`), Desktop (`beforeinstallprompt` with graceful Firefox/Safari fallback). Auto-shows once on first visit; re-openable from the about modal.
 - [ ] Lighthouse PWA score ≥ 90 (measured during M7 device matrix)
 
-## M7 — Verification + ship
+## M7 — Verification + ship ✅
 
-- [ ] Device matrix: desktop Chrome, iPhone Safari, iPhone Chrome, Android Chrome
-- [ ] Lock-screen audio test on real devices
-- [ ] `git tag v1.0.0 && git push --tags`
-- [ ] Update extension README to cross-link
+- [x] Cross-link the [Chrome extension repo](https://github.com/bitm4ncer/RadioDock) to this PWA from its README
+- [x] Tag v1.0.0
+- [ ] Device matrix (user-driven): desktop Chrome, iPhone Safari, iPhone Chrome, Android Chrome — see verification section in [the design plan](../../../Users/konta/.claude/plans/i-made-this-moonlit-karp.md)
+- [ ] Lock-screen audio test on real devices (user-driven)
+- [ ] Lighthouse PWA audit ≥ 90 (user-driven)
 
 ## Out of scope (v1.1+)
 
