@@ -61,14 +61,15 @@ Each milestone is a working slice that can be deployed and tested before moving 
 - [x] Keep-warm GitHub Actions cron in proxy repo (every 10 min → `/health`)
 - [x] Bootstrap fire-and-forget `/health` ping from PWA so first user click never hits a cold start
 
-## M6 — PWA polish
+## M6 — PWA polish ✅
 
-- [ ] Generate icons from `RadioDock/logo/` (192, 512, maskable-512, apple-touch-180)
-- [ ] `src/sw.js` — install/activate/fetch, app-shell cache, versioning
-- [ ] Register SW in `main.js` (production only)
-- [ ] `src/player/media-session.js` — `MediaMetadata` + action handlers
-- [ ] `src/ui/install-info.js` — onboarding modal (Safari / iOS-Chrome / Android / Desktop branches)
-- [ ] Lighthouse PWA score ≥ 90
+- [x] `scripts/generate-icons.mjs` rasterizes `icon.svg` → 192/512/maskable-512/apple-touch-180/favicon-16/favicon-32. Run with `npm run icons`.
+- [x] `public/sw.js` — install/activate/fetch, app-shell cache, stale-while-revalidate for shell, network-only for API + streams, offline navigation fallback.
+- [x] Vite `injectBuildIdPlugin` rewrites `__BUILD_ID__` in `dist/sw.js` to `${Date.now()}-${gitShortSha}` so the cache name changes per deploy.
+- [x] Register SW in `main.js` (production only, gated by `import.meta.env.PROD`).
+- [x] `src/player/media-session.js` — `MediaMetadata` (title/artist/artwork) updates on `stationchange` + `metadata` events, `play`/`pause`/`stop` action handlers, optional `previoustrack`/`nexttrack` callbacks.
+- [x] `src/ui/install-info.js` — onboarding modal with platform branches: iOS Safari (Share → Add to Home Screen), iOS non-Safari ("Open in Safari" deep link), Android (`beforeinstallprompt`), Desktop (`beforeinstallprompt` with graceful Firefox/Safari fallback). Auto-shows once on first visit; re-openable from the about modal.
+- [ ] Lighthouse PWA score ≥ 90 (measured during M7 device matrix)
 
 ## M7 — Verification + ship
 

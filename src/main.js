@@ -2,6 +2,8 @@ import './styles/index.css';
 import { player } from './player/audio.js';
 import { attachRecovery } from './player/recovery.js';
 import { attachMetadataPoller } from './player/metadata-poller.js';
+import { attachMediaSession } from './player/media-session.js';
+import { mountInstallInfo } from './ui/install-info.js';
 import { mountPlayerCard } from './ui/player-card.js';
 import { mountStationList } from './ui/station-list.js';
 import { mountListDropdown } from './ui/list-dropdown.js';
@@ -27,6 +29,7 @@ const state = {
 // --- Boot UI modules ---
 attachRecovery(player);
 attachMetadataPoller(player);
+attachMediaSession(player);
 initModals();
 document.getElementById('playerCard').classList.add('loaded');
 
@@ -75,6 +78,25 @@ const search = mountSearch({
 
 // About modal
 document.getElementById('dockLogoBtn')?.addEventListener('click', () => openModal('infoModal'));
+
+// Add-to-Home-Screen onboarding
+const installInfo = mountInstallInfo();
+// Surface a link inside the about modal so users can re-open it.
+const aboutModalLinks = document.querySelector('#infoModal .modal-links');
+if (aboutModalLinks) {
+  const installLink = document.createElement('button');
+  installLink.type = 'button';
+  installLink.className = 'modal-link';
+  installLink.style.background = 'none';
+  installLink.style.border = 0;
+  installLink.style.padding = 0;
+  installLink.textContent = 'How to install RadioDock';
+  installLink.addEventListener('click', () => {
+    closeModal('infoModal');
+    installInfo.open();
+  });
+  aboutModalLinks.prepend(installLink);
+}
 
 // --- Helpers ---
 function allListsForDropdown() {
@@ -313,7 +335,21 @@ async function bootstrap() {
   }
 }
 
-bootstrap();
+bootstrap().then(() => {
+  // Show the install hint after boot settles. Skipped if user already
+  // dismissed or the app is in standalone mode.
+  installInfo.autoShow?.();
+});
+
+// Register the service worker in production. The dev server already serves
+// fresh modules and a SW only gets in the way during development.
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch((err) => {
+      console.warn('SW registration failed:', err);
+    });
+  });
+}
 
 // Debug handle
 window.__radiodock = { player, playerCard, stationList, listDropdown, state, listsApi, storage };

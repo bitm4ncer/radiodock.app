@@ -1,0 +1,65 @@
+.install-info-modal {
+  max-width: 420px;
+  padding: 28px 24px 20px;
+  text-align: center;
+}
+
+.install-info-modal h3 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.install-info-modal p {
+  margin: 0 0 14px;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.install-info-modal .btn-primary,
+.install-info-modal .btn-secondary {
+  width: 100%;
+  margin: 6px 0 0;
+}
+
+.install-info-modal a.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--text);
+  color: var(--bg-dark);
+  font-weight: 500;
+}
+
+.install-steps {
+  text-align: left;
+  margin: 14px 0 22px;
+  padding-left: 22px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.install-steps li {
+  margin-bottom: 10px;
+}
+
+.install-steps strong {
+  color: var(--text);
+}
+
+.install-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+.install-hint code {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+}
