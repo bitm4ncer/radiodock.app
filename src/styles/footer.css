@@ -42,6 +42,17 @@
   color: var(--text);
 }
 
+/* CTA pill — re-open the install badge. Subtle red outline distinguishes
+   it from the utility links without being shouty. */
+.footer-pill--cta {
+  border: 1px solid rgba(205, 0, 37, 0.6);
+  color: var(--text);
+}
+.footer-pill--cta:hover {
+  background: rgba(205, 0, 37, 0.18);
+  border-color: var(--red);
+}
+
 /* Desktop footer bar. Slightly darker than the body; below the fold by
    default (the .page above it is min-height: 100dvh). */
 .site-footer-desktop {

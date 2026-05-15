@@ -93,6 +93,17 @@ mountInstallSection({
   installInfo,
 });
 
+// "Install on Devices" pill in the desktop footer re-summons the install
+// badge with a slide-in transition. Clears the dismissed-pref so the badge
+// stays the next time the user reloads.
+document.getElementById('footerReinstallBtn')?.addEventListener('click', () => {
+  mountInstallSection({
+    container: document.getElementById('app'),
+    installInfo,
+    animateIn: true,
+  });
+});
+
 // Mobile off-canvas drawer
 mountOffCanvas({
   triggerBtn: document.getElementById('menuBtn'),

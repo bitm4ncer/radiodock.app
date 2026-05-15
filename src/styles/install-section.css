@@ -2,13 +2,22 @@
 
 .install-section {
   position: relative;
-  transition: opacity 200ms ease, transform 200ms ease;
+  transition: opacity 260ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .install-section.is-dismissed {
   opacity: 0;
   transform: translateY(8px) scale(0.98);
   pointer-events: none;
+}
+
+/* Entry state for re-summoned badges (triggered from the desktop footer
+   "Install on Devices" button). Starts off-screen + transparent, then a
+   double-RAF dance in JS removes the class to trigger the transition. */
+.install-section.is-entering {
+  opacity: 0;
+  transform: translateY(16px) scale(0.96);
 }
 
 .install-section__close {

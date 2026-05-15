@@ -42,23 +42,35 @@ const CLOSE_SVG = `<svg viewBox="0 0 24 24" aria-hidden="true" width="14" height
   <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
 </svg>`;
 
-export async function mountInstallSection({ container, installInfo }) {
+export async function mountInstallSection({ container, installInfo, animateIn = false }) {
   const platform = detectPlatform();
   if (platform === 'installed') {
     // Already a PWA — no reason to nag.
     return { destroy() {} };
   }
 
-  // Respect a previous user-dismissal of the badge.
-  if (await storage.getPref('installSectionDismissed', false)) {
+  // Respect a previous user-dismissal of the badge — UNLESS the caller asked
+  // for an explicit re-summon (e.g. the footer "Install on Devices" button).
+  if (!animateIn && (await storage.getPref('installSectionDismissed', false))) {
     return { destroy() {} };
   }
+
+  // A re-summon clears the dismissal pref so closing tab + reopening still
+  // shows the badge.
+  if (animateIn) {
+    await storage.setPref('installSectionDismissed', false).catch(() => {});
+  }
+
+  // If a previous instance is still in the DOM (e.g. mid-dismiss-fade-out),
+  // remove it immediately so we don't end up with two badges stacked.
+  document.getElementById('installSection')?.remove();
 
   const highlights = highlightTargetsFor(platform);
   const isCurrent = (target) => (highlights.includes(target) ? ' is-current' : '');
 
   const section = document.createElement('section');
   section.className = 'install-section';
+  if (animateIn) section.classList.add('is-entering');
   section.id = 'installSection';
   section.innerHTML = `
     <button type="button" class="install-section__close" data-action="dismiss" aria-label="Dismiss">
@@ -87,6 +99,16 @@ export async function mountInstallSection({ container, installInfo }) {
     </div>
   `;
   container.append(section);
+
+  // Commit the .is-entering initial layout, then flip the class off so the
+  // CSS transition runs. We use setTimeout(20) rather than requestAnimationFrame
+  // because hidden tabs pause RAF callbacks but still fire timeouts — the user
+  // might Cmd-click the button while looking elsewhere.
+  if (animateIn) {
+    // Force a style read so the initial transform/opacity is committed.
+    void section.offsetHeight;
+    setTimeout(() => section.classList.remove('is-entering'), 20);
+  }
 
   const toggleBtn = section.querySelector('.install-section__toggle');
   const closeBtn = section.querySelector('.install-section__close');
