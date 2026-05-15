@@ -129,6 +129,72 @@
   color: var(--text);
 }
 
+/* Detail view inside the badge (desktop) — back arrow + the install-info
+   branch content rendered inline. */
+.install-section__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+  padding: 4px 8px 4px 4px;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.install-section__back:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+}
+
+.install-section__back svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* When in detail view, drop the install-info modal-card framing — we want
+   the content to fit the badge's existing padding without a second card. */
+.install-section__detail .install-info__title {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.install-section__detail .install-info__lead {
+  font-size: 12.5px;
+  margin: 0 0 10px;
+}
+
+.install-section__detail .install-info__benefits {
+  margin: 0 0 12px;
+  gap: 4px;
+}
+
+.install-section__detail .install-info__benefits li,
+.install-section__detail .install-info__steps li {
+  font-size: 12.5px;
+}
+
+.install-section__detail .install-info__steps {
+  gap: 6px;
+}
+
+.install-section__detail .install-info__primary,
+.install-section__detail .install-info__secondary {
+  font-size: 12.5px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.install-section__detail .install-info__hint {
+  font-size: 11px;
+  margin: 6px 0;
+}
+
 /* ---- Mobile presentation (≤699 px) ---- */
 /* Inline block at the bottom of the main scroll area. Collapsible. The ×
    is hidden on mobile — the chevron toggle is the primary affordance. */

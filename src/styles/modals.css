@@ -164,6 +164,62 @@
   margin-top: 8px;
 }
 
+/* About modal content typography. Compact and scannable; works for both
+   the centered desktop modal and the fullscreen mobile slide-in. */
+.about__lead {
+  margin: 0 0 18px;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.about__section {
+  margin: 18px 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.modal-body .about__section + p,
+.modal-body .about__section + ul {
+  margin-top: 0;
+}
+
+.about__list {
+  margin: 0 0 10px;
+  padding-left: 18px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.about__list li {
+  margin-bottom: 4px;
+}
+
+.about__list strong,
+.modal-body .about__lead strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.about__list code {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.about__footer {
+  margin: 22px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
 .modal-footer {
   display: flex;
   gap: 8px;

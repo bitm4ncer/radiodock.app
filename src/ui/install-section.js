@@ -145,16 +145,66 @@ export async function mountInstallSection({ container, installInfo, animateIn = 
 
   closeBtn.addEventListener('click', dismiss);
 
-  section.querySelector('.install-section__buttons').addEventListener('click', (evt) => {
-    const btn = evt.target.closest('[data-target]');
-    if (!btn) return;
-    const target = btn.dataset.target;
-    // All three buttons open the install-info popover so the user gets a
-    // short explanation + the right action button rather than being yanked
-    // straight to an external page.
-    if (target === 'chrome-ext') return installInfo.open('browser-ext');
-    if (target === 'desktop') return installInfo.open('desktop');
-    if (target === 'ios') return installInfo.open('ios-safari');
+  // Cache the original overview HTML so we can restore it when the user
+  // navigates back from a detail view.
+  const overviewHtml = body.innerHTML;
+  // Same handler delegates on the body so it survives detail re-renders.
+  let inDetailView = false;
+
+  function showDetail(branch) {
+    inDetailView = true;
+    section.classList.add('is-detail');
+    // Replace body with: ← Back button + the install-info content.
+    body.innerHTML = `
+      <button type="button" class="install-section__back" data-action="back" aria-label="Back">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        Back
+      </button>
+      <div class="install-section__detail" id="installSectionDetail"></div>
+    `;
+    installInfo.renderInline({
+      branch,
+      container: body.querySelector('#installSectionDetail'),
+      onClose: showOverview,
+    });
+  }
+
+  function showOverview() {
+    inDetailView = false;
+    section.classList.remove('is-detail');
+    body.innerHTML = overviewHtml;
+  }
+
+  // Single delegated click handler on the body so it covers both the
+  // overview buttons and the back button in the detail view.
+  body.addEventListener('click', (evt) => {
+    const backBtn = evt.target.closest('[data-action="back"]');
+    if (backBtn) {
+      showOverview();
+      return;
+    }
+    if (inDetailView) return; // detail-view actions are wired by renderInline()
+    const targetBtn = evt.target.closest('[data-target]');
+    if (!targetBtn) return;
+    const target = targetBtn.dataset.target;
+    const branchMap = {
+      'chrome-ext': 'browser-ext',
+      desktop: 'desktop',
+      ios: 'ios-safari',
+    };
+    const branch = branchMap[target];
+    if (!branch) return;
+
+    // Desktop: render the detail inline inside the badge. Mobile: open the
+    // existing fullscreen modal slide-in.
+    const isDesktop = window.matchMedia('(min-width: 700px)').matches;
+    if (isDesktop) {
+      showDetail(branch);
+    } else {
+      installInfo.open(branch);
+    }
   });
 
   return {

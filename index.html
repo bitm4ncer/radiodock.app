@@ -58,7 +58,7 @@
             <span class="off-canvas__chev">→</span>
           </button>
           <button type="button" class="off-canvas__item" id="offCanvasAbout">
-            <span>About RadioDock</span>
+            <span>About</span>
             <span class="off-canvas__chev">→</span>
           </button>
           <a class="off-canvas__item" href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener">GitHub</a>
@@ -261,16 +261,35 @@
       <div class="modal-content">
         <div class="modal-header">
           <img src="/logo-text.svg" alt="RadioDock" class="dock-logo-modal" />
-          <h3>v1.0.0</h3>
+          <h3>v2.0</h3>
           <button id="closeInfoModalBtn" class="modal-close-btn" aria-label="Close">×</button>
         </div>
         <div class="modal-body">
-          <p>RadioDock is an internet-radio app for discovering, playing and managing your favourite stations from around the world.</p>
-          <p>Stations come from the <a href="https://www.radio-browser.info" target="_blank" rel="noopener" class="text-link"><strong>Radio Browser</strong></a> community database — a free, open API with 50,000+ stations.</p>
-          <div class="modal-links">
-            <a href="https://chromewebstore.google.com/detail/radiodock/dcjmegapbbplapeghilpbdddhkgndbbh" target="_blank" rel="noopener" class="modal-link">Also available as a Chrome extension</a>
-            <a href="https://buymeacoffee.com/bitmancer" target="_blank" rel="noopener" class="modal-link">Buy me a coffee</a>
-          </div>
+          <p class="about__lead">An internet-radio app for discovering, playing and organising stations from around the world. Open source, no accounts, no tracking.</p>
+
+          <h4 class="about__section">Stations</h4>
+          <p>The browseable directory comes from the <a href="https://www.radio-browser.info" target="_blank" rel="noopener" class="text-link">Radio Browser API</a> — a community-run database of 50,000+ stations. Queries are sent directly from your browser; results are not stored anywhere by RadioDock.</p>
+
+          <h4 class="about__section">"Now Playing" metadata</h4>
+          <p>Most radio servers don't send a CORS header, so a browser can't read their stream metadata directly. RadioDock routes <em>only the stream URL</em> through a small open-source proxy (<a href="https://github.com/bitm4ncer/RadioDock-metadata-proxy" target="_blank" rel="noopener" class="text-link">source</a>) which:</p>
+          <ul class="about__list">
+            <li>parses the inline <strong>ICY metadata</strong> blocks Shoutcast / Icecast servers embed between audio frames,</li>
+            <li>or hits the station's <strong>JSON status endpoint</strong> (Airtime Pro, Radio King, NTS, etc.) where applicable,</li>
+            <li>and returns artist + title as JSON, cached for ~15 s.</li>
+          </ul>
+          <p>For <strong>HLS</strong> streams the parsing happens client-side: <a href="https://github.com/video-dev/hls.js" target="_blank" rel="noopener" class="text-link">hls.js</a> exposes <strong>ID3</strong> frames as the stream plays, no proxy involved.</p>
+
+          <h4 class="about__section">Tech stack</h4>
+          <ul class="about__list">
+            <li><strong>Vanilla JS + Vite</strong> — no framework, ~50 KB gzipped main bundle</li>
+            <li><strong>IndexedDB</strong> for favourites, custom lists, prefs (everything stays on your device)</li>
+            <li><strong>hls.js</strong> for HLS streams, native <code>&lt;audio&gt;</code> for ICY/MP3/AAC</li>
+            <li><strong>MediaSession API</strong> for lock-screen controls + Bluetooth headphone buttons</li>
+            <li><strong>Service Worker</strong> for offline shell + PWA install</li>
+            <li>Hosted on <strong>GitHub Pages</strong> · proxy hosted on Render</li>
+          </ul>
+
+          <p class="about__footer">Source at <a href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener" class="text-link">github.com/bitm4ncer/radiodock.app</a>. Bugs and feature requests welcome.</p>
         </div>
       </div>
     </div>

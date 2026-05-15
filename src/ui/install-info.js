@@ -128,6 +128,10 @@ function html(platform) {
   }
 }
 
+export function getInstallInfoHtml(platform) {
+  return html(platform);
+}
+
 export function mountInstallInfo() {
   const platform = detectPlatform();
   // Note: even when platform === 'installed' we still mount the popover so
@@ -179,5 +183,41 @@ export function mountInstallInfo() {
     openModal(modalEl);
   }
 
-  return { open, platform };
+  /**
+   * Render an install-info branch into an arbitrary container (used by the
+   * desktop install badge to show details inline). Wires the `install` and
+   * `dismiss` buttons the same way the modal does.
+   *
+   * @param {Object} opts
+   * @param {string} opts.branch         — platform branch key.
+   * @param {HTMLElement} opts.container — target element to render into.
+   * @param {() => void} [opts.onClose]  — called when user dismisses or installs.
+   */
+  function renderInline({ branch, container, onClose }) {
+    if (!container) return;
+    container.innerHTML = html(branch);
+    container.addEventListener(
+      'click',
+      async (evt) => {
+        const actionEl = evt.target.closest('[data-action]');
+        if (!actionEl) return;
+        const action = actionEl.dataset.action;
+        if (action === 'install') {
+          if (deferredPrompt) {
+            deferredPrompt.prompt();
+            await deferredPrompt.userChoice.catch(() => {});
+            deferredPrompt = null;
+          }
+          await storage.setPref('seenInstallHint', true);
+          onClose?.();
+        } else if (action === 'dismiss') {
+          await storage.setPref('seenInstallHint', true);
+          onClose?.();
+        }
+      },
+      { once: false },
+    );
+  }
+
+  return { open, renderInline, platform };
 }
