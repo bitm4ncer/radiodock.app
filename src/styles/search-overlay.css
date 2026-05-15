@@ -1,8 +1,13 @@
 /* Mobile fullscreen search overlay. Slides in from the right when the
    top-bar magnifier is tapped. Hosts the live search section's elements
    (the same DOM nodes used on desktop) for the duration of the overlay. */
-.search-overlay {
-  position: fixed;
+.search-overlay,
+body.viz-active .search-overlay {
+  /* viz-active otherwise forces position: relative on .search-overlay
+     (it's grouped with .modal / .off-canvas / .page so they layer above
+     the visualizer canvas in flow). The overlay needs to stay anchored
+     to the viewport regardless. */
+  position: fixed !important;
   inset: 0;
   z-index: 70;
   background: var(--bg);
@@ -58,17 +63,42 @@
 
 .search-overlay__body {
   flex: 1;
-  overflow-y: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
 }
 
 /* When the search-section is re-parented into the overlay body, override
-   the mobile rule that hid it on the main page. */
+   the mobile rule that hid it on the main page. Stretch it to fill the
+   body so the results area can claim all remaining vertical space. */
 .search-overlay .search-section {
-  display: block !important;
+  display: flex !important;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 
-/* Make the result list fill the overlay body. */
+/* Input + filter tabs stay at natural height at the top. */
+.search-overlay .search-input-container {
+  flex: 0 0 auto;
+}
+.search-overlay .search-filters {
+  flex: 0 0 auto;
+}
+
+/* Results area fills the remaining height and scrolls internally — same
+   feel as the stations list, no awkward short result block followed by
+   a sea of empty space. */
 .search-overlay .search-results {
   margin-top: 12px;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.search-overlay .search-results-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }

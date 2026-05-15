@@ -63,8 +63,8 @@ function html(platform) {
       return `
         <h3 class="install-info__title">Desktop App</h3>
         <p class="install-info__lead">
-          Install RadioDock as a standalone app. It opens in its own window —
-          no browser chrome, no tab clutter — and pins to your dock or taskbar.
+          Install RadioDock as a standalone app. It opens in its own window
+          and can be pinned to your dock or taskbar.
         </p>
         <ul class="install-info__benefits">
           <li>Dedicated window, dedicated dock icon</li>

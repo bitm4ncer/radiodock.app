@@ -148,33 +148,81 @@ export async function mountInstallSection({ container, installInfo, animateIn = 
   // Cache the original overview HTML so we can restore it when the user
   // navigates back from a detail view.
   const overviewHtml = body.innerHTML;
-  // Same handler delegates on the body so it survives detail re-renders.
   let inDetailView = false;
 
+  // Cross-fade body content with a height tween on the badge so the
+  // overview ↔ detail swap doesn't snap. The badge is anchored
+  // bottom-right (position: fixed bottom: 20px), so growing the height
+  // visually pushes the top edge up — matching what the user expects.
+  const FADE_OUT_MS = 140;
+  const HEIGHT_MS = 260;
+  let inFlight = false;
+
+  function transitionBodyTo(mutate) {
+    if (inFlight) return; // de-bounce rapid clicks
+    inFlight = true;
+
+    const startH = section.getBoundingClientRect().height;
+
+    // Fade body out.
+    body.style.transition = `opacity ${FADE_OUT_MS}ms ease, transform ${FADE_OUT_MS}ms ease`;
+    body.style.opacity = '0';
+    body.style.transform = 'translateY(4px)';
+
+    setTimeout(() => {
+      // Swap content.
+      mutate();
+      // Measure target height once content is in.
+      section.style.height = 'auto';
+      const endH = section.getBoundingClientRect().height;
+      // Lock to start height, then animate to end.
+      section.style.height = startH + 'px';
+      // Force layout so the next height change triggers a transition.
+      // eslint-disable-next-line no-unused-expressions
+      section.offsetHeight;
+      section.style.transition = `height ${HEIGHT_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`;
+      section.style.height = endH + 'px';
+      // Fade in shortly after height starts moving.
+      body.style.transition = `opacity ${HEIGHT_MS - 20}ms ease 40ms, transform ${HEIGHT_MS - 20}ms ease 40ms`;
+      body.style.opacity = '';
+      body.style.transform = '';
+
+      setTimeout(() => {
+        section.style.transition = '';
+        section.style.height = '';
+        body.style.transition = '';
+        inFlight = false;
+      }, HEIGHT_MS + 40);
+    }, FADE_OUT_MS);
+  }
+
   function showDetail(branch) {
-    inDetailView = true;
-    section.classList.add('is-detail');
-    // Replace body with: ← Back button + the install-info content.
-    body.innerHTML = `
-      <button type="button" class="install-section__back" data-action="back" aria-label="Back">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        </svg>
-        Back
-      </button>
-      <div class="install-section__detail" id="installSectionDetail"></div>
-    `;
-    installInfo.renderInline({
-      branch,
-      container: body.querySelector('#installSectionDetail'),
-      onClose: showOverview,
+    transitionBodyTo(() => {
+      inDetailView = true;
+      section.classList.add('is-detail');
+      body.innerHTML = `
+        <button type="button" class="install-section__back" data-action="back" aria-label="Back">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+          Back
+        </button>
+        <div class="install-section__detail" id="installSectionDetail"></div>
+      `;
+      installInfo.renderInline({
+        branch,
+        container: body.querySelector('#installSectionDetail'),
+        onClose: showOverview,
+      });
     });
   }
 
   function showOverview() {
-    inDetailView = false;
-    section.classList.remove('is-detail');
-    body.innerHTML = overviewHtml;
+    transitionBodyTo(() => {
+      inDetailView = false;
+      section.classList.remove('is-detail');
+      body.innerHTML = overviewHtml;
+    });
   }
 
   // Single delegated click handler on the body so it covers both the
