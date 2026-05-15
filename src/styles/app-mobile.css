@@ -88,4 +88,49 @@
   .install-section {
     display: none !important;
   }
+
+  /* About RadioDock — fullscreen on mobile.
+     The default modal is a small centered card; on a phone that looks like
+     a popover. About has enough copy + links that going full-bleed with
+     comfortable padding reads better. Slide in from the right (matches
+     the search overlay direction) so it feels like a layered app screen. */
+  #infoModal.modal {
+    /* Override the centered flex layout so the .modal-content can fill. */
+    align-items: stretch;
+    justify-content: stretch;
+    background: var(--bg);
+    /* Cancel the modal's opacity fade-in — use a slide instead. */
+    transition: opacity 200ms ease;
+  }
+
+  #infoModal .modal-content {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    border-radius: 0;
+    box-shadow: none;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+    /* Drop the small modalSlide keyframe — we drive the slide ourselves. */
+    animation: none;
+  }
+
+  #infoModal.show .modal-content {
+    transform: translateX(0);
+  }
+
+  #infoModal .modal-header {
+    padding: max(16px, env(safe-area-inset-top)) 20px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    flex-shrink: 0;
+  }
+
+  #infoModal .modal-body {
+    padding: 20px 20px max(20px, env(safe-area-inset-bottom));
+    overflow-y: auto;
+    flex: 1;
+  }
 }

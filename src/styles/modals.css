@@ -100,6 +100,21 @@
   justify-content: center;
   border-radius: 4px;
   transition: all 0.2s ease;
+  /* Kill the iOS Safari blue tap-highlight rectangle that flashes on press. */
+  -webkit-tap-highlight-color: transparent;
+  /* Mouse / focus-by-click leaves a default focus ring on macOS Safari and
+     a blue outline on iOS. Suppress it; keyboard focus still shows the
+     focus-visible ring below. */
+  outline: none;
+}
+
+.modal-close-btn:focus {
+  outline: none;
+}
+
+.modal-close-btn:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 2px;
 }
 
 .modal-close-btn:hover {
