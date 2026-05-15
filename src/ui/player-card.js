@@ -104,9 +104,19 @@ export function mountPlayerCard({ player }) {
     if (!currentStation) return;
     if (player.isPlaying()) {
       player.pause();
-    } else {
-      player.resume();
+      return;
     }
+    // If the audio module's current station doesn't match the UI's current
+    // station, we don't have a stream loaded yet — e.g. just after page
+    // reload, where main.js restored the station from prefs into the player
+    // card UI but never actually called playStation. Start it fresh.
+    const audioStation = player.getCurrentStation();
+    if (!audioStation || audioStation.id !== currentStation.id) {
+      player.playStation(currentStation);
+      return;
+    }
+    // Audio is loaded and paused — just unpause.
+    player.resume();
   });
 
   // Volume "slider but as separate dots": pointer drag picks the dot

@@ -100,5 +100,8 @@ body.viz-active .search-overlay {
 .search-overlay .search-results-list {
   flex: 1;
   min-height: 0;
+  /* search.css caps the list at 220 px for the inline desktop layout;
+     in the fullscreen mobile overlay we want it to fill the body. */
+  max-height: none;
   overflow-y: auto;
 }
