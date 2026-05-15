@@ -77,7 +77,14 @@ export function mountPlayerCard({ player }) {
   }
 
   function setNowPlaying(text) {
-    nowPlayingTextEl.textContent = text ?? '';
+    const value = text ?? '';
+    nowPlayingTextEl.textContent = value;
+    // The .now-playing parent uses max-height: 0 by default so an empty
+    // line doesn't take vertical space; flip on .show only when we have
+    // actual text. Without this the metadata text was set in the DOM but
+    // visually clipped to zero height on the mobile player.
+    const wrap = nowPlayingTextEl.closest('.now-playing');
+    wrap?.classList.toggle('show', value.length > 0);
   }
 
   function setVolumePct(pct) {

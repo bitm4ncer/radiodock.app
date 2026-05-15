@@ -38,6 +38,37 @@ attachMediaSession(player);
 initModals();
 document.getElementById('playerCard').classList.add('loaded');
 
+// Block pinch-zoom on iOS Safari. The viewport meta `user-scalable=no` and
+// `maximum-scale=1` are unreliable on iOS 10+ (Safari ignores them for
+// accessibility reasons). We additionally swallow the legacy `gesture*`
+// events (Safari-specific) and `touchmove` events that involve more than
+// one finger. Single-finger touches still pass through, so scrolling
+// works normally.
+(() => {
+  const block = (evt) => evt.preventDefault();
+  document.addEventListener('gesturestart', block, { passive: false });
+  document.addEventListener('gesturechange', block, { passive: false });
+  document.addEventListener('gestureend', block, { passive: false });
+  document.addEventListener(
+    'touchmove',
+    (evt) => {
+      if (evt.touches.length > 1) evt.preventDefault();
+    },
+    { passive: false },
+  );
+  // Block double-tap-to-zoom too (iOS / Android both ship this).
+  let lastTouchEnd = 0;
+  document.addEventListener(
+    'touchend',
+    (evt) => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 320) evt.preventDefault();
+      lastTouchEnd = now;
+    },
+    { passive: false },
+  );
+})();
+
 // Fire-and-forget warm-up ping to the metadata proxy. Render's free tier
 // spins down after 15 min of inactivity; the GitHub Actions cron keeps it
 // warm most of the time, but if a ping was skipped, this one wakes the
@@ -89,7 +120,10 @@ document.getElementById('dockLogoBtn')?.addEventListener('click', () => openModa
 // Section — no more auto-show or floating button.
 const installInfo = mountInstallInfo();
 mountInstallSection({
-  container: document.getElementById('app'),
+  // Mount on <body>, not inside #app — the install section is a floating
+  // overlay (position: fixed bottom-right on desktop, hidden on mobile);
+  // it shouldn't inherit container minimize / animate rules.
+  container: document.body,
   installInfo,
 });
 

@@ -78,9 +78,15 @@
 
   /* The mobile top bar already carries the RadioDock logo; the redundant
      dock-title above the stations list goes away. The list-dropdown
-     ("Community Radios ▾") stays — it's the only way to switch lists. */
+     ("Community Radios ▾") stays — it's the only way to switch lists.
+     With the dock-title gone, push the dropdown to the right edge so
+     it doesn't flush-left and lose its visual anchor. */
   .list-header .dock-title {
     display: none;
+  }
+
+  .list-header .list-dropdown {
+    margin-left: auto;
   }
 
   /* The install section lives in the off-canvas menu on mobile. Drop the
