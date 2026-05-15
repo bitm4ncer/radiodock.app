@@ -144,16 +144,65 @@
   pointer-events: none;
 }
 
-/* Tighter padding when minimized so the resulting player pill feels
-   compact instead of having lots of empty space around it. */
+/* Tighter padding when minimized.
+   The top padding reserves a slim strip above the player card for the
+   three tool buttons so they don't sit on top of the card chrome. */
 @media (min-width: 700px) {
   .container.is-minimized {
-    padding: 10px 16px;
+    padding: 44px 16px 10px;
     gap: 0;
   }
 }
 .container.is-minimized {
+  padding: 44px 12px 10px;
   gap: 0;
+}
+
+/* In minimized state, the tool buttons sit in that top strip — above the
+   player card, not over it. */
+.container.is-minimized .tool-btn {
+  top: 8px;
+}
+@media (min-width: 700px) {
+  .container.is-minimized .player-card-minimize-btn { top: 8px; right: 16px; }
+  .container.is-minimized .player-card-drag-handle  { top: 8px; right: 52px; }
+  .container.is-minimized .viz-trigger-btn          { top: 8px; right: 88px; }
+}
+
+/* Hide the volume strip / volume dots when minimized — extra chrome the
+   user doesn't need while the player is collapsed. Both the desktop
+   right-side column and the mobile horizontal strip are affected. */
+.container.is-minimized .volume-controls {
+  display: none;
+}
+
+/* Shrink the inner player card a touch when the container is minimized
+   so the resulting pill feels compact rather than cavernous. */
+.container.is-minimized .player-card {
+  padding: 8px 12px;
+}
+.container.is-minimized .station-logo,
+.container.is-minimized .station-initials {
+  width: 44px;
+  height: 44px;
+  font-size: 12px;
+  border-width: 1px;
+}
+.container.is-minimized .station-name {
+  font-size: 14px;
+}
+.container.is-minimized .now-playing.show {
+  max-height: 18px;
+  margin-bottom: 0;
+}
+.container.is-minimized .play-pause-btn {
+  width: 40px;
+  height: 40px;
+}
+.container.is-minimized .play-pause-btn .play-icon svg,
+.container.is-minimized .play-pause-btn .pause-icon svg {
+  width: 26px;
+  height: 26px;
 }
 
 /* --- Drawer --- */

@@ -10,10 +10,9 @@
 // Hidden on coarse-pointer devices (mobile) per the desktop-only rule.
 
 const MODE_LABELS = {
-  idle: 'Audio: not started',
-  hls: 'Audio: live FFT',
-  capture: 'Audio: live FFT (via tab capture)',
-  procedural: 'Audio: ambient (this station does not expose audio data)',
+  idle: 'Idle',
+  procedural: 'Decorative — pulses on track changes',
+  capture: 'Live FFT (via tab capture)',
 };
 
 const CATEGORY_LABELS = {
@@ -260,7 +259,7 @@ export function mountVisualizerDrawer({
   function updateStatus() {
     const mode = audioSource.getMode();
     statusEl.textContent = MODE_LABELS[mode] ?? '';
-    const showConnect = (mode === 'procedural' || mode === 'idle') && audioSource.captureSupported();
+    const showConnect = mode !== 'capture' && audioSource.captureSupported();
     connectBtn.style.display = showConnect ? '' : 'none';
   }
 
