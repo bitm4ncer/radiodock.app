@@ -62,35 +62,17 @@
   }
 
   .player-section .player-card {
-    border-radius: 14px;
+    /* Pill-shaped to match desktop. Generous radius is clipped to a true
+       pill by the player-card.css base rule (border-radius: 100px). */
+    border-radius: 100px;
     margin: 0;
     width: 100%;
   }
 
-  /* Volume row: horizontal strip above the player card. Idle = uniform
-     dots; the small→big taper only appears while the user is dragging. */
+  /* No software volume control on mobile — iOS / Android hardware volume
+     buttons (and the lock-screen MediaSession card) handle it natively
+     and avoid duplicating control surfaces with the OS. */
   .volume-controls {
-    position: static;
-    right: auto;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 4px 12px 8px;
-    gap: 0;
-    width: 100%;
-    touch-action: none;
-  }
-
-  /* Uniform default size — comfortable tap target. */
-  .volume-dot {
-    width: 10px;
-    height: 10px;
-  }
-
-  /* During drag, scale each dot to its --vd-size × 1.6 so the taper
-     reveals itself. */
-  .volume-controls.is-dragging .volume-dot {
-    width: calc(var(--vd-size, 8px) * 1.6);
-    height: calc(var(--vd-size, 8px) * 1.6);
+    display: none !important;
   }
 }
