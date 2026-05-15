@@ -132,7 +132,10 @@ mountInstallSection({
 // stays the next time the user reloads.
 document.getElementById('footerReinstallBtn')?.addEventListener('click', () => {
   mountInstallSection({
-    container: document.getElementById('app'),
+    // Must match the auto-mount call above — body, not #app — so the badge
+    // anchors to the viewport and isn't collapsed by the container's
+    // minimize selector.
+    container: document.body,
     installInfo,
     animateIn: true,
   });
