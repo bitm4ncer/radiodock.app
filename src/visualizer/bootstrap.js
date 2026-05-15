@@ -74,26 +74,30 @@ export async function mountVisualizer({ player }) {
 }
 
 function mountTriggerButton(onClick) {
-  const section = document.querySelector('.player-section');
-  if (!section) return;
+  const container = document.getElementById('app');
+  if (!container) return;
 
-  // .player-section is already position:relative (its volume-controls child
-  // relies on that). Add the viz trigger as a sibling of .player-card so it
-  // sits in the section but never overlaps with controls inside the card.
+  // Mount inside the main .container (#app) — top-right corner. Shares the
+  // .tool-btn pattern with the drag handle + minimize button so they form a
+  // visually consistent vertical strip and all get the slide-out hover pill.
+  if (getComputedStyle(container).position === 'static') {
+    container.style.position = 'relative';
+  }
+
   const btn = document.createElement('button');
   btn.type = 'button';
-  btn.className = 'viz-trigger-btn';
-  btn.title = 'Visualizer';
+  btn.className = 'tool-btn viz-trigger-btn';
+  btn.title = 'Open visualizer';
+  btn.dataset.label = 'Visuals';
   btn.setAttribute('aria-label', 'Open visualizer settings');
   btn.innerHTML = `
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M4 18V12"/>
-      <path d="M8 18V8"/>
-      <path d="M12 18V4"/>
-      <path d="M16 18V10"/>
-      <path d="M20 18V14"/>
-    </svg>
+    <span class="tool-btn__pill" aria-hidden="true">Visuals</span>
+    <span class="tool-btn__icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 12h2l2-7 3 14 3-10 3 7 2-4h3"/>
+      </svg>
+    </span>
   `;
   btn.addEventListener('click', onClick);
-  section.appendChild(btn);
+  container.appendChild(btn);
 }

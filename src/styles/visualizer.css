@@ -1,17 +1,13 @@
-/* Visualizer feature: drawer + trigger button + drag/minimize affordances. */
+/* Visualizer feature: drawer + tool buttons + drag/minimize affordances. */
 
-/* --- Trigger button in the player card --- */
+/* --- Shared tool-button pattern ---
+   Used by the visualizer trigger, the drag handle, and the minimize button.
+   All three sit as a vertical stack at the top-right of the main .container
+   and share the same slide-out pill label on hover. */
 
-.viz-trigger-btn {
-  /* Lives in .player-section as a sibling of .player-card, mirroring the
-     positioning approach used by .volume-controls (which sits at right: -25px
-     of the section). We park the trigger just outside the LEFT edge of the
-     card so it never collides with the card's internal controls (play/pause,
-     minimize, etc.). */
+.tool-btn {
   position: absolute;
-  top: 50%;
-  left: -34px;
-  transform: translateY(-50%);
+  right: var(--space-3);
   width: 28px;
   height: 28px;
   border: none;
@@ -23,129 +19,90 @@
   align-items: center;
   justify-content: center;
   z-index: 3;
+  user-select: none;
   transition: background-color 120ms ease, color 120ms ease;
 }
-.viz-trigger-btn:hover {
+.tool-btn:hover {
   color: var(--text);
   background: rgba(255, 255, 255, 0.08);
 }
-.viz-trigger-btn svg,
-.viz-trigger-btn svg * {
-  width: 16px;
-  height: 16px;
+.tool-btn__icon,
+.tool-btn__icon svg,
+.tool-btn__icon svg * {
   pointer-events: none;
 }
-
-@media (pointer: coarse) {
-  .viz-trigger-btn { display: none; }
-}
-
-/* --- Player card drag handle + minimize --- */
-
-.player-card-drag-handle {
-  position: absolute;
-  top: var(--space-2);
-  left: var(--space-2);
-  width: 28px;
-  height: 28px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-pill);
-  color: var(--text-muted);
-  cursor: grab;
-  user-select: none;
-  z-index: 3;
-  transition: background-color 120ms ease, color 120ms ease;
-}
-.player-card-drag-handle:hover {
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.08);
-}
-.player-card-drag-handle.is-dragging {
-  cursor: grabbing;
-}
-.player-card-drag-handle svg {
+.tool-btn__icon svg {
   width: 16px;
   height: 16px;
 }
-@media (pointer: coarse) {
-  .player-card-drag-handle { display: none; }
-}
 
-.player-card-minimize-btn {
+/* Slide-out flag pill on the LEFT of each tool button.
+   Light gray (--bg-list-active) with dark-on-light text, slides in via
+   translateX + opacity. Anchored to the button's right edge so the pill
+   ends right before the icon. */
+.tool-btn__pill {
   position: absolute;
-  top: var(--space-2);
-  right: var(--space-2);
-  width: 28px;
-  height: 28px;
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  cursor: pointer;
+  right: calc(100% + 6px);
+  top: 50%;
+  transform: translateY(-50%) translateX(8px);
+  background: rgba(224, 224, 224, 0.92);
+  color: #1a1a1a;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 4px 10px;
   border-radius: var(--radius-pill);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 3;
-  transition: background-color 120ms ease, color 120ms ease;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 140ms ease, transform 180ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
-.player-card-minimize-btn:hover {
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.08);
-}
-.player-card-minimize-btn svg { width: 14px; height: 14px; }
-@media (pointer: coarse) {
-  .player-card-minimize-btn { display: none; }
+.tool-btn:hover .tool-btn__pill,
+.tool-btn:focus-visible .tool-btn__pill {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
 }
 
-/* Card position override (when dragged at least once) */
-.player-section.is-dragged {
+@media (pointer: coarse) {
+  .tool-btn { display: none; }
+}
+
+/* --- Horizontal strip (top-right of .container#app).
+   The three buttons sit next to each other, ~8px apart.
+   Order (visually right-to-left): minimize, drag, viz. */
+
+.player-card-minimize-btn { top: var(--space-3); right: var(--space-3); }
+.player-card-drag-handle  { top: var(--space-3); right: calc(var(--space-3) + 36px); cursor: grab; }
+.viz-trigger-btn          { top: var(--space-3); right: calc(var(--space-3) + 72px); }
+
+.player-card-drag-handle.is-dragging { cursor: grabbing; }
+
+/* On desktop the .container has 59px top padding (the tinted card). Nudge
+   the strip down so it sits comfortably inside the tinted card. */
+@media (min-width: 700px) {
+  .player-card-minimize-btn { top: 18px; right: 18px; }
+  .player-card-drag-handle  { top: 18px; right: 54px; }
+  .viz-trigger-btn          { top: 18px; right: 90px; }
+}
+
+/* Main container drag override — the whole .container#app card flies
+   around the viewport. The flex centering inside .page is bypassed via
+   position:fixed. */
+.container.is-dragged {
   position: fixed;
-  left: var(--card-x, 50%);
-  top: var(--card-y, 50%);
+  left: var(--container-x, 0);
+  top: var(--container-y, 0);
   margin: 0;
   z-index: 5;
-  transform: none;
 }
 
-/* Minimized mini-pill */
-.player-section.is-minimized .player-card {
-  padding: 6px 12px;
-  min-height: 0;
-}
-.player-section.is-minimized .player-info {
-  gap: var(--space-2);
-}
-.player-section.is-minimized .station-logo-container {
-  width: 28px;
-  height: 28px;
-  flex: 0 0 28px;
-}
-.player-section.is-minimized .station-logo,
-.player-section.is-minimized .station-initials {
-  width: 28px;
-  height: 28px;
-  font-size: 12px;
-}
-.player-section.is-minimized .station-details .station-country-line,
-.player-section.is-minimized .now-playing {
-  display: none;
-}
-.player-section.is-minimized .station-name {
-  font-size: 13px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 180px;
-}
-.player-section.is-minimized .player-card-drag-handle {
-  display: none;
-}
-.player-section.is-minimized .viz-trigger-btn {
-  display: none;
-}
-.player-section.is-minimized + .volume-controls {
+/* Minimized container — hide favorites + search + install sections so only
+   the player section is visible. The container shrinks naturally to fit
+   just the player. */
+.container.is-minimized .favorites-section,
+.container.is-minimized .search-section,
+.container.is-minimized .install-section {
   display: none;
 }
 

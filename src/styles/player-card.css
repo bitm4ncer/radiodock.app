@@ -261,16 +261,21 @@
 }
 
 /* Volume Controls */
+/* 11-dot volume slider. Dots taper in size from small (data-volume=0,
+   left/bottom) to large (data-volume=100, right/top) so the user can see
+   the scale at a glance. Each dot's diameter is set per-element via the
+   inline `--vd-size` custom property in index.html. */
 .volume-controls {
   position: absolute;
   right: -25px;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;   /* small at bottom, large at top */
   align-items: center;
-  gap: 8px;
-  padding: 8px;
+  gap: 4px;
+  padding: 8px 4px;
   opacity: 0;
   transition: opacity 0.1s ease;
+  touch-action: none;               /* enable pointer-drag without page-scroll */
 }
 
 .player-section .player-card.loaded + .volume-controls {
@@ -278,13 +283,12 @@
 }
 
 .volume-dot {
-  width: 6px;
-  height: 6px;
+  width: var(--vd-size, 8px);
+  height: var(--vd-size, 8px);
   border-radius: 50%;
   background: var(--bg-dark);
   cursor: pointer;
-  transition: all 0.2s ease;
-  /* Override <button> defaults that would otherwise widen the dot beyond 6px. */
+  transition: background 0.15s ease, transform 0.15s ease;
   padding: 0;
   border: 0;
   flex: 0 0 auto;
@@ -295,38 +299,23 @@
 
 .volume-dot:hover {
   background: var(--bg-light);
-  transform: scale(1.3);
 }
 
-.volume-dot.active {
+/* Filled = dot ≤ current volume bucket. Default fill is muted gray. */
+.volume-dot.is-filled {
   background: var(--bg-light);
 }
 
-/* Volume Level Classes */
-.volume-controls.volume-20 .volume-dot[data-volume="20"] {
-  background: var(--bg-light);
+/* While the user is actively dragging the slider, filled dots glow red
+   so the live volume level pops visually. */
+.volume-controls.is-dragging .volume-dot.is-filled {
+  background: var(--red);
 }
 
-.volume-controls.volume-40 .volume-dot[data-volume="20"],
-.volume-controls.volume-40 .volume-dot[data-volume="40"] {
-  background: var(--bg-light);
-}
-
-.volume-controls.volume-60 .volume-dot[data-volume="20"],
-.volume-controls.volume-60 .volume-dot[data-volume="40"],
-.volume-controls.volume-60 .volume-dot[data-volume="60"] {
-  background: var(--bg-light);
-}
-
-.volume-controls.volume-80 .volume-dot[data-volume="20"],
-.volume-controls.volume-80 .volume-dot[data-volume="40"],
-.volume-controls.volume-80 .volume-dot[data-volume="60"],
-.volume-controls.volume-80 .volume-dot[data-volume="80"] {
-  background: var(--bg-light);
-}
-
-.volume-controls.volume-100 .volume-dot {
-  background: var(--bg-light);
+/* During drag the user is interacting deliberately — scale up the filled
+   dots slightly for tactile feedback. */
+.volume-controls.is-dragging .volume-dot.is-filled {
+  transform: scale(1.12);
 }
 
 .visit-btn {

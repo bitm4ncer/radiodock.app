@@ -57,6 +57,10 @@
             <span>Install RadioDock</span>
             <span class="off-canvas__chev">→</span>
           </button>
+          <button type="button" class="off-canvas__item" id="offCanvasAbout">
+            <span>About RadioDock</span>
+            <span class="off-canvas__chev">→</span>
+          </button>
           <a class="off-canvas__item" href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener">GitHub</a>
           <a class="off-canvas__item" href="https://github.com/bitm4ncer/radiodock.app/issues" target="_blank" rel="noopener">Issues</a>
           <a class="off-canvas__item" href="https://buymeacoffee.com/bitmancer" target="_blank" rel="noopener">
@@ -124,13 +128,19 @@
             </div>
           </article>
 
-          <!-- Volume dots -->
-          <div class="volume-controls volume-100" id="volumeControls" role="slider" aria-label="Volume" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
-            <button type="button" class="volume-dot" data-volume="100" aria-label="Volume 100%"></button>
-            <button type="button" class="volume-dot" data-volume="80" aria-label="Volume 80%"></button>
-            <button type="button" class="volume-dot" data-volume="60" aria-label="Volume 60%"></button>
-            <button type="button" class="volume-dot" data-volume="40" aria-label="Volume 40%"></button>
-            <button type="button" class="volume-dot" data-volume="20" aria-label="Volume 20%"></button>
+          <!-- Volume slider — 11 dots tapering small→large representing 0→100%. -->
+          <div class="volume-controls" id="volumeControls" role="slider" aria-label="Volume" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80" tabindex="0">
+            <button type="button" class="volume-dot" data-volume="0"   aria-label="Mute"          style="--vd-size: 4px;"></button>
+            <button type="button" class="volume-dot" data-volume="10"  aria-label="Volume 10%"    style="--vd-size: 5px;"></button>
+            <button type="button" class="volume-dot" data-volume="20"  aria-label="Volume 20%"    style="--vd-size: 6px;"></button>
+            <button type="button" class="volume-dot" data-volume="30"  aria-label="Volume 30%"    style="--vd-size: 7px;"></button>
+            <button type="button" class="volume-dot" data-volume="40"  aria-label="Volume 40%"    style="--vd-size: 8px;"></button>
+            <button type="button" class="volume-dot" data-volume="50"  aria-label="Volume 50%"    style="--vd-size: 9px;"></button>
+            <button type="button" class="volume-dot" data-volume="60"  aria-label="Volume 60%"    style="--vd-size: 10px;"></button>
+            <button type="button" class="volume-dot" data-volume="70"  aria-label="Volume 70%"    style="--vd-size: 11px;"></button>
+            <button type="button" class="volume-dot" data-volume="80"  aria-label="Volume 80%"    style="--vd-size: 12px;"></button>
+            <button type="button" class="volume-dot" data-volume="90"  aria-label="Volume 90%"    style="--vd-size: 13px;"></button>
+            <button type="button" class="volume-dot" data-volume="100" aria-label="Volume 100%"   style="--vd-size: 14px;"></button>
           </div>
         </section>
 

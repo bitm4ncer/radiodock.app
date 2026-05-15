@@ -68,22 +68,27 @@
   }
 
   /* Volume row: pull out of its absolute-right position from desktop and
-     make it a horizontal strip ABOVE the player card. */
+     make it a horizontal strip ABOVE the player card. Dots keep the
+     small→big taper from left (mute) to right (full); they're slightly
+     scaled up vs desktop so they're thumb-reachable. */
   .volume-controls {
     position: static;
     right: auto;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 4px 8px 10px;
+    padding: 6px 12px 12px;
     gap: 0;
     width: 100%;
+    touch-action: none;
   }
 
+  /* Override the inline --vd-size by scaling each dot uniformly larger on
+     mobile so the taper is still visible but every dot is tappable. */
   .volume-dot {
-    width: 14px;
-    height: 14px;
-    /* The default state is dim; the active-up-to-N classes light up the
-       leftmost dots, matching the player-card.css cascade. */
+    /* Compute size = base × 1.6 so the smallest dot is ~6.4 px and the
+       largest ~22.4 px — clear scale + comfortable hit area. */
+    width: calc(var(--vd-size, 8px) * 1.6);
+    height: calc(var(--vd-size, 8px) * 1.6);
   }
 }

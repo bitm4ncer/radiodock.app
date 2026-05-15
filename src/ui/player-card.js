@@ -1,7 +1,8 @@
 // Player card: station logo/initials, name, country, now-playing line,
 // favorite heart, visit-station link, play/pause button, volume dots.
 
-const VOLUME_LEVELS = [100, 80, 60, 40, 20, 0];
+// Volume buckets — 11 steps in 10% increments (one per dot).
+const VOLUME_LEVELS = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
 function getInitials(name) {
   if (!name) return '?';
@@ -81,20 +82,14 @@ export function mountPlayerCard({ player }) {
 
   function setVolumePct(pct) {
     const clamped = Math.max(0, Math.min(100, pct | 0));
-    volumeWrap.classList.remove(
-      'volume-0',
-      'volume-20',
-      'volume-40',
-      'volume-60',
-      'volume-80',
-      'volume-100',
-    );
-    // Find nearest VOLUME_LEVELS bucket
-    const bucket = VOLUME_LEVELS.reduce((best, level) =>
-      Math.abs(level - clamped) < Math.abs(best - clamped) ? level : best,
-    );
-    volumeWrap.classList.add(`volume-${bucket}`);
+    // Snap to nearest 10% bucket (matches the dot grid).
+    const bucket = Math.round(clamped / 10) * 10;
     volumeWrap.setAttribute('aria-valuenow', String(bucket));
+    // Light up every dot whose data-volume ≤ current bucket.
+    for (const dot of volumeWrap.querySelectorAll('.volume-dot')) {
+      const dv = parseInt(dot.dataset.volume, 10);
+      dot.classList.toggle('is-filled', dv <= bucket);
+    }
   }
 
   // Wire interactions
@@ -107,13 +102,65 @@ export function mountPlayerCard({ player }) {
     }
   });
 
-  for (const dot of volumeWrap.querySelectorAll('.volume-dot')) {
-    dot.addEventListener('click', (evt) => {
-      const pct = parseInt(evt.currentTarget.dataset.volume, 10);
+  // Volume "slider but as separate dots": pointer drag picks the dot
+  // under (or closest to) the pointer and sets volume continuously.
+  (() => {
+    const dots = Array.from(volumeWrap.querySelectorAll('.volume-dot'));
+    let dragging = false;
+
+    function dotAtPoint(x, y) {
+      // First try the element directly under the pointer.
+      const hit = document.elementFromPoint(x, y);
+      const direct = hit?.closest?.('.volume-dot');
+      if (direct && dots.includes(direct)) return direct;
+      // Fall back to the closest dot by centre distance — keeps the drag
+      // tracking the cursor even between dots.
+      let best = null;
+      let bestDist = Infinity;
+      for (const dot of dots) {
+        const r = dot.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        const d = Math.hypot(cx - x, cy - y);
+        if (d < bestDist) { bestDist = d; best = dot; }
+      }
+      return best;
+    }
+
+    function setFromPoint(x, y) {
+      const dot = dotAtPoint(x, y);
+      if (!dot) return;
+      const pct = parseInt(dot.dataset.volume, 10);
       player.setVolume(pct / 100);
       setVolumePct(pct);
-    });
-  }
+    }
+
+    function onDown(evt) {
+      // Ignore non-primary mouse buttons.
+      if (evt.button !== undefined && evt.button !== 0) return;
+      dragging = true;
+      volumeWrap.classList.add('is-dragging');
+      try { volumeWrap.setPointerCapture?.(evt.pointerId); } catch {}
+      setFromPoint(evt.clientX, evt.clientY);
+      evt.preventDefault();
+    }
+    function onMove(evt) {
+      if (!dragging) return;
+      setFromPoint(evt.clientX, evt.clientY);
+    }
+    function onUp(evt) {
+      if (!dragging) return;
+      dragging = false;
+      volumeWrap.classList.remove('is-dragging');
+      try { volumeWrap.releasePointerCapture?.(evt.pointerId); } catch {}
+    }
+
+    volumeWrap.addEventListener('pointerdown', onDown);
+    volumeWrap.addEventListener('pointermove', onMove);
+    volumeWrap.addEventListener('pointerup', onUp);
+    volumeWrap.addEventListener('pointercancel', onUp);
+    volumeWrap.addEventListener('pointerleave', onUp);
+  })();
 
   logoBtn.addEventListener('click', () => {
     if (currentStation?.homepage) {

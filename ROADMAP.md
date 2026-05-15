@@ -1,5 +1,20 @@
 # Roadmap
 
+## v2.1 — Audio visualizer (desktop) 🚧
+
+- [x] **M8.0** Tiered audio-data pipeline (`src/visualizer/audio-source.js`): HLS-via-hls.js (untainted MSE blob) → `getDisplayMedia` tab-audio capture (opt-in) → procedural fallback. Audio-mode is surfaced honestly in the drawer status line. CORS-probe Tier 2 deferred to a later iteration.
+- [x] **M8.1** Rendering foundation (`src/visualizer/engine.js`): two stacked fullscreen canvases (Canvas 2D + WebGL via [regl](https://github.com/regl-project/regl)) since a single canvas can't expose both contexts. Single rAF loop, pauses on tab-hidden / master-off. DPR capped at 1.5 for shader visualizers with auto-fallback to 1.0 on sustained frame drops.
+- [x] **M8.2** Visualizer registry (`src/visualizer/registry.js`) — drop one file in `src/visualizers/` + add one line to the registry. Each module declares its own `controls[]`, auto-rendered in the drawer.
+- [x] **M8.3** v1 set: Spectrum Bars, Oscilloscope, Radial Pulse (Canvas 2D); Reaction-Diffusion (Gray-Scott ping-pong FBO) + Flow Field (Perlin + audio turbulence) as regl shaders.
+- [x] **M8.4** [butterchurn](https://github.com/jberg/butterchurn) Milkdrop support — lazy-loaded on first activation, listed under its own category with explicit credit link and a "Milkdrop powered by butterchurn" footer in the drawer.
+- [x] **M8.5** Right-side slide-in drawer (`src/ui/visualizer-drawer.js`): master on/off toggle, picker grouped by category, auto-rendered controls per visualizer, audio-mode status line, "Connect audio" upgrade button (only when needed), credits footer.
+- [x] **M8.6** Visualizer trigger button mounted at the top-right of the main `.container#app`.
+- [x] **M8.7** Player card draggable via grab handle (drag scopes to the card only — section stays put) + minimize button → mini-pill. Position + minimized state persisted in IndexedDB.
+- [x] **M8.8** Desktop only — feature is gated on `pointer: coarse` and silently absent on mobile.
+- [x] **M8.9** Body `viz-active` class toggles transparent body background when visualizer is on, so the canvas behind shows through without breaking the dark background when the feature is off.
+
+---
+
 ## v2.0 — Platform-native layouts ✅
 
 - [x] **V0** Umami Cloud analytics in `<head>` (defer, cookieless) + BMC button restyled as muted pill matching GitHub/Issues (no more yellow)
@@ -94,11 +109,13 @@ Each milestone is a working slice that can be deployed and tested before moving 
 - [ ] Lock-screen audio test on real devices (user-driven)
 - [ ] Lighthouse PWA audit ≥ 90 (user-driven)
 
-## Out of scope (v1.1+)
+## Out of scope (v2.2+)
 
 - Cloud sync across devices
 - Sleep timer
 - Native share intent
 - Direct migration from extension `chrome.storage.sync`
-- Audio visualizer
+- Cinema mode (visualizer fullscreen + auto-hide card on idle)
+- Visualizer thumbnails / preset browser
+- CORS-probe Tier 2 for the audio pipeline
 - Multiple simultaneous players / mini-player

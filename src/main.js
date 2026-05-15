@@ -104,6 +104,7 @@ mountOffCanvas({
     const branch = /android/i.test(ua) ? 'android' : 'ios-safari';
     installInfo.open(branch);
   },
+  onAboutClick: () => openModal('infoModal'),
 });
 
 // Mobile fullscreen search overlay
