@@ -6,6 +6,14 @@
 //
 //   Tier 1 — HLS via hls.js. The element's src is a same-origin blob: URL
 //            (MediaSource), so it's untainted. createMediaElementSource works.
+//            DISABLED: even on HLS, calling createMediaElementSource() once
+//            permanently routes the <audio> element through Web Audio. As soon
+//            as the user switches to a non-HLS (cross-origin) station, the
+//            tainted media source silences audioCtx.destination — playback
+//            stops site-wide and there is no way to undo it without a full
+//            page reload. The trade-off (reactive visuals on HLS only) is not
+//            worth the risk to audio playback, so we always fall through to
+//            Tier 3 / Tier 4.
 //   Tier 2 — (deferred to v1.1) CORS probe + element swap with crossorigin.
 //            The current implementation skips this and drops straight to Tier 3.
 //   Tier 3 — getDisplayMedia tab-audio capture. Universal but requires a user
@@ -75,17 +83,11 @@ export function createAudioSource(player) {
   }
 
   function ensureMediaElementSource() {
-    if (!audioCtx) return null;
-    if (mediaElementSource) return mediaElementSource;
-    const el = player._element();
-    try {
-      mediaElementSource = audioCtx.createMediaElementSource(el);
-      mediaElementSource.connect(audioCtx.destination);
-    } catch (err) {
-      console.warn('createMediaElementSource failed:', err);
-      mediaElementSource = null;
-    }
-    return mediaElementSource;
+    // Tier 1 is disabled — see file header. Calling createMediaElementSource
+    // on the shared <audio> element is a one-way door that silences any
+    // future cross-origin station. We always return null and let the engine
+    // fall through to procedural / capture data.
+    return null;
   }
 
   function connectElementToAnalyser() {
@@ -111,17 +113,11 @@ export function createAudioSource(player) {
   // --- Tier 1: detect HLS-via-hls.js after canplay ---
 
   function checkElementSource() {
-    const el = player._element();
-    const src = el?.src ?? '';
-    elementIsHls = src.startsWith('blob:');
-    if (mode === 'capture') return; // capture overrides everything
-    if (elementIsHls) {
-      connectElementToAnalyser();
-      setMode('hls');
-    } else {
-      disconnectElementFromAnalyser();
-      setMode('procedural');
-    }
+    // Tier 1 is disabled (see file header). We never attach to the <audio>
+    // element. If a capture stream is active it takes priority; otherwise the
+    // mode is procedural until the user opts into capture.
+    if (mode === 'capture') return;
+    setMode('procedural');
   }
 
   // --- Tier 3: getDisplayMedia upgrade ---
@@ -257,7 +253,8 @@ export function createAudioSource(player) {
       return;
     }
     ensureAnalyser();
-    ensureMediaElementSource();
+    // Intentionally NOT calling ensureMediaElementSource(): Tier 1 is disabled
+    // because it permanently silences cross-origin audio. See file header.
 
     // Resume on user gesture if needed (Chrome's autoplay policy).
     if (audioCtx.state === 'suspended') {
