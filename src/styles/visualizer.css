@@ -104,13 +104,56 @@
   z-index: 5;
 }
 
-/* Minimized container — hide favorites + search + install sections so only
-   the player section is visible. The container shrinks naturally to fit
-   just the player. */
+/* Backdrop blur on the main container so the visualizer shows through
+   with a frosted-glass treatment. Only kicks in on desktop because the
+   mobile container has no tinted background. */
+@media (min-width: 700px) {
+  .container {
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    transition: padding 260ms cubic-bezier(0.2, 0.7, 0.2, 1),
+                gap 260ms ease;
+  }
+}
+
+/* Smooth-collapse transition for the sections that disappear when the
+   container is minimized. We avoid `display: none` so the height can
+   animate. */
+.favorites-section,
+.search-section,
+.install-section {
+  overflow: hidden;
+  transition: max-height 280ms cubic-bezier(0.2, 0.7, 0.2, 1),
+              opacity 220ms ease,
+              margin 260ms ease,
+              padding 260ms ease,
+              transform 260ms ease;
+  max-height: 2000px;
+}
+
 .container.is-minimized .favorites-section,
 .container.is-minimized .search-section,
 .container.is-minimized .install-section {
-  display: none;
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+}
+
+/* Tighter padding when minimized so the resulting player pill feels
+   compact instead of having lots of empty space around it. */
+@media (min-width: 700px) {
+  .container.is-minimized {
+    padding: 10px 16px;
+    gap: 0;
+  }
+}
+.container.is-minimized {
+  gap: 0;
 }
 
 /* --- Drawer --- */

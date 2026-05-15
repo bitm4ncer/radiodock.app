@@ -124,6 +124,9 @@ export function createAudioSource(player) {
 
   async function requestUpgrade() {
     if (!audioCtx) start();
+    // The "Connect audio" button click is a real user gesture — use it to
+    // resume the context before any await (which would consume the gesture).
+    resumeIfSuspended();
     if (!navigator.mediaDevices?.getDisplayMedia) {
       throw new Error('Tab audio capture not supported in this browser.');
     }
@@ -244,8 +247,39 @@ export function createAudioSource(player) {
 
   // --- Lifecycle ---
 
+  function resumeIfSuspended() {
+    if (audioCtx && audioCtx.state === 'suspended') {
+      // Resume returns a promise; we don't await — caller may not be inside
+      // a gesture. Chrome will accept the resume silently if the caller is.
+      audioCtx.resume().catch(() => {});
+    }
+  }
+
+  // One-shot listener: the visualizer is often auto-started from a saved
+  // pref (no user gesture), so the AudioContext starts suspended. The
+  // first user click/touch/key after that resumes it.
+  function installGestureWakeup() {
+    if (!audioCtx) return;
+    const types = ['pointerdown', 'keydown', 'touchstart'];
+    const wake = () => {
+      resumeIfSuspended();
+      // Keep listening until it actually resumes — Chrome can sometimes
+      // refuse a resume even after a gesture if the gesture was already
+      // consumed by another handler in the same frame.
+      if (!audioCtx || audioCtx.state === 'running') {
+        types.forEach((t) => window.removeEventListener(t, wake, true));
+      }
+    };
+    types.forEach((t) => window.addEventListener(t, wake, true));
+  }
+
   function start() {
-    if (audioCtx) return;
+    if (audioCtx) {
+      // Already created (probably auto-started from a saved pref). Try to
+      // resume in case we're now inside a fresh user gesture.
+      resumeIfSuspended();
+      return;
+    }
     try {
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     } catch (err) {
@@ -257,9 +291,10 @@ export function createAudioSource(player) {
     // because it permanently silences cross-origin audio. See file header.
 
     // Resume on user gesture if needed (Chrome's autoplay policy).
-    if (audioCtx.state === 'suspended') {
-      audioCtx.resume().catch(() => {});
-    }
+    resumeIfSuspended();
+    // Belt-and-braces: also wake up on the next user gesture, in case start()
+    // was called without one (pref-driven auto-start at page load).
+    installGestureWakeup();
 
     // React to player state.
     const offCanplay = player.on('canplay', () => checkElementSource());
