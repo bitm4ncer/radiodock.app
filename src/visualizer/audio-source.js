@@ -146,26 +146,18 @@ export function createAudioSource(player) {
     ensureCaptureContext();
     resumeIfSuspended();
 
-    let stream;
-    try {
-      stream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
-        audio: true,
-        preferCurrentTab: true,
-        selfBrowserSurface: 'include',
-      });
-    } catch (err) {
-      throw err;
-    }
+    const stream = await navigator.mediaDevices.getDisplayMedia({
+      video: true,
+      audio: true,
+      preferCurrentTab: true,
+      selfBrowserSurface: 'include',
+    });
 
     const audioTracks = stream.getAudioTracks();
     if (audioTracks.length === 0) {
       stream.getTracks().forEach((t) => t.stop());
       throw new Error('No audio track in the shared stream. Tick "Share tab audio" when prompted.');
     }
-
-    // Drop video tracks; we only want audio.
-    stream.getVideoTracks().forEach((t) => t.stop());
 
     // Replace any prior capture.
     if (captureSource) {
@@ -176,13 +168,28 @@ export function createAudioSource(player) {
       try { captureStream.getTracks().forEach((t) => t.stop()); } catch {}
     }
     captureStream = stream;
-    captureSource = audioCtx.createMediaStreamSource(new MediaStream(audioTracks));
+
+    // Important: use the ORIGINAL stream object, not a re-wrapped
+    // `new MediaStream(audioTracks)`. Chromium has had bugs where wrapping
+    // the tracks in a fresh MediaStream produces a source that delivers
+    // only silent frames even though the underlying audio track is active.
+    captureSource = audioCtx.createMediaStreamSource(stream);
     captureSource.connect(analyser);
 
-    // The getDisplayMedia await consumed the gesture. Try once more to
-    // resume the context — Chrome usually allows it now that an active
-    // capture stream is connected.
+    // Stop the video tracks AFTER the source is wired. Stopping them
+    // before createMediaStreamSource has been seen to confuse Chromium
+    // into treating the stream as "no longer active" and silencing the
+    // remaining audio output.
+    stream.getVideoTracks().forEach((t) => t.stop());
+
+    // Aggressive resume retries. The gesture chain is consumed by the
+    // getDisplayMedia dialog, so the post-await resume() can be rejected.
+    // Try multiple times across the next 600 ms — by then the live capture
+    // stream is connected and Chromium usually accepts.
     resumeIfSuspended();
+    setTimeout(resumeIfSuspended, 100);
+    setTimeout(resumeIfSuspended, 300);
+    setTimeout(resumeIfSuspended, 600);
 
     setMode('capture');
 

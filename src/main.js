@@ -162,7 +162,11 @@ mountSearchOverlay({
 });
 
 // Visualizer (desktop only; mounts trigger button into the player card).
-mountVisualizer({ player }).catch((err) => console.warn('Visualizer mount failed:', err));
+mountVisualizer({ player })
+  .then((viz) => {
+    if (viz) window.__radiodock = Object.assign(window.__radiodock ?? {}, { visualizer: viz });
+  })
+  .catch((err) => console.warn('Visualizer mount failed:', err));
 
 // Drag + minimize for the player card (desktop only).
 mountPlayerCardDragMinimize().catch((err) => console.warn('Player card drag mount failed:', err));
