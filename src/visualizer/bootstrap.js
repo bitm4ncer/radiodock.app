@@ -79,10 +79,8 @@ function mountTriggerButton(onClick) {
 
   // Mount inside the main .container (#app) — top-right corner. Shares the
   // .tool-btn pattern with the drag handle + minimize button so they form a
-  // visually consistent vertical strip and all get the slide-out hover pill.
-  if (getComputedStyle(container).position === 'static') {
-    container.style.position = 'relative';
-  }
+  // visually consistent horizontal strip and all get the slide-out hover pill.
+  container.classList.add('has-tools');
 
   const btn = document.createElement('button');
   btn.type = 'button';

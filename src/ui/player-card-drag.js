@@ -19,9 +19,11 @@ export async function mountPlayerCardDragMinimize() {
   const container = document.getElementById('app');
   if (!container) return null;
 
-  if (getComputedStyle(container).position === 'static') {
-    container.style.position = 'relative';
-  }
+  // Mark the container so visualizer.css can rely on a known anchor for the
+  // absolutely-positioned tool buttons. We use a class (not inline style) so
+  // the `.container.is-dragged { position: fixed }` rule isn't blocked by
+  // inline-style specificity.
+  container.classList.add('has-tools');
 
   // --- Inject handle + minimize button into the container ---
 

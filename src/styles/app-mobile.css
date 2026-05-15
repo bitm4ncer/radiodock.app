@@ -67,27 +67,29 @@
     width: 100%;
   }
 
-  /* Volume row: pull out of its absolute-right position from desktop and
-     make it a horizontal strip ABOVE the player card. Dots keep the
-     small→big taper from left (mute) to right (full); they're slightly
-     scaled up vs desktop so they're thumb-reachable. */
+  /* Volume row: horizontal strip above the player card. Idle = uniform
+     dots; the small→big taper only appears while the user is dragging. */
   .volume-controls {
     position: static;
     right: auto;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 6px 12px 12px;
+    padding: 4px 12px 8px;
     gap: 0;
     width: 100%;
     touch-action: none;
   }
 
-  /* Override the inline --vd-size by scaling each dot uniformly larger on
-     mobile so the taper is still visible but every dot is tappable. */
+  /* Uniform default size — comfortable tap target. */
   .volume-dot {
-    /* Compute size = base × 1.6 so the smallest dot is ~6.4 px and the
-       largest ~22.4 px — clear scale + comfortable hit area. */
+    width: 10px;
+    height: 10px;
+  }
+
+  /* During drag, scale each dot to its --vd-size × 1.6 so the taper
+     reveals itself. */
+  .volume-controls.is-dragging .volume-dot {
     width: calc(var(--vd-size, 8px) * 1.6);
     height: calc(var(--vd-size, 8px) * 1.6);
   }

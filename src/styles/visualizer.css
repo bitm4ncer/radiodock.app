@@ -86,10 +86,17 @@
   .viz-trigger-btn          { top: 18px; right: 90px; }
 }
 
+/* Container hosts the absolutely-positioned tool buttons; needs to act as
+   their positioning context. Set via class (not inline) so the dragged
+   rule below can override `position` without inline-style specificity. */
+.container.has-tools {
+  position: relative;
+}
+
 /* Main container drag override — the whole .container#app card flies
    around the viewport. The flex centering inside .page is bypassed via
    position:fixed. */
-.container.is-dragged {
+.container.has-tools.is-dragged {
   position: fixed;
   left: var(--container-x, 0);
   top: var(--container-y, 0);

@@ -261,18 +261,19 @@
 }
 
 /* Volume Controls */
-/* 11-dot volume slider. Dots taper in size from small (data-volume=0,
-   left/bottom) to large (data-volume=100, right/top) so the user can see
-   the scale at a glance. Each dot's diameter is set per-element via the
-   inline `--vd-size` custom property in index.html. */
+/* 11-dot volume slider.
+   Idle: all dots are uniform 6 px circles — calm, low-noise.
+   Dragging: each dot reveals its inline `--vd-size` (4..14 px) so the
+   slider visually "fans out" small→large from mute→full while the user
+   is interacting, then collapses back to uniform on release. */
 .volume-controls {
   position: absolute;
   right: -25px;
   display: flex;
   flex-direction: column-reverse;   /* small at bottom, large at top */
   align-items: center;
-  gap: 4px;
-  padding: 8px 4px;
+  gap: 3px;
+  padding: 2px 4px;
   opacity: 0;
   transition: opacity 0.1s ease;
   touch-action: none;               /* enable pointer-drag without page-scroll */
@@ -283,12 +284,12 @@
 }
 
 .volume-dot {
-  width: var(--vd-size, 8px);
-  height: var(--vd-size, 8px);
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: var(--bg-dark);
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.15s ease;
+  transition: width 180ms ease, height 180ms ease, background 150ms ease;
   padding: 0;
   border: 0;
   flex: 0 0 auto;
@@ -297,25 +298,24 @@
   -webkit-appearance: none;
 }
 
-.volume-dot:hover {
-  background: var(--bg-light);
-}
-
 /* Filled = dot ≤ current volume bucket. Default fill is muted gray. */
 .volume-dot.is-filled {
   background: var(--bg-light);
 }
 
-/* While the user is actively dragging the slider, filled dots glow red
-   so the live volume level pops visually. */
-.volume-controls.is-dragging .volume-dot.is-filled {
-  background: var(--red);
+.volume-dot:hover {
+  background: var(--bg-light);
 }
 
-/* During drag the user is interacting deliberately — scale up the filled
-   dots slightly for tactile feedback. */
+/* Dragging — reveal the small→large taper from the per-dot --vd-size,
+   and flip filled dots to the accent red so the live level is obvious. */
+.volume-controls.is-dragging .volume-dot {
+  width: var(--vd-size, 6px);
+  height: var(--vd-size, 6px);
+}
+
 .volume-controls.is-dragging .volume-dot.is-filled {
-  transform: scale(1.12);
+  background: var(--red);
 }
 
 .visit-btn {
