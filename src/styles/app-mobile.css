@@ -18,22 +18,22 @@
     min-height: 100dvh;
   }
 
+  /* Bottom padding reserves room for the fixed player + volume row so
+     the last list row stays reachable when scrolled all the way down.
+     Lives on the container, not on .favorites-list, so the dark list
+     box ends at the last item — extra room below is page background,
+     not dead space inside the list. */
   .container {
-    padding: 12px 0 0;
+    padding: 12px 0 calc(160px + env(safe-area-inset-bottom));
     gap: 12px;
   }
 
-  /* Station list stretches to fill remaining height. Bottom inset reserves
-     room for the volume row + player card so the last list row is fully
-     reachable when scrolled all the way down. */
   .favorites-section {
     padding: 0 16px;
   }
 
   .favorites-list {
     max-height: none;
-    /* 60 px volume row + ~92 px player + safe-area */
-    padding-bottom: calc(160px + env(safe-area-inset-bottom));
   }
 
   /* Search section is repositioned into the search overlay; hide its

@@ -106,7 +106,7 @@
         </div>
         <nav class="off-canvas__nav">
           <button type="button" class="off-canvas__item" id="offCanvasInstall">
-            <span>Install RadioDock</span>
+            <span>Install</span>
             <span class="off-canvas__chev">→</span>
           </button>
           <button type="button" class="off-canvas__item" id="offCanvasAbout">
@@ -115,12 +115,7 @@
           </button>
           <a class="off-canvas__item" href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener">GitHub</a>
           <a class="off-canvas__item" href="https://github.com/bitm4ncer/radiodock.app/issues" target="_blank" rel="noopener">Issues</a>
-          <a class="off-canvas__item" href="https://buymeacoffee.com/bitmancer" target="_blank" rel="noopener">
-            <svg class="off-canvas__icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path fill="currentColor" d="M5 8h11a3 3 0 0 1 3 3v1a3 3 0 0 1-3 3v0a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V8Z"/>
-            </svg>
-            Buy me a coffee
-          </a>
+          <a class="off-canvas__item" href="https://buymeacoffee.com/bitmancer" target="_blank" rel="noopener">Buy me a coffee</a>
           <a class="off-canvas__item off-canvas__item--muted" href="/legal.html" target="_blank" rel="noopener">Legal Notice</a>
         </nav>
       </div>
@@ -313,33 +308,58 @@
       <div class="modal-content">
         <div class="modal-header">
           <img src="/logo-text.svg" alt="RadioDock" class="dock-logo-modal" />
-          <h3>v2.0</h3>
+          <h3>v2.3</h3>
           <button id="closeInfoModalBtn" class="modal-close-btn" aria-label="Close">×</button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" id="aboutModalBody">
+          <!-- Part 1: plain-language overview & features. Default view. -->
           <p class="about__lead">An internet-radio app for discovering, playing and organising stations from around the world. Open source, no accounts, no tracking.</p>
 
-          <h4 class="about__section">Stations</h4>
-          <p>The browseable directory comes from the <a href="https://www.radio-browser.info" target="_blank" rel="noopener" class="text-link">Radio Browser API</a> — a community-run database of 50,000+ stations. Queries are sent directly from your browser; results are not stored anywhere by RadioDock.</p>
-
-          <h4 class="about__section">"Now Playing" metadata</h4>
-          <p>Most radio servers don't send a CORS header, so a browser can't read their stream metadata directly. RadioDock routes <em>only the stream URL</em> through a small open-source proxy (<a href="https://github.com/bitm4ncer/RadioDock-metadata-proxy" target="_blank" rel="noopener" class="text-link">source</a>) which:</p>
+          <h4 class="about__section">Features</h4>
           <ul class="about__list">
-            <li>parses the inline <strong>ICY metadata</strong> blocks Shoutcast / Icecast servers embed between audio frames,</li>
-            <li>or hits the station's <strong>JSON status endpoint</strong> (Airtime Pro, Radio King, NTS, etc.) where applicable,</li>
-            <li>and returns artist + title as JSON, cached for ~15 s.</li>
+            <li><strong>50,000+ stations</strong> from a community-curated global directory</li>
+            <li><strong>Favourites &amp; custom lists</strong> — saved locally on your device, never sent anywhere</li>
+            <li><strong>Share lists</strong> via private link — recipient imports with one click, no account needed</li>
+            <li><strong>Live now-playing</strong> info for stations that publish it</li>
+            <li><strong>Install</strong> on phone, desktop, or as a browser extension</li>
+            <li><strong>Background playback</strong> with lock-screen and Bluetooth-headphone controls</li>
+            <li><strong>Works offline</strong> after first load — app shell is cached</li>
+            <li><strong>No ads, no cookies, no tracking</strong> beyond opt-out-able anonymous usage counts</li>
           </ul>
-          <p>For <strong>HLS</strong> streams the parsing happens client-side: <a href="https://github.com/video-dev/hls.js" target="_blank" rel="noopener" class="text-link">hls.js</a> exposes <strong>ID3</strong> frames as the stream plays, no proxy involved.</p>
 
-          <h4 class="about__section">Tech stack</h4>
-          <ul class="about__list">
-            <li><strong>Vanilla JS + Vite</strong> — no framework, ~50 KB gzipped main bundle</li>
-            <li><strong>IndexedDB</strong> for favourites, custom lists, prefs (everything stays on your device)</li>
-            <li><strong>hls.js</strong> for HLS streams, native <code>&lt;audio&gt;</code> for ICY/MP3/AAC</li>
-            <li><strong>MediaSession API</strong> for lock-screen controls + Bluetooth headphone buttons</li>
-            <li><strong>Service Worker</strong> for offline shell + PWA install</li>
-            <li>Hosted on <strong>GitHub Pages</strong> · proxy hosted on Render</li>
-          </ul>
+          <button type="button" id="aboutMoreBtn" class="about__more-btn" aria-expanded="false" aria-controls="aboutTech">
+            <span class="about__more-label-collapsed">Show technical details ↓</span>
+            <span class="about__more-label-expanded">Show less ↑</span>
+          </button>
+
+          <!-- Part 2: technical details, revealed by More button. -->
+          <div class="about__tech" id="aboutTech">
+            <h4 class="about__section">Station directory</h4>
+            <p>The browseable directory comes from the <a href="https://www.radio-browser.info" target="_blank" rel="noopener" class="text-link">Radio Browser API</a> — a community-run database. Queries are sent directly from your browser; results are not stored anywhere by RadioDock.</p>
+
+            <h4 class="about__section">"Now Playing" metadata</h4>
+            <p>Most radio servers don't send a CORS header, so a browser can't read their stream metadata directly. RadioDock routes <em>only the stream URL</em> through a small open-source proxy (<a href="https://github.com/bitm4ncer/RadioDock-metadata-proxy" target="_blank" rel="noopener" class="text-link">source</a>) which:</p>
+            <ul class="about__list">
+              <li>parses the inline <strong>ICY metadata</strong> blocks Shoutcast / Icecast servers embed between audio frames,</li>
+              <li>or hits the station's <strong>JSON status endpoint</strong> (Airtime Pro, Radio King, NTS, etc.) where applicable,</li>
+              <li>and returns artist + title as JSON, cached for ~15 s.</li>
+            </ul>
+            <p>For <strong>HLS</strong> streams the parsing happens client-side: <a href="https://github.com/video-dev/hls.js" target="_blank" rel="noopener" class="text-link">hls.js</a> exposes <strong>ID3</strong> frames as the stream plays, no proxy involved.</p>
+
+            <h4 class="about__section">Share-link encoding</h4>
+            <p>When you share a list, the stations are serialised to JSON, gzipped, and base64url-encoded into the URL fragment (the bit after <code>#</code>). Fragments are <strong>never sent to the server</strong> by browsers, so neither GitHub Pages logs nor any analytics ever see the payload. The recipient's browser decodes and imports locally.</p>
+
+            <h4 class="about__section">Tech stack</h4>
+            <ul class="about__list">
+              <li><strong>Vanilla JS + Vite</strong> — no framework, ~50 KB gzipped main bundle</li>
+              <li><strong>IndexedDB</strong> for favourites, custom lists, prefs (everything stays on your device)</li>
+              <li><strong>hls.js</strong> for HLS streams, native <code>&lt;audio&gt;</code> for ICY/MP3/AAC</li>
+              <li><strong>MediaSession API</strong> for lock-screen controls + Bluetooth headphone buttons</li>
+              <li><strong>Service Worker</strong> for offline shell + PWA install</li>
+              <li><strong>Umami Cloud</strong> for anonymous, cookieless usage analytics — opt-out toggle on <a href="/legal.html" target="_blank" rel="noopener" class="text-link">legal page</a></li>
+              <li>Hosted on <strong>GitHub Pages</strong> · proxy on Render</li>
+            </ul>
+          </div>
 
           <p class="about__footer">Source at <a href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener" class="text-link">github.com/bitm4ncer/radiodock.app</a>. Bugs and feature requests welcome.</p>
         </div>

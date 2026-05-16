@@ -140,8 +140,22 @@ const search = mountSearch({
   canAddToActiveList: () => true,
 });
 
-// About modal
-document.getElementById('dockLogoBtn')?.addEventListener('click', () => openModal('infoModal'));
+// About modal. Wrapper that resets the tech-details toggle to collapsed
+// each time the modal opens — readers always land on the plain-language
+// overview first, even if they expanded the tech section last visit.
+function openAboutModal() {
+  const body = document.getElementById('aboutModalBody');
+  body?.classList.remove('show-tech');
+  document.getElementById('aboutMoreBtn')?.setAttribute('aria-expanded', 'false');
+  openModal('infoModal');
+}
+document.getElementById('dockLogoBtn')?.addEventListener('click', openAboutModal);
+document.getElementById('aboutMoreBtn')?.addEventListener('click', () => {
+  const body = document.getElementById('aboutModalBody');
+  const btn = document.getElementById('aboutMoreBtn');
+  const expanded = body?.classList.toggle('show-tech');
+  btn?.setAttribute('aria-expanded', String(!!expanded));
+});
 // Legal Notice now lives on its own /legal.html page (noindex'd) — see footer.
 
 // Add-to-Home-Screen onboarding. The modal is opened from the Install
@@ -181,7 +195,7 @@ mountOffCanvas({
     track('install-click', { platform: branch, source: 'drawer' });
     installInfo.open(branch);
   },
-  onAboutClick: () => openModal('infoModal'),
+  onAboutClick: openAboutModal,
 });
 
 // Delegated tracking for the install-section's platform buttons. The

@@ -220,6 +220,38 @@
   color: var(--text-muted);
 }
 
+/* "Show technical details" toggle in the About modal. Pill-shaped button
+   anchored between the features list (part 1) and the technical block
+   (part 2). The two label spans swap visibility based on the
+   .show-tech state class on #aboutModalBody. */
+.about__more-btn {
+  display: inline-block;
+  margin: 4px 0 16px;
+  padding: 6px 14px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.about__more-btn:hover {
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.about__more-label-expanded { display: none; }
+#aboutModalBody.show-tech .about__more-label-collapsed { display: none; }
+#aboutModalBody.show-tech .about__more-label-expanded { display: inline; }
+
+.about__tech { display: none; }
+#aboutModalBody.show-tech .about__tech { display: block; }
+
 .modal-footer {
   display: flex;
   gap: 8px;

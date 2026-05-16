@@ -97,11 +97,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 18px 8px;
+  padding: 20px 18px 12px;
 }
 
 .off-canvas__logo {
-  height: 14px;
+  height: 24px;
   width: auto;
 }
 
