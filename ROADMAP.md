@@ -1,5 +1,17 @@
 # Roadmap
 
+## v2.3 — List sharing ✅
+
+- [x] **S0** `src/data/share.js` — gzip + base64url encoding of the existing extension-compatible JSON export shape; round-trips cleanly through `parseExport` on the import side, so the existing import pipeline handles the new transport.
+- [x] **S1** Share button on each user-owned list row in the dropdown (next to Rename / Export / Delete). Modal shows the generated `https://radiodock.app/#s=…` URL with a Copy button. Hash never reaches a server — neither GitHub Pages logs nor Umami see the payload.
+- [x] **S2** Inbound `#s=` handler runs at bootstrap and on `hashchange`. If the shared list's name doesn't collide with any existing user list → simple `Import?` confirm. If it collides → 3-way choice dialog: **Replace** existing list's stations / **Keep both** (auto-renamed) / **Cancel**.
+- [x] **S3** `choiceDialog` helper added to `modal-helpers.js` for the 3-way choice. `listsApi.replaceListStations` added for the wholesale-replace path. Hash is cleared via `history.replaceState` after the flow ends, so reload doesn't re-prompt.
+- [x] **S4** Analytics: `list-share` on dialog open, `list-import-shared` with `resolution: replace|new` on accept.
+
+Out of scope for v2.3, possible v3.0: QR-code in share modal, real cross-device sync (WebRTC + public signaling), extension-side share-link import.
+
+---
+
 ## v2.2 — Usage analytics ✅
 
 Custom Umami events on top of the existing cookieless pageview tracker

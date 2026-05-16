@@ -129,6 +129,20 @@ export async function reorderStationsInList(listId, orderedIds) {
   return list;
 }
 
+/** Wholesale replace a list's stations. Used by share-link import when the
+ *  user picks "Replace" on a name collision. The list metadata (id, name,
+ *  order) is preserved. */
+export async function replaceListStations(listId, stations) {
+  if (listId === COMMUNITY_LIST_ID) {
+    throw new Error('Community Radios is read-only.');
+  }
+  const list = await storage.getList(listId);
+  if (!list) throw new Error('List not found.');
+  list.stations = stations.map(sanitizeStation);
+  await storage.putList(list);
+  return list;
+}
+
 /** Strip transient fields and only persist the canonical station shape. */
 function sanitizeStation(station) {
   return {

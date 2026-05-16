@@ -140,7 +140,8 @@
   color: var(--text);
 }
 
-.list-edit-btn {
+.list-edit-btn,
+.list-share-btn {
   opacity: 0;
   background: none;
   border: none;
@@ -157,15 +158,18 @@
   height: 22px;
 }
 
-.list-item:hover .list-edit-btn {
+.list-item:hover .list-edit-btn,
+.list-item:hover .list-share-btn {
   opacity: 1;
 }
 
-.list-edit-btn:hover {
+.list-edit-btn:hover,
+.list-share-btn:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-.list-edit-btn:hover .action-icon {
+.list-edit-btn:hover .action-icon,
+.list-share-btn:hover .action-icon {
   opacity: 1;
   color: var(--text);
 }

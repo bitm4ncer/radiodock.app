@@ -13,10 +13,11 @@ import { mountListDropdown } from './ui/list-dropdown.js';
 import { mountSearch } from './ui/search.js';
 import { initModals, openModal, closeModal } from './ui/modals.js';
 import { toast } from './ui/toast.js';
-import { promptDialog, confirmDialog } from './ui/modal-helpers.js';
+import { promptDialog, confirmDialog, choiceDialog } from './ui/modal-helpers.js';
 import * as listsApi from './data/lists.js';
 import * as storage from './data/storage.js';
 import { downloadList, parseExport, applyImport } from './data/import-export.js';
+import { buildShareUrl, tryDecodeShareHash } from './data/share.js';
 import { searchStations } from './data/radio-browser.js';
 import { mountVisualizer } from './visualizer/bootstrap.js';
 import { mountPlayerCardDragMinimize } from './ui/player-card-drag.js';
@@ -401,6 +402,47 @@ listDropdown.onExport((list) => {
   track('list-export', { stationCount: list.stations?.length ?? 0 });
 });
 
+listDropdown.onShare(async (list) => {
+  try {
+    const url = await buildShareUrl(list);
+    openShareModal({ list, url });
+    track('list-share', { stationCount: list.stations?.length ?? 0 });
+  } catch (err) {
+    console.error('Share-link build failed:', err);
+    toast('Could not build share link.');
+  }
+});
+
+function openShareModal({ list, url }) {
+  const titleEl = document.getElementById('shareTitle');
+  const input = document.getElementById('shareLinkInput');
+  const copyBtn = document.getElementById('copyShareLinkBtn');
+  titleEl.textContent = `Share "${list.name}"`;
+  input.value = url;
+
+  const originalLabel = 'Copy link';
+  copyBtn.textContent = originalLabel;
+
+  const onCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      // Fallback for browsers that haven't granted clipboard permission
+      // — selecting the input + execCommand still works on iOS Safari
+      // because we're in a user gesture.
+      input.focus();
+      input.select();
+      try { document.execCommand('copy'); } catch {}
+    }
+    copyBtn.textContent = 'Copied!';
+    setTimeout(() => { copyBtn.textContent = originalLabel; }, 1500);
+  };
+  copyBtn.addEventListener('click', onCopy, { once: true });
+  openModal('shareModal');
+  // Pre-select the URL so a long-press → Copy on mobile picks it up cleanly.
+  setTimeout(() => { input.focus(); input.select(); }, 50);
+}
+
 listDropdown.onDelete(async (list) => {
   const ok = await confirmDialog({
     title: 'Delete List',
@@ -480,7 +522,136 @@ async function bootstrap() {
   }
 }
 
-bootstrap();
+bootstrap().then(() => handleInboundShareHash());
+
+// Also run the handler on hashchange, so pasting a share URL into an
+// already-open tab triggers the import flow (otherwise the URL change
+// is just a fragment shift and bootstrap wouldn't re-run).
+window.addEventListener('hashchange', () => handleInboundShareHash());
+
+// Inbound share-link handler. Runs after bootstrap so state.userLists is
+// populated and the collision check has something to compare against.
+// The hash never reached a server (browsers strip the fragment from
+// outbound requests), so by reading it here we keep the privacy story
+// intact: shared list data only ever exists in the recipient's browser.
+async function handleInboundShareHash() {
+  const hash = window.location.hash;
+  let parsed;
+  try {
+    parsed = await tryDecodeShareHash(hash);
+  } catch (err) {
+    console.warn('Share-hash decode failed:', err);
+    toast('Share link is invalid or corrupted.');
+    clearShareHash();
+    return;
+  }
+  if (!parsed) return;
+
+  // Validate against the existing JSON-import parser — same rules apply
+  // (multi-list vs single-list, station-shape filter).
+  let validated;
+  try {
+    validated = parseExport(JSON.stringify(parsed));
+  } catch (err) {
+    toast(`Share link rejected: ${err.message}`);
+    clearShareHash();
+    return;
+  }
+
+  if (validated.kind === 'single') {
+    await importSharedSingle(validated.list);
+  } else {
+    // Multi-list bundle — no collision UI yet, fall back to the existing
+    // auto-rename pipeline. Unusual case in practice (share button only
+    // ever produces single-list payloads).
+    await confirmAndImportMulti(validated);
+  }
+  clearShareHash();
+}
+
+async function importSharedSingle({ name, stations }) {
+  const existing = state.userLists.find(
+    (l) => !l.readOnly && l.name.toLowerCase() === name.toLowerCase(),
+  );
+
+  if (!existing) {
+    const ok = await confirmDialog({
+      title: 'Import shared list',
+      message: `Import "${name}" with ${stations.length} ${stations.length === 1 ? 'station' : 'stations'}?`,
+      confirmLabel: 'Import',
+      danger: false,
+    });
+    if (!ok) return;
+    const [created] = await applyImport({ kind: 'single', list: { name, stations } });
+    if (created) await switchToList(created.id);
+    track('list-import-shared', { stationCount: stations.length, resolution: 'new' });
+    toast(`Imported "${created?.name ?? name}"`);
+    return;
+  }
+
+  const choice = await choiceDialog({
+    title: 'List name already exists',
+    message: `You already have a list called "${existing.name}". Replace its ${existing.stations.length} stations with the shared ${stations.length}, or keep both as separate lists?`,
+    primaryLabel: 'Replace',
+    secondaryLabel: 'Keep both',
+    primaryDanger: true,
+  });
+  if (choice === null) return;
+
+  try {
+    if (choice === 'primary') {
+      const updated = await listsApi.replaceListStations(existing.id, stations);
+      existing.stations = updated.stations;
+      await switchToList(existing.id);
+      track('list-import-shared', { stationCount: stations.length, resolution: 'replace' });
+      toast(`Updated "${existing.name}"`);
+    } else {
+      const [created] = await applyImport({ kind: 'single', list: { name, stations } });
+      if (created) await switchToList(created.id);
+      track('list-import-shared', { stationCount: stations.length, resolution: 'new' });
+      toast(`Imported "${created?.name ?? name}"`);
+    }
+  } catch (err) {
+    console.error('Shared-list import failed:', err);
+    toast(`Import failed: ${err.message}`);
+  }
+}
+
+async function confirmAndImportMulti(parsed) {
+  const total = parsed.lists.reduce((sum, l) => sum + l.stations.length, 0);
+  const ok = await confirmDialog({
+    title: 'Import shared lists',
+    message: `Import ${parsed.lists.length} lists (${total} stations total)?`,
+    confirmLabel: 'Import',
+    danger: false,
+  });
+  if (!ok) return;
+  try {
+    const created = await applyImport(parsed);
+    state.userLists = await listsApi.getUserLists();
+    if (created[0]) await switchToList(created[0].id);
+    track('list-import-shared', { listCount: created.length, resolution: 'new' });
+    toast(`Imported ${created.length} lists`);
+  } catch (err) {
+    console.error('Shared multi-import failed:', err);
+    toast(`Import failed: ${err.message}`);
+  }
+}
+
+async function switchToList(id) {
+  state.userLists = await listsApi.getUserLists();
+  state.currentListId = id;
+  await storage.setPref('currentListId', id);
+  renderActiveList();
+}
+
+function clearShareHash() {
+  // history.replaceState avoids re-running the importer on reload while
+  // keeping the page URL clean (no #s=… cruft in the address bar).
+  if (window.location.hash) {
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+  }
+}
 
 // Standalone (PWA) desktop launches: shrink the window once to match the
 // Chrome-extension popup dimensions. Skipped on mobile (window manager

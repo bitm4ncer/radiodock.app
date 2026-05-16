@@ -13,6 +13,7 @@ function escapeHtml(s) {
 
 const ICON_RENAME = `<svg viewBox="0 0 24 24" class="action-icon" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25Zm17.71-10.04a1 1 0 0 0 0-1.41l-2.5-2.5a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.99-1.67Z" fill="currentColor"/></svg>`;
 const ICON_EXPORT = `<svg viewBox="0 0 24 24" class="action-icon" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`;
+const ICON_SHARE = `<svg viewBox="0 0 24 24" class="action-icon" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 1 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 1 0 7.07 7.07l1.71-1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`;
 
 export function mountListDropdown() {
   const btn = document.getElementById('listDropdownBtn');
@@ -30,6 +31,7 @@ export function mountListDropdown() {
   let importCb = null;
   let renameCb = null;
   let exportCb = null;
+  let shareCb = null;
   let deleteCb = null;
 
   function close() {
@@ -56,6 +58,7 @@ export function mountListDropdown() {
         const actions = readOnly
           ? ''
           : `<button type="button" class="list-edit-btn" data-action="rename" title="Rename list">${ICON_RENAME}</button>
+             <button type="button" class="list-share-btn" data-action="share" title="Share list">${ICON_SHARE}</button>
              <button type="button" class="list-export-btn" data-action="export" title="Export list">${ICON_EXPORT}</button>
              <button type="button" class="list-remove-btn" data-action="delete" title="Delete list">×</button>`;
         const isActive = l.id === currentId;
@@ -90,6 +93,9 @@ export function mountListDropdown() {
       close();
     } else if (action === 'export') {
       exportCb?.(list);
+      close();
+    } else if (action === 'share') {
+      shareCb?.(list);
       close();
     } else if (action === 'delete') {
       deleteCb?.(list);
@@ -126,6 +132,7 @@ export function mountListDropdown() {
     onImport(cb) { importCb = cb; },
     onRename(cb) { renameCb = cb; },
     onExport(cb) { exportCb = cb; },
+    onShare(cb) { shareCb = cb; },
     onDelete(cb) { deleteCb = cb; },
     close,
   };

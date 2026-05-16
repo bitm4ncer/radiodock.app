@@ -42,6 +42,57 @@ export function confirmDialog({ title = 'Confirm', message, confirmLabel = 'Conf
   });
 }
 
+/** Three-way choice dialog. Returns one of: 'primary', 'secondary', null
+ *  (cancel/escape/backdrop). Used by share-link import when an inbound
+ *  list collides with an existing name — Replace vs. Create new vs. Cancel. */
+export function choiceDialog({
+  title = 'Choose',
+  message,
+  primaryLabel,
+  secondaryLabel,
+  cancelLabel = 'Cancel',
+  primaryDanger = false,
+} = {}) {
+  return new Promise((resolve) => {
+    const modal = document.getElementById('choiceModal');
+    document.getElementById('choiceTitle').textContent = title;
+    document.getElementById('choiceMessage').textContent = message ?? '';
+    const primaryBtn = document.getElementById('choicePrimaryBtn');
+    const secondaryBtn = document.getElementById('choiceSecondaryBtn');
+    const cancelBtn = document.getElementById('choiceCancelBtn');
+    const closeBtn = document.getElementById('closeChoiceModalBtn');
+    primaryBtn.textContent = primaryLabel ?? 'OK';
+    secondaryBtn.textContent = secondaryLabel ?? 'Alternative';
+    cancelBtn.textContent = cancelLabel;
+    primaryBtn.classList.toggle('btn-danger', !!primaryDanger);
+
+    const cleanup = () => {
+      primaryBtn.removeEventListener('click', onPrimary);
+      secondaryBtn.removeEventListener('click', onSecondary);
+      cancelBtn.removeEventListener('click', onCancel);
+      closeBtn.removeEventListener('click', onCancel);
+      modal.removeEventListener('click', onBackdrop);
+      document.removeEventListener('keydown', onKey);
+    };
+    const finish = (val) => { cleanup(); closeModal(modal); resolve(val); };
+    const onPrimary = () => finish('primary');
+    const onSecondary = () => finish('secondary');
+    const onCancel = () => finish(null);
+    const onBackdrop = (e) => { if (e.target === modal) finish(null); };
+    const onKey = (e) => { if (e.key === 'Escape') finish(null); };
+
+    primaryBtn.addEventListener('click', onPrimary);
+    secondaryBtn.addEventListener('click', onSecondary);
+    cancelBtn.addEventListener('click', onCancel);
+    closeBtn.addEventListener('click', onCancel);
+    modal.addEventListener('click', onBackdrop);
+    document.addEventListener('keydown', onKey);
+
+    openModal(modal);
+    primaryBtn.focus();
+  });
+}
+
 export function promptDialog({
   title = 'Enter Value',
   label = 'Value:',

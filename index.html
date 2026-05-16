@@ -379,5 +379,39 @@
         </div>
       </div>
     </div>
+
+    <div id="shareModal" class="modal" aria-hidden="true">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="shareTitle">Share List</h3>
+          <button id="closeShareModalBtn" class="modal-close-btn" aria-label="Close">×</button>
+        </div>
+        <div class="modal-body">
+          <p class="share-hint">
+            Anyone with this link can import this list into their RadioDock.
+            Station URLs are included; the link itself never reaches a server.
+          </p>
+          <input type="text" id="shareLinkInput" readonly />
+          <button type="button" id="copyShareLinkBtn" class="btn-primary share-copy-btn">Copy link</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="choiceModal" class="modal" aria-hidden="true">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="choiceTitle">Choose</h3>
+          <button id="closeChoiceModalBtn" class="modal-close-btn" aria-label="Close">×</button>
+        </div>
+        <div class="modal-body">
+          <p id="choiceMessage">Pick an option.</p>
+        </div>
+        <div class="modal-footer choice-modal-footer">
+          <button type="button" id="choiceCancelBtn" class="btn-secondary">Cancel</button>
+          <button type="button" id="choiceSecondaryBtn" class="btn-secondary">Secondary</button>
+          <button type="button" id="choicePrimaryBtn" class="btn-primary">Primary</button>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
