@@ -4,12 +4,59 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#1a1a1a" />
-    <meta name="description" content="RadioDock — listen to community radio and 50,000+ stations in your browser or as an installable app." />
+
+    <title>RadioDock — Internet Radio Player</title>
+    <meta name="description" content="Listen to 50K+ internet radio stations worldwide. Free player and list manager for web, browser extension, desktop, and mobile." />
+    <link rel="canonical" href="https://radiodock.app/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Jannes Becherer" />
+
+    <!-- Open Graph (Facebook, LinkedIn, WhatsApp, iMessage, Slack, Discord). -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="RadioDock" />
+    <meta property="og:url" content="https://radiodock.app/" />
+    <meta property="og:title" content="RadioDock — Internet Radio Player" />
+    <meta property="og:description" content="Listen to 50K+ internet radio stations worldwide. Free player and list manager for web, browser extension, desktop, and mobile." />
+    <meta property="og:image" content="https://radiodock.app/icons/icon-512.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="RadioDock logo" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter / X. -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="RadioDock — Internet Radio Player" />
+    <meta name="twitter:description" content="Listen to 50K+ internet radio stations worldwide. Free player and list manager for web, browser extension, desktop, and mobile." />
+    <meta name="twitter:image" content="https://radiodock.app/icons/icon-512.png" />
+    <meta name="twitter:image:alt" content="RadioDock logo" />
+
     <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="preload" as="font" href="/fonts/InterVariable.woff2" type="font/woff2" crossorigin />
-    <title>RadioDock</title>
+
+    <!-- Structured data: tells Google this is a free, browser-based
+         multimedia application. Surfaces in Rich Results when relevant. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "RadioDock",
+        "url": "https://radiodock.app/",
+        "description": "Listen to 50K+ internet radio stations worldwide. Free player and list manager for web, browser extension, desktop, and mobile.",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Web Browser",
+        "browserRequirements": "Requires JavaScript and a modern browser.",
+        "isAccessibleForFree": true,
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "EUR"
+        },
+        "image": "https://radiodock.app/icons/icon-512.png"
+      }
+    </script>
+
     <!-- Privacy-friendly, cookieless analytics. Honours the browser's
          Do-Not-Track header AND a manual opt-out flag in localStorage
          (set/unset from the toggle on /legal.html). Umami's own track
