@@ -20,6 +20,7 @@ import { downloadList, parseExport, applyImport } from './data/import-export.js'
 import { searchStations } from './data/radio-browser.js';
 import { mountVisualizer } from './visualizer/bootstrap.js';
 import { mountPlayerCardDragMinimize } from './ui/player-card-drag.js';
+import { track } from './analytics/umami.js';
 
 const COMMUNITY_LIST_ID = listsApi.COMMUNITY_LIST_ID;
 
@@ -83,8 +84,19 @@ const playerCard = mountPlayerCard({ player });
 const stationList = mountStationList({ container: 'favoritesList' });
 const listDropdown = mountListDropdown();
 const search = mountSearch({
-  onSearch: ({ query, filter }, transport) => searchStations({ query, filter }, transport),
-  onPlay: (station) => player.playStation(station),
+  onSearch: async ({ query, filter }, transport) => {
+    const results = await searchStations({ query, filter }, transport);
+    track('search', { filter, resultCount: results?.length ?? 0 });
+    return results;
+  },
+  onPlay: (station) => {
+    track('station-play', {
+      station: station.name ?? '',
+      country: station.countrycode ?? '',
+      source: 'search',
+    });
+    player.playStation(station);
+  },
   onAdd: async (station) => {
     // Add to the currently-active editable list. Fall back to Favorites when
     // viewing Community Radios (the heart already targets Favorites).
@@ -98,6 +110,7 @@ const search = mountSearch({
       if (state.currentListId === targetList.id) renderActiveList();
       else listDropdown.setLists(allListsForDropdown());
       search.refreshAddedFlags();
+      track('station-add', { country: station.countrycode ?? '' });
       toast(`Added to "${targetList.name}"`);
     } catch (err) {
       toast(err.message);
@@ -150,10 +163,27 @@ mountOffCanvas({
     // a phone user this resolves to the mobile branch of the modal.
     const ua = navigator.userAgent;
     const branch = /android/i.test(ua) ? 'android' : 'ios-safari';
+    track('install-click', { platform: branch, source: 'drawer' });
     installInfo.open(branch);
   },
   onAboutClick: () => openModal('infoModal'),
 });
+
+// Delegated tracking for the install-section's platform buttons. The
+// section is mounted twice (auto + footer re-summon) and re-rendered on
+// detail/overview swaps, so a delegated listener on body is simpler than
+// wiring an onPlatformClick callback through mountInstallSection.
+document.body.addEventListener('click', (evt) => {
+  const btn = evt.target.closest('.install-section__btn[data-target]');
+  if (!btn) return;
+  track('install-click', { platform: btn.dataset.target, source: 'badge' });
+});
+
+// PWA install completion. Fires once per device when the user accepts
+// the install prompt (Android Chrome / Desktop Chromium). iOS Safari
+// does not fire this event — the Add-to-Home-Screen flow is entirely
+// manual there, so iOS installs go uncounted at this layer.
+window.addEventListener('appinstalled', () => track('pwa-installed'));
 
 // Mobile fullscreen search overlay
 mountSearchOverlay({
@@ -214,6 +244,14 @@ player.on('stationchange', async (evt) => {
   await storage.setPref('currentStationId', state.currentStation.id);
 });
 
+player.on('error', (evt) => {
+  const station = player.getCurrentStation();
+  track('stream-error', {
+    station: station?.name ?? '',
+    errorName: evt.detail?.name ?? '',
+  });
+});
+
 // --- Volume restore ---
 async function restoreVolume() {
   const v = await storage.getPref('volume', 0.8);
@@ -226,6 +264,11 @@ player.on('volumechange', async (evt) => {
 
 // --- Station list interactions ---
 stationList.onClick((station) => {
+  track('station-play', {
+    station: station.name ?? '',
+    country: station.countrycode ?? '',
+    source: state.currentListId === COMMUNITY_LIST_ID ? 'community' : 'user-list',
+  });
   player.playStation(station);
 });
 
@@ -303,6 +346,7 @@ listDropdown.onAddList(async () => {
     state.currentListId = created.id;
     renderActiveList();
     await storage.setPref('currentListId', created.id);
+    track('list-create');
     toast(`Created "${created.name}"`);
   } catch (err) {
     toast(err.message);
@@ -329,6 +373,7 @@ listDropdown.onRename(async (list) => {
 
 listDropdown.onExport((list) => {
   downloadList(list);
+  track('list-export', { stationCount: list.stations?.length ?? 0 });
 });
 
 listDropdown.onDelete(async (list) => {
@@ -346,6 +391,7 @@ listDropdown.onDelete(async (list) => {
       await storage.setPref('currentListId', state.currentListId);
     }
     renderActiveList();
+    track('list-delete');
     toast(`Deleted "${list.name}"`);
   } catch (err) {
     toast(err.message);
@@ -360,6 +406,7 @@ listDropdown.onImport(async (file) => {
     state.userLists = await listsApi.getUserLists();
     if (created[0]) state.currentListId = created[0].id;
     renderActiveList();
+    track('list-import', { count: created.length });
     toast(created.length === 1 ? `Imported "${created[0].name}"` : `Imported ${created.length} lists`);
   } catch (err) {
     toast(`Import failed: ${err.message}`);
