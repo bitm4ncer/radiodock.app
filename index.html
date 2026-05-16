@@ -418,6 +418,41 @@
       </div>
     </div>
 
+    <div id="listActionsModal" class="modal" aria-hidden="true">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="listActionsTitle">List</h3>
+          <button id="closeListActionsBtn" class="modal-close-btn" aria-label="Close">×</button>
+        </div>
+        <div class="modal-body list-actions-body">
+          <button type="button" class="list-action-row" data-action="rename">
+            <svg class="list-action-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25Zm17.71-10.04a1 1 0 0 0 0-1.41l-2.5-2.5a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.99-1.67Z" fill="currentColor"/>
+            </svg>
+            <span>Rename</span>
+          </button>
+          <button type="button" class="list-action-row" data-action="share">
+            <svg class="list-action-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 1 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 1 0 7.07 7.07l1.71-1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+            <span>Share</span>
+          </button>
+          <button type="button" class="list-action-row" data-action="export">
+            <svg class="list-action-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+            </svg>
+            <span>Export</span>
+          </button>
+          <button type="button" class="list-action-row list-action-row--danger" data-action="delete">
+            <svg class="list-action-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+            </svg>
+            <span>Delete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div id="choiceModal" class="modal" aria-hidden="true">
       <div class="modal-content">
         <div class="modal-header">

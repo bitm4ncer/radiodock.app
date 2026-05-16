@@ -1,5 +1,10 @@
-// List switcher dropdown with per-row actions (rename / export / delete).
-// Community list is rendered first and only supports selection.
+// List switcher dropdown with per-row actions (rename / share / export
+// / delete). Community list is rendered first and only supports selection.
+// Desktop shows the four small action icons inline on hover; mobile
+// hides them and exposes a single ⋯ button that opens a bottom-sheet
+// action menu with bigger tap targets.
+
+import { openModal, closeModal } from './modals.js';
 
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({
@@ -14,6 +19,7 @@ function escapeHtml(s) {
 const ICON_RENAME = `<svg viewBox="0 0 24 24" class="action-icon" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25Zm17.71-10.04a1 1 0 0 0 0-1.41l-2.5-2.5a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.99-1.67Z" fill="currentColor"/></svg>`;
 const ICON_EXPORT = `<svg viewBox="0 0 24 24" class="action-icon" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`;
 const ICON_SHARE = `<svg viewBox="0 0 24 24" class="action-icon" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 1 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 1 0 7.07 7.07l1.71-1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`;
+const ICON_MORE = `<svg viewBox="0 0 24 24" class="action-icon action-icon--more" aria-hidden="true"><circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/></svg>`;
 
 export function mountListDropdown() {
   const btn = document.getElementById('listDropdownBtn');
@@ -60,7 +66,8 @@ export function mountListDropdown() {
           : `<button type="button" class="list-edit-btn" data-action="rename" title="Rename list">${ICON_RENAME}</button>
              <button type="button" class="list-share-btn" data-action="share" title="Share list">${ICON_SHARE}</button>
              <button type="button" class="list-export-btn" data-action="export" title="Export list">${ICON_EXPORT}</button>
-             <button type="button" class="list-remove-btn" data-action="delete" title="Delete list">×</button>`;
+             <button type="button" class="list-remove-btn" data-action="delete" title="Delete list">×</button>
+             <button type="button" class="list-more-btn" data-action="more" title="More" aria-label="List actions">${ICON_MORE}</button>`;
         const isActive = l.id === currentId;
         return `
           <div class="list-item${isActive ? ' active' : ''}" data-id="${escapeHtml(l.id)}">
@@ -100,7 +107,37 @@ export function mountListDropdown() {
     } else if (action === 'delete') {
       deleteCb?.(list);
       close();
+    } else if (action === 'more') {
+      openActionsSheet(list);
+      close();
     }
+  });
+
+  // Mobile bottom-sheet for per-list actions. Wired once with a delegated
+  // listener that reads data-action off the row that was tapped, looks up
+  // the current list, and dispatches to the existing rename/share/export/
+  // delete callbacks — same code path as the desktop hover-icons.
+  const actionsModal = document.getElementById('listActionsModal');
+  let actionsCurrentList = null;
+
+  function openActionsSheet(list) {
+    actionsCurrentList = list;
+    const titleEl = document.getElementById('listActionsTitle');
+    if (titleEl) titleEl.textContent = list.name;
+    openModal(actionsModal);
+  }
+
+  actionsModal?.addEventListener('click', (evt) => {
+    const row = evt.target.closest('[data-action]');
+    if (!row) return;
+    const action = row.dataset.action;
+    const list = actionsCurrentList;
+    closeModal(actionsModal);
+    if (!list) return;
+    if (action === 'rename') renameCb?.(list);
+    else if (action === 'share') shareCb?.(list);
+    else if (action === 'export') exportCb?.(list);
+    else if (action === 'delete') deleteCb?.(list);
   });
 
   addBtn.addEventListener('click', () => {

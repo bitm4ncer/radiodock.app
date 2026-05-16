@@ -89,6 +89,31 @@
     margin-left: auto;
   }
 
+  /* On mobile the hover-revealed action icons are unreachable (no
+     hover on touch). Hide them and surface a single ⋯ button instead
+     — tapping it opens the listActionsModal bottom sheet with full
+     touch-sized action rows. */
+  .list-edit-btn,
+  .list-share-btn,
+  .list-export-btn,
+  .list-remove-btn {
+    display: none !important;
+  }
+
+  .list-more-btn {
+    display: flex;
+  }
+
+  /* Bigger list rows in the dropdown for thumb-friendly tapping. */
+  .list-item {
+    padding: 14px 16px;
+    gap: 10px;
+  }
+
+  .list-name {
+    font-size: 15px;
+  }
+
   /* The install section lives in the off-canvas menu on mobile. Drop the
      inline copy at the bottom of the scroll area. */
   .install-section {
