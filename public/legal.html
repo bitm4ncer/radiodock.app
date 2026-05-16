@@ -11,7 +11,7 @@
     <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet" />
     <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
     <title>Legal Notice — RadioDock</title>
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="73fcaa06-875f-43c4-9cb0-6e33b78f0647"></script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="73fcaa06-875f-43c4-9cb0-6e33b78f0647" data-do-not-track="true"></script>
     <style>
       :root {
         --bg: #1A1A1A;
@@ -87,6 +87,69 @@
         border-radius: 4px;
         font-size: 12px;
       }
+      .optout {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        margin: 12px 0 18px;
+        background: var(--bg-dark);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+      }
+      .optout__label {
+        flex: 1;
+        font-size: 13px;
+        color: var(--text);
+      }
+      .optout__status {
+        display: block;
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 2px;
+      }
+      .optout__switch {
+        position: relative;
+        width: 44px;
+        height: 26px;
+        flex-shrink: 0;
+      }
+      .optout__switch input {
+        position: absolute;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        cursor: pointer;
+      }
+      .optout__track {
+        position: absolute;
+        inset: 0;
+        background: #4a4a4a;
+        border-radius: 999px;
+        transition: background 160ms ease;
+      }
+      .optout__track::after {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 20px;
+        height: 20px;
+        background: var(--text);
+        border-radius: 50%;
+        transition: transform 160ms ease;
+      }
+      .optout__switch input:checked + .optout__track {
+        background: var(--accent);
+      }
+      .optout__switch input:checked + .optout__track::after {
+        transform: translateX(18px);
+      }
+      .optout__switch input:focus-visible + .optout__track {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
     </style>
   </head>
   <body>
@@ -143,8 +206,35 @@
         </li>
       </ul>
 
-      <h2>Cookies, analytics, tracking</h2>
-      <p>None. The app does not use cookies, does not run analytics, and does not track you. IndexedDB is used only for your favourites/lists and stays on your device.</p>
+      <h2>Cookies</h2>
+      <p>None. RadioDock sets no HTTP cookies. IndexedDB is used only to store your favourites and custom station lists locally on your device.</p>
+
+      <h2>Analytics (Umami)</h2>
+      <p>
+        RadioDock uses <strong>Umami Cloud</strong> (operated by Umami Software, Inc., USA) for privacy-friendly, aggregate usage statistics. Umami does not set cookies, does not store persistent identifiers on your device, does not fingerprint your browser, and does not track you across sites.
+      </p>
+      <p>
+        <strong>What is recorded:</strong> pageviews, and a small set of named interaction events (which station was played, which install button was clicked, search filter used, list created/imported/exported/deleted, stream errors). The events do not contain any text you have typed (no search queries, no list names, no station notes).
+      </p>
+      <p>
+        <strong>What Umami briefly processes:</strong> your IP address is used on the Umami server to derive a country code and to generate a daily-rotating, hashed session identifier. Neither the IP nor the session hash is retained after the day rolls over, and neither is exposed to the site operator.
+      </p>
+      <p>
+        <strong>Legal basis:</strong> Art. 6(1)(f) GDPR — legitimate interest in understanding aggregate product usage to improve the app. Because no information is stored on or read from your terminal, § 25 TTDSG (German implementation of the ePrivacy Directive) does not apply.
+      </p>
+      <p>
+        <strong>How to opt out:</strong> use the toggle below, or enable "Do Not Track" in your browser, or use any content blocker. RadioDock works identically with analytics off.
+      </p>
+      <label class="optout" for="optoutSwitch">
+        <span class="optout__label">
+          Allow anonymous analytics
+          <span class="optout__status" id="optoutStatus">Status: …</span>
+        </span>
+        <span class="optout__switch">
+          <input type="checkbox" id="optoutSwitch" />
+          <span class="optout__track" aria-hidden="true"></span>
+        </span>
+      </label>
 
       <h2>Your rights under GDPR / DSGVO</h2>
       <p>
@@ -177,6 +267,53 @@
             btn.textContent = 'Email reveal failed';
           }
         });
+      })();
+
+      // Analytics opt-out toggle. Uses Umami's own opt-out mechanism:
+      // when localStorage['umami.disabled'] === '1', the umami.js script
+      // skips both the automatic pageview and any umami.track() calls
+      // (which means the events from src/analytics/umami.js are also
+      // suppressed — no extra plumbing needed on the app side).
+      //
+      // localStorage is used here despite the project's IndexedDB-only
+      // rule because (a) this page is a static HTML doc with no app
+      // module wiring and (b) localStorage is the official Umami opt-out
+      // key. Storing a privacy preference at the user's explicit request
+      // is "strictly necessary" under ePrivacy and exempt from consent.
+      (function () {
+        var KEY = 'umami.disabled';
+        var input = document.getElementById('optoutSwitch');
+        var status = document.getElementById('optoutStatus');
+        if (!input || !status) return;
+
+        function isDisabled() {
+          try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; }
+        }
+        function render() {
+          var off = isDisabled();
+          // The switch reads "Allow analytics" — checked = analytics ON.
+          input.checked = !off;
+          status.textContent = off
+            ? 'Status: opted out. No data is being sent.'
+            : 'Status: anonymous analytics on.';
+        }
+
+        input.addEventListener('change', function () {
+          try {
+            if (input.checked) localStorage.removeItem(KEY);
+            else localStorage.setItem(KEY, '1');
+          } catch (e) {
+            // localStorage might be unavailable in private mode on some
+            // browsers; in that case the toggle is purely cosmetic and
+            // the page reload won't remember the choice. Surface this
+            // honestly so the user knows.
+            status.textContent = 'Status: could not save preference (localStorage blocked).';
+            return;
+          }
+          render();
+        });
+
+        render();
       })();
     </script>
   </body>

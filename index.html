@@ -10,8 +10,13 @@
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="preload" as="font" href="/fonts/InterVariable.woff2" type="font/woff2" crossorigin />
     <title>RadioDock</title>
-    <!-- Privacy-friendly, cookieless analytics. -->
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="73fcaa06-875f-43c4-9cb0-6e33b78f0647"></script>
+    <!-- Privacy-friendly, cookieless analytics. Honours the browser's
+         Do-Not-Track header AND a manual opt-out flag in localStorage
+         (set/unset from the toggle on /legal.html). Umami's own track
+         function checks `localStorage['umami.disabled']` internally, so
+         this single mechanism mutes both auto-pageviews and the custom
+         events emitted from src/analytics/umami.js. -->
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="73fcaa06-875f-43c4-9cb0-6e33b78f0647" data-do-not-track="true"></script>
     <script type="module" src="/src/main.js"></script>
   </head>
   <body>
