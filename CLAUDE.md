@@ -57,6 +57,23 @@ src/
 - **HLS detection is canonical** (`Hls.isSupported()` first, native `canPlayType('application/vnd.apple.mpegurl')` second). `hls.js` is loaded via dynamic `import('hls.js')` only when an HLS URL is selected.
 - **No backwards-compat hacks.** This is a fresh PWA, not a port of the extension's chrome.* plumbing.
 
+## Versioning
+
+User-facing version label is **auto-derived** from the git commit count
+on `main`. Formula in `vite.config.js#appVersion`:
+
+```
+v${VERSION_MAJOR_MINOR}.${(git rev-list --count HEAD) - VERSION_BASELINE_COMMIT_COUNT}
+```
+
+- `VERSION_MAJOR_MINOR` — hardcoded prefix (e.g. `1.0`). Bump manually for a new minor cycle (and reset the baseline to the current commit count when you do).
+- `VERSION_BASELINE_COMMIT_COUNT` — commit count just before the first commit of the current minor cycle.
+- Patch number rises by **+1 on every commit to `main`** automatically. No manual bumping, no `npm version` calls, no pre-commit hooks.
+
+The value is exposed as the `__APP_VERSION__` build-time constant via Vite's `define` and rendered into every element with class `app-version` by `main.js`. Two display sites today: the About modal header (`<h3 class="app-version">`) and the off-canvas drawer's bottom-right corner (`.off-canvas__version`).
+
+`.github/workflows/deploy.yml` checkout uses `fetch-depth: 0` — without it the runner has a shallow clone and `git rev-list --count HEAD` would always be 1.
+
 ## Conventions
 
 - Default to writing no code comments. Only write a comment when the WHY is non-obvious — a hidden constraint, a workaround, a subtle invariant. No "// updates the station" narration.

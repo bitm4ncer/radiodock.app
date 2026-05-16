@@ -38,6 +38,14 @@ attachRecovery(player);
 attachMetadataPoller(player);
 attachMediaSession(player);
 initModals();
+
+// User-facing version label, computed at build time from git commit
+// count (see vite.config.js#appVersion). Populated into every
+// .app-version element on first paint — the inline HTML default is
+// just a fallback shown when this script hasn't run yet.
+for (const el of document.querySelectorAll('.app-version')) {
+  el.textContent = `v${__APP_VERSION__}`;
+}
 document.getElementById('playerCard').classList.add('loaded');
 
 // Block pinch-zoom on iOS Safari. The viewport meta `user-scalable=no` and

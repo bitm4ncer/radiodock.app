@@ -105,6 +105,20 @@
   width: auto;
 }
 
+/* Small auto-bumped build label, bottom-right of the drawer panel.
+   Pinned absolute so the nav list doesn't have to know about it. */
+.off-canvas__version {
+  position: absolute;
+  right: 14px;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+  opacity: 0.5;
+  pointer-events: none;
+  user-select: none;
+}
+
 .off-canvas__close {
   width: 36px;
   height: 36px;

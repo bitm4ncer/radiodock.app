@@ -22,6 +22,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history so vite.config.js can derive the patch version
+          # from `git rev-list --count HEAD`. Default shallow clone
+          # would always report 1 commit.
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
