@@ -83,10 +83,24 @@ fetch('https://radiodock-metadata-proxy-1.onrender.com/health', {
 const playerCard = mountPlayerCard({ player });
 const stationList = mountStationList({ container: 'favoritesList' });
 const listDropdown = mountListDropdown();
+// Search tracking is debounced separately from the API-fire debounce: the
+// 300ms input-debounce in search.js is tuned for snappy results, but with
+// slow typing (>300ms between chars) it fires one API call — and therefore
+// one track event — per character. Wait for the user to actually settle
+// on a query (1500ms idle) before emitting the analytics event.
+let searchTrackTimer = null;
+function scheduleSearchTrack(payload) {
+  if (searchTrackTimer) clearTimeout(searchTrackTimer);
+  searchTrackTimer = setTimeout(() => {
+    track('search', payload);
+    searchTrackTimer = null;
+  }, 1500);
+}
+
 const search = mountSearch({
   onSearch: async ({ query, filter }, transport) => {
     const results = await searchStations({ query, filter }, transport);
-    track('search', { filter, resultCount: results?.length ?? 0 });
+    scheduleSearchTrack({ filter, resultCount: results?.length ?? 0 });
     return results;
   },
   onPlay: (station) => {
