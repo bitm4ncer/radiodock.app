@@ -2,6 +2,14 @@
   position: relative;
 }
 
+/* When the dropdown menu is open, the enclosing .favorites-section
+   (which has overflow:hidden for the visualizer's collapse animation)
+   would otherwise clip the floating menu's bottom. Toggle it visible
+   only while open so the menu can spill out into the page. */
+.favorites-section.list-dropdown-open {
+  overflow: visible;
+}
+
 .list-dropdown-btn {
   display: flex;
   align-items: center;

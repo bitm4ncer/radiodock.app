@@ -40,13 +40,23 @@ export function mountListDropdown() {
   let shareCb = null;
   let deleteCb = null;
 
+  // Toggle a marker class on the enclosing .favorites-section while the
+  // dropdown is open. Without it, visualizer.css's overflow:hidden on
+  // that section clips the floating menu whenever the menu extends past
+  // the section's bottom edge (which it always does when there are
+  // many lists, or when favorites-list is short and the menu has to
+  // grow downward into empty space).
+  const section = btn.closest('.favorites-section');
+
   function close() {
     menu.style.display = 'none';
     btn.setAttribute('aria-expanded', 'false');
+    section?.classList.remove('list-dropdown-open');
   }
   function open() {
     menu.style.display = '';
     btn.setAttribute('aria-expanded', 'true');
+    section?.classList.add('list-dropdown-open');
   }
   function toggle() {
     const isOpen = menu.style.display !== 'none';
