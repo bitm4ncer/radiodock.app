@@ -121,11 +121,7 @@ const search = mountSearch({
     player.playStation(station);
   },
   onAdd: async (station) => {
-    // Add to the currently-active editable list. Fall back to Favorites when
-    // viewing Community Radios (the heart already targets Favorites).
-    const targetList = (findList(state.currentListId)?.readOnly === false
-      ? findList(state.currentListId)
-      : favoritesList());
+    const targetList = getActiveEditableList();
     if (!targetList) return;
     try {
       await listsApi.addStationToList(targetList.id, station);
@@ -140,9 +136,7 @@ const search = mountSearch({
     }
   },
   isAlreadyInActiveList: (stationId) => {
-    const list = (findList(state.currentListId)?.readOnly === false
-      ? findList(state.currentListId)
-      : favoritesList());
+    const list = getActiveEditableList();
     return !!list?.stations.some((s) => s.id === stationId);
   },
   canAddToActiveList: () => true,
@@ -274,14 +268,25 @@ function favoritesList() {
   return state.userLists[0];
 }
 
-function isStationFavorited(station) {
+// The list a "save / favorite" action targets. Default to the currently
+// active list so the heart on the player card and the + button on
+// search results both add to whatever the user is currently looking at.
+// Community is read-only, so fall back to Favorites when it's active —
+// keeps the heart functional without requiring a list switch.
+function getActiveEditableList() {
+  const active = findList(state.currentListId);
+  if (active && !active.readOnly) return active;
+  return favoritesList();
+}
+
+function isStationInActiveList(station) {
   if (!station) return false;
-  const fav = favoritesList();
-  return !!fav?.stations.some((s) => s.id === station.id);
+  const target = getActiveEditableList();
+  return !!target?.stations.some((s) => s.id === station.id);
 }
 
 function updateFavoriteHeart() {
-  playerCard.setFavoriteState(isStationFavorited(state.currentStation));
+  playerCard.setFavoriteState(isStationInActiveList(state.currentStation));
 }
 
 // --- Player events ---
@@ -344,24 +349,24 @@ stationList.onReorder(async (orderedIds) => {
   }
 });
 
-// --- Favorites heart on player card ---
+// --- Save-to-current-list heart on player card ---
 playerCard.onFavoriteClick(async (station) => {
   if (!station) return;
-  const fav = favoritesList();
-  if (!fav) return;
-  const has = fav.stations.some((s) => s.id === station.id);
+  const target = getActiveEditableList();
+  if (!target) return;
+  const has = target.stations.some((s) => s.id === station.id);
   try {
     if (has) {
-      await listsApi.removeStationFromList(fav.id, station.id);
-      fav.stations = fav.stations.filter((s) => s.id !== station.id);
-      toast('Removed from Favorites');
+      await listsApi.removeStationFromList(target.id, station.id);
+      target.stations = target.stations.filter((s) => s.id !== station.id);
+      toast(`Removed from "${target.name}"`);
     } else {
-      await listsApi.addStationToList(fav.id, station);
-      fav.stations = [...fav.stations, station];
-      toast('Added to Favorites');
+      await listsApi.addStationToList(target.id, station);
+      target.stations = [...target.stations, station];
+      toast(`Added to "${target.name}"`);
     }
     updateFavoriteHeart();
-    if (state.currentListId === fav.id) renderActiveList();
+    if (state.currentListId === target.id) renderActiveList();
     else listDropdown.setLists(allListsForDropdown());
   } catch (err) {
     toast(err.message);
