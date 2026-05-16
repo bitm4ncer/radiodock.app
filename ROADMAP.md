@@ -1,6 +1,6 @@
 # Roadmap
 
-## v2.2 — Usage analytics 🚧
+## v2.2 — Usage analytics ✅
 
 Custom Umami events on top of the existing cookieless pageview tracker
 (both go to the same `radiodock.app` website ID — no separate staging
@@ -13,7 +13,7 @@ events/month; the event set below averages ~3 per session.
 - [x] **A2** Library ops: `station-add` (from search add-button), `list-create`, `list-import` (`{ count }`), `list-export`, `list-delete` — fired after the IndexedDB op succeeds so failed ops don't get counted.
 - [x] **A3** Search: `search` (`{ filter, resultCount }`) fired once per debounced API call. The query string itself is intentionally **not** sent (PII concern).
 - [x] **A4** Install funnel: `install-click` (`{ platform }`) from each install-section button + the mobile drawer's Install row; `pwa-installed` from the window `appinstalled` event.
-- [ ] **A5** Verified on production — events visible in the Umami dashboard, no errors in console, dev-server requests do not show up in the data.
+- [x] **A5** Verified on production — events visible in the Umami dashboard, no errors in console, dev-server requests do not show up in the data.
 
 ---
 
