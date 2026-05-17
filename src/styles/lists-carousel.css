@@ -22,9 +22,14 @@
   scroll-snap-align: start;
   scroll-snap-stop: always;
   overflow-y: auto;
-  /* .mobile-lists already reserves the bottom-player space via its
-     computed height, so the page itself just needs breathing room. */
-  padding: 12px 16px 24px;
+  /* Bottom padding has to clear the fixed bottom player on iOS Safari
+     even when the dynamic viewport shrinks (status bar visible, URL
+     toolbar showing, etc.). 100 px gives the last row room to fully
+     scroll into view above the player; without it the last row gets
+     clipped mid-height. The container's own padding-bottom would
+     ideally cover this, but on real iOS the dvh math doesn't always
+     match — over-padding the page is the safe option. */
+  padding: 12px 16px 100px;
   -webkit-overflow-scrolling: touch;
 }
 

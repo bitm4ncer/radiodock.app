@@ -104,9 +104,17 @@ body.search-active .favorites-list {
   cursor: pointer;
   transition: background 0.2s ease;
   border-bottom: 1px solid #2a2a2a;
-  /* Allow vertical native scroll on rows until a reorder is active.
-     The pointer-based reorder switches this off via .reorder-active. */
-  touch-action: pan-y;
+  /* Allow native scroll in BOTH axes so a horizontal swipe on a row
+     bubbles up to the lists-carousel (scroll-snap between lists), and
+     a vertical swipe scrolls the list-page inside the carousel. Used
+     to be `pan-y` only — but on mobile that suppressed horizontal
+     scrolling, so users could only swipe-between-lists in the narrow
+     gap to the side of the row. The pointer-based reorder still
+     works because long-press detection lives in JS and runs before
+     the browser pans (movement > 10 px cancels the press); on
+     reorder activation, .reorder-active flips touch-action to none
+     and JS owns the pointer entirely. */
+  touch-action: pan-x pan-y;
   /* iOS/Android trigger native text-selection on long-press before our
      300ms long-press timer fires, leaving the row name highlighted with
      selection handles. Rows have no copy/select use case — suppress
