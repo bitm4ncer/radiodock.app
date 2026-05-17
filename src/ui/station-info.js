@@ -98,8 +98,11 @@ export function mountStationInfo() {
     if (data.codec) streamRows.push(['Codec', data.codec.toUpperCase()]);
     if (data.bitrate) streamRows.push(['Bitrate', `${data.bitrate} kbps`]);
     if (data.countrycode) streamRows.push(['Country', data.countrycode.toUpperCase()]);
-    if (data.votes) streamRows.push(['Votes', String(data.votes)]);
-    if (data.clickcount) streamRows.push(['Plays', String(data.clickcount)]);
+    // Note: votes + clickcount come from Radio Browser too, but those
+    // counters only reflect activity inside other RB-aware apps — they
+    // misrepresent real-world listenership (NTS has 43 RB-plays vs
+    // millions of actual listeners). Intentionally not shown so the
+    // sheet doesn't lie about popularity.
 
     const streamHtml = `
       <section class="station-info__section">
