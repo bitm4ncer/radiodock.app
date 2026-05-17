@@ -35,14 +35,18 @@
   }
 
   /* The container fills the .page so its .mobile-lists child (flex:1)
-     has a constrained height to flex into — otherwise the carousel
-     would collapse to content size and the tab strip would float in
-     dead space. Bottom padding reserves room for the fixed bottom
-     player; mobile-lists ends above it. */
+     has a constrained height to flex into. NO bottom padding here —
+     mobile-lists extends down to the viewport bottom (behind the
+     fixed player overlay). Player-clearance lives on the list-page's
+     own padding-bottom in lists-carousel.css, so the user can scroll
+     content right under the player while the last row still clears
+     it. Otherwise we'd be double-reserving player space (container
+     padding + list-page padding) and the visible list area would
+     stop well above the player. */
   .container {
     flex: 1;
     min-height: 0;
-    padding: 12px 0 calc(160px + env(safe-area-inset-bottom));
+    padding: 12px 0 0;
     gap: 12px;
   }
 

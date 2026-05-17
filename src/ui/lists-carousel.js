@@ -111,31 +111,35 @@ export function mountListsCarousel({ root }) {
 
   function detectCurrentFromScroll() {
     if (suppressScrollSync) return;
-    const containerLeft = root.getBoundingClientRect().left;
-    let best = null;
-    let bestDist = Infinity;
-    for (const [id, { pageEl }] of pages.entries()) {
-      const r = pageEl.getBoundingClientRect();
-      const dist = Math.abs(r.left - containerLeft);
-      if (dist < bestDist) {
-        bestDist = dist;
-        best = id;
-      }
-    }
-    if (best && best !== currentId) {
-      currentId = best;
-      currentChangeCb?.(best);
+    const pageWidth = root.clientWidth;
+    if (!pageWidth) return;
+    // Snap-by-half: the page whose left edge has scrolled past the
+    // container's midpoint is "the current page". Math.round of
+    // (scrollLeft / pageWidth) gives that index — switches at exactly
+    // 50% past, which is when the eye also reads the new page as
+    // dominant.
+    const idx = Math.round(root.scrollLeft / pageWidth);
+    const pageEl = root.children[idx];
+    const id = pageEl?.dataset?.id;
+    if (id && id !== currentId) {
+      currentId = id;
+      currentChangeCb?.(id);
     }
   }
 
-  // Use a scrollend equivalent — both scrollend and a debounced fallback
-  // for browsers that lack it (iOS Safari shipped scrollend in 18.1).
-  let scrollIdleTimer = null;
+  // Detect on every scroll frame (rAF-coalesced) instead of waiting
+  // for scrollend / a debounce timer — the previous 80 ms wait felt
+  // like a noticeable delay after the snap settled. The work is just
+  // a class toggle, cheap to do every frame.
+  let scrollRafQueued = false;
   root.addEventListener('scroll', () => {
-    clearTimeout(scrollIdleTimer);
-    scrollIdleTimer = setTimeout(detectCurrentFromScroll, 80);
+    if (scrollRafQueued) return;
+    scrollRafQueued = true;
+    requestAnimationFrame(() => {
+      scrollRafQueued = false;
+      detectCurrentFromScroll();
+    });
   }, { passive: true });
-  root.addEventListener('scrollend', detectCurrentFromScroll);
 
   return {
     setLists(next) {
