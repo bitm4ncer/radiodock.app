@@ -267,6 +267,12 @@ body.search-active .favorites-list {
 .btn-drag {
   width: 24px;
   height: 24px;
+  /* Match .btn-icon's flex centering so the dots align vertically with
+     the X button. Without this the span stays inline, width/height get
+     ignored, and the SVG hangs at the text baseline. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: grab;
   /* The handle owns no native gestures — the pointer-down listener takes
      over the moment the user touches it. */
