@@ -94,16 +94,23 @@
 }
 
 .off-canvas__header {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   padding: 20px 18px 12px;
 }
 
 .off-canvas__brand {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  /* Centered in the drawer header — the version sits directly under
+     the wordmark instead of trying to share a baseline-aligned row
+     with the SVG logo (where slight metric differences between
+     browsers wrap it to a second line at arbitrary widths). */
+  margin: 0 auto;
 }
 
 .off-canvas__logo {
@@ -111,9 +118,7 @@
   width: auto;
 }
 
-/* Auto-bumped build label, sat next to the wordmark. baseline alignment
-   on the flex parent so the digits sit on the same optical line as the
-   logo's lowercase letters. */
+/* Auto-bumped build label, centered under the wordmark. */
 .off-canvas__version {
   font-size: 10px;
   letter-spacing: 0.02em;
@@ -124,6 +129,10 @@
 }
 
 .off-canvas__close {
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  transform: translateY(-50%);
   width: 36px;
   height: 36px;
   display: flex;
