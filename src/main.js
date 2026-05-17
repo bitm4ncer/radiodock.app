@@ -541,6 +541,11 @@ async function bootstrap() {
         playerCard.setStation(station);
         stationList.setActive(station.id);
         updateFavoriteHeart();
+        // Browsers require a user gesture for the first play(), so the
+        // restored station sits silent with the play icon showing. Without
+        // a hint, returning users assume the app is broken. The text
+        // clears on the next stationchange (i.e. the moment they tap play).
+        playerCard.setNowPlaying('Tap ▶ to resume');
       }
     }
   } catch (err) {
