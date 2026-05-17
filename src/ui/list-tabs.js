@@ -27,16 +27,18 @@ const ICON_MENU = `<svg viewBox="0 0 24 24" aria-hidden="true">
 </svg>`;
 
 export function mountListTabs({ root }) {
-  if (!root) return { setLists() {}, setCurrent() {}, onSelect() {}, onLongPress() {}, onMenuClick() {} };
+  if (!root) return { setLists() {}, setCurrent() {}, onSelect() {}, onLongPress() {}, onMenuClick() {}, onNewListClick() {} };
 
   const tabsEl = root.querySelector('.list-tabs__scroller');
-  const menuBtn = root.querySelector('.list-tabs__menu-btn');
+  const menuBtn = root.querySelector('#mobileListMenuBtn');
+  const newBtn = root.querySelector('#mobileListNewBtn');
 
   let lists = [];
   let currentId = null;
   let selectCb = null;
   let longPressCb = null;
   let menuClickCb = null;
+  let newListCb = null;
 
   // Long-press state, keyed to the tab the user pressed.
   let pressTimer = null;
@@ -128,6 +130,11 @@ export function mountListTabs({ root }) {
     menuClickCb?.();
   });
 
+  newBtn?.addEventListener('click', (evt) => {
+    evt.stopPropagation();
+    newListCb?.();
+  });
+
   return {
     setLists(next) {
       lists = next ?? [];
@@ -141,5 +148,6 @@ export function mountListTabs({ root }) {
     onSelect(cb) { selectCb = cb; },
     onLongPress(cb) { longPressCb = cb; },
     onMenuClick(cb) { menuClickCb = cb; },
+    onNewListClick(cb) { newListCb = cb; },
   };
 }

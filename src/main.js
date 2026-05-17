@@ -430,6 +430,7 @@ listTabs.onLongPress((list) => {
 // every open/close so any close path (outside-click, action, etc.)
 // also pulls the backdrop down.
 listTabs.onMenuClick(() => listDropdown.open());
+listTabs.onNewListClick(promptCreateList);
 
 listDropdown.onToggle((isOpen) => {
   document.body.classList.toggle('list-menu-open', isOpen);
@@ -488,7 +489,7 @@ listsCarousel.onReorder(async (orderedIds, listId) => {
   }
 });
 
-listDropdown.onAddList(async () => {
+async function promptCreateList() {
   const name = await promptDialog({
     title: 'Create New Station List',
     label: 'List Name:',
@@ -512,7 +513,9 @@ listDropdown.onAddList(async () => {
   } catch (err) {
     toast(err.message);
   }
-});
+}
+
+listDropdown.onAddList(promptCreateList);
 
 listDropdown.onRename(async (list) => {
   const next = await promptDialog({
