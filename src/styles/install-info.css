@@ -177,12 +177,12 @@
    labels their device will display. */
 
 .install-walk {
-  margin: 0 0 16px;
+  margin: 0 0 12px;
   padding: 0;
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
 
 .install-walk__step {
@@ -213,10 +213,10 @@
 }
 
 .install-walk__caption {
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   font-size: 14px;
   color: var(--text);
-  line-height: 1.4;
+  line-height: 1.35;
 }
 
 .install-walk__caption strong {
@@ -233,11 +233,11 @@
   background: #0d0d0d;
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 12px;
-  padding: 12px 12px;
+  padding: 8px 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 56px;
+  min-height: 48px;
 }
 
 .install-walk__visual--stack {
@@ -436,7 +436,10 @@
 }
 
 /* --- Mobile: let the install modal fill the viewport so the walkthrough
-       can breathe instead of being cramped into a half-sheet. --- */
+       can breathe instead of being cramped into a half-sheet. The body
+       uses flex column so the primary CTA sits at the bottom (margin-
+       top: auto) when content is short, and stays pinned via
+       position: sticky when content scrolls. --- */
 @media (max-width: 699px) {
   .install-info-modal-root.modal .install-info-modal {
     height: 92dvh;
@@ -447,6 +450,17 @@
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+  }
+  /* Pin the dismiss CTA to the bottom of the modal viewport so the user
+     never has to scroll to leave the walkthrough. The soft shadow above
+     blends content fading underneath into the modal background. */
+  .install-info-modal-root.modal .install-info-modal .install-info__primary {
+    position: sticky;
+    bottom: 0;
+    margin-top: auto;
+    box-shadow: 0 -14px 18px -2px #1f1f1f;
   }
 }
 

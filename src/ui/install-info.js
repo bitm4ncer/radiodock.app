@@ -91,7 +91,6 @@ function html(platform) {
     case 'ios-safari':
       return `
         <h3 class="install-info__title">Install on iPhone</h3>
-        <p class="install-info__lead">4 quick steps — match the pictures to what you see on screen.</p>
         <ol class="install-walk">
           <li class="install-walk__step">
             <span class="install-walk__num">1</span>
