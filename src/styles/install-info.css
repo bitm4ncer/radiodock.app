@@ -169,6 +169,287 @@
   font-size: 12px;
 }
 
+/* ---- iOS install walkthrough ----
+   Each step pairs a short caption with a CSS mockup of the iOS chrome
+   the user is about to tap, so a non-English speaker can pattern-match
+   the icons even if the wording is unfamiliar. Bilingual hints
+   ("Share · Teilen", "Add · Hinzufügen") give German speakers the exact
+   labels their device will display. */
+
+.install-walk {
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.install-walk__step {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.install-walk__num {
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--red);
+  color: #fff;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.install-walk__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.install-walk__caption {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.install-walk__caption strong {
+  font-weight: 700;
+}
+
+.install-walk__de {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.install-walk__visual {
+  background: #0d0d0d;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 12px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+}
+
+.install-walk__visual--stack {
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+}
+
+/* --- Safari URL pill mock (step 1) --- */
+.ios-urlbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #2c2c2e;
+  border-radius: 999px;
+  padding: 8px 14px;
+  width: 100%;
+  font-size: 13px;
+  color: #d0d0d0;
+}
+
+.ios-urlbar__aa {
+  font-size: 14px;
+  color: #8e8e93;
+  font-weight: 600;
+}
+
+.ios-urlbar__aa small {
+  font-size: 10px;
+  vertical-align: super;
+  margin-left: -2px;
+}
+
+.ios-urlbar__lock,
+.ios-urlbar__refresh {
+  width: 14px;
+  height: 14px;
+  color: #8e8e93;
+  flex-shrink: 0;
+}
+
+.ios-urlbar__lock svg,
+.ios-urlbar__refresh svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ios-urlbar__host {
+  flex: 1;
+  text-align: center;
+  color: #fff;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- Safari bottom toolbar mock (step 2) --- */
+.ios-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.ios-toolbar__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  color: #d0d0d0;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.ios-toolbar__pill {
+  flex: 1;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #d0d0d0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ios-toolbar__btn--target {
+  position: relative;
+  background: rgba(205, 0, 37, 0.18);
+  color: #fff;
+  box-shadow: 0 0 0 2px var(--red);
+  animation: walkPulse 1.6s ease-in-out infinite;
+}
+
+.ios-toolbar__dots {
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: 0;
+  font-weight: 700;
+}
+
+@keyframes walkPulse {
+  0%, 100% { box-shadow: 0 0 0 2px var(--red), 0 0 0 0 rgba(205, 0, 37, 0.4); }
+  50%      { box-shadow: 0 0 0 2px var(--red), 0 0 0 10px rgba(205, 0, 37, 0); }
+}
+
+/* --- iOS menu / share-sheet row mock (steps 3 + 4) --- */
+.ios-menu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: #1c1c1e;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.ios-menu--target {
+  background: rgba(205, 0, 37, 0.16);
+  border: 1px solid rgba(205, 0, 37, 0.55);
+}
+
+.ios-menu__icon {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.ios-menu__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ios-menu__icon--plus {
+  font-size: 24px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.ios-menu__label {
+  flex: 1;
+  font-size: 14px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ios-menu__label small {
+  color: #8e8e93;
+  font-size: 12px;
+  font-weight: 400;
+  margin-left: 2px;
+}
+
+/* --- iOS confirm bar mock (step 4 stack) --- */
+.ios-confirm-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: #1c1c1e;
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.ios-confirm-bar__label {
+  color: #d0d0d0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.ios-confirm-bar__btn {
+  background: #0a84ff;
+  color: #fff;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ios-confirm-bar__btn small {
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 400;
+  margin-left: 2px;
+}
+
+/* --- Mobile: let the install modal fill the viewport so the walkthrough
+       can breathe instead of being cramped into a half-sheet. --- */
+@media (max-width: 699px) {
+  .install-info-modal-root.modal .install-info-modal {
+    height: 92dvh;
+    display: flex;
+    flex-direction: column;
+  }
+  .install-info-modal-root.modal .install-info-modal .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 /* ---- Desktop bottom-left popover behaviour ---- */
 @media (min-width: 700px) {
   /* viz-active body class (from src/styles/visualizer.css) sets position:

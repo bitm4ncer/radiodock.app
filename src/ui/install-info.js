@@ -38,6 +38,16 @@ const SHARE_ICON_SVG = `<svg class="install-info__inline-icon" viewBox="0 0 24 2
   <path d="M12 3v12m0-12-4 4m4-4 4 4M5 14v4a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
 </svg>`;
 
+const LOCK_ICON_SVG = `<svg viewBox="0 0 24 24" aria-hidden="true">
+  <path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <rect x="6" y="11" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.6" fill="none"/>
+</svg>`;
+
+const REFRESH_ICON_SVG = `<svg viewBox="0 0 24 24" aria-hidden="true">
+  <path d="M20 12a8 8 0 1 1-2.34-5.66" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+  <path d="M20 4v5h-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>`;
+
 function html(platform) {
   switch (platform) {
     case 'browser-ext':
@@ -80,15 +90,66 @@ function html(platform) {
 
     case 'ios-safari':
       return `
-        <h3 class="install-info__title">Add to iPhone Home Screen</h3>
-        <p class="install-info__lead">
-          RadioDock lives on your home screen like a real app — full screen,
-          lock-screen controls, audio that keeps playing in your pocket.
-        </p>
-        <ol class="install-info__steps">
-          <li>Tap the ${SHARE_ICON_SVG} <strong>Share</strong> icon at the bottom of Safari</li>
-          <li>Scroll and tap <strong>Add to Home Screen</strong></li>
-          <li>Tap <strong>Add</strong> in the top-right</li>
+        <h3 class="install-info__title">Install on iPhone</h3>
+        <p class="install-info__lead">4 quick steps — match the pictures to what you see on screen.</p>
+        <ol class="install-walk">
+          <li class="install-walk__step">
+            <span class="install-walk__num">1</span>
+            <div class="install-walk__body">
+              <p class="install-walk__caption">Open <strong>radiodock.app</strong> in <strong>Safari</strong></p>
+              <div class="install-walk__visual">
+                <div class="ios-urlbar">
+                  <span class="ios-urlbar__aa">A<small>A</small></span>
+                  <span class="ios-urlbar__lock">${LOCK_ICON_SVG}</span>
+                  <span class="ios-urlbar__host">radiodock.app</span>
+                  <span class="ios-urlbar__refresh">${REFRESH_ICON_SVG}</span>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="install-walk__step">
+            <span class="install-walk__num">2</span>
+            <div class="install-walk__body">
+              <p class="install-walk__caption">Tap the <strong>•••</strong> button at the bottom right</p>
+              <div class="install-walk__visual">
+                <div class="ios-toolbar">
+                  <span class="ios-toolbar__btn ios-toolbar__btn--ghost" aria-hidden="true">‹</span>
+                  <span class="ios-toolbar__pill">radiodock.app</span>
+                  <span class="ios-toolbar__btn ios-toolbar__btn--target" aria-hidden="true">
+                    <span class="ios-toolbar__dots">•••</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="install-walk__step">
+            <span class="install-walk__num">3</span>
+            <div class="install-walk__body">
+              <p class="install-walk__caption">Tap <strong>Share</strong> <small class="install-walk__de">/ Teilen</small></p>
+              <div class="install-walk__visual">
+                <div class="ios-menu ios-menu--target">
+                  <span class="ios-menu__icon">${SHARE_ICON_SVG}</span>
+                  <span class="ios-menu__label">Share <small>· Teilen</small></span>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="install-walk__step">
+            <span class="install-walk__num">4</span>
+            <div class="install-walk__body">
+              <p class="install-walk__caption">Scroll down, tap <strong>+ Add to Home Screen</strong>, then <strong>Add</strong> in the top right</p>
+              <div class="install-walk__visual install-walk__visual--stack">
+                <div class="ios-menu ios-menu--target">
+                  <span class="ios-menu__icon ios-menu__icon--plus" aria-hidden="true">+</span>
+                  <span class="ios-menu__label">Add to Home Screen <small>· Zum Home-Bildschirm</small></span>
+                </div>
+                <div class="ios-confirm-bar">
+                  <span class="ios-confirm-bar__label">RadioDock</span>
+                  <span class="ios-confirm-bar__btn">Add <small>· Hinzufügen</small></span>
+                </div>
+              </div>
+            </div>
+          </li>
         </ol>
         <button type="button" class="install-info__primary" data-action="dismiss">Got it</button>
       `;
