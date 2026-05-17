@@ -1,7 +1,9 @@
 // Renders a list of stations into #favoritesList.
 // - Click row → play.
 // - Optional remove button (only when editable=true, i.e. not the community list).
-// - Drag-and-drop reorder when editable=true.
+// - Long-press (touch) or drag-handle (mouse) reorder via Pointer Events.
+//   HTML5 drag-and-drop was replaced because it required imprecise long-holds
+//   on iOS Safari, gave no auto-scroll near edges, and had no haptic feedback.
 
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({
@@ -32,7 +34,7 @@ function stationRow(station, { activeId, editable }) {
     ? `<span class="btn-drag" title="Drag to reorder" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.6" fill="currentColor"/><circle cx="15" cy="6" r="1.6" fill="currentColor"/><circle cx="9" cy="12" r="1.6" fill="currentColor"/><circle cx="15" cy="12" r="1.6" fill="currentColor"/><circle cx="9" cy="18" r="1.6" fill="currentColor"/><circle cx="15" cy="18" r="1.6" fill="currentColor"/></svg></span>`
     : '';
   return `
-    <div class="station-item${isActive ? ' playing' : ''}" data-id="${escapeHtml(station.id)}" ${editable ? 'draggable="true"' : ''}>
+    <div class="station-item${isActive ? ' playing' : ''}" data-id="${escapeHtml(station.id)}">
       ${favicon
         ? `<img class="station-item-logo" src="${favicon}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'station-item-initials',textContent:${JSON.stringify(initials)}}))" />`
         : `<div class="station-item-initials">${escapeHtml(initials)}</div>`}
@@ -44,6 +46,11 @@ function stationRow(station, { activeId, editable }) {
     </div>
   `;
 }
+
+const LONG_PRESS_MS = 300;
+const MOVE_THRESHOLD_PX = 10;
+const EDGE_ZONE_PX = 60;
+const MAX_SCROLL_PX_PER_FRAME = 12;
 
 export function mountStationList({ container }) {
   const listEl = typeof container === 'string' ? document.getElementById(container) : container;
@@ -57,9 +64,126 @@ export function mountStationList({ container }) {
   let reorderCb = null;
   let rowsHost = null;
 
-  // Drag state
-  let dragSrcId = null;
-  let lastDropTarget = null;
+  // Reorder state
+  let pressTimer = null;
+  let pressedRow = null;
+  let pointerStartX = 0;
+  let pointerStartY = 0;
+  let activePointerId = null;
+  let dragSrcRow = null;
+  let scrollContainer = null;
+  let autoScrollRAF = null;
+  let autoScrollSpeed = 0;
+  let suppressNextClick = false;
+
+  function findScrollContainer(el) {
+    let node = el.parentElement;
+    while (node && node !== document.body) {
+      const style = getComputedStyle(node);
+      const oy = style.overflowY;
+      if ((oy === 'auto' || oy === 'scroll') && node.scrollHeight > node.clientHeight) {
+        return node;
+      }
+      node = node.parentElement;
+    }
+    return document.scrollingElement || document.documentElement;
+  }
+
+  function startAutoScroll() {
+    if (autoScrollRAF) return;
+    const tick = () => {
+      if (autoScrollSpeed && scrollContainer) {
+        scrollContainer.scrollBy(0, autoScrollSpeed);
+      }
+      autoScrollRAF = requestAnimationFrame(tick);
+    };
+    autoScrollRAF = requestAnimationFrame(tick);
+  }
+
+  function stopAutoScroll() {
+    if (autoScrollRAF) {
+      cancelAnimationFrame(autoScrollRAF);
+      autoScrollRAF = null;
+    }
+    autoScrollSpeed = 0;
+  }
+
+  function activateDrag(row) {
+    dragSrcRow = row;
+    row.classList.add('dragging');
+    rowsHost.classList.add('reorder-active');
+    scrollContainer = findScrollContainer(row);
+    try { navigator.vibrate?.(15); } catch {}
+    startAutoScroll();
+  }
+
+  function moveDrag(y) {
+    if (!dragSrcRow) return;
+    const siblings = Array.from(rowsHost.children).filter((el) => el !== dragSrcRow);
+    for (const sib of siblings) {
+      const r = sib.getBoundingClientRect();
+      if (y >= r.top && y <= r.bottom) {
+        const mid = r.top + r.height / 2;
+        if (y < mid) {
+          if (sib.previousElementSibling !== dragSrcRow) rowsHost.insertBefore(dragSrcRow, sib);
+        } else {
+          if (sib.nextElementSibling !== dragSrcRow) rowsHost.insertBefore(dragSrcRow, sib.nextElementSibling);
+        }
+        break;
+      }
+    }
+
+    const isDoc = scrollContainer === document.scrollingElement || scrollContainer === document.documentElement;
+    const cRect = isDoc ? null : scrollContainer.getBoundingClientRect();
+    const top = isDoc ? 0 : cRect.top;
+    const bottom = isDoc ? window.innerHeight : cRect.bottom;
+    // On mobile the page scrolls under a fixed bottom player (~160 px tall).
+    // Stop the auto-scroll edge zone above that overlap so we don't trigger
+    // scroll while the finger is still over the player card.
+    const playerOverlap = isDoc && matchMedia('(max-width: 699px)').matches ? 160 : 0;
+
+    const distTop = y - top;
+    const distBottom = bottom - playerOverlap - y;
+
+    if (distTop < EDGE_ZONE_PX) {
+      autoScrollSpeed = -Math.ceil((EDGE_ZONE_PX - distTop) / EDGE_ZONE_PX * MAX_SCROLL_PX_PER_FRAME);
+    } else if (distBottom < EDGE_ZONE_PX) {
+      autoScrollSpeed = Math.ceil((EDGE_ZONE_PX - distBottom) / EDGE_ZONE_PX * MAX_SCROLL_PX_PER_FRAME);
+    } else {
+      autoScrollSpeed = 0;
+    }
+  }
+
+  function commitDrag() {
+    const orderedIds = Array.from(rowsHost.querySelectorAll('[data-id]')).map((el) => el.dataset.id);
+    cleanupDrag();
+    // The synthesised click after a touch reorder would otherwise hit the
+    // station-row click handler and start playback. Swallow exactly one
+    // click; later real taps still work.
+    suppressNextClick = true;
+    setTimeout(() => { suppressNextClick = false; }, 100);
+    reorderCb?.(orderedIds);
+  }
+
+  function cleanupDrag() {
+    stopAutoScroll();
+    if (dragSrcRow) {
+      dragSrcRow.classList.remove('dragging');
+      dragSrcRow = null;
+    }
+    rowsHost?.classList.remove('reorder-active');
+    activePointerId = null;
+    pressedRow = null;
+    scrollContainer = null;
+  }
+
+  function cancelPress() {
+    if (pressTimer) {
+      clearTimeout(pressTimer);
+      pressTimer = null;
+    }
+    pressedRow = null;
+  }
 
   function ensureRowsHost() {
     if (rowsHost) return rowsHost;
@@ -68,6 +192,11 @@ export function mountStationList({ container }) {
     listEl.append(rowsHost);
 
     rowsHost.addEventListener('click', (evt) => {
+      if (suppressNextClick) {
+        evt.stopPropagation();
+        evt.preventDefault();
+        return;
+      }
       const removeBtn = evt.target.closest('.btn-remove');
       if (removeBtn) {
         evt.stopPropagation();
@@ -81,65 +210,79 @@ export function mountStationList({ container }) {
       if (station) clickCb?.(station);
     });
 
-    rowsHost.addEventListener('dragstart', (evt) => {
+    rowsHost.addEventListener('pointerdown', (evt) => {
+      if (!editable) return;
+      if (evt.button !== undefined && evt.button !== 0) return;
+      // Ignore additional fingers while a drag/press is in flight.
+      if (dragSrcRow || pressedRow) return;
+      if (evt.target.closest('.btn-remove')) return;
+
       const row = evt.target.closest('[data-id]');
       if (!row) return;
-      dragSrcId = row.dataset.id;
-      row.classList.add('dragging');
-      evt.dataTransfer.effectAllowed = 'move';
-      try {
-        evt.dataTransfer.setData('text/plain', dragSrcId);
-      } catch {}
-    });
 
-    rowsHost.addEventListener('dragover', (evt) => {
-      if (!dragSrcId) return;
-      evt.preventDefault();
-      const row = evt.target.closest('[data-id]');
-      if (!row || row.dataset.id === dragSrcId) return;
-      if (lastDropTarget && lastDropTarget !== row) {
-        lastDropTarget.classList.remove('drag-over');
+      const isHandle = !!evt.target.closest('.btn-drag');
+      const isTouch = evt.pointerType === 'touch';
+
+      // Mouse on row body stays a pure click-to-play; only the handle starts
+      // a drag on desktop.
+      if (!isTouch && !isHandle) return;
+
+      pointerStartX = evt.clientX;
+      pointerStartY = evt.clientY;
+      activePointerId = evt.pointerId;
+      pressedRow = row;
+
+      if (isHandle) {
+        activateDrag(row);
+        try { rowsHost.setPointerCapture(evt.pointerId); } catch {}
+        evt.preventDefault();
+      } else {
+        pressTimer = setTimeout(() => {
+          pressTimer = null;
+          if (pressedRow !== row) return;
+          activateDrag(row);
+          try { rowsHost.setPointerCapture(activePointerId); } catch {}
+        }, LONG_PRESS_MS);
       }
-      row.classList.add('drag-over');
-      lastDropTarget = row;
     });
 
-    rowsHost.addEventListener('dragleave', (evt) => {
-      const row = evt.target.closest('[data-id]');
-      if (row) row.classList.remove('drag-over');
-    });
-
-    rowsHost.addEventListener('drop', (evt) => {
-      if (!dragSrcId) return;
-      evt.preventDefault();
-      const targetRow = evt.target.closest('[data-id]');
-      if (!targetRow || targetRow.dataset.id === dragSrcId) {
-        cleanupDrag();
+    rowsHost.addEventListener('pointermove', (evt) => {
+      if (evt.pointerId !== activePointerId) return;
+      if (pressTimer) {
+        const dx = Math.abs(evt.clientX - pointerStartX);
+        const dy = Math.abs(evt.clientY - pointerStartY);
+        if (dx > MOVE_THRESHOLD_PX || dy > MOVE_THRESHOLD_PX) {
+          cancelPress();
+          activePointerId = null;
+        }
         return;
       }
-      const orderedIds = Array.from(rowsHost.querySelectorAll('[data-id]')).map((el) => el.dataset.id);
-      const fromIdx = orderedIds.indexOf(dragSrcId);
-      const toIdx = orderedIds.indexOf(targetRow.dataset.id);
-      orderedIds.splice(fromIdx, 1);
-      orderedIds.splice(toIdx, 0, dragSrcId);
-      cleanupDrag();
-      reorderCb?.(orderedIds);
-    });
+      if (dragSrcRow) {
+        evt.preventDefault();
+        moveDrag(evt.clientY);
+      }
+    }, { passive: false });
 
-    rowsHost.addEventListener('dragend', cleanupDrag);
+    const onEnd = (evt) => {
+      if (activePointerId === null || evt.pointerId !== activePointerId) return;
+      cancelPress();
+      if (dragSrcRow) {
+        commitDrag();
+      } else {
+        activePointerId = null;
+      }
+    };
+    rowsHost.addEventListener('pointerup', onEnd);
+    rowsHost.addEventListener('pointercancel', onEnd);
 
     return rowsHost;
   }
 
-  function cleanupDrag() {
-    if (lastDropTarget) lastDropTarget.classList.remove('drag-over');
-    rowsHost?.querySelectorAll('.dragging').forEach((el) => el.classList.remove('dragging'));
-    rowsHost?.querySelectorAll('.drag-over').forEach((el) => el.classList.remove('drag-over'));
-    dragSrcId = null;
-    lastDropTarget = null;
-  }
-
   function render() {
+    // A reorder in flight would dangle on dragSrcRow after innerHTML wipes
+    // the DOM. In practice this path is only hit on list-switch or
+    // stationchange, both of which already implicitly end the gesture.
+    if (dragSrcRow || pressedRow) cleanupDrag();
     if (!stations.length) {
       if (emptyEl) emptyEl.style.display = '';
       if (rowsHost) rowsHost.remove();

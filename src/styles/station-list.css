@@ -117,6 +117,14 @@ body.search-active .favorites-list {
   cursor: pointer;
   transition: background 0.2s ease;
   border-bottom: 1px solid #2a2a2a;
+  /* Allow vertical native scroll on rows until a reorder is active.
+     The pointer-based reorder switches this off via .reorder-active. */
+  touch-action: pan-y;
+}
+
+.station-list-rows.reorder-active .station-item {
+  touch-action: none;
+  user-select: none;
 }
 
 .station-item:hover {
@@ -236,6 +244,8 @@ body.search-active .favorites-list {
   width: 24px;
   height: 24px;
   cursor: grab;
+  /* The handle owns no native gestures — the pointer-down listener takes
+     over the moment the user touches it. */
   touch-action: none;
 }
 
@@ -243,7 +253,7 @@ body.search-active .favorites-list {
   cursor: grabbing;
 }
 
-.station-item[draggable="true"] .btn-drag:hover {
+.btn-drag:hover {
   background: rgba(255, 255, 255, 0.2);
 }
 
@@ -259,12 +269,22 @@ body.search-active .favorites-list {
 }
 
 .station-item.dragging {
-  opacity: 0.5;
-  transform: scale(0.95);
+  background: var(--bg-list-active);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  transform: scale(1.02);
+  opacity: 0.95;
+  z-index: 5;
+  position: relative;
+  transition: transform 120ms ease, box-shadow 120ms ease;
 }
 
-.station-item.drag-over {
-  border-top: 2px solid var(--accent);
+/* Mobile: there is no hover, so the actions stayed invisible and users
+   never discovered the remove + reorder affordances. Surface them
+   permanently on small viewports. */
+@media (max-width: 699px) {
+  .station-item-actions {
+    opacity: 1;
+  }
 }
 
 .empty-state {
