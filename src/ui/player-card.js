@@ -18,6 +18,7 @@ export function mountPlayerCard({ player }) {
   const nowPlayingTextEl = document.getElementById('nowPlayingText');
   const countryEl = document.getElementById('stationCountry');
   const visitBtn = document.getElementById('visitStationBtn');
+  const infoBtn = document.getElementById('stationInfoBtn');
   const favBtn = document.getElementById('addToFavoritesBtn');
   const playPauseBtn = document.getElementById('playPauseBtn');
   const playIcon = playPauseBtn.querySelector('.play-icon');
@@ -27,6 +28,14 @@ export function mountPlayerCard({ player }) {
 
   let currentStation = null;
   let favoriteCallback = null;
+  let infoCallback = null;
+
+  // Tiny haptic tap on the main interactions. navigator.vibrate is
+  // Android/Chromium only — iOS Safari ignores it silently — so this is
+  // gracefully no-op on iOS without needing a UA check.
+  function haptic(ms = 10) {
+    try { navigator.vibrate?.(ms); } catch {}
+  }
 
   function setPlayState(state /* 'play' | 'pause' | 'buffering' */) {
     playIcon.style.display = state === 'play' ? '' : 'none';
@@ -44,6 +53,7 @@ export function mountPlayerCard({ player }) {
       logoImg.style.display = 'none';
       initialsEl.textContent = '';
       visitBtn.style.display = 'none';
+      infoBtn.style.display = 'none';
       favBtn.style.display = 'none';
       return;
     }
@@ -73,6 +83,7 @@ export function mountPlayerCard({ player }) {
     } else {
       visitBtn.style.display = 'none';
     }
+    infoBtn.style.display = '';
     favBtn.style.display = '';
   }
 
@@ -102,6 +113,7 @@ export function mountPlayerCard({ player }) {
   // Wire interactions
   playPauseBtn.addEventListener('click', () => {
     if (!currentStation) return;
+    haptic();
     if (player.isPlaying()) {
       player.pause();
       return;
@@ -190,7 +202,14 @@ export function mountPlayerCard({ player }) {
   });
 
   favBtn.addEventListener('click', () => {
+    haptic();
     favoriteCallback?.(currentStation);
+  });
+
+  infoBtn.addEventListener('click', () => {
+    if (!currentStation) return;
+    haptic();
+    infoCallback?.(currentStation);
   });
 
   // Subscribe to player events
@@ -218,6 +237,9 @@ export function mountPlayerCard({ player }) {
     setVolumePct,
     onFavoriteClick(cb) {
       favoriteCallback = cb;
+    },
+    onInfoClick(cb) {
+      infoCallback = cb;
     },
     setFavoriteState(isFavorited) {
       favBtn.classList.toggle('is-favorited', !!isFavorited);

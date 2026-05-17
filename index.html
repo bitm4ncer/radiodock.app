@@ -141,6 +141,13 @@
                 <div class="station-country-line">
                   <div id="stationCountry" class="station-country"></div>
                   <a id="visitStationBtn" class="visit-btn" href="#" target="_blank" rel="noopener" style="display: none;">Visit Station</a>
+                  <button id="stationInfoBtn" class="btn-icon btn-station-info" title="Station info" aria-label="Station info" style="display: none;">
+                    <svg viewBox="0 0 24 24" class="info-icon" aria-hidden="true">
+                      <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6" fill="none"/>
+                      <circle cx="12" cy="8" r="1" fill="currentColor"/>
+                      <path d="M12 11v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                    </svg>
+                  </button>
                   <button id="addToFavoritesBtn" class="btn-icon btn-add-favorite" title="Add to favorites" style="display: none;">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="heart-icon" aria-hidden="true">
                       <path d="M16.5 3C19.5376 3 22 5.5 22 9C22 16 14.5 20 12 21.5C9.5 20 2 16 2 9C2 5.5 4.5 3 7.5 3C9.35997 3 11 4 12 5C13 4 14.64 3 16.5 3Z"></path>
@@ -415,6 +422,16 @@
           <input type="text" id="shareLinkInput" readonly />
           <button type="button" id="copyShareLinkBtn" class="btn-primary share-copy-btn">Copy link</button>
         </div>
+      </div>
+    </div>
+
+    <div id="stationInfoModal" class="modal" aria-hidden="true">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="stationInfoTitle">Station</h3>
+          <button id="closeStationInfoBtn" class="modal-close-btn" aria-label="Close">×</button>
+        </div>
+        <div class="modal-body station-info-body" id="stationInfoBody"></div>
       </div>
     </div>
 

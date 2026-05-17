@@ -107,3 +107,35 @@ export async function searchStations({ query, filter = 'name' }, { signal } = {}
   }
   throw new Error(`Radio Browser search failed: ${lastError?.message ?? 'unknown error'}`);
 }
+
+/**
+ * Fetch a single station by its Radio Browser UUID. Returns the same
+ * normalised shape as searchStations(). Used by the station-info sheet
+ * to top up the basic Community-list record (which only has id/name/
+ * url/countrycode/favicon/homepage) with tags/bitrate/codec/votes etc.
+ * Returns null if the UUID isn't known to any Radio Browser mirror.
+ */
+export async function getStationByUuid(uuid, { signal } = {}) {
+  const id = String(uuid ?? '').trim();
+  if (!id) return null;
+
+  for (let attempt = 0; attempt < SERVERS.length; attempt++) {
+    const server = pickServer();
+    const url = `${server}/json/stations/byuuid/${encodeURIComponent(id)}`;
+    try {
+      const res = await fetch(url, {
+        method: 'GET',
+        signal,
+        headers: { Accept: 'application/json', 'User-Agent': USER_AGENT_HEADER },
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (!Array.isArray(data) || data.length === 0) return null;
+      return normaliseStation(data[0]);
+    } catch (err) {
+      if (signal?.aborted) throw err;
+      rotateServer();
+    }
+  }
+  return null;
+}

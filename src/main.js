@@ -11,6 +11,7 @@ import { mountPlayerCard } from './ui/player-card.js';
 import { mountStationList } from './ui/station-list.js';
 import { mountListDropdown } from './ui/list-dropdown.js';
 import { mountSearch } from './ui/search.js';
+import { mountStationInfo } from './ui/station-info.js';
 import { initModals, openModal, closeModal } from './ui/modals.js';
 import { toast } from './ui/toast.js';
 import { promptDialog, confirmDialog, choiceDialog } from './ui/modal-helpers.js';
@@ -90,6 +91,14 @@ fetch('https://radiodock-metadata-proxy-1.onrender.com/health', {
 }).catch(() => {});
 
 const playerCard = mountPlayerCard({ player });
+const stationInfo = mountStationInfo();
+playerCard.onInfoClick((station) => {
+  stationInfo.open(station);
+  track('station-info-open', {
+    station: station.name ?? '',
+    country: station.countrycode ?? '',
+  });
+});
 const stationList = mountStationList({ container: 'favoritesList' });
 const listDropdown = mountListDropdown();
 // Search tracking is debounced separately from the API-fire debounce: the
