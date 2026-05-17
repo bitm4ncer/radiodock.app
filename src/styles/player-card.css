@@ -220,21 +220,45 @@
   font-weight: 500;
   color: var(--text-muted);
   white-space: nowrap;
-  display: block;
-  width: 195px;
+  display: inline-block;
+  /* Default state: truncate with ellipsis. JS measures the rendered
+     text and adds .is-marquee when the text actually overflows; the
+     marquee state drops the ellipsis and runs the keyframe animation
+     below. */
+  max-width: 195px;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: transform 0.3s linear, width 0s linear 0.3s, text-overflow 0s linear 0.3s, overflow 0s linear 0.3s;
-  transform: translateX(0);
+  vertical-align: bottom;
 }
 
-/* Hide ellipsis and allow overflow on hover */
-.player-card:hover .now-playing-text.can-scroll {
-  text-overflow: clip; /* Hide the ellipsis dots */
-  overflow: visible; /* Allow text to extend beyond container */
-  width: 195px; /* Keep fixed width to prevent card extension */
-  transform: translateX(var(--scroll-distance, 0px));
-  transition: transform var(--scroll-duration, 3s) linear, width 0s linear, text-overflow 0s linear, overflow 0s linear;
+/* Auto-marquee for now-playing text that's longer than the player
+   card can show. Works on mobile (no hover required), and on desktop.
+   The parent .now-playing has overflow: hidden — that clips the
+   animated span back to the player card's width. JS sets the
+   --marquee-shift and --marquee-duration custom properties based on
+   how much the text actually overflows. */
+.now-playing-text.is-marquee {
+  max-width: none;
+  overflow: visible;
+  text-overflow: clip;
+  animation: now-playing-marquee var(--marquee-duration, 9s) linear infinite;
+}
+
+@keyframes now-playing-marquee {
+  0%,  12% { transform: translateX(0); }
+  46%, 58% { transform: translateX(var(--marquee-shift, -100px)); }
+  92%, 100% { transform: translateX(0); }
+}
+
+/* Respect the OS reduced-motion preference — no marquee, just show
+   the truncated text with ellipsis. */
+@media (prefers-reduced-motion: reduce) {
+  .now-playing-text.is-marquee {
+    animation: none;
+    max-width: 195px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 

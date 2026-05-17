@@ -96,6 +96,41 @@ export function mountPlayerCard({ player }) {
     // visually clipped to zero height on the mobile player.
     const wrap = nowPlayingTextEl.closest('.now-playing');
     wrap?.classList.toggle('show', value.length > 0);
+    updateMarquee();
+  }
+
+  // Toggle the auto-scrolling marquee on the now-playing line when the
+  // text is wider than the card can show. The default ellipsis state
+  // stays for short text; once .is-marquee flips on, CSS runs the
+  // keyframe animation that uses --marquee-shift + --marquee-duration
+  // (set here from the measured overflow). Mobile has no hover, so an
+  // automatic loop is the only way the full title is ever readable.
+  function updateMarquee() {
+    // Strip the state first so scrollWidth / clientWidth are measured
+    // in the truncated layout — gives the actual overflow regardless
+    // of whether the marquee was already running.
+    nowPlayingTextEl.classList.remove('is-marquee');
+    nowPlayingTextEl.style.removeProperty('--marquee-shift');
+    nowPlayingTextEl.style.removeProperty('--marquee-duration');
+
+    if (!nowPlayingTextEl.textContent) return;
+
+    // Defer one frame so the .show transition has applied + layout
+    // is stable. Without this the .now-playing parent's max-height
+    // collapse can still be in flight and scrollWidth reads 0.
+    requestAnimationFrame(() => {
+      if (!nowPlayingTextEl.textContent) return;
+      const overflow = nowPlayingTextEl.scrollWidth - nowPlayingTextEl.clientWidth;
+      if (overflow <= 4) return; // Fits, no marquee needed.
+
+      // Roughly 40 px/s scroll feels comfortable to read — matches the
+      // iOS lock-screen now-playing marquee. Floor at 7 s so very short
+      // overflows don't whip past, ceiling at 16 s for very long titles.
+      const dur = Math.max(7, Math.min(16, 4 + overflow / 40));
+      nowPlayingTextEl.style.setProperty('--marquee-shift', `-${overflow}px`);
+      nowPlayingTextEl.style.setProperty('--marquee-duration', `${dur}s`);
+      nowPlayingTextEl.classList.add('is-marquee');
+    });
   }
 
   function setVolumePct(pct) {
