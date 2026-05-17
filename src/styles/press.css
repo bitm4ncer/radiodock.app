@@ -1,0 +1,76 @@
+/* Visual press feedback — a brief scale-down on tap-down. Compensates
+   for iOS Safari deliberately not exposing the Taptic Engine to web
+   apps (navigator.vibrate is a silent no-op on iOS regardless of
+   browser; even Add-to-Home-Screen PWAs can't use it). On Android the
+   real vibration still fires alongside this; on desktop the mouse
+   click gets the same squish for free.
+   Three groups: big circular primary, small icon buttons, wide
+   buttons / full-width rows. Different scale ratios so the visible
+   shrink reads as the same "amount of press" regardless of element
+   size — a 4% squish on a 200 px button is dramatic; on a 24 px icon
+   it's invisible. */
+
+/* Group 1 — big primary surface. */
+.play-pause-btn {
+  transition: transform 100ms ease;
+}
+.play-pause-btn:active {
+  transform: scale(0.92);
+}
+
+/* Group 2 — small icon buttons. Larger ratio so the squish actually
+   reads on a 24-32 px surface. */
+.btn-add-favorite,
+.btn-station-info,
+.btn-remove,
+.btn-add,
+.list-more-btn,
+.filter-btn,
+.visit-btn,
+.mobile-topbar__btn,
+.modal-close-btn,
+.off-canvas__close,
+.search-overlay__close {
+  transition: transform 100ms ease;
+}
+.btn-add-favorite:active,
+.btn-station-info:active,
+.btn-remove:active,
+.btn-add:active,
+.list-more-btn:active,
+.filter-btn:active,
+.visit-btn:active,
+.mobile-topbar__btn:active,
+.modal-close-btn:active,
+.off-canvas__close:active,
+.search-overlay__close:active {
+  transform: scale(0.9);
+}
+
+/* Group 3 — wide buttons and full-width rows. Subtle ratio so the
+   element doesn't lurch sideways on press; the eye reads even ~2%
+   shrink as deliberate. */
+.btn-primary,
+.btn-secondary,
+.list-action-row,
+.station-info__action,
+.off-canvas__item,
+.add-list-btn,
+.import-list-btn,
+.about__more-btn,
+.share-copy-btn,
+.btn-audio-reset {
+  transition: transform 100ms ease;
+}
+.btn-primary:active,
+.btn-secondary:active,
+.list-action-row:active,
+.station-info__action:active,
+.off-canvas__item:active,
+.add-list-btn:active,
+.import-list-btn:active,
+.about__more-btn:active,
+.share-copy-btn:active,
+.btn-audio-reset:active {
+  transform: scale(0.97);
+}
