@@ -149,7 +149,10 @@ body.search-active .favorites-list {
 }
 
 .station-item.playing {
-  background: var(--bg-list-active);
+  /* Brighter than --bg-list-active (#262626) and the hover state
+     (#333333) so the active station stands out clearly on mobile, where
+     there is no hover affordance to disambiguate. */
+  background: #383838;
 }
 
 .station-item.playing .station-item-name::after {

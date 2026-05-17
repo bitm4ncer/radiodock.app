@@ -42,7 +42,7 @@ function stationRow(station, { activeId, editable }) {
         <div class="station-item-name">${escapeHtml(station.name ?? '')}</div>
         <div class="station-item-country">${escapeHtml(station.countrycode ?? '')}</div>
       </div>
-      ${editable ? `<div class="station-item-actions">${dragHandle}${removeBtn}</div>` : ''}
+      ${editable ? `<div class="station-item-actions">${removeBtn}${dragHandle}</div>` : ''}
     </div>
   `;
 }
