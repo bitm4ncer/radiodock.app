@@ -138,19 +138,6 @@ body.search-active #searchInput {
   overflow-y: auto;
 }
 
-.search-results-list::-webkit-scrollbar {
-  width: 6px;
-}
-
-.search-results-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.search-results-list::-webkit-scrollbar-thumb {
-  background: #4a4a4a;
-  border-radius: 3px;
-}
-
 .search-item {
   display: flex;
   align-items: center;

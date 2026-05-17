@@ -39,6 +39,7 @@ export function mountListDropdown() {
   let exportCb = null;
   let shareCb = null;
   let deleteCb = null;
+  let toggleCb = null;
 
   // Toggle a marker class on the enclosing .favorites-section while the
   // dropdown is open. Without it, visualizer.css's overflow:hidden on
@@ -52,11 +53,13 @@ export function mountListDropdown() {
     menu.style.display = 'none';
     btn.setAttribute('aria-expanded', 'false');
     section?.classList.remove('list-dropdown-open');
+    toggleCb?.(false);
   }
   function open() {
     menu.style.display = '';
     btn.setAttribute('aria-expanded', 'true');
     section?.classList.add('list-dropdown-open');
+    toggleCb?.(true);
   }
   function toggle() {
     const isOpen = menu.style.display !== 'none';
@@ -181,6 +184,9 @@ export function mountListDropdown() {
     onExport(cb) { exportCb = cb; },
     onShare(cb) { shareCb = cb; },
     onDelete(cb) { deleteCb = cb; },
+    onToggle(cb) { toggleCb = cb; },
+    openActionsSheet,
+    open,
     close,
   };
 }

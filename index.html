@@ -199,7 +199,29 @@
           </div>
         </section>
 
-        <!-- Favorites / lists section -->
+        <!-- Mobile-only: horizontal tab strip + scroll-snap carousel
+             of station lists. Replaces the dropdown's "switch lists"
+             role on mobile; the dropdown itself is still mounted in
+             .favorites-section below and accessible via the menu
+             button on the tab strip (create / import / etc.). -->
+        <section class="mobile-lists mobile-only" aria-label="Station lists">
+          <nav class="list-tabs" aria-label="Switch list">
+            <div class="list-tabs__scroller" role="tablist"></div>
+            <button type="button" class="list-tabs__menu-btn" id="mobileListMenuBtn" aria-label="List menu">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="5" cy="12" r="1.8" fill="currentColor"/>
+                <circle cx="12" cy="12" r="1.8" fill="currentColor"/>
+                <circle cx="19" cy="12" r="1.8" fill="currentColor"/>
+              </svg>
+            </button>
+          </nav>
+          <div class="lists-carousel" id="listsCarousel"></div>
+        </section>
+
+        <!-- Favorites / lists section. The static favorites-list and
+             the dropdown trigger button are hidden on mobile via CSS;
+             only the dropdown menu itself stays reachable, opened by
+             the mobile tab strip's menu button. -->
         <section class="favorites-section">
           <header class="favorites-header">
             <div class="list-selector">

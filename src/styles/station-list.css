@@ -97,19 +97,6 @@ body.search-active .favorites-list {
   max-height: 57px;
 }
 
-.favorites-list::-webkit-scrollbar {
-  width: 6px;
-}
-
-.favorites-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.favorites-list::-webkit-scrollbar-thumb {
-  background: #4a4a4a;
-  border-radius: 3px;
-}
-
 .station-item {
   display: flex;
   align-items: center;

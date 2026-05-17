@@ -1,0 +1,108 @@
+/* Mobile-only horizontal tab strip for switching station lists. Each
+   list gets a pill tab; an icon button on the right opens the
+   existing dropdown menu (create / import / list overview). The strip
+   itself scrolls horizontally when there are many lists. Scrollbars
+   are globally hidden so the strip reads as a clean iOS tab bar. */
+
+.mobile-lists {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.list-tabs {
+  flex: 0 0 auto;
+}
+
+.lists-carousel {
+  flex: 1;
+  min-height: 0;
+}
+
+.list-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.list-tabs__scroller {
+  flex: 1;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  /* Native horizontal scroll for tab overflow; vertical hidden so
+     a sloppy diagonal swipe doesn't displace the strip. */
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 0;
+}
+
+.list-tab {
+  flex-shrink: 0;
+  padding: 7px 14px;
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 160ms ease, background 160ms ease, transform 100ms ease;
+  /* Long-press starts our 380 ms timer; suppress the iOS callout +
+     selection that would otherwise hijack the gesture. */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+
+.list-tab:active {
+  transform: scale(0.95);
+}
+
+.list-tab.is-active {
+  color: var(--text);
+  background: var(--bg-list-hover);
+}
+
+.list-tabs__menu-btn {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  color: var(--text-muted);
+  cursor: pointer;
+  margin-left: 4px;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 160ms ease, background 160ms ease, transform 100ms ease;
+}
+
+.list-tabs__menu-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+}
+
+.list-tabs__menu-btn:active {
+  transform: scale(0.9);
+}
+
+.list-tabs__menu-btn svg {
+  width: 20px;
+  height: 20px;
+}

@@ -51,21 +51,16 @@ body {
   gap: 16px;
 }
 
-/* Custom scrollbar */
+/* Hide native scrollbars everywhere. Scroll behaviour is preserved
+   (overflow:auto/scroll still works), but the visible track + thumb
+   are suppressed so the app reads as a native shell rather than a
+   webby document with chrome. */
 * {
-  scrollbar-width: thin;
-  scrollbar-color: #4a4a4a transparent;
+  scrollbar-width: none;            /* Firefox */
+  -ms-overflow-style: none;         /* legacy Edge */
 }
-*::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-*::-webkit-scrollbar-track {
-  background: transparent;
-}
-*::-webkit-scrollbar-thumb {
-  background: #4a4a4a;
-  border-radius: 3px;
+*::-webkit-scrollbar {              /* Chromium / Safari */
+  display: none;
 }
 
 /* Visit homepage / heart icon helpers */

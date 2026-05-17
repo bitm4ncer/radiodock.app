@@ -1,0 +1,49 @@
+/* Horizontal scroll-snap carousel of station lists. Each list is its
+   own .list-page; CSS scroll-snap handles the swipe-to-snap gesture
+   natively on both iOS and Android. No JS for the swipe itself — the
+   container's overflow-x: auto + scroll-snap-type does all the work.
+   Scrollbars are globally hidden, so the strip and the carousel both
+   read as clean app surfaces. */
+
+.lists-carousel {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.list-page {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  overflow-y: auto;
+  /* .mobile-lists already reserves the bottom-player space via its
+     computed height, so the page itself just needs breathing room. */
+  padding: 12px 16px 24px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Each page hosts its own .favorites-list wrapper with the dark
+   rounded background. */
+.list-page .favorites-list {
+  background: var(--bg-dark);
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 57px;
+}
+
+.list-page .empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 57px;
+  padding: 12px 16px;
+  text-align: center;
+  color: #777;
+  font-size: 14px;
+}

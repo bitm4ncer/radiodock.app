@@ -10,6 +10,8 @@ import { mountSearchOverlay } from './ui/search-overlay.js';
 import { mountPlayerCard } from './ui/player-card.js';
 import { mountStationList } from './ui/station-list.js';
 import { mountListDropdown } from './ui/list-dropdown.js';
+import { mountListTabs } from './ui/list-tabs.js';
+import { mountListsCarousel } from './ui/lists-carousel.js';
 import { mountSearch } from './ui/search.js';
 import { mountStationInfo } from './ui/station-info.js';
 import { initModals, openModal, closeModal } from './ui/modals.js';
@@ -101,6 +103,14 @@ playerCard.onInfoClick((station) => {
 });
 const stationList = mountStationList({ container: 'favoritesList' });
 const listDropdown = mountListDropdown();
+
+// Mobile-only: horizontal tab strip + scroll-snap carousel of all
+// lists. Both unconditionally mounted — CSS hides the mobile path on
+// desktop and the desktop dropdown chrome on mobile. State pushed to
+// all three surfaces (listDropdown, listTabs, listsCarousel) on every
+// list state change; whichever is visible reads it.
+const listTabs = mountListTabs({ root: document.querySelector('.list-tabs') });
+const listsCarousel = mountListsCarousel({ root: document.getElementById('listsCarousel') });
 // Search tracking is debounced separately from the API-fire debounce: the
 // 300ms input-debounce in search.js is tuned for snappy results, but with
 // slow typing (>300ms between chars) it fires one API call — and therefore
@@ -265,10 +275,18 @@ function findList(id) {
 function renderActiveList() {
   const list = findList(state.currentListId) ?? state.community;
   state.currentListId = list.id;
-  listDropdown.setLists(allListsForDropdown());
+  const allLists = allListsForDropdown();
+  // Desktop dropdown
+  listDropdown.setLists(allLists);
   listDropdown.setCurrent(list.id);
   stationList.setStations(list.stations, { editable: !list.readOnly });
   stationList.setActive(state.currentStation?.id ?? null);
+  // Mobile tabs + carousel
+  listTabs.setLists(allLists);
+  listTabs.setCurrent(list.id);
+  listsCarousel.setLists(allLists);
+  listsCarousel.setCurrent(list.id, { animate: false });
+  listsCarousel.setActiveStation(state.currentStation?.id ?? null);
   updateFavoriteHeart();
 }
 
@@ -387,6 +405,87 @@ listDropdown.onSelect(async (list) => {
   state.currentListId = list.id;
   renderActiveList();
   await storage.setPref('currentListId', list.id);
+});
+
+// --- Mobile tabs + carousel ---
+// Tap a tab → switch list (re-uses the same flow as dropdown.onSelect
+// so persistence + heart-sync + tab/carousel state all stay in sync).
+listTabs.onSelect(async (list) => {
+  state.currentListId = list.id;
+  renderActiveList();
+  await storage.setPref('currentListId', list.id);
+});
+
+// Long-press a tab → open the list-actions sheet for that list (Rename
+// / Share / Export / Delete). Same modal the desktop ⋯ button opens —
+// no duplicate sheet to maintain. Community is read-only so we skip it.
+listTabs.onLongPress((list) => {
+  if (list?.readOnly) return;
+  listDropdown.openActionsSheet(list);
+});
+
+// Tap the ⋯ menu button on the tab strip → open the desktop dropdown
+// menu (CSS restyles it as a bottom sheet on mobile). The body class
+// drives the backdrop. listDropdown.onToggle below syncs the class on
+// every open/close so any close path (outside-click, action, etc.)
+// also pulls the backdrop down.
+listTabs.onMenuClick(() => listDropdown.open());
+
+listDropdown.onToggle((isOpen) => {
+  document.body.classList.toggle('list-menu-open', isOpen);
+});
+
+// Swipe between carousel pages → user changed the active list. Take
+// the lightweight path: state + tabs + dropdown label + heart, but
+// skip listsCarousel.setCurrent (already scrolled by the user) and
+// skip the full setLists rebuild (list shape didn't change).
+listsCarousel.onCurrentChange(async (listId) => {
+  if (state.currentListId === listId) return;
+  state.currentListId = listId;
+  listDropdown.setCurrent(listId);
+  listTabs.setCurrent(listId);
+  const list = findList(listId);
+  if (list) stationList.setStations(list.stations, { editable: !list.readOnly });
+  stationList.setActive(state.currentStation?.id ?? null);
+  updateFavoriteHeart();
+  await storage.setPref('currentListId', listId);
+});
+
+// Carousel row interactions: each page's station-list passes the
+// listId alongside the station so the handler can resolve the target
+// list directly, no state.currentListId lookup needed (avoids races
+// with the swipe-driven state update).
+listsCarousel.onClick((station) => {
+  track('station-play', {
+    station: station.name ?? '',
+    country: station.countrycode ?? '',
+    source: state.currentListId === COMMUNITY_LIST_ID ? 'community' : 'user-list',
+  });
+  player.playStation(station);
+});
+
+listsCarousel.onRemove(async (stationId, listId) => {
+  const list = findList(listId);
+  if (!list || list.readOnly) return;
+  try {
+    await listsApi.removeStationFromList(list.id, stationId);
+    list.stations = list.stations.filter((s) => s.id !== stationId);
+    renderActiveList();
+  } catch (err) {
+    toast(err.message);
+  }
+});
+
+listsCarousel.onReorder(async (orderedIds, listId) => {
+  const list = findList(listId);
+  if (!list || list.readOnly) return;
+  try {
+    const updated = await listsApi.reorderStationsInList(list.id, orderedIds);
+    list.stations = updated.stations;
+    renderActiveList();
+  } catch (err) {
+    toast(err.message);
+  }
 });
 
 listDropdown.onAddList(async () => {

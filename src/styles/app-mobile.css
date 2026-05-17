@@ -10,20 +10,38 @@
     display: none !important;
   }
 
-  /* Page becomes a vertical stack with the top bar pinned. The container
-     no longer needs to center its content vertically — content fills the
-     space between top bar and the fixed bottom player. */
+  /* Body becomes a flex column so the sticky top bar gets its slice
+     and the .page fills exactly the remaining viewport. Page scroll
+     is locked off — each list-page inside the carousel scrolls
+     vertically on its own. Without this lock the top bar would
+     overlap the tab strip (both compete for top:0). */
+  html, body {
+    height: 100dvh;
+    overflow: hidden;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+  .mobile-topbar {
+    flex: 0 0 auto;
+  }
   .page {
     justify-content: flex-start;
-    min-height: 100dvh;
+    flex: 1;
+    min-height: 0;
+    height: auto;
+    overflow: hidden;
   }
 
-  /* Bottom padding reserves room for the fixed player + volume row so
-     the last list row stays reachable when scrolled all the way down.
-     Lives on the container, not on .favorites-list, so the dark list
-     box ends at the last item — extra room below is page background,
-     not dead space inside the list. */
+  /* The container fills the .page so its .mobile-lists child (flex:1)
+     has a constrained height to flex into — otherwise the carousel
+     would collapse to content size and the tab strip would float in
+     dead space. Bottom padding reserves room for the fixed bottom
+     player; mobile-lists ends above it. */
   .container {
+    flex: 1;
+    min-height: 0;
     padding: 12px 0 calc(160px + env(safe-area-inset-bottom));
     gap: 12px;
   }
@@ -76,17 +94,69 @@
     display: none !important;
   }
 
-  /* The mobile top bar already carries the RadioDock logo; the redundant
-     dock-title above the stations list goes away. The list-dropdown
-     ("Community Radios ▾") stays — it's the only way to switch lists.
-     With the dock-title gone, push the dropdown to the right edge so
-     it doesn't flush-left and lose its visual anchor. */
-  .list-header .dock-title {
-    display: none;
+  /* The mobile top bar already carries the RadioDock logo and the new
+     mobile-lists section owns list switching via tabs + carousel —
+     so the whole desktop favorites-section is collapsed to zero on
+     mobile. Can't use display:none because the dropdown menu inside
+     is reused by the mobile tab strip's ⋯ button (re-opens as a
+     bottom sheet via position:fixed). Instead: visibility:hidden +
+     height:0 collapses the layout while leaving descendants
+     reachable. The menu re-enables visibility for itself so it
+     renders when shown. overflow:visible undoes visualizer.css's
+     overflow:hidden (which would otherwise make the section a
+     containing block for fixed descendants and clip the menu). */
+  .favorites-section {
+    visibility: hidden;
+    pointer-events: none;
+    height: 0;
+    overflow: visible;
+    margin: 0;
+    padding: 0;
+  }
+  .favorites-section .list-dropdown-menu {
+    visibility: visible;
+    pointer-events: auto;
   }
 
-  .list-header .list-dropdown {
-    margin-left: auto;
+  /* Restyle the dropdown menu as a bottom sheet when it opens on
+     mobile. The element keeps its existing show/hide JS — we just
+     reanchor and re-skin it via CSS. */
+  .list-dropdown-menu {
+    position: fixed !important;
+    inset: auto 0 0 0 !important;
+    margin: 0 !important;
+    min-width: 0 !important;
+    width: 100%;
+    max-width: none;
+    border-radius: 18px 18px 0 0;
+    background: var(--bg-dark);
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4);
+    z-index: 2100;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  /* Drag-handle pill above the bottom-sheet menu, matches the other
+     bottom sheets. */
+  .list-dropdown-menu::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 4px;
+    margin: 8px auto 4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+  }
+
+  /* Backdrop for the bottom-sheet menu. Toggled by JS via the
+     .favorites-section.list-dropdown-open class on body or section. */
+  body.list-menu-open::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    backdrop-filter: blur(14px) saturate(120%);
+    z-index: 2099;
   }
 
   /* On mobile the hover-revealed action icons are unreachable (no

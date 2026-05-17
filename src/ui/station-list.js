@@ -54,7 +54,11 @@ const MAX_SCROLL_PX_PER_FRAME = 12;
 
 export function mountStationList({ container }) {
   const listEl = typeof container === 'string' ? document.getElementById(container) : container;
-  const emptyEl = document.getElementById('emptyState');
+  // Look up the empty-state placeholder as a child of this list's
+  // container, not via a global #emptyState ID. Lets the component be
+  // instantiated multiple times (one per page) inside the mobile
+  // lists-carousel without two instances fighting over the same node.
+  const emptyEl = listEl?.querySelector('.empty-state') ?? null;
 
   let stations = [];
   let activeId = null;
