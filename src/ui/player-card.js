@@ -121,7 +121,11 @@ export function mountPlayerCard({ player }) {
 
   // Volume "slider but as separate dots": pointer drag picks the dot
   // under (or closest to) the pointer and sets volume continuously.
-  (() => {
+  // Mobile hides .volume-controls via display:none (hardware volume +
+  // MediaSession take over), so skip wiring entirely on small viewports —
+  // the listeners would never fire on a hidden element and the dot lookup
+  // is wasted work.
+  if (matchMedia('(min-width: 700px)').matches) (() => {
     const dots = Array.from(volumeWrap.querySelectorAll('.volume-dot'));
     let dragging = false;
 
