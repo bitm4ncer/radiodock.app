@@ -130,6 +130,10 @@
     align-items: stretch;
     justify-content: stretch;
     background: var(--bg);
+    /* About is fullscreen on mobile — the backdrop blur from the base
+       .modal rule would just waste GPU cycles on a fully-opaque surface. */
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
     /* Cancel the modal's opacity fade-in — use a slide instead. */
     transition: opacity 200ms ease;
   }
