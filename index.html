@@ -101,7 +101,10 @@
       <div class="off-canvas__backdrop" data-action="close"></div>
       <div class="off-canvas__panel" role="dialog" aria-modal="true" aria-label="Menu">
         <div class="off-canvas__header">
-          <img src="/logo-text.svg" alt="RadioDock" class="off-canvas__logo" />
+          <div class="off-canvas__brand">
+            <img src="/logo-text.svg" alt="RadioDock" class="off-canvas__logo" />
+            <span class="off-canvas__version app-version" aria-hidden="true">v1.0.0</span>
+          </div>
           <button type="button" class="off-canvas__close" data-action="close" aria-label="Close menu">×</button>
         </div>
         <nav class="off-canvas__nav">
@@ -118,7 +121,6 @@
           <a class="off-canvas__item" href="https://buymeacoffee.com/bitmancer" target="_blank" rel="noopener">Buy me a coffee</a>
           <a class="off-canvas__item off-canvas__item--muted" href="/legal.html" target="_blank" rel="noopener">Legal Notice</a>
         </nav>
-        <span class="off-canvas__version app-version" aria-hidden="true">v1.0.0</span>
       </div>
     </aside>
 

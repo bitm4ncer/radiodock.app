@@ -100,21 +100,25 @@
   padding: 20px 18px 12px;
 }
 
+.off-canvas__brand {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
 .off-canvas__logo {
   height: 24px;
   width: auto;
 }
 
-/* Small auto-bumped build label, bottom-right of the drawer panel.
-   Pinned absolute so the nav list doesn't have to know about it. */
+/* Auto-bumped build label, sat next to the wordmark. baseline alignment
+   on the flex parent so the digits sit on the same optical line as the
+   logo's lowercase letters. */
 .off-canvas__version {
-  position: absolute;
-  right: 14px;
-  bottom: max(12px, env(safe-area-inset-bottom));
   font-size: 10px;
   letter-spacing: 0.02em;
   color: var(--text-muted);
-  opacity: 0.5;
+  opacity: 0.6;
   pointer-events: none;
   user-select: none;
 }
