@@ -239,14 +239,29 @@ body.search-active .favorites-list {
 }
 
 .btn-remove {
- width: 24px;
+  width: 24px;
   height: 24px;
+  /* Override .btn-icon's #a0a0a0 — the drag handle next to this button
+     inherits the row's #E0E0E0, and at the same opacity the bright × is
+     visually balanced with the bright ⋮⋮. Without this they'd read as
+     "primary affordance + secondary garnish" rather than equal twins. */
+  color: var(--text);
+}
 
+.btn-remove svg {
+  width: 14px;
+  height: 14px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
 }
 
 .btn-remove:hover {
   background: rgba(255, 255, 255, 0.1);
   color: var(--red);
+}
+
+.btn-remove:hover svg {
+  opacity: 1;
 }
 
 .btn-drag {
