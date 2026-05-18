@@ -79,7 +79,7 @@
     align-items: stretch;
     gap: 0;
     background: var(--bg);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid var(--border);
     padding: 8px 12px calc(12px + env(safe-area-inset-bottom));
   }
 
@@ -148,7 +148,7 @@
     height: 4px;
     margin: 8px auto 4px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.18);
+    background: var(--overlay-hard);
   }
 
   /* Backdrop for the bottom-sheet menu. Toggled by JS via the
@@ -233,7 +233,7 @@
 
   #infoModal .modal-header {
     padding: max(16px, env(safe-area-inset-top)) 20px 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid var(--overlay-soft);
     flex-shrink: 0;
   }
 

@@ -31,7 +31,7 @@ body.viz-active .search-overlay {
   gap: 8px;
   padding: 8px 12px;
   padding-top: calc(8px + env(safe-area-inset-top));
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border);
 }
 
 .search-overlay__close {

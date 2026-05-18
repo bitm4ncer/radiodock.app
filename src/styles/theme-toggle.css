@@ -1,0 +1,113 @@
+/* Theme toggle widget — two presentation variants from the same
+   DOM contract:
+   - .theme-toggle--row  → off-canvas drawer item style
+   - .theme-toggle--pill → desktop-footer pill style
+
+   Both expose a [data-action="theme-toggle"] button. aria-pressed
+   carries the state — sun shown in dark mode (tap to go light),
+   moon shown in light mode (tap to go dark). */
+
+/* ---- Shared icon swap (sun ↔ moon) ---- */
+.theme-toggle__icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.theme-toggle__icon--sun { display: block; }
+.theme-toggle__icon--moon { display: none; }
+[aria-pressed="true"] .theme-toggle__icon--sun { display: none; }
+[aria-pressed="true"] .theme-toggle__icon--moon { display: block; }
+
+/* ---- Off-canvas variant: row matching .off-canvas__item ---- */
+.theme-toggle--row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 14px;
+  color: var(--text);
+  background: none;
+  border: 0;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 160ms ease;
+}
+
+.theme-toggle--row:hover {
+  background: var(--bg-list-hover);
+}
+
+.theme-toggle--row__label {
+  flex: 1;
+}
+
+/* The visual switch on the right side of the row. Reuses the
+   optout-style track + thumb language. */
+.theme-toggle__switch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+  pointer-events: none; /* the whole row is the hit target */
+}
+
+.theme-toggle__track {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-light);
+  border-radius: 999px;
+  transition: background 160ms ease;
+}
+
+.theme-toggle__track::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  background: var(--text);
+  border-radius: 50%;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+[aria-pressed="true"] .theme-toggle__track {
+  background: var(--accent);
+}
+[aria-pressed="true"] .theme-toggle__track::after {
+  transform: translateX(18px);
+  background: var(--bg);
+}
+
+/* ---- Desktop-footer variant: a footer-pill with just an icon ---- */
+.theme-toggle--pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--overlay-hard);
+  border-radius: 999px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.theme-toggle--pill:hover {
+  color: var(--text);
+  border-color: var(--text-muted);
+  background: var(--overlay-soft);
+}
+
+.theme-toggle--pill .theme-toggle__icon {
+  width: 16px;
+  height: 16px;
+}

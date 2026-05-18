@@ -37,7 +37,7 @@
 .dock-logo {
   width: auto;
   height: 28px;
-  filter: brightness(0) saturate(100%) invert(82%) sepia(0%) saturate(0%) hue-rotate(168deg) brightness(95%) contrast(82%);
+  filter: var(--icon-filter);
   cursor: pointer;
   transition: opacity 0.2s ease;
 }
@@ -68,20 +68,20 @@
 .btn-export:hover,
 .btn-import:hover {
   color: var(--text);
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--overlay-med);
 }
 
 .btn-export .icon,
 .btn-import .icon {
   width: 14px;
   height: 14px;
-  filter: brightness(0) saturate(100%) invert(82%) sepia(0%) saturate(0%) hue-rotate(168deg) brightness(95%) contrast(82%);
+  filter: var(--icon-filter);
   transition: filter 0.2s ease;
 }
 
 .btn-export:hover .icon,
 .btn-import:hover .icon {
-  filter: brightness(0) saturate(100%) invert(88%) sepia(0%) saturate(2%) hue-rotate(168deg) brightness(95%) contrast(88%);
+  filter: var(--icon-filter-hover);
 }
 
 .favorites-list {
@@ -103,7 +103,7 @@ body.search-active .favorites-list {
   padding: 12px 16px;
   cursor: pointer;
   transition: background 0.2s ease;
-  border-bottom: 1px solid #2a2a2a;
+  border-bottom: 1px solid var(--divider);
   /* Allow native scroll in BOTH axes so a horizontal swipe on a row
      bubbles up to the lists-carousel (scroll-snap between lists), and
      a vertical swipe scrolls the list-page inside the carousel. Used
@@ -144,10 +144,11 @@ body.search-active .favorites-list {
 }
 
 .station-item.playing {
-  /* Brighter than --bg-list-active (#262626) and the hover state
-     (#333333) so the active station stands out clearly on mobile, where
-     there is no hover affordance to disambiguate. */
-  background: #383838;
+  /* More emphasized than the hover state — the only way the active
+     station stands out on mobile (where there's no hover). The token
+     flips with the theme so it stays "more contrasted" against the
+     list bg in either palette. */
+  background: var(--bg-list-playing);
 }
 
 .station-item.playing .station-item-name::after {
@@ -188,7 +189,7 @@ body.search-active .favorites-list {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #4a4a4a;
+  background: var(--bg-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -251,7 +252,7 @@ body.search-active .favorites-list {
 }
 
 .btn-remove:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--overlay-med);
   color: var(--red);
 }
 
@@ -279,7 +280,7 @@ body.search-active .favorites-list {
 }
 
 .btn-drag:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--overlay-hard);
 }
 
 .btn-drag svg {
@@ -319,6 +320,6 @@ body.search-active .favorites-list {
   height: auto;
   min-height: 57px;
   text-align: center;
-  color: #777;
+  color: var(--text-muted);
   font-size: 14px;
 }

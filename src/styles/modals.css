@@ -22,11 +22,11 @@
 }
 
 .toast.error {
-  background: #dc2626;
+  background: var(--red);
 }
 
 .toast.success {
-  background: #16a34a;
+  background: var(--green);
 }
 
 /* Modal Styles */
@@ -42,7 +42,7 @@
      The #infoModal override below restores an opaque background for
      the fullscreen About slide-in where you don't want anything
      showing through. */
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--backdrop);
   -webkit-backdrop-filter: blur(14px) saturate(120%);
   backdrop-filter: blur(14px) saturate(120%);
   display: none;
@@ -167,7 +167,7 @@
 }
 
 .error-message {
-  color: #dc2626;
+  color: var(--red);
   font-size: 11px;
   margin-top: 8px;
 }
@@ -214,7 +214,7 @@
 }
 
 .about__list code {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--overlay-med);
   padding: 1px 5px;
   border-radius: 4px;
   font-size: 12px;
@@ -223,7 +223,7 @@
 .about__footer {
   margin: 22px 0 0;
   padding-top: 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid var(--border);
   font-size: 12px;
   color: var(--text-muted);
 }
@@ -237,7 +237,7 @@
   margin: 4px 0 16px;
   padding: 6px 14px;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid var(--overlay-hard);
   border-radius: 999px;
   color: var(--text-muted);
   font-family: inherit;
@@ -249,8 +249,8 @@
 
 .about__more-btn:hover {
   color: var(--text);
-  border-color: rgba(255, 255, 255, 0.32);
-  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--text-muted);
+  background: var(--overlay-soft);
 }
 
 .about__more-label-expanded { display: none; }
@@ -334,6 +334,7 @@
 .dock-logo-modal{
   width: auto;
   height: 30px;
+  filter: var(--logo-filter);
 }
 
 /* Share modal — read-only URL field + copy button. */
@@ -392,7 +393,7 @@
 
 .list-action-row:hover,
 .list-action-row:active {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--overlay-soft);
 }
 
 .list-action-row--danger {
@@ -478,7 +479,7 @@
     height: 4px;
     margin: 8px auto 0;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.18);
+    background: var(--overlay-hard);
   }
 
   /* Share-link input: bigger, easier to long-press → Copy on iOS. */

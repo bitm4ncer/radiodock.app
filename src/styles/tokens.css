@@ -1,10 +1,16 @@
 :root {
+  /* Dark theme (default). The .theme-light class on <html> overrides
+     the color tokens below; everything that uses var(--…) in CSS flips
+     for free. JS sets the class via src/ui/theme.js (with an inline
+     head script for flash-free first paint). */
+
   /* Palette — verbatim from the extension's popup.css */
   --bg: #1A1A1A;
   --bg-dark: #0D0D0D;
   --bg-light: #696969;
   --bg-list-hover: #333333;
   --bg-list-active: #262626;
+  --bg-list-playing: #383838;
 
   --text: #E0E0E0;
   --text-muted: #a7a7a7;
@@ -20,6 +26,35 @@
   --surface-2: var(--bg-list-hover);
   --border: rgba(255, 255, 255, 0.06);
   --positive: var(--green);
+
+  /* Subtle hover/press overlay tinted to the theme — white on dark,
+     black on light. Components compose this for hover backgrounds,
+     hairline separators, etc., so the visual intent ("slightly
+     lighter than surface") flips automatically. */
+  --overlay-soft: rgba(255, 255, 255, 0.06);
+  --overlay-med:  rgba(255, 255, 255, 0.10);
+  --overlay-hard: rgba(255, 255, 255, 0.18);
+
+  /* Backdrop dim behind modal / bottom-sheet content. Roughly the same
+     darkness in both themes — a translucent black layer reads as a
+     dim regardless of what's behind it. */
+  --backdrop: rgba(0, 0, 0, 0.45);
+
+  /* Hairline divider between rows. */
+  --divider: #2a2a2a;
+
+  /* Two filter tokens for the same source-white SVG icons:
+     - --icon-filter (& -hover): tints to muted-grey, theme-aware.
+       Used by inline action icons (dock-logo in the desktop dropdown,
+       btn-export/import icons). Keeps a subdued appearance in either
+       theme.
+     - --logo-filter: identity in dark (native white logo stays white
+       on dark bg), dark-grey in light (white logo would otherwise
+       vanish against #E1E1E1). Used for the brand wordmark in the
+       mobile topbar + off-canvas drawer header. */
+  --icon-filter: brightness(0) invert(0.65);
+  --icon-filter-hover: brightness(0) invert(0.75);
+  --logo-filter: none;
 
   /* Geometry */
   --radius-sm: 8px;
@@ -39,4 +74,40 @@
   --font-stack:
     -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
     Arial, sans-serif;
+}
+
+/* Light theme overrides. */
+:root.theme-light {
+  --bg: #E1E1E1;
+  --bg-dark: #CDCDCD;        /* surface beneath the main bg (list bg etc.) */
+  --bg-light: #888888;       /* dimmed accent / disabled */
+  --bg-list-hover: #C5C5C5;  /* darker than --bg for hover contrast */
+  --bg-list-active: #D3D3D3; /* between bg and hover */
+  --bg-list-playing: #B5B5B5; /* darker than hover — emphasized for active row */
+
+  --text: #414141;
+  --text-muted: #6C6C6C;
+
+  --accent: #414141;
+  --accent-hover: #B0B0B0;
+
+  /* --red + --green stay the same — they're brand/state colors, not
+     surface colors, and read well on both bg shades. */
+
+  --border: rgba(0, 0, 0, 0.10);
+
+  /* Tint overlays inverted: dark wash on light surfaces. */
+  --overlay-soft: rgba(0, 0, 0, 0.05);
+  --overlay-med:  rgba(0, 0, 0, 0.08);
+  --overlay-hard: rgba(0, 0, 0, 0.16);
+
+  --backdrop: rgba(0, 0, 0, 0.35);
+
+  --divider: #BFBFBF;
+
+  /* Icons stay muted on light bg (mid grey ~#666); brand logo flips
+     from native white → dark grey so it actually shows. */
+  --icon-filter: brightness(0) invert(0.4);
+  --icon-filter-hover: brightness(0) invert(0.25);
+  --logo-filter: brightness(0) invert(0.25);
 }

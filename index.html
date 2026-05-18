@@ -4,6 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#1a1a1a" />
+    <!-- Flash-free theme apply. Synchronously read the stored
+         preference (localStorage, because IndexedDB can't be read
+         sync before first paint), fall back to OS preference, set
+         the class on <html> before CSS hits. src/ui/theme.js owns
+         the rest of the lifecycle. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('radiodock-theme');
+          if (t !== 'light' && t !== 'dark') {
+            t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+          }
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (t === 'light') {
+            document.documentElement.classList.add('theme-light');
+            if (meta) meta.content = '#E1E1E1';
+          }
+        } catch (e) {}
+      })();
+    </script>
 
     <title>RadioDock — Internet Radio Player</title>
     <meta name="description" content="Listen to 50K+ internet radio stations worldwide. Free player and list manager for web, browser extension, desktop, and mobile." />
@@ -119,6 +139,21 @@
           <a class="off-canvas__item" href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener">GitHub</a>
           <a class="off-canvas__item" href="https://github.com/bitm4ncer/radiodock.app/issues" target="_blank" rel="noopener">Issues</a>
           <a class="off-canvas__item" href="https://buymeacoffee.com/bitmancer" target="_blank" rel="noopener">Buy me a coffee</a>
+
+          <button type="button" class="theme-toggle--row" data-action="theme-toggle" aria-pressed="false" aria-label="Switch theme">
+            <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" fill="currentColor"/>
+              <path d="M12 2v3M12 19v3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M2 12h3M19 12h3M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+            </svg>
+            <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" fill="currentColor"/>
+            </svg>
+            <span class="theme-toggle--row__label">Light theme</span>
+            <span class="theme-toggle__switch" aria-hidden="true">
+              <span class="theme-toggle__track"></span>
+            </span>
+          </button>
+
           <a class="off-canvas__item off-canvas__item--muted" href="/legal.html" target="_blank" rel="noopener">Legal Notice</a>
         </nav>
       </div>
@@ -316,6 +351,15 @@
           Buy me a coffee
         </a>
         <a class="footer-pill footer-pill--sm footer-pill--ghost" href="/legal.html" target="_blank" rel="noopener">Legal Notice</a>
+        <button type="button" class="theme-toggle--pill" data-action="theme-toggle" aria-pressed="false" aria-label="Switch theme" title="Switch theme">
+          <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" fill="currentColor"/>
+            <path d="M12 2v3M12 19v3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M2 12h3M19 12h3M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+          </svg>
+          <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" fill="currentColor"/>
+          </svg>
+        </button>
       </div>
     </footer>
 

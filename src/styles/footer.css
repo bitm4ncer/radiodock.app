@@ -38,7 +38,7 @@
   color: var(--text-muted);
 }
 .footer-pill--ghost:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--overlay-soft);
   color: var(--text);
 }
 
@@ -56,8 +56,8 @@
 /* Desktop footer bar. Slightly darker than the body; below the fold by
    default (the .page above it is min-height: 100dvh). */
 .site-footer-desktop {
-  background: #0d0d0d;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--bg-dark);
+  border-top: 1px solid var(--border);
   padding: 14px 24px;
 }
 

@@ -40,7 +40,7 @@
 }
 
 .install-section__close:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--overlay-med);
   color: var(--text);
 }
 
@@ -148,7 +148,7 @@
 }
 
 .install-section__back:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--overlay-soft);
   color: var(--text);
 }
 
@@ -202,7 +202,7 @@
   .install-section {
     margin-top: 4px;
     padding: 12px 0 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid var(--border);
   }
   .install-section__close {
     display: none;
@@ -227,8 +227,8 @@
     width: 340px;
     max-width: calc(100vw - 40px);
     padding: 14px 16px 16px;
-    background: #1f1f1f;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--bg-list-active);
+    border: 1px solid var(--border);
     border-radius: 16px;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
     z-index: 60;

@@ -92,7 +92,7 @@ body {
 }
 .store-badge:hover {
   color: var(--text);
-  border-color: rgba(255, 255, 255, 0.16);
+  border-color: var(--overlay-hard);
 }
 
 /* Chrome-extension link is desktop-only — irrelevant on phones */

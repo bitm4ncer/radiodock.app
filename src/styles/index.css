@@ -15,6 +15,7 @@
 @import './off-canvas.css';
 @import './search-overlay.css';
 @import './footer.css';
+@import './theme-toggle.css';
 @import './visualizer.css';
 /* Regime files come last so their media-query rules can override
    component-level defaults. */

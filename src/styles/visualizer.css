@@ -24,7 +24,7 @@
 }
 .tool-btn:hover {
   color: var(--text);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--overlay-med);
 }
 .tool-btn__icon,
 .tool-btn__icon svg,
@@ -45,8 +45,8 @@
   right: calc(100% + 6px);
   top: 50%;
   transform: translateY(-50%) translateX(8px);
-  background: rgba(224, 224, 224, 0.92);
-  color: #1a1a1a;
+  background: var(--text);
+  color: var(--bg);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -279,7 +279,7 @@
   justify-content: center;
 }
 .viz-drawer__close:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--overlay-med);
   color: var(--text);
 }
 
@@ -382,7 +382,7 @@
   background: var(--bg-list-hover);
 }
 .viz-drawer__item.is-active {
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: var(--overlay-hard);
   background: var(--bg-list-hover);
 }
 .viz-drawer__item-check {

@@ -165,7 +165,7 @@
   width: 65px;
   height: 65px;
   border-radius: 50%;
-  background: #4a4a4a;
+  background: var(--bg-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -373,7 +373,7 @@
 }
 
 .btn-add-favorite:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--overlay-med);
 }
 
 .btn-add-favorite {
@@ -385,7 +385,7 @@
 }
 
 .btn-add-favorite:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--overlay-med);
 }
 
 .heart-icon {
@@ -412,7 +412,7 @@
   height: 24px;
   border: none;
   background: transparent;
-  color: #a0a0a0;
+  color: var(--text-muted);
   cursor: pointer;
   border-radius: 50px;
   display: flex;
@@ -424,6 +424,6 @@
 }
 
 .btn-icon:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--overlay-med);
   color: var(--text);
 }

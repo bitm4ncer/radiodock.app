@@ -140,7 +140,7 @@
 }
 
 .list-export-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--overlay-med);
 }
 
 .list-export-btn:hover .action-icon {
@@ -173,7 +173,7 @@
 
 .list-edit-btn:hover,
 .list-share-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--overlay-med);
 }
 
 .list-edit-btn:hover .action-icon,
@@ -201,7 +201,7 @@
 }
 
 .list-more-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--overlay-med);
 }
 
 .action-icon--more {
@@ -241,7 +241,7 @@
 }
 
 .list-remove-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--overlay-med);
   color: var(--red);
 }
 
@@ -259,7 +259,7 @@
 }
 
 .list-actions {
-  border-top: 1px solid #2a2a2a;
+  border-top: 1px solid var(--divider);
   padding: 8px;
   display: flex;
   gap: 0;
@@ -297,7 +297,7 @@
 
 .list-actions-divider {
   width: 1px;
-  background: #2a2a2a;
+  background: var(--divider);
   margin: 4px 0;
 }
 

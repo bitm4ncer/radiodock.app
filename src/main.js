@@ -25,6 +25,7 @@ import { searchStations } from './data/radio-browser.js';
 import { mountVisualizer } from './visualizer/bootstrap.js';
 import { mountPlayerCardDragMinimize } from './ui/player-card-drag.js';
 import { track } from './analytics/umami.js';
+import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
 
 const COMMUNITY_LIST_ID = listsApi.COMMUNITY_LIST_ID;
 
@@ -50,6 +51,14 @@ for (const el of document.querySelectorAll('.app-version')) {
   el.textContent = `v${__APP_VERSION__}`;
 }
 document.getElementById('playerCard').classList.add('loaded');
+
+// Theme toggle. Inline <head> script already applied the right .theme-light
+// class on <html> before first paint; here we just wire the buttons up so
+// they reflect + flip the state, and subscribe to OS-pref changes while the
+// user has no manual override.
+mountThemeToggle({ root: document.getElementById('mobileMenu') });
+mountThemeToggle({ root: document.querySelector('.site-footer-desktop') });
+subscribeThemeOSChange();
 
 // Block pinch-zoom on iOS Safari. The viewport meta `user-scalable=no` and
 // `maximum-scale=1` are unreliable on iOS 10+ (Safari ignores them for
