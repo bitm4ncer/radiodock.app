@@ -54,6 +54,17 @@
   flex-wrap: wrap;
 }
 
+/* Auto-bumped build label, sits at the end of the pill row. Muted so it
+   doesn't compete with the actionable items next to it. */
+.site-footer-desktop__version {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+  opacity: 0.6;
+  pointer-events: none;
+  user-select: none;
+}
+
 /* In the installed PWA, the website footer reads as out-of-place chrome —
    the user already chose to launch a standalone app, and the off-canvas
    drawer (now active in standalone via the display-mode media queries)
