@@ -1,7 +1,12 @@
 // Metadata proxy client. Ports metadataProxy.js from the extension.
 // Calls https://radiodock-metadata-proxy-1.onrender.com/v1/metadata for
-// non-HLS streams. HLS streams are handled locally via hls.js ID3 events
-// in src/player/audio.js, so we early-return for those here.
+// every stream — including HLS — because the proxy now ships station-
+// specific schedule strategies (e.g. HKCR) that return useful metadata
+// for HLS broadcasts. For HLS streams without a schedule strategy the
+// proxy responds with `reason: 'hls-client'`, which this client maps
+// to `shouldUseLocal: true` so the poller knows not to dispatch a stale
+// event; hls.js continues to parse in-band ID3 tags in audio.js
+// independently.
 
 const PROXY_BASE_URL = 'https://radiodock-metadata-proxy-1.onrender.com';
 const REQUEST_TIMEOUT_MS = 15000;
@@ -21,7 +26,6 @@ export function isHlsUrl(url) {
 export async function fetchNowPlaying(params, { signal } = {}) {
   const { streamUrl, stationId, homepage, country } = params ?? {};
   if (!streamUrl || typeof streamUrl !== 'string') return null;
-  if (isHlsUrl(streamUrl)) return { source: 'hls-local', shouldUseLocal: true };
 
   let lastError = null;
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {

@@ -4,7 +4,7 @@
 //
 // Polling pauses while the tab is hidden (saves battery on phone-in-pocket).
 
-import { fetchNowPlaying, isHlsUrl } from '../data/metadata.js';
+import { fetchNowPlaying } from '../data/metadata.js';
 
 const MIN_INTERVAL_MS = 10000;   // never poll faster than every 10 s
 const DEFAULT_INTERVAL_MS = 15000;
@@ -98,7 +98,11 @@ export function attachMetadataPoller(player) {
   function start(station) {
     stop();
     if (!station?.url) return;
-    if (isHlsUrl(station.url)) return; // local hls.js handles ID3
+    // Poll HLS streams too — the proxy now ships schedule-aware strategies
+    // (e.g. HKCR) that return useful metadata for HLS broadcasts. For HLS
+    // streams without a schedule strategy the proxy returns `hls-client` /
+    // shouldUseLocal so the dispatch below is suppressed. hls.js continues
+    // to read any in-band ID3 tags from audio.js independently of this poller.
     currentStation = station;
     intervalMs = DEFAULT_INTERVAL_MS;
     // Kick the first request immediately; tag as first so the loading
