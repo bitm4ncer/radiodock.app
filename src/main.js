@@ -6,7 +6,6 @@ import { attachMediaSession } from './player/media-session.js';
 import { mountInstallInfo } from './ui/install-info.js';
 import { mountInstallSection } from './ui/install-section.js';
 import { mountOffCanvas } from './ui/off-canvas.js';
-import { mountStandaloneMenu } from './ui/standalone-menu.js';
 import { mountSearchOverlay } from './ui/search-overlay.js';
 import { mountPlayerCard } from './ui/player-card.js';
 import { mountStationList } from './ui/station-list.js';
@@ -201,20 +200,17 @@ mountInstallSection({
   installInfo,
 });
 
-// When already running as a PWA, also hide the secondary install entry
-// points (off-canvas drawer "Install" row + desktop footer pill). The
-// inline install-section above self-suppresses; these two don't, and
-// re-opening them from inside the app makes no sense.
+// When already running as a PWA, hide the install entry points — the
+// inline install-section already self-suppresses; these two don't.
+// The CSS regime (display-mode: standalone-aware media queries) makes
+// the whole app use the mobile layout in standalone, so the off-canvas
+// drawer already exposes the rest of the nav.
 const inStandalone =
   window.matchMedia('(display-mode: standalone)').matches ||
   window.navigator.standalone === true;
 if (inStandalone) {
   document.getElementById('offCanvasInstall')?.remove();
   document.getElementById('footerReinstallBtn')?.remove();
-  // Desktop-only: surface the nav items (About / GitHub / Issues / etc.)
-  // inside a popover menu, since the website footer is hidden in standalone.
-  // Mobile standalone keeps the off-canvas drawer it had before.
-  mountStandaloneMenu({ onAboutClick: openAboutModal });
 }
 
 // "Install on Devices" pill in the desktop footer re-summons the install

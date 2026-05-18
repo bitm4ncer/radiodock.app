@@ -442,7 +442,7 @@
        eating the whole viewport. The walkthrough is intentionally
        compact (see tightened gaps / padding above) so the Got-it CTA
        lands naturally inside the visible area on standard phones. --- */
-@media (max-width: 699px) {
+@media (max-width: 699px), (display-mode: standalone) {
   .install-info-modal-root.modal .install-info-modal {
     max-height: 92dvh;
     display: flex;
@@ -460,7 +460,7 @@
 }
 
 /* ---- Desktop bottom-left popover behaviour ---- */
-@media (min-width: 700px) {
+@media (min-width: 700px) and (display-mode: browser) {
   /* viz-active body class (from src/styles/visualizer.css) sets position:
      relative on .modal so it layers above the visualizer canvas via flow.
      The install-info popover needs to stay anchored to the viewport, so we

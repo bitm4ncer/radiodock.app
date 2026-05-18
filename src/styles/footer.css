@@ -55,8 +55,9 @@
 }
 
 /* In the installed PWA, the website footer reads as out-of-place chrome —
-   the user already chose to launch a standalone app. The standalone-menu
-   button takes over its job. */
+   the user already chose to launch a standalone app, and the off-canvas
+   drawer (now active in standalone via the display-mode media queries)
+   carries the same nav items. */
 html.is-standalone .site-footer-desktop {
   display: none;
 }

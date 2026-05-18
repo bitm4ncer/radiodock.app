@@ -80,7 +80,7 @@
 
 /* On desktop the .container has 59px top padding (the tinted card). Nudge
    the strip down so it sits comfortably inside the tinted card. */
-@media (min-width: 700px) {
+@media (min-width: 700px) and (display-mode: browser) {
   .player-card-minimize-btn { top: 18px; right: 18px; }
   .player-card-drag-handle  { top: 18px; right: 54px; }
   .viz-trigger-btn          { top: 18px; right: 90px; }
@@ -107,7 +107,7 @@
 /* Backdrop blur on the main container so the visualizer shows through
    with a frosted-glass treatment. Only kicks in on desktop because the
    mobile container has no tinted background. */
-@media (min-width: 700px) {
+@media (min-width: 700px) and (display-mode: browser) {
   .container {
     backdrop-filter: blur(18px) saturate(140%);
     -webkit-backdrop-filter: blur(18px) saturate(140%);
@@ -147,7 +147,7 @@
 /* Tighter padding when minimized.
    The top padding reserves a slim strip above the player card for the
    three tool buttons so they don't sit on top of the card chrome. */
-@media (min-width: 700px) {
+@media (min-width: 700px) and (display-mode: browser) {
   .container.is-minimized {
     padding: 44px 16px 10px;
     gap: 0;
@@ -163,7 +163,7 @@
 .container.is-minimized .tool-btn {
   top: 8px;
 }
-@media (min-width: 700px) {
+@media (min-width: 700px) and (display-mode: browser) {
   .container.is-minimized .player-card-minimize-btn { top: 8px; right: 16px; }
   .container.is-minimized .player-card-drag-handle  { top: 8px; right: 52px; }
   .container.is-minimized .viz-trigger-btn          { top: 8px; right: 88px; }

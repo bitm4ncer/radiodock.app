@@ -417,7 +417,7 @@
    Why this exists: the default centered modal is covered by the iOS
    on-screen keyboard, and on touch viewports a bottom-anchored
    action-sheet feels more native than a webby centered card. */
-@media (max-width: 699px) {
+@media (max-width: 699px), (display-mode: standalone) {
   .modal:not(#infoModal) {
     align-items: flex-end;
     /* 100dvh follows the visual viewport when iOS opens the keyboard,
@@ -494,7 +494,7 @@
    modals — Station info has a two-column stream grid, About has a long
    feature list + tech stack. Both also need a scroll fallback so long
    content doesn't push the modal off-screen. */
-@media (min-width: 700px) {
+@media (min-width: 700px) and (display-mode: browser) {
   .modal .modal-content {
     display: flex;
     flex-direction: column;

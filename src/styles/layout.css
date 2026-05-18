@@ -51,6 +51,17 @@ body {
   gap: 16px;
 }
 
+/* In the installed PWA, the main container stretches to fill the window
+   (no max-width cap, no tinted card). Combined with the mobile-layout
+   regime that the display-mode-aware media queries force-enable in
+   standalone, this gives a real-app feel at any window size instead of
+   a narrow column floating in the middle. */
+@media (display-mode: standalone) {
+  .container {
+    max-width: none;
+  }
+}
+
 /* Hide native scrollbars everywhere. Scroll behaviour is preserved
    (overflow:auto/scroll still works), but the visible track + thumb
    are suppressed so the app reads as a native shell rather than a
@@ -99,7 +110,7 @@ body {
 .store-badge--ext {
   display: none;
 }
-@media (min-width: 700px) {
+@media (min-width: 700px) and (display-mode: browser) {
   .store-badge--ext {
     display: inline-flex;
   }
