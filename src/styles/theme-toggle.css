@@ -4,8 +4,8 @@
    - .theme-toggle--pill → desktop-footer pill style
 
    Both expose a [data-action="theme-toggle"] button. aria-pressed
-   carries the state — sun shown in dark mode (tap to go light),
-   moon shown in light mode (tap to go dark). */
+   carries the state — the icon + label always represent the *current*
+   theme (moon + "Dark" while dark; sun + "Light" while light). */
 
 /* ---- Shared icon swap (sun ↔ moon) ---- */
 .theme-toggle__icon {
@@ -15,10 +15,15 @@
   color: currentColor;
 }
 
-.theme-toggle__icon--sun { display: block; }
-.theme-toggle__icon--moon { display: none; }
-[aria-pressed="true"] .theme-toggle__icon--sun { display: none; }
-[aria-pressed="true"] .theme-toggle__icon--moon { display: block; }
+.theme-toggle__icon--moon { display: block; }
+.theme-toggle__icon--sun { display: none; }
+[aria-pressed="true"] .theme-toggle__icon--moon { display: none; }
+[aria-pressed="true"] .theme-toggle__icon--sun { display: block; }
+
+/* ---- Label swap (Dark ↔ Light), same aria-pressed contract ---- */
+.theme-toggle__label--light { display: none; }
+[aria-pressed="true"] .theme-toggle__label--dark { display: none; }
+[aria-pressed="true"] .theme-toggle__label--light { display: inline; }
 
 /* ---- Off-canvas variant: row matching .off-canvas__item ---- */
 .theme-toggle--row {

@@ -7,7 +7,7 @@
    dim works better for the popover affordance (the user can still see the
    badge and other UI behind it). */
 .install-info-modal-root.modal {
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--backdrop);
 }
 
 .install-info-modal {
@@ -15,8 +15,8 @@
   padding: 24px 22px 20px;
   text-align: left;
   border-radius: 16px;
-  background: #1f1f1f;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--bg-list-active);
+  border: 1px solid var(--border);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
 }
 
@@ -151,7 +151,7 @@
 }
 
 .install-info__secondary:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--overlay-soft);
   color: var(--text);
 }
 
@@ -163,7 +163,7 @@
 }
 
 .install-info__hint code {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--overlay-med);
   padding: 1px 6px;
   border-radius: 4px;
   font-size: 12px;
@@ -230,8 +230,8 @@
 }
 
 .install-walk__visual {
-  background: #0d0d0d;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 6px 8px;
   display: flex;
@@ -246,22 +246,25 @@
   align-items: stretch;
 }
 
-/* --- Safari URL pill mock (step 1) --- */
+/* --- Safari URL pill mock (step 1) ---
+   iOS chrome colors track the app theme: tokens flip the urlbar from
+   the iOS-dark grey to a light pill in light mode without needing two
+   parallel rule sets. */
 .ios-urlbar {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #2c2c2e;
+  background: var(--bg-list-hover);
   border-radius: 999px;
   padding: 8px 14px;
   width: 100%;
   font-size: 13px;
-  color: #d0d0d0;
+  color: var(--text-muted);
 }
 
 .ios-urlbar__aa {
   font-size: 14px;
-  color: #8e8e93;
+  color: var(--text-muted);
   font-weight: 600;
 }
 
@@ -275,7 +278,7 @@
 .ios-urlbar__refresh {
   width: 14px;
   height: 14px;
-  color: #8e8e93;
+  color: var(--text-muted);
   flex-shrink: 0;
 }
 
@@ -288,7 +291,7 @@
 .ios-urlbar__host {
   flex: 1;
   text-align: center;
-  color: #fff;
+  color: var(--text);
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -310,8 +313,8 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.06);
-  color: #d0d0d0;
+  background: var(--overlay-soft);
+  color: var(--text);
   font-size: 16px;
   flex-shrink: 0;
 }
@@ -319,11 +322,11 @@
 .ios-toolbar__pill {
   flex: 1;
   text-align: center;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--overlay-soft);
   border-radius: 999px;
   padding: 8px 12px;
   font-size: 12px;
-  color: #d0d0d0;
+  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -355,7 +358,7 @@
   align-items: center;
   gap: 10px;
   width: 100%;
-  background: #1c1c1e;
+  background: var(--bg-list-active);
   border-radius: 10px;
   padding: 9px 12px;
 }
@@ -371,7 +374,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--text);
   flex-shrink: 0;
 }
 
@@ -389,14 +392,14 @@
 .ios-menu__label {
   flex: 1;
   font-size: 14px;
-  color: #fff;
+  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .ios-menu__label small {
-  color: #8e8e93;
+  color: var(--text-muted);
   font-size: 12px;
   font-weight: 400;
   margin-left: 2px;
@@ -408,13 +411,13 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  background: #1c1c1e;
+  background: var(--bg-list-active);
   border-radius: 10px;
   padding: 6px 10px;
 }
 
 .ios-confirm-bar__label {
-  color: #d0d0d0;
+  color: var(--text);
   font-size: 13px;
   font-weight: 500;
 }
