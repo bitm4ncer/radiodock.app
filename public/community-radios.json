@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-05-18T19:00:00.000Z",
+  "exportDate": "2026-05-18T17:45:03.265Z",
   "listName": "Community Radios",
   "stations": [
     {
@@ -194,6 +194,22 @@
       "id": "29ba74b4-c8cd-45d3-990d-91d08cb5a329",
       "name": "Mad Radio Barcelona",
       "url": "https://c2.radioboss.fm/stream/588"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://www.rovr.live/apple-touch-icon.png",
+      "homepage": "https://www.rovr.live/",
+      "id": "68eb2e11-a4c2-4eae-9f1c-63efaa5763cd",
+      "name": "ROVR",
+      "url": "https://hls-prod.rovr.live/prod/stream_plus00/llhls.m3u8"
+    },
+    {
+      "countrycode": "DE",
+      "favicon": "https://thfradio.de/_next/static/media/logo_white.a51513b7.png",
+      "homepage": "https://thfradio.de/",
+      "id": "105fbc46-ec2c-498d-8363-127c452ea8dc",
+      "name": "THF Radio",
+      "url": "https://thf-radio-7ec0e6ee.radiocult.fm/stream"
     }
   ]
 }
