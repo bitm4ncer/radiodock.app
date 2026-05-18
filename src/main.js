@@ -199,6 +199,18 @@ mountInstallSection({
   installInfo,
 });
 
+// When already running as a PWA, also hide the secondary install entry
+// points (off-canvas drawer "Install" row + desktop footer pill). The
+// inline install-section above self-suppresses; these two don't, and
+// re-opening them from inside the app makes no sense.
+const inStandalone =
+  window.matchMedia('(display-mode: standalone)').matches ||
+  window.navigator.standalone === true;
+if (inStandalone) {
+  document.getElementById('offCanvasInstall')?.remove();
+  document.getElementById('footerReinstallBtn')?.remove();
+}
+
 // "Install on Devices" pill in the desktop footer re-summons the install
 // badge with a slide-in transition. Clears the dismissed-pref so the badge
 // stays the next time the user reloads.

@@ -34,6 +34,16 @@ function highlightTargetsFor(platform) {
   return ['desktop'];
 }
 
+// Which buttons to actually show on this platform. Mobile users have no use
+// for the browser-extension or desktop-PWA paths — they can't act on either
+// from their phone — so we hide them to keep the section focused on what's
+// installable here. Desktop users see everything (extension + PWA + a
+// "how to install on your phone" link for cross-device discovery).
+function visibleTargetsFor(platform) {
+  if (platform === 'ios' || platform === 'android') return ['ios'];
+  return ['chrome-ext', 'desktop', 'ios'];
+}
+
 const CHEVRON_SVG = `<svg class="install-section__chevron" viewBox="0 0 24 24" aria-hidden="true">
   <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
 </svg>`;
@@ -66,7 +76,9 @@ export async function mountInstallSection({ container, installInfo, animateIn = 
   document.getElementById('installSection')?.remove();
 
   const highlights = highlightTargetsFor(platform);
+  const visible = visibleTargetsFor(platform);
   const isCurrent = (target) => (highlights.includes(target) ? ' is-current' : '');
+  const showsBtn = (target) => visible.includes(target);
 
   const section = document.createElement('section');
   section.className = 'install-section';
@@ -85,15 +97,15 @@ export async function mountInstallSection({ container, installInfo, animateIn = 
       <div class="install-section__row">
         <span class="install-section__label">Install:</span>
         <div class="install-section__buttons" role="group">
-          <button type="button" class="install-section__btn${isCurrent('chrome-ext')}" data-target="chrome-ext">
+          ${showsBtn('chrome-ext') ? `<button type="button" class="install-section__btn${isCurrent('chrome-ext')}" data-target="chrome-ext">
             Browser Extension
-          </button>
-          <button type="button" class="install-section__btn${isCurrent('desktop')}" data-target="desktop">
+          </button>` : ''}
+          ${showsBtn('desktop') ? `<button type="button" class="install-section__btn${isCurrent('desktop')}" data-target="desktop">
             Desktop
-          </button>
-          <button type="button" class="install-section__btn${isCurrent('ios')}" data-target="ios">
+          </button>` : ''}
+          ${showsBtn('ios') ? `<button type="button" class="install-section__btn${isCurrent('ios')}" data-target="ios">
             iOS
-          </button>
+          </button>` : ''}
         </div>
       </div>
     </div>
