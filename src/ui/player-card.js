@@ -49,9 +49,15 @@ export function mountPlayerCard({ player }) {
 
   function setStation(station) {
     currentStation = station;
+    // Reset the now-playing line on every station swap. Without this the
+    // .show class lingers across stations and a blank metadata line
+    // wedges between the title and the country / URL row instead of
+    // collapsing flat under the title like the extension does.
+    nowPlayingTextEl.textContent = '';
+    nowPlayingTextEl.closest('.now-playing')?.classList.remove('show');
+    nowPlayingTextEl.classList.remove('is-marquee');
     if (!station) {
       nameEl.textContent = 'No station selected';
-      nowPlayingTextEl.textContent = '';
       countryEl.textContent = '';
       logoBtn.innerHTML = '';
       visitBtn.style.display = 'none';
@@ -60,7 +66,6 @@ export function mountPlayerCard({ player }) {
       return;
     }
     nameEl.textContent = station.name ?? '';
-    nowPlayingTextEl.textContent = '';
     countryEl.textContent = station.countrycode ?? '';
 
     // The MutationObserver in mountLogoBehavior picks the new slot up
@@ -73,12 +78,24 @@ export function mountPlayerCard({ player }) {
 
     if (station.homepage) {
       visitBtn.href = station.homepage;
+      // Show the bare hostname (stripped of www.) so the row reads like
+      // the Chrome extension's player card — looks intentional even
+      // before any now-playing metadata lands.
+      visitBtn.textContent = hostnameFor(station.homepage);
       visitBtn.style.display = '';
     } else {
       visitBtn.style.display = 'none';
     }
     infoBtn.style.display = '';
     favBtn.style.display = '';
+  }
+
+  function hostnameFor(url) {
+    try {
+      return new URL(url).hostname.replace(/^www\./, '');
+    } catch {
+      return url;
+    }
   }
 
   function setNowPlaying(text) {
