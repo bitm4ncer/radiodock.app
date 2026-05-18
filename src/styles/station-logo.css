@@ -41,12 +41,11 @@
   display: block;
 }
 
-/* Desktop: reveal on hover of the slot OR the surrounding row. */
+/* Desktop: reveal only when hovering the logo itself, not the
+   surrounding row/card — keeps the affordance scoped to where the
+   action actually applies. */
 @media (hover: hover) and (pointer: fine) {
-  .station-item:hover .logo-cycle-btn,
-  .search-item:hover .logo-cycle-btn,
-  .logo-slot:hover .logo-cycle-btn,
-  .station-logo-container:hover .logo-cycle-btn {
+  .logo-slot:hover .logo-cycle-btn {
     opacity: 1;
     transform: scale(1);
     pointer-events: auto;
