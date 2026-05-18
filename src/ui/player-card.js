@@ -1,19 +1,13 @@
 // Player card: station logo/initials, name, country, now-playing line,
 // favorite heart, visit-station link, play/pause button, volume dots.
 
+import { renderLogoSlot, mountLogoBehavior } from './station-logo.js';
+
 // Volume buckets — 11 steps in 10% increments (one per dot).
 const VOLUME_LEVELS = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
-function getInitials(name) {
-  if (!name) return '?';
-  const parts = String(name).trim().split(/\s+/).slice(0, 2);
-  return parts.map((p) => p[0]?.toUpperCase() ?? '').join('') || name[0]?.toUpperCase() || '?';
-}
-
 export function mountPlayerCard({ player }) {
   const logoBtn = document.getElementById('stationLogoBtn');
-  const logoImg = document.getElementById('stationLogo');
-  const initialsEl = document.getElementById('stationInitials');
   const nameEl = document.getElementById('stationName');
   const nowPlayingTextEl = document.getElementById('nowPlayingText');
   const countryEl = document.getElementById('stationCountry');
@@ -37,6 +31,15 @@ export function mountPlayerCard({ player }) {
     try { navigator.vibrate?.(ms); } catch {}
   }
 
+  // Wire the long-press / hover-to-cycle behaviour for the big logo.
+  // Player-card uses the large logo classnames so size-specific rules
+  // (visualizer.css minimised state, player-card.css :hover scale) keep
+  // applying as before.
+  mountLogoBehavior(logoBtn, {
+    imgClass: 'station-logo',
+    initialsClass: 'station-initials',
+  });
+
   function setPlayState(state /* 'play' | 'pause' | 'buffering' */) {
     playIcon.style.display = state === 'play' ? '' : 'none';
     pauseIcon.style.display = state === 'pause' ? '' : 'none';
@@ -50,8 +53,7 @@ export function mountPlayerCard({ player }) {
       nameEl.textContent = 'No station selected';
       nowPlayingTextEl.textContent = '';
       countryEl.textContent = '';
-      logoImg.style.display = 'none';
-      initialsEl.textContent = '';
+      logoBtn.innerHTML = '';
       visitBtn.style.display = 'none';
       infoBtn.style.display = 'none';
       favBtn.style.display = 'none';
@@ -61,21 +63,13 @@ export function mountPlayerCard({ player }) {
     nowPlayingTextEl.textContent = '';
     countryEl.textContent = station.countrycode ?? '';
 
-    if (station.favicon) {
-      logoImg.src = station.favicon;
-      logoImg.alt = station.name ?? '';
-      logoImg.style.display = '';
-      initialsEl.style.display = 'none';
-      logoImg.onerror = () => {
-        logoImg.style.display = 'none';
-        initialsEl.style.display = '';
-        initialsEl.textContent = getInitials(station.name);
-      };
-    } else {
-      logoImg.style.display = 'none';
-      initialsEl.style.display = '';
-      initialsEl.textContent = getInitials(station.name);
-    }
+    // The MutationObserver in mountLogoBehavior picks the new slot up
+    // and runs the fallback chain (override → original → DDG → initials).
+    logoBtn.innerHTML = renderLogoSlot(station, {
+      imgClass: 'station-logo',
+      initialsClass: 'station-initials',
+      size: 'lg',
+    });
 
     if (station.homepage) {
       visitBtn.href = station.homepage;
