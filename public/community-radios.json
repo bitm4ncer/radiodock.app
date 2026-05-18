@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2025-09-08T16:31:16.470Z",
+  "exportDate": "2026-05-18T17:00:00.000Z",
   "listName": "Community Radios",
   "stations": [
     {
@@ -114,6 +114,94 @@
       "id": "d8dc455e-761f-436c-aa71-5de8b689690c",
       "name": "THF Radio",
       "url": "https://thfradio2.out.airtime.pro/thfradio2_a"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://noodsradio.com/_nuxt/noods-logo.CgUioM5-.svg",
+      "homepage": "https://noodsradio.com/",
+      "id": "5dcf8a28-dc2f-47a1-9f18-ca70df4ac89d",
+      "name": "Noods",
+      "url": "https://noods-radio.radiocult.fm/stream"
+    },
+    {
+      "countrycode": "ES",
+      "favicon": "https://radiorelativa.eu/icon/apple-icon-120x120.png",
+      "homepage": "https://radiorelativa.eu/",
+      "id": "a33cdadf-a415-4844-b679-745d4f1795d2",
+      "name": "Radio Relativa",
+      "url": "https://streamer.radio.co/sd6131729c/listen"
+    },
+    {
+      "countrycode": "US",
+      "favicon": "https://cdn.prod.website-files.com/5f4bdfc87623ea5cc5d24cf3/606da84551eef3d5fa8c0cb9_icon.png",
+      "homepage": "https://thelotradio.com/",
+      "id": "434e9a4b-018a-4557-8ca1-8c328bb1e09d",
+      "name": "The Lot Radio",
+      "url": "https://livepeercdn.studio/hls/85c28sa2o8wppm58/index.m3u8"
+    },
+    {
+      "countrycode": "AT",
+      "favicon": "https://res.radio/android-chrome-192x192.png",
+      "homepage": "https://res.radio/",
+      "id": "ba98cdae-5402-4234-bbdd-ad043324dd69",
+      "name": "RES.RADIO",
+      "url": "https://edge.mixlr.com/channel/zwtuo"
+    },
+    {
+      "countrycode": "IT",
+      "favicon": "https://www.radioraheem.it/wp-content/themes/gds-vue/meta/favicon.ico",
+      "homepage": "https://www.radioraheem.it/",
+      "id": "a1c99f81-f8d1-4f6d-b9e3-714763a72b7d",
+      "name": "Radio Raheem",
+      "url": "https://radioraheem.out.airtime.pro/radioraheem_a"
+    },
+    {
+      "countrycode": "PS",
+      "favicon": "https://yamakan.place/palestine/favicon.ico",
+      "homepage": "https://yamakan.place/palestine/",
+      "id": "d62fa52b-7c1c-492c-9861-cd2c0ec02f00",
+      "name": "Radio alHara",
+      "url": "http://n02.radiojar.com/78cxy6wkxtzuv?1634328730=&rj-tok=AAABfIWfHK4AlWz8Q03vJJQdWw&rj-ttl=5"
+    },
+    {
+      "countrycode": "FR",
+      "favicon": "",
+      "homepage": "https://www.radio-sofa.com/",
+      "id": "4a72fae3-8384-473c-8d1b-f17cdc60f387",
+      "name": "Radio Sofa",
+      "url": "https://listen.radioking.com/radio/292531/stream/338878"
+    },
+    {
+      "countrycode": "US",
+      "favicon": "",
+      "homepage": "https://www.dublab.com/",
+      "id": "0bb84fe1-e899-11e9-a96c-52543be04c81",
+      "name": "dublab",
+      "url": "http://dublab.out.airtime.pro:8000/dublab_a"
+    },
+    {
+      "countrycode": "ZA",
+      "favicon": "",
+      "homepage": "https://panafricanspacestation.org.za/",
+      "id": "045f3748-7488-4249-bf43-6feb7bb8db3d",
+      "name": "Pan African Space Station",
+      "url": "https://pass.out.airtime.pro/pass_a"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "",
+      "homepage": "https://doyou.world/",
+      "id": "128d5561-8439-4e2a-9e6c-4e48ad4f0cc0",
+      "name": "Do You Radio",
+      "url": "https://doyouworld.out.airtime.pro/doyouworld_a"
+    },
+    {
+      "countrycode": "ES",
+      "favicon": "https://madradio.co/wp-content/uploads/2024/06/logo-mad-radio-b.png",
+      "homepage": "https://madradio.co/spot/barcelona/",
+      "id": "29ba74b4-c8cd-45d3-990d-91d08cb5a329",
+      "name": "Mad Radio Barcelona",
+      "url": "https://c2.radioboss.fm/stream/588"
     }
   ]
 }
