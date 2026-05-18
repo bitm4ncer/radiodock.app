@@ -335,7 +335,27 @@ function renderActiveList() {
   listsCarousel.setCurrent(list.id, { animate: false });
   listsCarousel.setActiveStation(state.currentStation?.id ?? null);
   updateFavoriteHeart();
+  updateShareRowVisibility(list);
 }
+
+function updateShareRowVisibility(list) {
+  const row = document.getElementById('listShareRow');
+  if (!row) return;
+  row.style.display = (list?.stations?.length ?? 0) > 0 ? '' : 'none';
+}
+
+document.getElementById('shareCurrentListBtn')?.addEventListener('click', async () => {
+  const list = findList(state.currentListId);
+  if (!list || !list.stations?.length) return;
+  try {
+    const url = await buildShareUrl(list);
+    openShareModal({ list, url });
+    track('list-share', { stationCount: list.stations.length, source: 'list-share-btn' });
+  } catch (err) {
+    console.error('Share-link build failed:', err);
+    toast('Could not build share link.');
+  }
+});
 
 function favoritesList() {
   // Convention: the first user list is "Favorites" (created lazily by getUserLists).

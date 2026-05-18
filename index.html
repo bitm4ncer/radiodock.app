@@ -312,6 +312,16 @@
               <p>Loading stations…</p>
             </div>
           </div>
+          <!-- Subtle "share this list" affordance. Hidden when the active
+               list is empty (no point sharing zero stations). -->
+          <div class="list-share-row" id="listShareRow">
+            <button type="button" class="share-list-btn" id="shareCurrentListBtn" title="Create a shareable link for this list">
+              <svg class="share-list-btn__icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3v12m0-12-4 4m4-4 4 4M5 14v4a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3v-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+              <span>Share this list</span>
+            </button>
+          </div>
         </section>
 
         <!-- Search section -->
