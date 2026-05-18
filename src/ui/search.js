@@ -2,6 +2,8 @@
 // states, and renders result rows. Calls out via callbacks for the
 // actual API request and for play / add actions.
 
+import { renderLogoSlot, mountLogoBehavior } from './station-logo.js';
+
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({
     '&': '&amp;',
@@ -12,15 +14,7 @@ function escapeHtml(s) {
   }[c]));
 }
 
-function getInitials(name) {
-  if (!name) return '?';
-  const parts = String(name).trim().split(/\s+/).slice(0, 2);
-  return parts.map((p) => p[0]?.toUpperCase() ?? '').join('') || name[0]?.toUpperCase() || '?';
-}
-
 function resultRow(station, { canAdd, alreadyAdded }) {
-  const initials = getInitials(station.name);
-  const favicon = station.favicon ? escapeHtml(station.favicon) : '';
   const addBtn = !canAdd
     ? ''
     : alreadyAdded
@@ -32,9 +26,7 @@ function resultRow(station, { canAdd, alreadyAdded }) {
          </button>`;
   return `
     <div class="search-item" data-id="${escapeHtml(station.id)}">
-      ${favicon
-        ? `<img class="station-item-logo" src="${favicon}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'station-item-initials',textContent:${JSON.stringify(initials)}}))" />`
-        : `<div class="station-item-initials">${escapeHtml(initials)}</div>`}
+      ${renderLogoSlot(station, { size: 'sm' })}
       <div class="station-item-info">
         <div class="station-item-name">${escapeHtml(station.name)}</div>
         <div class="station-item-country">${escapeHtml(station.countrycode ?? '')}</div>
@@ -52,6 +44,8 @@ export function mountSearch({ onSearch, onPlay, onAdd, isAlreadyInActiveList, ca
   const resultsList = document.getElementById('searchResultsList');
   const loadingEl = document.getElementById('searchLoading');
   const errorEl = document.getElementById('searchError');
+
+  mountLogoBehavior(resultsList);
 
   let activeFilter = 'name';
   let debounceTimer = null;

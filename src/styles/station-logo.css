@@ -1,0 +1,93 @@
+/* Logo slot — wraps the img/initials chip and overlays a cycle button.
+   The img / initials chip inside keeps its existing class
+   (station-item-logo / station-item-initials / station-logo / station-initials)
+   so the surrounding list & player-card CSS still applies unchanged. */
+
+.logo-slot {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  line-height: 0; /* avoid baseline gap under the img */
+}
+
+.logo-slot--sm {
+  margin-right: 12px;
+}
+
+.logo-cycle-btn {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--bg-dark, #1a1a1a);
+  background: rgba(0, 0, 0, 0.78);
+  color: var(--text, #fff);
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.7);
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease;
+}
+
+.logo-cycle-btn svg {
+  width: 10px;
+  height: 10px;
+  display: block;
+}
+
+/* Desktop: reveal only when hovering the logo itself, not the
+   surrounding row/card — keeps the affordance scoped to where the
+   action actually applies. */
+@media (hover: hover) and (pointer: fine) {
+  .logo-slot:hover .logo-cycle-btn {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+}
+
+/* Touch: long-press toggles .is-pressed on the slot — see station-logo.js. */
+.logo-slot.is-pressed .logo-cycle-btn {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.logo-cycle-btn:hover {
+  background: var(--red, #e23a3a);
+}
+
+.logo-cycle-btn:focus-visible {
+  outline: 2px solid var(--accent, #fff);
+  outline-offset: 1px;
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+/* Large variant — used inside the player card. The bigger button sits
+   slightly more inset so it doesn't visually escape the round avatar. */
+.logo-slot--lg .logo-cycle-btn {
+  width: 24px;
+  height: 24px;
+  right: 0;
+  bottom: 0;
+}
+
+.logo-slot--lg .logo-cycle-btn svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* Subtle hint that a manual override is active. Mirror the icon button
+   in the accent colour so power users see at a glance which stations
+   they've pinned. */
+.logo-slot[data-overridden="1"] .logo-cycle-btn {
+  background: var(--red, #e23a3a);
+}
