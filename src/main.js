@@ -180,6 +180,7 @@ function openAboutModal() {
   openModal('infoModal');
 }
 document.getElementById('dockLogoBtn')?.addEventListener('click', openAboutModal);
+document.getElementById('footerAboutBtn')?.addEventListener('click', openAboutModal);
 document.getElementById('aboutMoreBtn')?.addEventListener('click', () => {
   const body = document.getElementById('aboutModalBody');
   const btn = document.getElementById('aboutMoreBtn');
