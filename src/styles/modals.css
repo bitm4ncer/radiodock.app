@@ -195,6 +195,33 @@
   margin-top: 0;
 }
 
+/* Prose paragraphs inside the technical-details block were inheriting the
+   modal-body's default 16 px / full-text-colour, so the bottom section
+   visually shouted while the feature list whispered. Pin them to the same
+   13 px / muted treatment as `.about__list` for a single consistent
+   hierarchy: lead (14 px / text) > prose + bullets (13 px / muted), with
+   strong / em / links lifting back up to full text colour. */
+.about__tech p {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+.about__tech p strong,
+.about__tech p em {
+  color: var(--text);
+  font-weight: 600;
+}
+.about__tech p em {
+  font-style: italic;
+}
+.about__tech p code {
+  background: var(--overlay-med);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
 .about__list {
   margin: 0 0 10px;
   padding-left: 18px;
