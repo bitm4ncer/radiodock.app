@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-05-18T17:45:03.265Z",
+  "exportDate": "2026-05-18T18:16:34.933Z",
   "listName": "Community Radios",
   "stations": [
     {
@@ -210,6 +210,14 @@
       "id": "105fbc46-ec2c-498d-8363-127c452ea8dc",
       "name": "THF Radio",
       "url": "https://thf-radio-7ec0e6ee.radiocult.fm/stream"
+    },
+    {
+      "countrycode": "HK",
+      "favicon": "https://hkcr.live/favicon.ico",
+      "homepage": "https://hkcr.live/",
+      "id": "0d58fb3f-190e-45be-b74b-ec78f8301e42",
+      "name": "HKCR",
+      "url": "https://stream-test.hkcr.live/hls/main.m3u8"
     }
   ]
 }
