@@ -1,0 +1,104 @@
+/* Standalone-mode layout fallback.
+   The mobile-regime media query in app-mobile.css uses
+   `not (display-mode: browser)` to extend the mobile layout to installed
+   PWAs. Some browsers (Vivaldi being the known case) report
+   `display-mode: browser` for their PWA windows anyway, so that arm of
+   the media query never fires and the desktop regime takes over once
+   the window crosses 700 px wide.
+
+   Defense in depth: JS sets `html.is-standalone` whenever ANY install
+   signal matches (matchMedia for standalone / minimal-ui / fullscreen /
+   window-controls-overlay, or navigator.standalone on iOS). This file
+   duplicates the critical mobile-layout rules keyed off that class so
+   they fire even when the CSS display-mode probe is unreliable.
+
+   The selectors here mirror app-mobile.css; if a rule there is updated,
+   update its sibling here too. */
+
+html.is-standalone .desktop-only { display: none !important; }
+
+html.is-standalone,
+html.is-standalone body {
+  height: 100dvh;
+  overflow: hidden;
+}
+html.is-standalone body {
+  display: flex;
+  flex-direction: column;
+}
+html.is-standalone .mobile-topbar { flex: 0 0 auto; }
+html.is-standalone .page {
+  justify-content: flex-start;
+  flex: 1;
+  min-height: 0;
+  height: auto;
+  overflow: hidden;
+}
+
+html.is-standalone .container {
+  flex: 1;
+  min-height: 0;
+  padding: 12px 0 0;
+  gap: 12px;
+  max-width: none;
+  background: transparent;
+  border-radius: 0;
+}
+
+html.is-standalone .favorites-section {
+  padding: 0;
+  visibility: hidden;
+  pointer-events: none;
+  height: 0;
+  overflow: visible;
+  margin: 0;
+}
+html.is-standalone .favorites-section .list-dropdown-menu {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+html.is-standalone .search-section { display: none; }
+
+html.is-standalone .player-section {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  flex-direction: column-reverse;
+  align-items: stretch;
+  gap: 0;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: 8px 12px calc(12px + env(safe-area-inset-bottom));
+}
+html.is-standalone .player-section .player-card {
+  border-radius: 100px;
+  margin: 0;
+  width: 100%;
+}
+
+html.is-standalone .volume-controls { display: none !important; }
+
+html.is-standalone .list-dropdown-menu {
+  position: fixed !important;
+  inset: auto 0 0 0 !important;
+  margin: 0 !important;
+  min-width: 0 !important;
+  width: 100%;
+  max-width: none;
+  border-radius: 18px 18px 0 0;
+  background: var(--bg-dark);
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 2100;
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+}
+
+html.is-standalone .list-edit-btn,
+html.is-standalone .list-share-btn,
+html.is-standalone .list-export-btn,
+html.is-standalone .list-remove-btn { display: none !important; }
+html.is-standalone .list-more-btn { display: flex; }
+
+html.is-standalone .install-section { display: none !important; }

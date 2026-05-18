@@ -57,7 +57,7 @@ body {
    standalone, this gives a real-app feel at any window size instead of
    a narrow column floating in the middle. Vivaldi's PWAs run in
    minimal-ui, not standalone, so both are matched. */
-@media (display-mode: standalone), (display-mode: minimal-ui) {
+@media not (display-mode: browser) {
   .container {
     max-width: none;
   }

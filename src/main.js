@@ -205,14 +205,28 @@ mountInstallSection({
 // The CSS regime (display-mode: standalone-aware media queries) makes
 // the whole app use the mobile layout in standalone, so the off-canvas
 // drawer already exposes the rest of the nav.
-const inStandalone =
-  window.matchMedia('(display-mode: standalone)').matches ||
-  window.matchMedia('(display-mode: minimal-ui)').matches ||
-  window.navigator.standalone === true;
+function detectStandalone() {
+  const modes = ['standalone', 'minimal-ui', 'fullscreen', 'window-controls-overlay'];
+  return (
+    window.navigator.standalone === true ||
+    modes.some((m) => window.matchMedia(`(display-mode: ${m})`).matches)
+  );
+}
+const inStandalone = detectStandalone();
 if (inStandalone) {
+  document.documentElement.classList.add('is-standalone');
   document.getElementById('offCanvasInstall')?.remove();
   document.getElementById('footerReinstallBtn')?.remove();
 }
+// Some browsers (Vivaldi) start a PWA window in display-mode: browser even
+// though the window has no URL bar; the user can also transition modes
+// (e.g. fullscreen). Re-evaluate when the active display mode changes so
+// the .is-standalone class stays accurate.
+['standalone', 'minimal-ui', 'fullscreen', 'window-controls-overlay'].forEach((m) => {
+  window.matchMedia(`(display-mode: ${m})`).addEventListener?.('change', () => {
+    document.documentElement.classList.toggle('is-standalone', detectStandalone());
+  });
+});
 
 // "Install on Devices" pill in the desktop footer re-summons the install
 // badge with a slide-in transition. Clears the dismissed-pref so the badge
@@ -831,11 +845,7 @@ function clearShareHash() {
 // ignores it anyway) and skipped after the user has manually resized
 // (we only do it on first launch per session-stored pref).
 async function fitWindowToExtensionSize() {
-  const inStandalone =
-    window.matchMedia('(display-mode: standalone)').matches ||
-    window.matchMedia('(display-mode: minimal-ui)').matches ||
-    window.navigator.standalone === true;
-  if (!inStandalone) return;
+  if (!detectStandalone()) return;
   // Heuristic: only fire on desktop-class viewports; mobile installs are full-screen.
   if (matchMedia('(pointer: coarse)').matches) return;
   if (await storage.getPref('didFitWindow', false)) return;

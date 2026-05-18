@@ -3,7 +3,7 @@
    on small viewports. Treat the app as a real mobile app: fixed bottom
    player, fullscreen overlays, off-canvas drawer. */
 
-@media (max-width: 699px), (display-mode: standalone), (display-mode: minimal-ui) {
+@media (max-width: 699px), not (display-mode: browser) {
   /* The desktop dock-title row (logo + dropdown) is hidden — the mobile
      top bar takes its job. */
   .desktop-only {

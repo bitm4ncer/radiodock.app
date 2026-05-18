@@ -442,7 +442,7 @@
        eating the whole viewport. The walkthrough is intentionally
        compact (see tightened gaps / padding above) so the Got-it CTA
        lands naturally inside the visible area on standard phones. --- */
-@media (max-width: 699px), (display-mode: standalone), (display-mode: minimal-ui) {
+@media (max-width: 699px), not (display-mode: browser) {
   .install-info-modal-root.modal .install-info-modal {
     max-height: 92dvh;
     display: flex;

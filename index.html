@@ -21,14 +21,14 @@
             document.documentElement.classList.add('theme-light');
             if (meta) meta.content = '#E1E1E1';
           }
-          // Mark the document as standalone before paint so CSS can hide
-          // website-only chrome (footer pills). minimal-ui is included
-          // because Vivaldi installs PWAs in that mode (system title bar
-          // with browser-style controls), and the user experience is the
-          // same as standalone for our purposes.
-          var standalone = matchMedia('(display-mode: standalone)').matches ||
-                           matchMedia('(display-mode: minimal-ui)').matches ||
-                           window.navigator.standalone === true;
+          // Mark the document as standalone before paint so CSS can flip
+          // to the mobile-app layout flash-free. Checking every non-browser
+          // display mode is defensive — Vivaldi's PWAs ship in minimal-ui
+          // (and sometimes browser despite the windowed presentation), and
+          // window-controls-overlay covers Chromium's PWA title-bar feature.
+          var standalone = window.navigator.standalone === true ||
+            ['standalone', 'minimal-ui', 'fullscreen', 'window-controls-overlay']
+              .some(function (m) { return matchMedia('(display-mode: ' + m + ')').matches; });
           if (standalone) document.documentElement.classList.add('is-standalone');
         } catch (e) {}
       })();

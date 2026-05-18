@@ -21,3 +21,8 @@
    component-level defaults. */
 @import './app-mobile.css';
 @import './app-desktop.css';
+/* Standalone fallback layered after both regimes — it duplicates the
+   critical mobile rules keyed off html.is-standalone so the layout still
+   works when the browser reports display-mode: browser for its PWA
+   window (Vivaldi does this). */
+@import './app-standalone.css';
