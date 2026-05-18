@@ -275,11 +275,17 @@ mountSearchOverlay({
 });
 
 // Visualizer (desktop only; mounts trigger button into the player card).
-mountVisualizer({ player })
-  .then((viz) => {
-    if (viz) window.__radiodock = Object.assign(window.__radiodock ?? {}, { visualizer: viz });
-  })
-  .catch((err) => console.warn('Visualizer mount failed:', err));
+// Experimental — kept off in the live frontend while it matures. Flip the
+// flag to re-enable locally; the code below mounts the trigger button + the
+// drawer machinery from src/visualizer/.
+const VISUALIZER_ENABLED = false;
+if (VISUALIZER_ENABLED) {
+  mountVisualizer({ player })
+    .then((viz) => {
+      if (viz) window.__radiodock = Object.assign(window.__radiodock ?? {}, { visualizer: viz });
+    })
+    .catch((err) => console.warn('Visualizer mount failed:', err));
+}
 
 // Drag + minimize for the player card (desktop only).
 mountPlayerCardDragMinimize().catch((err) => console.warn('Player card drag mount failed:', err));
