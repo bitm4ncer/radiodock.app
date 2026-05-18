@@ -23,6 +23,8 @@ import { downloadList, parseExport, applyImport } from './data/import-export.js'
 import { buildShareUrl, tryDecodeShareHash } from './data/share.js';
 import { searchStations } from './data/radio-browser.js';
 import { mountVisualizer } from './visualizer/bootstrap.js';
+import { mountBackground } from './ui/background.js';
+import { mountFooterReveal } from './ui/footer-reveal.js';
 import { mountPlayerCardDragMinimize } from './ui/player-card-drag.js';
 import { track } from './analytics/umami.js';
 import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
@@ -305,6 +307,14 @@ if (VISUALIZER_ENABLED) {
 
 // Drag + minimize for the player card (desktop only).
 mountPlayerCardDragMinimize().catch((err) => console.warn('Player card drag mount failed:', err));
+
+// Fullscreen background image + cycle controls (desktop). Discovers
+// /public/backgrounds/background_NN.webp on boot; user uploads are blob-
+// stored in IndexedDB.
+mountBackground().catch((err) => console.warn('Background mount failed:', err));
+
+// Auto-reveal the desktop footer when the cursor approaches the bottom edge.
+mountFooterReveal();
 
 // --- Helpers ---
 function allListsForDropdown() {

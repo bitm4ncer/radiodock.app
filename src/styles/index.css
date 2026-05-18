@@ -18,6 +18,7 @@
 @import './footer.css';
 @import './theme-toggle.css';
 @import './visualizer.css';
+@import './background.css';
 /* Regime files come last so their media-query rules can override
    component-level defaults. */
 @import './app-mobile.css';

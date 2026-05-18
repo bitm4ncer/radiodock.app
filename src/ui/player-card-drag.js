@@ -12,6 +12,7 @@ import { getPref, setPref } from '../data/storage.js';
 
 const PREF_POS = 'containerPos';
 const PREF_MIN = 'containerMinimized';
+const PREF_SOLID = 'containerSolid';
 
 export async function mountPlayerCardDragMinimize() {
   if (matchMedia('(pointer: coarse)').matches) return null; // desktop only
@@ -37,6 +38,16 @@ export async function mountPlayerCardDragMinimize() {
   });
   container.appendChild(handle);
 
+  const solidBtn = makeFloatingBtn({
+    className: 'container-solid-toggle',
+    label: 'Solid',
+    title: 'Toggle solid panel',
+    svg: discOutline(),
+    extraAttrs: { 'aria-label': 'Toggle solid panel', 'aria-pressed': 'false' },
+    asButton: true,
+  });
+  container.appendChild(solidBtn);
+
   const minBtn = makeFloatingBtn({
     className: 'player-card-minimize-btn',
     label: 'Minimize',
@@ -52,6 +63,16 @@ export async function mountPlayerCardDragMinimize() {
 
   let savedPos = await getPref(PREF_POS, null);
   let minimized = await getPref(PREF_MIN, false);
+  // Default solid (opaque panel) — the frosted-glass look is opt-in via
+  // the toggle. Starting solid gives new users a predictable, high-contrast
+  // panel that doesn't compete with the background image.
+  let solid = await getPref(PREF_SOLID, true);
+  if (solid) {
+    container.classList.add('is-solid');
+    solidBtn.classList.add('is-active');
+    solidBtn.setAttribute('aria-pressed', 'true');
+    solidBtn.querySelector('.tool-btn__icon').innerHTML = discFilled();
+  }
 
   if (savedPos && typeof savedPos.x === 'number' && typeof savedPos.y === 'number') {
     applyPosition(savedPos.x, savedPos.y);
@@ -136,6 +157,19 @@ export async function mountPlayerCardDragMinimize() {
     await setPref(PREF_MIN, minimized);
   });
 
+  solidBtn.addEventListener('click', async () => {
+    solid = !solid;
+    container.classList.toggle('is-solid', solid);
+    solidBtn.classList.toggle('is-active', solid);
+    solidBtn.setAttribute('aria-pressed', solid ? 'true' : 'false');
+    solidBtn.querySelector('.tool-btn__icon').innerHTML = solid ? discFilled() : discOutline();
+    // Drop focus so the :focus-visible pill label doesn't stay pinned over
+    // adjacent tool buttons' tooltips after a mouse click. Keyboard users
+    // tabbing through still get the focus ring + pill as expected.
+    solidBtn.blur();
+    await setPref(PREF_SOLID, solid);
+  });
+
   window.addEventListener('resize', () => {
     if (!savedPos) return;
     applyPosition(savedPos.x, savedPos.y);
@@ -183,5 +217,20 @@ function chevronDown() {
 function chevronUp() {
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <polyline points="6 15 12 9 18 15"/>
+  </svg>`;
+}
+// Symmetric disc — outlined for OFF (transparent panel), filled for ON
+// (solid panel). Swapping the whole icon between states keeps the visual
+// centre of the button glyph stable, so the row of tool buttons reads
+// as evenly spaced — the previous half-filled disc had an asymmetric
+// centre of mass that made the strip look misaligned.
+function discOutline() {
+  return `<svg viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+  </svg>`;
+}
+function discFilled() {
+  return `<svg viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="12" r="7" fill="currentColor"/>
   </svg>`;
 }
