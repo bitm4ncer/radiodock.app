@@ -58,6 +58,13 @@
   transition: opacity 140ms ease, transform 180ms cubic-bezier(0.2, 0.7, 0.2, 1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
+.tool-btn:hover,
+.tool-btn:focus-visible {
+  /* Lift the hovered button above its siblings so its slide-out pill
+     paints on top of the adjacent buttons' icons instead of being
+     covered by them (the strip shares z-index: 3 by default). */
+  z-index: 10;
+}
 .tool-btn:hover .tool-btn__pill,
 .tool-btn:focus-visible .tool-btn__pill {
   opacity: 1;

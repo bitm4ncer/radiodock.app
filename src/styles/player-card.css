@@ -33,8 +33,11 @@
   height: 50px;
   border-radius: 50%;
   border: none;
-  background: var(--accent);
-  color: var(--bg-dark);
+  /* Match the avatar circle's --bg-light so the two solid circles on
+     the card read as part of the same palette in both themes; the
+     icon flips through --bg for contrast on the muted background. */
+  background: var(--bg-light);
+  color: var(--bg);
   cursor: pointer;
   display: flex;
   align-items: center;
