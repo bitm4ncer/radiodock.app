@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-05-18T17:00:00.000Z",
+  "exportDate": "2026-05-18T19:00:00.000Z",
   "listName": "Community Radios",
   "stations": [
     {
@@ -12,12 +12,20 @@
       "url": "http://stream-relay-geo.ntslive.net/stream"
     },
     {
-      "countrycode": "GB",
-      "favicon": "http://www.nts.live/apple-touch-icon.png?v=47re43rrzb",
-      "homepage": "http://www.nts.live/",
-      "id": "9634ab94-0601-11e8-ae97-52543be04c81",
-      "name": "NTS Radio 2",
-      "url": "http://stream-relay-geo.ntslive.net/stream2"
+      "countrycode": "DE",
+      "favicon": "https://www.radio80k.de/app/uploads/2022/10/cropped-favicon-8000-192x192.gif",
+      "homepage": "https://www.radio80k.de/",
+      "id": "6b4c2748-07ee-11e8-ae97-52543be04c81",
+      "name": "Radio 80000",
+      "url": "https://radio80k.out.airtime.pro:8000/radio80k_a"
+    },
+    {
+      "countrycode": "BE",
+      "favicon": "https://kioskradio.com/favicon.png",
+      "homepage": "https://kioskradio.com/",
+      "id": "bae70c5c-9f3f-42fc-a83d-6c13920590e0",
+      "name": "Kiosk Radio",
+      "url": "https://kioskradiobxl.out.airtime.pro/kioskradiobxl_b"
     },
     {
       "countrycode": "DE",
@@ -44,22 +52,6 @@
       "url": "https://listen.radioking.com/radio/282820/stream/328621"
     },
     {
-      "countrycode": "DE",
-      "favicon": "https://www.radio80k.de/app/uploads/2022/10/cropped-favicon-8000-192x192.gif",
-      "homepage": "https://www.radio80k.de/",
-      "id": "6b4c2748-07ee-11e8-ae97-52543be04c81",
-      "name": "Radio 80000",
-      "url": "https://radio80k.out.airtime.pro:8000/radio80k_a"
-    },
-    {
-      "countrycode": "BE",
-      "favicon": "https://kioskradio.com/favicon.png",
-      "homepage": "https://kioskradio.com/",
-      "id": "bae70c5c-9f3f-42fc-a83d-6c13920590e0",
-      "name": "Kiosk Radio",
-      "url": "https://kioskradiobxl.out.airtime.pro/kioskradiobxl_b"
-    },
-    {
       "countrycode": "FR",
       "favicon": "https://lyl.live/favicon.ico",
       "homepage": "https://lyl.live/",
@@ -84,6 +76,14 @@
       "url": "https://streaming.radio.co/s3699c5e49/listen"
     },
     {
+      "countrycode": "GB",
+      "favicon": "http://www.nts.live/apple-touch-icon.png?v=47re43rrzb",
+      "homepage": "http://www.nts.live/",
+      "id": "9634ab94-0601-11e8-ae97-52543be04c81",
+      "name": "NTS Radio 2",
+      "url": "http://stream-relay-geo.ntslive.net/stream2"
+    },
+    {
       "countrycode": "NL",
       "favicon": "https://operator-radio.com/favicon.ico",
       "homepage": "https://operator-radio.com/",
@@ -106,14 +106,6 @@
       "id": "9c100db7-ba97-4e6f-821f-dba1ed08ad52",
       "name": "Rinse UK",
       "url": "https://admin.stream.rinse.fm/proxy/rinse_uk/stream"
-    },
-    {
-      "countrycode": "DE",
-      "favicon": "https://www.thfradio.de/favicon.ico",
-      "homepage": "https://www.thfradio.de/",
-      "id": "d8dc455e-761f-436c-aa71-5de8b689690c",
-      "name": "THF Radio",
-      "url": "https://thfradio2.out.airtime.pro/thfradio2_a"
     },
     {
       "countrycode": "GB",
