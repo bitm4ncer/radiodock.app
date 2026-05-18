@@ -307,7 +307,7 @@ body.search-active .favorites-list {
 /* Mobile: there is no hover, so the actions stayed invisible and users
    never discovered the remove + reorder affordances. Surface them
    permanently on small viewports. */
-@media (max-width: 699px), (display-mode: standalone) {
+@media (max-width: 699px), (display-mode: standalone), (display-mode: minimal-ui) {
   .station-item-actions {
     opacity: 1;
   }

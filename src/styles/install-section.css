@@ -198,7 +198,7 @@
 /* ---- Mobile presentation (≤699 px) ---- */
 /* Inline block at the bottom of the main scroll area. Collapsible. The ×
    is hidden on mobile — the chevron toggle is the primary affordance. */
-@media (max-width: 699px), (display-mode: standalone) {
+@media (max-width: 699px), (display-mode: standalone), (display-mode: minimal-ui) {
   .install-section {
     margin-top: 4px;
     padding: 12px 0 0;

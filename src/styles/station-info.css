@@ -178,7 +178,7 @@
 }
 
 /* On phones, stack the stream grid into one column for readability. */
-@media (max-width: 699px), (display-mode: standalone) {
+@media (max-width: 699px), (display-mode: standalone), (display-mode: minimal-ui) {
   .station-info__stream {
     grid-template-columns: 1fr;
   }

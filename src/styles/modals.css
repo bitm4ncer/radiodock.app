@@ -417,7 +417,7 @@
    Why this exists: the default centered modal is covered by the iOS
    on-screen keyboard, and on touch viewports a bottom-anchored
    action-sheet feels more native than a webby centered card. */
-@media (max-width: 699px), (display-mode: standalone) {
+@media (max-width: 699px), (display-mode: standalone), (display-mode: minimal-ui) {
   .modal:not(#infoModal) {
     align-items: flex-end;
     /* 100dvh follows the visual viewport when iOS opens the keyboard,

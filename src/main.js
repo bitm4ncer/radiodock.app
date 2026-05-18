@@ -207,6 +207,7 @@ mountInstallSection({
 // drawer already exposes the rest of the nav.
 const inStandalone =
   window.matchMedia('(display-mode: standalone)').matches ||
+  window.matchMedia('(display-mode: minimal-ui)').matches ||
   window.navigator.standalone === true;
 if (inStandalone) {
   document.getElementById('offCanvasInstall')?.remove();
@@ -832,6 +833,7 @@ function clearShareHash() {
 async function fitWindowToExtensionSize() {
   const inStandalone =
     window.matchMedia('(display-mode: standalone)').matches ||
+    window.matchMedia('(display-mode: minimal-ui)').matches ||
     window.navigator.standalone === true;
   if (!inStandalone) return;
   // Heuristic: only fire on desktop-class viewports; mobile installs are full-screen.

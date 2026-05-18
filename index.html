@@ -22,9 +22,12 @@
             if (meta) meta.content = '#E1E1E1';
           }
           // Mark the document as standalone before paint so CSS can hide
-          // website-only chrome (footer pills) and the standalone menu can
-          // take over without a layout flash.
+          // website-only chrome (footer pills). minimal-ui is included
+          // because Vivaldi installs PWAs in that mode (system title bar
+          // with browser-style controls), and the user experience is the
+          // same as standalone for our purposes.
           var standalone = matchMedia('(display-mode: standalone)').matches ||
+                           matchMedia('(display-mode: minimal-ui)').matches ||
                            window.navigator.standalone === true;
           if (standalone) document.documentElement.classList.add('is-standalone');
         } catch (e) {}
