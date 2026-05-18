@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-05-18T18:16:34.933Z",
+  "exportDate": "2026-05-18T18:40:01.863Z",
   "listName": "Community Radios",
   "stations": [
     {
@@ -205,7 +205,7 @@
     },
     {
       "countrycode": "DE",
-      "favicon": "https://thfradio.de/_next/static/media/logo_white.a51513b7.png",
+      "favicon": "",
       "homepage": "https://thfradio.de/",
       "id": "105fbc46-ec2c-498d-8363-127c452ea8dc",
       "name": "THF Radio",
