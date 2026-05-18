@@ -5,6 +5,8 @@
 //   HTML5 drag-and-drop was replaced because it required imprecise long-holds
 //   on iOS Safari, gave no auto-scroll near edges, and had no haptic feedback.
 
+import { renderLogoSlot, mountLogoBehavior } from './station-logo.js';
+
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({
     '&': '&amp;',
@@ -15,16 +17,8 @@ function escapeHtml(s) {
   }[c]));
 }
 
-function getInitials(name) {
-  if (!name) return '?';
-  const parts = String(name).trim().split(/\s+/).slice(0, 2);
-  return parts.map((p) => p[0]?.toUpperCase() ?? '').join('') || name[0]?.toUpperCase() || '?';
-}
-
 function stationRow(station, { activeId, editable }) {
-  const initials = getInitials(station.name);
   const isActive = station.id === activeId;
-  const favicon = station.favicon ? escapeHtml(station.favicon) : '';
   const removeBtn = editable
     ? `<button type="button" class="btn-icon btn-remove" title="Remove from list" aria-label="Remove station">
          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
@@ -35,9 +29,7 @@ function stationRow(station, { activeId, editable }) {
     : '';
   return `
     <div class="station-item${isActive ? ' playing' : ''}" data-id="${escapeHtml(station.id)}">
-      ${favicon
-        ? `<img class="station-item-logo" src="${favicon}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'station-item-initials',textContent:${JSON.stringify(initials)}}))" />`
-        : `<div class="station-item-initials">${escapeHtml(initials)}</div>`}
+      ${renderLogoSlot(station, { size: 'sm' })}
       <div class="station-item-info">
         <div class="station-item-name">${escapeHtml(station.name ?? '')}</div>
         <div class="station-item-country">${escapeHtml(station.countrycode ?? '')}</div>
@@ -194,6 +186,7 @@ export function mountStationList({ container }) {
     rowsHost = document.createElement('div');
     rowsHost.className = 'station-list-rows';
     listEl.append(rowsHost);
+    mountLogoBehavior(rowsHost);
 
     rowsHost.addEventListener('click', (evt) => {
       if (suppressNextClick) {
