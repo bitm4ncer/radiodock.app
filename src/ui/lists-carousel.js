@@ -30,6 +30,15 @@ export function mountListsCarousel({ root }) {
     };
   }
 
+  // Community is read-only for adds/removes but reorderable so the user can
+   // arrange the default stations to taste; user lists allow both.
+  function listOpts(list) {
+    return {
+      removable: !list?.readOnly,
+      reorderable: list?.reorderable ?? !list?.readOnly,
+    };
+  }
+
   let lists = [];
   let currentId = null;
   let activeStationId = null;
@@ -66,7 +75,7 @@ export function mountListsCarousel({ root }) {
     sl.onClick((station) => clickCb?.(station, list.id));
     sl.onRemove((stationId) => removeCb?.(stationId, list.id));
     sl.onReorder((orderedIds) => reorderCb?.(orderedIds, list.id));
-    sl.setStations(list.stations ?? [], { editable: !list.readOnly });
+    sl.setStations(list.stations ?? [], listOpts(list));
     sl.setActive(activeStationId);
 
     const entry = { pageEl, stationList: sl };
@@ -86,7 +95,7 @@ export function mountListsCarousel({ root }) {
     // Create / update existing pages, in order.
     for (const list of lists) {
       const entry = ensurePage(list);
-      entry.stationList.setStations(list.stations ?? [], { editable: !list.readOnly });
+      entry.stationList.setStations(list.stations ?? [], listOpts(list));
       entry.stationList.setActive(activeStationId);
       // Reorder DOM to match `lists` order — append moves existing nodes.
       root.append(entry.pageEl);
@@ -160,7 +169,7 @@ export function mountListsCarousel({ root }) {
       const entry = pages.get(listId);
       if (!entry) return;
       const list = lists.find((l) => l.id === listId);
-      entry.stationList.setStations(stations ?? [], { editable: !list?.readOnly });
+      entry.stationList.setStations(stations ?? [], listOpts(list));
       entry.stationList.setActive(activeStationId);
     },
     setActiveStation(stationId) {

@@ -31,7 +31,7 @@ const COMMUNITY_LIST_ID = listsApi.COMMUNITY_LIST_ID;
 
 // --- App state ---
 const state = {
-  community: { id: COMMUNITY_LIST_ID, name: 'Community Radios', stations: [], readOnly: true },
+  community: { id: COMMUNITY_LIST_ID, name: 'Community Radios', stations: [], readOnly: true, reorderable: true },
   userLists: [],            // [{id, name, stations, order, ...}]
   currentListId: null,      // active list (community or a user list)
   currentStation: null,
@@ -323,7 +323,10 @@ function renderActiveList() {
   // Desktop dropdown
   listDropdown.setLists(allLists);
   listDropdown.setCurrent(list.id);
-  stationList.setStations(list.stations, { editable: !list.readOnly });
+  stationList.setStations(list.stations, {
+    removable: !list.readOnly,
+    reorderable: list.reorderable ?? !list.readOnly,
+  });
   stationList.setActive(state.currentStation?.id ?? null);
   // Mobile tabs + carousel
   listTabs.setLists(allLists);
@@ -410,9 +413,9 @@ stationList.onRemove(async (stationId) => {
 
 stationList.onReorder(async (orderedIds) => {
   const list = findList(state.currentListId);
-  if (!list || list.readOnly) return;
+  if (!list || !(list.reorderable ?? !list.readOnly)) return;
   try {
-    const updated = await listsApi.reorderStationsInList(list.id, orderedIds);
+    const updated = await listsApi.reorderStationsInList(list.id, orderedIds, { baseline: list.stations });
     list.stations = updated.stations;
     renderActiveList();
   } catch (err) {
@@ -490,7 +493,10 @@ listsCarousel.onCurrentChange(async (listId) => {
   listDropdown.setCurrent(listId);
   listTabs.setCurrent(listId);
   const list = findList(listId);
-  if (list) stationList.setStations(list.stations, { editable: !list.readOnly });
+  if (list) stationList.setStations(list.stations, {
+    removable: !list.readOnly,
+    reorderable: list.reorderable ?? !list.readOnly,
+  });
   stationList.setActive(state.currentStation?.id ?? null);
   updateFavoriteHeart();
   await storage.setPref('currentListId', listId);
@@ -523,9 +529,9 @@ listsCarousel.onRemove(async (stationId, listId) => {
 
 listsCarousel.onReorder(async (orderedIds, listId) => {
   const list = findList(listId);
-  if (!list || list.readOnly) return;
+  if (!list || !(list.reorderable ?? !list.readOnly)) return;
   try {
-    const updated = await listsApi.reorderStationsInList(list.id, orderedIds);
+    const updated = await listsApi.reorderStationsInList(list.id, orderedIds, { baseline: list.stations });
     list.stations = updated.stations;
     renderActiveList();
   } catch (err) {
@@ -674,8 +680,9 @@ async function bootstrap() {
     state.community = {
       id: COMMUNITY_LIST_ID,
       name: communityRes.listName ?? 'Community Radios',
-      stations: communityRes.stations ?? [],
+      stations: listsApi.applyCommunityOrder(communityRes.stations ?? [], prefs.communityOrder),
       readOnly: true,
+      reorderable: true,
     };
     state.userLists = userLists;
     state.currentListId = prefs.currentListId ?? COMMUNITY_LIST_ID;

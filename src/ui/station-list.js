@@ -17,14 +17,14 @@ function escapeHtml(s) {
   }[c]));
 }
 
-function stationRow(station, { activeId, editable }) {
+function stationRow(station, { activeId, removable, reorderable }) {
   const isActive = station.id === activeId;
-  const removeBtn = editable
+  const removeBtn = removable
     ? `<button type="button" class="btn-icon btn-remove" title="Remove from list" aria-label="Remove station">
          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
        </button>`
     : '';
-  const dragHandle = editable
+  const dragHandle = reorderable
     ? `<span class="btn-drag" title="Drag to reorder" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.6" fill="currentColor"/><circle cx="15" cy="6" r="1.6" fill="currentColor"/><circle cx="9" cy="12" r="1.6" fill="currentColor"/><circle cx="15" cy="12" r="1.6" fill="currentColor"/><circle cx="9" cy="18" r="1.6" fill="currentColor"/><circle cx="15" cy="18" r="1.6" fill="currentColor"/></svg></span>`
     : '';
   return `
@@ -34,7 +34,7 @@ function stationRow(station, { activeId, editable }) {
         <div class="station-item-name">${escapeHtml(station.name ?? '')}</div>
         <div class="station-item-country">${escapeHtml(station.countrycode ?? '')}</div>
       </div>
-      ${editable ? `<div class="station-item-actions">${removeBtn}${dragHandle}</div>` : ''}
+      ${(removable || reorderable) ? `<div class="station-item-actions">${removeBtn}${dragHandle}</div>` : ''}
     </div>
   `;
 }
@@ -54,7 +54,8 @@ export function mountStationList({ container }) {
 
   let stations = [];
   let activeId = null;
-  let editable = false;
+  let removable = false;
+  let reorderable = false;
   let clickCb = null;
   let removeCb = null;
   let reorderCb = null;
@@ -208,7 +209,7 @@ export function mountStationList({ container }) {
     });
 
     rowsHost.addEventListener('pointerdown', (evt) => {
-      if (!editable) return;
+      if (!reorderable) return;
       if (evt.button !== undefined && evt.button !== 0) return;
       // Ignore additional fingers while a drag/press is in flight.
       if (dragSrcRow || pressedRow) return;
@@ -288,13 +289,22 @@ export function mountStationList({ container }) {
     }
     if (emptyEl) emptyEl.style.display = 'none';
     const host = ensureRowsHost();
-    host.innerHTML = stations.map((s) => stationRow(s, { activeId, editable })).join('');
+    host.innerHTML = stations
+      .map((s) => stationRow(s, { activeId, removable, reorderable }))
+      .join('');
   }
 
   return {
     setStations(next, opts = {}) {
       stations = next ?? [];
-      if ('editable' in opts) editable = !!opts.editable;
+      // `editable` is shorthand for both — kept for back-compat with callers
+      // that haven't migrated to the per-affordance flags.
+      if ('editable' in opts) {
+        removable = !!opts.editable;
+        reorderable = !!opts.editable;
+      }
+      if ('removable' in opts) removable = !!opts.removable;
+      if ('reorderable' in opts) reorderable = !!opts.reorderable;
       render();
     },
     setActive(id) {

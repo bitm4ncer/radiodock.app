@@ -107,9 +107,24 @@ export async function removeStationFromList(listId, stationId) {
   return list;
 }
 
-export async function reorderStationsInList(listId, orderedIds) {
+export async function reorderStationsInList(listId, orderedIds, opts = {}) {
   if (listId === COMMUNITY_LIST_ID) {
-    throw new Error('Community Radios is read-only.');
+    // Community is a read-only list shipped via JSON, but the user can
+    // arrange it to taste. The order is persisted as a pref (just the id
+    // sequence); on next boot main.js applies it to the freshly-loaded JSON.
+    const baseline = opts.baseline ?? [];
+    const map = new Map(baseline.map((s) => [s.id, s]));
+    const reordered = [];
+    for (const id of orderedIds) {
+      const s = map.get(id);
+      if (s) {
+        reordered.push(s);
+        map.delete(id);
+      }
+    }
+    for (const s of map.values()) reordered.push(s);
+    await storage.setPref('communityOrder', reordered.map((s) => s.id));
+    return { id: COMMUNITY_LIST_ID, stations: reordered };
   }
   const list = await storage.getList(listId);
   if (!list) throw new Error('List not found.');
@@ -127,6 +142,25 @@ export async function reorderStationsInList(listId, orderedIds) {
   list.stations = reordered;
   await storage.putList(list);
   return list;
+}
+
+/** Apply a saved community order (from prefs) to the freshly-loaded JSON
+ *  station list. Unknown ids in the saved order are dropped; new ids
+ *  not in the saved order keep their JSON position appended at the end.
+ *  Returns the reordered stations array. */
+export function applyCommunityOrder(stations, savedOrder) {
+  if (!Array.isArray(savedOrder) || savedOrder.length === 0) return stations;
+  const map = new Map(stations.map((s) => [s.id, s]));
+  const out = [];
+  for (const id of savedOrder) {
+    const s = map.get(id);
+    if (s) {
+      out.push(s);
+      map.delete(id);
+    }
+  }
+  for (const s of map.values()) out.push(s);
+  return out;
 }
 
 /** Wholesale replace a list's stations. Used by share-link import when the
