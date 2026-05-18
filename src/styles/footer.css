@@ -1,5 +1,5 @@
-/* Footer pill — shared base for GitHub / Issues / BMC / Legal in both
-   the desktop footer below the fold and the mobile off-canvas drawer. */
+/* Footer pill — shared base for About / GitHub / Issues / BMC / Legal in
+   both the desktop footer below the fold and the mobile off-canvas drawer. */
 .footer-pill {
   display: inline-flex;
   align-items: center;
@@ -19,27 +19,10 @@
   background: var(--bg-list-hover);
 }
 
-.footer-pill__icon {
-  width: 14px;
-  height: 14px;
-  margin-right: 6px;
-  opacity: 0.85;
-}
-
 /* Compact variant used in the one-line desktop footer. */
 .footer-pill--sm {
   padding: 6px 12px;
   font-size: 12px;
-}
-
-/* Ghost pill for low-emphasis links like "Legal Notice". */
-.footer-pill--ghost {
-  background: transparent;
-  color: var(--text-muted);
-}
-.footer-pill--ghost:hover {
-  background: var(--overlay-soft);
-  color: var(--text);
 }
 
 /* CTA pill — re-open the install badge. Subtle red outline distinguishes
