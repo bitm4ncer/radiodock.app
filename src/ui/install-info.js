@@ -10,7 +10,10 @@
 // All transitions live in install-info.css.
 
 import { openModal, closeModal } from './modals.js';
+import { toast } from './toast.js';
 import * as storage from '../data/storage.js';
+
+const NO_PROMPT_HINT = "Browser didn't offer a prompt — use the ⋮ menu → Install app.";
 
 const CHROME_STORE_URL =
   'https://chromewebstore.google.com/detail/radiodock/dcjmegapbbplapeghilpbdddhkgndbbh';
@@ -227,8 +230,15 @@ export function mountInstallInfo() {
           deferredPrompt.prompt();
           await deferredPrompt.userChoice.catch(() => {});
           deferredPrompt = null;
+          closeModal(modalEl);
+        } else {
+          // No native prompt available (already installed once, browser
+          // doesn't support it, or user dismissed it earlier this session).
+          // Keep the modal open so the user can see the hint paragraph
+          // beneath the button — the toast just calls it out explicitly.
+          toast(NO_PROMPT_HINT, 4000);
+          return;
         }
-        closeModal(modalEl);
         await storage.setPref('seenInstallHint', true);
       } else if (action === 'dismiss') {
         closeModal(modalEl);
@@ -267,9 +277,11 @@ export function mountInstallInfo() {
             deferredPrompt.prompt();
             await deferredPrompt.userChoice.catch(() => {});
             deferredPrompt = null;
+            await storage.setPref('seenInstallHint', true);
+            onClose?.();
+          } else {
+            toast(NO_PROMPT_HINT, 4000);
           }
-          await storage.setPref('seenInstallHint', true);
-          onClose?.();
         } else if (action === 'dismiss') {
           await storage.setPref('seenInstallHint', true);
           onClose?.();

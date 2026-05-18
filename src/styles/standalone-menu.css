@@ -1,0 +1,83 @@
+/* Standalone-mode menu popover.
+   Anchored to the .standalone-menu-btn tool button at the top-right of
+   the main container. Surfaces About / GitHub / Issues / BMC / Legal +
+   the theme toggle inside the installed PWA, replacing the website-
+   style footer for that audience. */
+
+/* Sits next to the existing tool buttons — order from right-to-left:
+   minimize, drag, menu. Selector intentionally double-classed so it wins
+   against the generic .tool-btn { right: var(--space-3) } base that loads
+   after this file. */
+.tool-btn.standalone-menu-btn { top: var(--space-3); right: calc(var(--space-3) + 72px); }
+@media (min-width: 700px) {
+  .tool-btn.standalone-menu-btn { top: 18px; right: 90px; }
+}
+.container.is-minimized .tool-btn.standalone-menu-btn { top: 8px; right: 88px; }
+
+.standalone-menu-popover {
+  position: absolute;
+  top: 48px;
+  right: var(--space-3);
+  min-width: 200px;
+  background: var(--bg-list-active);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  padding: 6px;
+  z-index: 4;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  /* Open animation handled by the .is-open state below. */
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 140ms ease, transform 160ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.standalone-menu-popover.is-open {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (min-width: 700px) {
+  .standalone-menu-popover { top: 52px; right: 18px; }
+}
+
+.standalone-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background 120ms ease;
+}
+
+.standalone-menu__item:hover {
+  background: var(--overlay-soft);
+}
+
+.standalone-menu__sep {
+  height: 1px;
+  margin: 4px 0;
+  background: var(--border);
+}
+
+/* Re-use the off-canvas theme-toggle--row inside the popover, scaled
+   down for the menu rhythm. */
+.standalone-menu__theme.theme-toggle--row {
+  padding: 8px 12px;
+  font-size: 13px;
+  border-radius: var(--radius-sm);
+}
+.standalone-menu__theme.theme-toggle--row:hover {
+  background: var(--overlay-soft);
+}

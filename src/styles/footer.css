@@ -53,3 +53,10 @@
   gap: 10px;
   flex-wrap: wrap;
 }
+
+/* In the installed PWA, the website footer reads as out-of-place chrome —
+   the user already chose to launch a standalone app. The standalone-menu
+   button takes over its job. */
+html.is-standalone .site-footer-desktop {
+  display: none;
+}

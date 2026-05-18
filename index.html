@@ -21,6 +21,12 @@
             document.documentElement.classList.add('theme-light');
             if (meta) meta.content = '#E1E1E1';
           }
+          // Mark the document as standalone before paint so CSS can hide
+          // website-only chrome (footer pills) and the standalone menu can
+          // take over without a layout flash.
+          var standalone = matchMedia('(display-mode: standalone)').matches ||
+                           window.navigator.standalone === true;
+          if (standalone) document.documentElement.classList.add('is-standalone');
         } catch (e) {}
       })();
     </script>
