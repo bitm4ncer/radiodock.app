@@ -78,6 +78,11 @@ let objectUrls = new Map();
 
 export async function mountBackground() {
   if (mounted) return;
+  // Desktop-only feature. Mobile gets the plain dark body bg — no
+  // discovery probes, no IDB reads, no layer DOM injection, no controls.
+  // Tablets with coarse pointer also fall into this branch on purpose:
+  // the controls are designed for a hover-precise pointer.
+  if (matchMedia('(pointer: coarse)').matches) return;
   mounted = true;
 
   // Background layers (two stacked for crossfade).
