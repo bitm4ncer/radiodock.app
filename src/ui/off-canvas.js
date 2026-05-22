@@ -2,7 +2,7 @@
 // Body gets `is-locked` while the drawer is open so background scroll is
 // disabled.
 
-export function mountOffCanvas({ triggerBtn, panel, onInstallClick, onAboutClick, onNotesClick } = {}) {
+export function mountOffCanvas({ triggerBtn, panel, onInstallClick, onAboutClick } = {}) {
   if (!panel) return { open() {}, close() {} };
 
   function open() {
@@ -65,13 +65,6 @@ export function mountOffCanvas({ triggerBtn, panel, onInstallClick, onAboutClick
     evt.preventDefault();
     close();
     onAboutClick?.();
-  });
-
-  const notesBtn = panel.querySelector('#offCanvasNotes');
-  notesBtn?.addEventListener('click', (evt) => {
-    evt.preventDefault();
-    close();
-    onNotesClick?.();
   });
 
   return { open, close };

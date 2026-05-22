@@ -12,11 +12,8 @@ const DB_NAME = 'radiodock';
 // session where the module hot-reloaded before its new code was actually
 // in memory, leaving half-migrated databases). Idempotent — the upgrade
 // branch only creates stores that don't already exist.
-// v4: notes feature — `notePages` + `notes` stores. v5 re-runs v4's
-// migration (idempotent — same `if (!contains)` pattern as v3 → v2's
-// fix) because the dev server can open the DB at v4 before the upgrade
-// handler has loaded the new store definitions.
-const DB_VERSION = 5;
+// v4: notes feature — `notePages` + `notes` stores.
+const DB_VERSION = 4;
 
 let dbPromise = null;
 

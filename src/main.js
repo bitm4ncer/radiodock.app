@@ -26,8 +26,6 @@ import { mountVisualizer } from './visualizer/bootstrap.js';
 import { mountBackground } from './ui/background.js';
 import { mountFooterReveal } from './ui/footer-reveal.js';
 import { mountPlayerCardDragMinimize } from './ui/player-card-drag.js';
-import { mountNotesPanel } from './ui/notes-panel.js';
-import { mountNotesCaptureButton } from './ui/notes-capture-button.js';
 import { track } from './analytics/umami.js';
 import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
 
@@ -246,37 +244,6 @@ document.getElementById('footerReinstallBtn')?.addEventListener('click', () => {
   });
 });
 
-// Latest metadata cache. The metadata-poller emits the canonical event
-// once per station change + every ~15s after; the notes panel needs the
-// most-recent payload at capture time without having to ask the poller.
-// Plain module-level state is enough — there's only ever one player.
-let latestMetadata = null;
-player.on('metadata', (evt) => {
-  const { artist, title, nowPlaying } = evt.detail ?? {};
-  latestMetadata = { artist, title, nowPlaying };
-});
-player.on('stationchange', () => {
-  // Clear stale metadata so a capture taken between station change and
-  // the first metadata response of the new station doesn't carry over
-  // the previous track.
-  latestMetadata = null;
-});
-
-// Notes panel — created async because mountNotesPanel touches IndexedDB
-// (`getAllPages` lazy-creates Journal). The notes API is exposed via a
-// closure variable so the hamburger entry below can lazily reach it
-// (off-canvas mounts synchronously but notesApi resolves a tick later).
-let notesApi = null;
-mountNotesPanel({ player, getLatestMetadata: () => latestMetadata })
-  .then((api) => { notesApi = api; })
-  .catch((err) => console.warn('Notes panel mount failed:', err));
-
-// Mini capture button on the player-card.
-mountNotesCaptureButton({
-  player,
-  onCapture: () => notesApi?.captureNow({ source: 'player-card' }),
-});
-
 // Mobile off-canvas drawer
 mountOffCanvas({
   triggerBtn: document.getElementById('menuBtn'),
@@ -290,7 +257,6 @@ mountOffCanvas({
     installInfo.open(branch);
   },
   onAboutClick: openAboutModal,
-  onNotesClick: () => notesApi?.open(),
 });
 
 // Delegated tracking for the install-section's platform buttons. The
