@@ -28,15 +28,6 @@ function openDb() {
       return;
     }
     const req = indexedDB.open(DB_NAME, DB_VERSION);
-    // Watchdog: if neither success nor error nor blocked fires within
-    // 5 s, give up. Without this the entire boot chain hangs forever
-    // when an old connection (e.g. from a leftover service-worker
-    // context, or a second tab on the previous schema) holds the DB at
-    // a lower version. The reject propagates into bootstrap() which is
-    // now resilient — community stations still load, just no IDB state.
-    const watchdog = setTimeout(() => {
-      reject(new Error('IndexedDB open timed out'));
-    }, 5000);
     req.onupgradeneeded = (evt) => {
       const db = evt.target.result;
       if (!db.objectStoreNames.contains('lists')) {
@@ -57,16 +48,8 @@ function openDb() {
         notes.createIndex('byCreatedAt', 'createdAt', { unique: false });
       }
     };
-    req.onsuccess = () => { clearTimeout(watchdog); resolve(req.result); };
-    req.onerror = () => { clearTimeout(watchdog); reject(req.error); };
-    req.onblocked = () => {
-      // Another connection at the previous version still holds the DB.
-      // The browser fires `versionchange` on it; if it ignores that and
-      // refuses to close, we'd hang forever. Reject so the app can boot
-      // in IDB-less degraded mode and tell the user something is wrong.
-      clearTimeout(watchdog);
-      reject(new Error('IndexedDB blocked by another tab — please close other RadioDock tabs'));
-    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
   });
   return dbPromise;
 }

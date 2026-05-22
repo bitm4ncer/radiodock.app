@@ -2,13 +2,9 @@
    Body bg is opaque (#1a1a1a from layout.css) and would cover anything at
    negative z-index per the CSS painting order, so we force body transparent
    whenever this module is loaded. <html> keeps the dark fallback colour
-   so the page never flashes white during load or when no image is set.
-   Gated on `pointer: fine` so coarse-pointer (mobile/tablet) keeps the
-   opaque body bg — the entire feature is desktop-only. */
-@media (pointer: fine) {
-  body {
-    background: transparent;
-  }
+   so the page never flashes white during load or when no image is set. */
+body {
+  background: transparent;
 }
 
 /* Two stacked layers crossfade by toggling opacity on .is-visible.

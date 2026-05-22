@@ -78,10 +78,6 @@ let objectUrls = new Map();
 
 export async function mountBackground() {
   if (mounted) return;
-  // Desktop-only feature. Mobile gets a plain solid background to keep the
-  // viewport reads clean — no IDB reads, no /backgrounds HEAD probes, no
-  // crossfade layers, no controls.
-  if (matchMedia('(pointer: coarse)').matches) return;
   mounted = true;
 
   // Background layers (two stacked for crossfade).
