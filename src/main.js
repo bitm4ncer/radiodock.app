@@ -26,6 +26,7 @@ import { mountVisualizer } from './visualizer/bootstrap.js';
 import { mountPlayerCardDragMinimize } from './ui/player-card-drag.js';
 import { mountIdbBlockedBanner } from './ui/idb-blocked-banner.js';
 import { mountBackground } from './ui/background.js';
+import { mountFooterReveal } from './ui/footer-reveal.js';
 import { track } from './analytics/umami.js';
 import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
 
@@ -319,6 +320,10 @@ mountPlayerCardDragMinimize().catch((err) => console.warn('Player card drag moun
 // uploads, no persisted index" — the built-in image set still cycles in
 // memory. Coarse-pointer gate inside mountBackground keeps mobile clean.
 mountBackground().catch((err) => console.warn('Background mount failed:', err));
+
+// Auto-reveal the desktop footer when the cursor approaches the bottom edge.
+// Pure DOM/CSS — no IDB dependency, no boot risk.
+mountFooterReveal();
 
 // --- Helpers ---
 function allListsForDropdown() {

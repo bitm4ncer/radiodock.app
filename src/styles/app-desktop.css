@@ -8,11 +8,32 @@
     display: none !important;
   }
 
-  /* Tinted card around the main column. */
+  /* Tinted card around the main column. Two themes:
+     dark — semi-transparent mid-grey that reads as a dim glass tint over
+     a photographic background. light — lifted to a brighter grey so the
+     card still feels frosted on a pale backdrop. */
   .container {
     padding: 59px 34px;
-    background: #0000002b;
+    background: #4141415c;
     border-radius: 25px;
+  }
+  :root.theme-light .container {
+    background: #9393935c;
+  }
+
+  /* Solid-panel mode (Toggle next to the drag handle). Opaque background
+     + zero blur — for users who find the frosted-glass treatment
+     distracting against a photographic background. Use blur(0px)
+     saturate(100%) instead of `none` so the 800 ms transition declared on
+     `.container` can interpolate cleanly; animating to/from `none` snaps
+     instead of fading. */
+  .container.is-solid {
+    background: #141414;
+    backdrop-filter: blur(0px) saturate(100%);
+    -webkit-backdrop-filter: blur(0px) saturate(100%);
+  }
+  :root.theme-light .container.is-solid {
+    background: #d5d5d5;
   }
 
   /* Push the desktop footer just below the fold by guaranteeing the page

@@ -31,7 +31,14 @@
 .tool-btn__icon svg * {
   pointer-events: none;
 }
+.tool-btn__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 .tool-btn__icon svg {
+  display: block;       /* avoid the inline-element baseline gap that
+                           shifts the glyph down a few px inside the button */
   width: 16px;
   height: 16px;
 }
@@ -81,16 +88,33 @@
 
 .player-card-minimize-btn { top: var(--space-3); right: var(--space-3); }
 .player-card-drag-handle  { top: var(--space-3); right: calc(var(--space-3) + 36px); cursor: grab; }
-.viz-trigger-btn          { top: var(--space-3); right: calc(var(--space-3) + 72px); }
+.container-solid-toggle   { top: var(--space-3); right: calc(var(--space-3) + 72px); }
+.viz-trigger-btn          { top: var(--space-3); right: calc(var(--space-3) + 108px); }
 
 .player-card-drag-handle.is-dragging { cursor: grabbing; }
+
+/* Solid toggle icon is consistently dimmer than the rest of the strip —
+   it's a settings affordance, not a primary control, so it shouldn't
+   compete visually with drag/minimize. JS swaps the icon from outlined
+   to filled to convey state; the colour stays the same in both states. */
+.container-solid-toggle,
+.container-solid-toggle:hover,
+.container-solid-toggle.is-active {
+  color: rgba(255, 255, 255, 0.45);
+}
+:root.theme-light .container-solid-toggle,
+:root.theme-light .container-solid-toggle:hover,
+:root.theme-light .container-solid-toggle.is-active {
+  color: rgba(0, 0, 0, 0.45);
+}
 
 /* On desktop the .container has 59px top padding (the tinted card). Nudge
    the strip down so it sits comfortably inside the tinted card. */
 @media (min-width: 700px) and (display-mode: browser) {
   .player-card-minimize-btn { top: 18px; right: 18px; }
   .player-card-drag-handle  { top: 18px; right: 54px; }
-  .viz-trigger-btn          { top: 18px; right: 90px; }
+  .container-solid-toggle   { top: 18px; right: 90px; }
+  .viz-trigger-btn          { top: 18px; right: 126px; }
 }
 
 /* Container hosts the absolutely-positioned tool buttons; needs to act as
@@ -111,15 +135,30 @@
   z-index: 5;
 }
 
-/* Backdrop blur on the main container so the visualizer shows through
-   with a frosted-glass treatment. Only kicks in on desktop because the
-   mobile container has no tinted background. */
+/* Backdrop blur on the main container so the visualizer + background
+   image show through with a frosted-glass treatment. Only kicks in on
+   desktop because the mobile container has no tinted background.
+   `will-change` + `isolation` promote it to its own compositor layer so
+   the blur isn't recomputed every frame when something behind animates
+   (footer reveal, background crossfade, visualizer canvas). Without
+   these, Chromium ships visible tearing / checker artefacts as the
+   compositor tries to share layers. */
 @media (min-width: 700px) and (display-mode: browser) {
   .container {
-    backdrop-filter: blur(18px) saturate(140%);
-    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    isolation: isolate;
+    will-change: backdrop-filter;
+    transform: translateZ(0);
+    /* 800 ms cross-fade between the frosted-glass and the solid-panel
+       presentation when the user toggles the solid switch. background-color
+       and backdrop-filter (+ -webkit-) all animate together so the swap
+       reads as a single smooth dissolve, not a layered pop. */
     transition: padding 260ms cubic-bezier(0.2, 0.7, 0.2, 1),
-                gap 260ms ease;
+                gap 260ms ease,
+                background-color 800ms cubic-bezier(0.4, 0, 0.2, 1),
+                backdrop-filter 800ms cubic-bezier(0.4, 0, 0.2, 1),
+                -webkit-backdrop-filter 800ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
@@ -173,7 +212,8 @@
 @media (min-width: 700px) and (display-mode: browser) {
   .container.is-minimized .player-card-minimize-btn { top: 8px; right: 16px; }
   .container.is-minimized .player-card-drag-handle  { top: 8px; right: 52px; }
-  .container.is-minimized .viz-trigger-btn          { top: 8px; right: 88px; }
+  .container.is-minimized .container-solid-toggle   { top: 8px; right: 88px; }
+  .container.is-minimized .viz-trigger-btn          { top: 8px; right: 124px; }
 }
 
 /* Hide the volume strip / volume dots when minimized — extra chrome the
@@ -489,11 +529,15 @@ body.viz-active {
    over interactive UI. */
 body.viz-active .page,
 body.viz-active .mobile-topbar,
-body.viz-active .site-footer-desktop,
+body.viz-active .off-canvas {
+  position: relative;
+  z-index: 1;
+}
+/* Already-fixed overlays — z-index alone, don't override position.
+   .site-footer-desktop is now a fixed-overlay (slides in on mouse-proximity)
+   with its own z-index: 50 from footer.css. */
 body.viz-active .search-overlay,
-body.viz-active .off-canvas,
 body.viz-active .modal,
 body.viz-active .toast {
-  position: relative;
   z-index: 1;
 }
