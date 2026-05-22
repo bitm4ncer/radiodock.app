@@ -735,10 +735,22 @@ listDropdown.onImport(async (file) => {
 // --- Bootstrap ---
 async function bootstrap() {
   try {
+    // Each IDB-backed promise is guarded with a per-call fallback so a
+    // stalled / blocked database can't take the whole boot chain down
+    // with it. The community list is independent of IDB — it always
+    // loads from /public/community-radios.json — so users always see
+    // stations even in degraded mode.
     const [communityRes, userLists, prefs] = await Promise.all([
       fetch('/community-radios.json').then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))),
-      listsApi.getUserLists(),
-      storage.getAllPrefs(),
+      listsApi.getUserLists().catch((err) => {
+        console.warn('User lists unavailable (IDB error?):', err);
+        toast('Local lists unavailable — community list only');
+        return [];
+      }),
+      storage.getAllPrefs().catch((err) => {
+        console.warn('Prefs unavailable (IDB error?):', err);
+        return {};
+      }),
     ]);
 
     state.community = {
