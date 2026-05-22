@@ -24,6 +24,8 @@ import { buildShareUrl, tryDecodeShareHash } from './data/share.js';
 import { searchStations } from './data/radio-browser.js';
 import { mountVisualizer } from './visualizer/bootstrap.js';
 import { mountPlayerCardDragMinimize } from './ui/player-card-drag.js';
+import { mountIdbBlockedBanner } from './ui/idb-blocked-banner.js';
+import { mountBackground } from './ui/background.js';
 import { track } from './analytics/umami.js';
 import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
 
@@ -38,6 +40,11 @@ const state = {
 };
 
 // --- Boot UI modules ---
+// IDB-blocked help banner: mounted first so it can react to the storage
+// health observable the moment storage.js detects a failure during any
+// downstream call (no eager IDB open here — the banner only appears if
+// some other module triggers a failed open).
+mountIdbBlockedBanner();
 attachRecovery(player);
 attachMetadataPoller(player);
 attachMediaSession(player);
@@ -305,6 +312,13 @@ if (VISUALIZER_ENABLED) {
 
 // Drag + minimize for the player card (desktop only).
 mountPlayerCardDragMinimize().catch((err) => console.warn('Player card drag mount failed:', err));
+
+// Fullscreen background images + cycle controls. Self-contained module:
+// IDB failures inside it are absorbed by the storage helpers (return safe
+// defaults), so the most that can happen on a hostile browser is "no
+// uploads, no persisted index" — the built-in image set still cycles in
+// memory. Coarse-pointer gate inside mountBackground keeps mobile clean.
+mountBackground().catch((err) => console.warn('Background mount failed:', err));
 
 // --- Helpers ---
 function allListsForDropdown() {
@@ -689,50 +703,83 @@ listDropdown.onImport(async (file) => {
 });
 
 // --- Bootstrap ---
+//
+// Two-phase to survive hostile browser environments (Brave Shield,
+// Firefox Strict, Safari ITP) where IndexedDB is blocked or wiped:
+//
+//   Phase 1 — critical path. Fetches /community-radios.json (static
+//             asset, always reachable) and renders the community list
+//             immediately. The app is fully usable after this — stations,
+//             search, playback, audio. IDB is NOT awaited.
+//
+//   Phase 2 — IDB-backed state restoration. User lists, prefs, the
+//             previously-played station, volume. Every call goes through
+//             storage.js's safe-helper wrappers — they return defaults on
+//             IDB failure instead of throwing, so this whole phase is
+//             effectively `try { … } catch (ignored)`. If IDB is dead,
+//             the help banner picks it up via the health observable.
 async function bootstrap() {
+  // --- Phase 1: community list (critical) -------------------------------
+  let communityRes = null;
   try {
-    const [communityRes, userLists, prefs] = await Promise.all([
-      fetch('/community-radios.json').then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))),
-      listsApi.getUserLists(),
-      storage.getAllPrefs(),
-    ]);
+    const r = await fetch('/community-radios.json');
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    communityRes = await r.json();
+  } catch (err) {
+    console.error('Community list fetch failed:', err);
+    toast('Could not load station directory — please reload');
+    // Even without the community list we want the IDB-backed phase to
+    // still attempt restoration (user lists, prefs) so a previously-
+    // favourited station can at least be displayed. Fall through.
+  }
 
+  if (communityRes) {
     state.community = {
       id: COMMUNITY_LIST_ID,
       name: communityRes.listName ?? 'Community Radios',
-      stations: listsApi.applyCommunityOrder(communityRes.stations ?? [], prefs.communityOrder),
+      stations: communityRes.stations ?? [],   // ordering applied below once prefs are in
       readOnly: true,
       reorderable: true,
     };
-    state.userLists = userLists;
-    state.currentListId = prefs.currentListId ?? COMMUNITY_LIST_ID;
-    if (!findList(state.currentListId)) state.currentListId = COMMUNITY_LIST_ID;
+    renderActiveList();   // user sees stations now; IDB phase can take its time
+  }
 
-    await restoreVolume();
-    renderActiveList();
+  // --- Phase 2: IDB-backed state (best-effort, never throws) ------------
+  const prefs = await storage.getAllPrefs();   // {} if IDB unavailable
+  const userLists = await listsApi.getUserLists();  // [] / synthetic Favorites
 
-    // Restore current station view (without auto-playing — first play needs user gesture).
-    if (prefs.currentStationId) {
-      const all = [
-        ...state.community.stations,
-        ...state.userLists.flatMap((l) => l.stations),
-      ];
-      const station = all.find((s) => s.id === prefs.currentStationId);
-      if (station) {
-        state.currentStation = station;
-        playerCard.setStation(station);
-        stationList.setActive(station.id);
-        updateFavoriteHeart();
-        // Browsers require a user gesture for the first play(), so the
-        // restored station sits silent with the play icon showing. Without
-        // a hint, returning users assume the app is broken. The text
-        // clears on the next stationchange (i.e. the moment they tap play).
-        playerCard.setNowPlaying('Tap ▶ to resume');
-      }
+  if (communityRes && prefs.communityOrder) {
+    state.community.stations = listsApi.applyCommunityOrder(
+      communityRes.stations ?? [],
+      prefs.communityOrder,
+    );
+  }
+
+  state.userLists = userLists;
+  state.currentListId = prefs.currentListId ?? COMMUNITY_LIST_ID;
+  if (!findList(state.currentListId)) state.currentListId = COMMUNITY_LIST_ID;
+
+  await restoreVolume();
+  renderActiveList();   // re-render with restored ordering + active list
+
+  // Restore current station view (without auto-playing — first play needs user gesture).
+  if (prefs.currentStationId) {
+    const all = [
+      ...(state.community?.stations ?? []),
+      ...state.userLists.flatMap((l) => l.stations),
+    ];
+    const station = all.find((s) => s.id === prefs.currentStationId);
+    if (station) {
+      state.currentStation = station;
+      playerCard.setStation(station);
+      stationList.setActive(station.id);
+      updateFavoriteHeart();
+      // Browsers require a user gesture for the first play(), so the
+      // restored station sits silent with the play icon showing. Without
+      // a hint, returning users assume the app is broken. The text
+      // clears on the next stationchange (i.e. the moment they tap play).
+      playerCard.setNowPlaying('Tap ▶ to resume');
     }
-  } catch (err) {
-    console.error('Bootstrap failed:', err);
-    toast('Could not load app state');
   }
 }
 

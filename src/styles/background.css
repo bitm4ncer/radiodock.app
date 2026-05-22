@@ -1,0 +1,346 @@
+/* Fullscreen background image, behind everything else.
+   Body bg is opaque (#1a1a1a from layout.css) and would cover anything at
+   negative z-index per the CSS painting order, so we force body transparent
+   whenever this module is loaded. <html> keeps the dark fallback colour
+   so the page never flashes white during load or when no image is set. */
+body {
+  background: transparent;
+}
+
+/* Two stacked layers crossfade by toggling opacity on .is-visible.
+   Both layers share z-index; DOM order decides which sits on top when
+   their opacities overlap mid-transition. */
+.app-background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: transparent;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 520ms cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(0);
+  will-change: opacity;
+}
+.app-background.is-visible {
+  opacity: 1;
+}
+
+/* --- Shared button theme tokens (defined at :root for cascade safety) --- */
+:root {
+  --bg-btn-bg:           rgba(13, 13, 13, 0.72);
+  --bg-btn-bg-hover:     rgba(28, 28, 28, 0.88);
+  --bg-btn-border:       rgba(255, 255, 255, 0.10);
+  --bg-btn-border-hover: rgba(255, 255, 255, 0.20);
+  --bg-surface:          rgba(13, 13, 13, 0.78);   /* menu + gallery surfaces */
+  --bg-surface-border:   rgba(255, 255, 255, 0.10);
+  --bg-menu-hover:       rgba(255, 255, 255, 0.08);
+}
+:root.theme-light {
+  --bg-btn-bg:           rgba(255, 255, 255, 0.78);
+  --bg-btn-bg-hover:     rgba(255, 255, 255, 0.92);
+  --bg-btn-border:       rgba(0, 0, 0, 0.12);
+  --bg-btn-border-hover: rgba(0, 0, 0, 0.22);
+  --bg-surface:          rgba(245, 245, 245, 0.85);
+  --bg-surface-border:   rgba(0, 0, 0, 0.10);
+  --bg-menu-hover:       rgba(0, 0, 0, 0.06);
+}
+
+/* --- Cycle controls (prev / menu / next) --- */
+.bg-controls {
+  position: fixed;
+  right: 14px;
+  bottom: 17px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: auto;
+  transition: opacity 200ms ease;
+}
+
+.bg-btn {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--bg-btn-border);
+  background-color: var(--bg-btn-bg);
+  color: var(--text);
+  cursor: pointer;
+  padding: 0;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background-color 120ms ease, border-color 120ms ease,
+              transform 120ms ease, opacity 200ms ease;
+}
+.bg-btn:hover {
+  background-color: var(--bg-btn-bg-hover);
+  border-color: var(--bg-btn-border-hover);
+}
+.bg-btn:active {
+  transform: scale(0.94);
+}
+.bg-btn svg {
+  display: block;
+  width: 12px;
+  height: 12px;
+}
+.bg-btn--menu svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* --- Mode-dependent visibility ---
+   Blank mode: arrows disappear; menu button only shows when the footer
+   reveals (mouse near bottom). The body class is added/removed by
+   src/ui/footer-reveal.js so we can pipe the same signal here via CSS. */
+.bg-controls.is-blank .bg-btn--prev,
+.bg-controls.is-blank .bg-btn--next,
+.bg-controls.is-empty .bg-btn--prev,
+.bg-controls.is-empty .bg-btn--next {
+  display: none;
+}
+.bg-controls.is-blank .bg-btn--menu {
+  opacity: 0;
+  pointer-events: none;
+}
+body.footer-revealed .bg-controls.is-blank .bg-btn--menu {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* --- Context menu popup --- */
+.bg-menu {
+  position: fixed;
+  z-index: 70;
+  min-width: 224px;
+  padding: 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--bg-surface-border);
+  border-radius: 12px;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+}
+.bg-menu.is-open {
+  display: flex;
+}
+.bg-menu.is-measuring {
+  visibility: hidden;
+}
+
+.bg-menu__item {
+  display: grid;
+  grid-template-columns: 18px 1fr 14px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+.bg-menu__item:hover:not(.is-disabled) {
+  background: var(--bg-menu-hover);
+}
+.bg-menu__item.is-disabled {
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none;
+}
+.bg-menu__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+.bg-menu__icon svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+.bg-menu__label {
+  white-space: nowrap;
+}
+.bg-menu__check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  opacity: 0;
+}
+.bg-menu__check svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+}
+.bg-menu__item.is-active .bg-menu__check {
+  opacity: 1;
+}
+
+/* --- Gallery panel ---
+   Always solid (uses the same colours as the container's solid mode).
+   Frosted-glass over a busy background made thumbnail edges hard to
+   distinguish; an opaque chip keeps the grid legible regardless of what's
+   playing in the visualizer or sitting behind it. */
+.bg-gallery {
+  position: fixed;
+  right: 14px;
+  /* Float above the cycle-controls (which live at bottom: 17 px) +
+     the desktop footer (61 px) with breathing room. */
+  bottom: 90px;
+  z-index: 65;
+  width: 280px;
+  max-height: 60vh;
+  display: none;
+  flex-direction: column;
+  background: #141414;
+  border: 1px solid var(--bg-surface-border);
+  border-radius: 12px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+.bg-gallery.is-open {
+  display: flex;
+}
+:root.theme-light .bg-gallery {
+  background: #d5d5d5;
+}
+
+.bg-gallery__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--bg-surface-border);
+}
+.bg-gallery__title {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.bg-gallery__close {
+  width: 22px;
+  height: 22px;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.bg-gallery__close:hover {
+  background: var(--bg-menu-hover);
+  color: var(--text);
+}
+.bg-gallery__close svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+}
+
+.bg-gallery__list {
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  overflow-y: auto;
+}
+.bg-gallery__empty {
+  grid-column: 1 / -1;
+  margin: 8px 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.bg-gallery__item {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  background-color: var(--bg-menu-hover);
+  background-size: cover;
+  background-position: center;
+  cursor: grab;
+  outline: 1px solid var(--bg-surface-border);
+  outline-offset: -1px;
+  transition: transform 120ms ease, outline-color 120ms ease, box-shadow 120ms ease;
+}
+.bg-gallery__item:hover {
+  outline-color: rgba(255, 255, 255, 0.30);
+}
+:root.theme-light .bg-gallery__item:hover {
+  outline-color: rgba(0, 0, 0, 0.30);
+}
+.bg-gallery__item.is-current {
+  outline-color: var(--red);
+  outline-width: 2px;
+  outline-offset: -2px;
+}
+.bg-gallery__item.is-dragging {
+  opacity: 0.4;
+  cursor: grabbing;
+}
+/* Drop-zone hint: a vertical bar on the left or right edge of the target. */
+.bg-gallery__item.is-drop-before {
+  box-shadow: -2px 0 0 0 var(--red);
+}
+.bg-gallery__item.is-drop-after {
+  box-shadow: 2px 0 0 0 var(--red);
+}
+
+.bg-gallery__item-delete {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 120ms ease, background-color 120ms ease;
+  padding: 0;
+}
+.bg-gallery__item:hover .bg-gallery__item-delete {
+  opacity: 1;
+}
+.bg-gallery__item-delete:hover {
+  background: var(--red);
+}
+.bg-gallery__item-delete svg {
+  display: block;
+  width: 11px;
+  height: 11px;
+}
+
+/* Mobile — hide everything related to backgrounds (we already hide the
+   controls; also hide the gallery and menu if they somehow open). */
+@media (max-width: 699px) {
+  .bg-controls,
+  .bg-menu,
+  .bg-gallery {
+    display: none !important;
+  }
+}

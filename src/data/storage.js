@@ -1,23 +1,98 @@
-// Thin IndexedDB wrapper.
+// Thin IndexedDB wrapper, defensive against blocked / unavailable IDB.
+//
 // One DB `radiodock` with two stores:
 //   `lists`  — custom user lists, keyPath: 'id'.
 //             value shape: { id, name, stations: [...], order, createdAt }
 //   `prefs`  — key/value, keyPath: 'key'.
 //             keys in use: currentStationId, currentListId, volume, seenInstallHint
+//
+// Every public read returns a safe default (`[]`, `{}`, `defaultValue`)
+// when IndexedDB is unreachable. Every public write resolves silently —
+// the caller gets `undefined` and continues. The only signal a blocked
+// IDB ever produces is the health observable below, which the boot
+// process uses to surface the help banner.
+//
+// Failure modes we have to survive in the wild:
+//   - Brave Shield / Firefox Strict Mode partition / lock IDB
+//   - Safari ITP wipes storage between sessions
+//   - Older Chromium drops onsuccess/onerror silently in some states,
+//     so the watchdog timeout is mandatory
+//   - User has another tab on a previous schema → onblocked fires
 
 const DB_NAME = 'radiodock';
-const DB_VERSION = 1;
+// v2 (rebuild): adds `userBackgrounds` store for the background-image
+// feature. Additive — the upgrade handler is idempotent (every step uses
+// `if (!contains)` guards), so users coming from v1 just get the new
+// store created with no data loss. Users coming from a higher version
+// (the previous, since-rolled-back v3/v4/v5 attempts) would normally
+// fail with VersionError; in practice they'd have already cleared their
+// IDB during the recovery from that incident, so they're effectively
+// at v0 here.
+const DB_VERSION = 2;
+const OPEN_TIMEOUT_MS = 5000;
 
 let dbPromise = null;
+let idbHealth = 'unknown';      // 'unknown' | 'ok' | 'failed'
+let idbLastError = null;
+const healthListeners = new Set();
+
+function setHealth(state, err) {
+  if (idbHealth === state) return;
+  idbHealth = state;
+  idbLastError = err ?? null;
+  for (const cb of healthListeners) {
+    try { cb(state, err); } catch {}
+  }
+}
+
+export function getIdbHealth() {
+  return idbHealth;
+}
+
+export function getIdbLastError() {
+  return idbLastError;
+}
+
+export function onIdbHealthChange(cb) {
+  healthListeners.add(cb);
+  // Fire once with the current value so late subscribers don't miss the
+  // initial transition out of 'unknown'.
+  if (idbHealth !== 'unknown') {
+    try { cb(idbHealth, idbLastError); } catch {}
+  }
+  return () => healthListeners.delete(cb);
+}
 
 function openDb() {
   if (dbPromise) return dbPromise;
   dbPromise = new Promise((resolve, reject) => {
     if (!('indexedDB' in globalThis)) {
-      reject(new Error('IndexedDB not available'));
+      const err = new Error('IndexedDB not available');
+      setHealth('failed', err);
+      reject(err);
       return;
     }
-    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    let settled = false;
+    const finish = (fn, arg) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(watchdog);
+      fn(arg);
+    };
+    const watchdog = setTimeout(() => {
+      const err = new Error('IndexedDB open timed out');
+      setHealth('failed', err);
+      finish(reject, err);
+    }, OPEN_TIMEOUT_MS);
+
+    let req;
+    try {
+      req = indexedDB.open(DB_NAME, DB_VERSION);
+    } catch (err) {
+      setHealth('failed', err);
+      finish(reject, err);
+      return;
+    }
     req.onupgradeneeded = (evt) => {
       const db = evt.target.result;
       if (!db.objectStoreNames.contains('lists')) {
@@ -26,9 +101,24 @@ function openDb() {
       if (!db.objectStoreNames.contains('prefs')) {
         db.createObjectStore('prefs', { keyPath: 'key' });
       }
+      if (!db.objectStoreNames.contains('userBackgrounds')) {
+        db.createObjectStore('userBackgrounds', { keyPath: 'id' });
+      }
     };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
+    req.onsuccess = () => {
+      setHealth('ok');
+      finish(resolve, req.result);
+    };
+    req.onerror = () => {
+      const err = req.error ?? new Error('IndexedDB open error');
+      setHealth('failed', err);
+      finish(reject, err);
+    };
+    req.onblocked = () => {
+      const err = new Error('IndexedDB blocked by another connection');
+      setHealth('failed', err);
+      finish(reject, err);
+    };
   });
   return dbPromise;
 }
@@ -53,44 +143,79 @@ async function withStore(name, mode, fn) {
   return result;
 }
 
+// Wraps a withStore call with a try/catch that surfaces a fallback value
+// and logs once on failure. Used by every public helper so the rest of
+// the app never has to think about IDB exceptions.
+async function safeRead(name, fn, fallback) {
+  try {
+    return await withStore(name, 'readonly', fn);
+  } catch (err) {
+    if (idbHealth !== 'failed') setHealth('failed', err);
+    return fallback;
+  }
+}
+
+async function safeWrite(name, fn) {
+  try {
+    return await withStore(name, 'readwrite', fn);
+  } catch (err) {
+    if (idbHealth !== 'failed') setHealth('failed', err);
+    return undefined;
+  }
+}
+
 // --- Lists ---
 
 export async function getAllLists() {
-  return withStore('lists', 'readonly', (store) => promisify(store.getAll()))
-    .then((list) => list ?? [])
-    .then((list) => list.sort((a, b) => (a.order ?? 0) - (b.order ?? 0)));
+  const list = await safeRead('lists', (store) => promisify(store.getAll()), []);
+  return (list ?? []).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 }
 
 export async function getList(id) {
-  return withStore('lists', 'readonly', (store) => promisify(store.get(id)));
+  return safeRead('lists', (store) => promisify(store.get(id)), undefined);
 }
 
 export async function putList(list) {
-  return withStore('lists', 'readwrite', (store) => promisify(store.put(list)));
+  return safeWrite('lists', (store) => promisify(store.put(list)));
 }
 
 export async function deleteList(id) {
-  return withStore('lists', 'readwrite', (store) => promisify(store.delete(id)));
+  return safeWrite('lists', (store) => promisify(store.delete(id)));
 }
 
 export async function clearLists() {
-  return withStore('lists', 'readwrite', (store) => promisify(store.clear()));
+  return safeWrite('lists', (store) => promisify(store.clear()));
 }
 
 // --- Prefs ---
 
 export async function getPref(key, defaultValue = undefined) {
-  const row = await withStore('prefs', 'readonly', (store) => promisify(store.get(key)));
+  const row = await safeRead('prefs', (store) => promisify(store.get(key)), undefined);
   return row?.value ?? defaultValue;
 }
 
 export async function setPref(key, value) {
-  return withStore('prefs', 'readwrite', (store) => promisify(store.put({ key, value })));
+  return safeWrite('prefs', (store) => promisify(store.put({ key, value })));
 }
 
 export async function getAllPrefs() {
-  const rows = await withStore('prefs', 'readonly', (store) => promisify(store.getAll()));
+  const rows = await safeRead('prefs', (store) => promisify(store.getAll()), []);
   const out = {};
   for (const row of rows ?? []) out[row.key] = row.value;
   return out;
+}
+
+// --- User-uploaded backgrounds (Blob storage) ---
+
+export async function getAllUserBackgrounds() {
+  const rows = await safeRead('userBackgrounds', (store) => promisify(store.getAll()), []);
+  return (rows ?? []).sort((a, b) => (a.addedAt ?? 0) - (b.addedAt ?? 0));
+}
+
+export async function putUserBackground(row) {
+  return safeWrite('userBackgrounds', (store) => promisify(store.put(row)));
+}
+
+export async function deleteUserBackground(id) {
+  return safeWrite('userBackgrounds', (store) => promisify(store.delete(id)));
 }
