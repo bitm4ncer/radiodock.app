@@ -45,7 +45,6 @@
   min-width: 250px;
   background: var(--bg);
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   overflow: hidden;
   animation: dropdownSlide 0.2s ease;

@@ -9,7 +9,6 @@
   padding: 12px 20px;
   border-radius: 8px;
   font-size: 14px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
@@ -62,7 +61,6 @@
 .modal-content {
   background: var(--bg-dark);
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   width: 315px;
   max-width: 90vw;
   animation: modalSlide 0.3s ease;
