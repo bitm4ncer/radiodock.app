@@ -20,15 +20,15 @@
 //   - User has another tab on a previous schema → onblocked fires
 
 const DB_NAME = 'radiodock';
-// v2 (rebuild): adds `userBackgrounds` store for the background-image
-// feature. Additive — the upgrade handler is idempotent (every step uses
-// `if (!contains)` guards), so users coming from v1 just get the new
-// store created with no data loss. Users coming from a higher version
-// (the previous, since-rolled-back v3/v4/v5 attempts) would normally
-// fail with VersionError; in practice they'd have already cleared their
-// IDB during the recovery from that incident, so they're effectively
-// at v0 here.
-const DB_VERSION = 2;
+// Schema history:
+//   v1 — initial: lists + prefs.
+//   v2 — added `userBackgrounds` store for the background-image feature.
+//   v3 — adds `notePages` + `notes` stores for the notes feature.
+// The upgrade handler is fully idempotent (every step uses `if (!contains)`
+// guards) so the migration runs cleanly from any starting version, AND
+// degrades safely when something goes wrong (the defensive wrappers
+// below catch every IDB error and the help banner surfaces the state).
+const DB_VERSION = 3;
 const OPEN_TIMEOUT_MS = 5000;
 
 let dbPromise = null;
@@ -103,6 +103,14 @@ function openDb() {
       }
       if (!db.objectStoreNames.contains('userBackgrounds')) {
         db.createObjectStore('userBackgrounds', { keyPath: 'id' });
+      }
+      if (!db.objectStoreNames.contains('notePages')) {
+        db.createObjectStore('notePages', { keyPath: 'id' });
+      }
+      if (!db.objectStoreNames.contains('notes')) {
+        const notes = db.createObjectStore('notes', { keyPath: 'id' });
+        notes.createIndex('byPage', 'pageId', { unique: false });
+        notes.createIndex('byCreatedAt', 'createdAt', { unique: false });
       }
     };
     req.onsuccess = () => {
@@ -218,4 +226,49 @@ export async function putUserBackground(row) {
 
 export async function deleteUserBackground(id) {
   return safeWrite('userBackgrounds', (store) => promisify(store.delete(id)));
+}
+
+// --- Note pages ---
+
+export async function getAllNotePages() {
+  const rows = await safeRead('notePages', (store) => promisify(store.getAll()), []);
+  return (rows ?? []).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+}
+
+export async function putNotePage(page) {
+  return safeWrite('notePages', (store) => promisify(store.put(page)));
+}
+
+export async function deleteNotePage(id) {
+  return safeWrite('notePages', (store) => promisify(store.delete(id)));
+}
+
+// --- Notes ---
+
+export async function getAllNotes() {
+  const rows = await safeRead('notes', (store) => promisify(store.getAll()), []);
+  return (rows ?? []).sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
+}
+
+export async function getNotesForPage(pageId) {
+  const all = await getAllNotes();
+  return all.filter((n) => n.pageId === pageId);
+}
+
+export async function putNote(note) {
+  return safeWrite('notes', (store) => promisify(store.put(note)));
+}
+
+export async function deleteNote(id) {
+  return safeWrite('notes', (store) => promisify(store.delete(id)));
+}
+
+export async function deleteNotesForPage(pageId) {
+  return safeWrite('notes', async (store) => {
+    const all = await promisify(store.getAll());
+    const tasks = (all ?? [])
+      .filter((n) => n.pageId === pageId)
+      .map((n) => promisify(store.delete(n.id)));
+    await Promise.all(tasks);
+  });
 }
