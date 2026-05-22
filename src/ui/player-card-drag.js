@@ -69,6 +69,7 @@ export async function mountPlayerCardDragMinimize() {
   let solid = await getPref(PREF_SOLID, true);
   if (solid) {
     container.classList.add('is-solid');
+    document.body.classList.add('container-solid');
     solidBtn.classList.add('is-active');
     solidBtn.setAttribute('aria-pressed', 'true');
     solidBtn.querySelector('.tool-btn__icon').innerHTML = discFilled();
@@ -160,6 +161,9 @@ export async function mountPlayerCardDragMinimize() {
   solidBtn.addEventListener('click', async () => {
     solid = !solid;
     container.classList.toggle('is-solid', solid);
+    // Mirror on body so other surfaces (notes panel, future siblings) can
+    // pick up the same state via CSS without per-module observers.
+    document.body.classList.toggle('container-solid', solid);
     solidBtn.classList.toggle('is-active', solid);
     solidBtn.setAttribute('aria-pressed', solid ? 'true' : 'false');
     solidBtn.querySelector('.tool-btn__icon').innerHTML = solid ? discFilled() : discOutline();

@@ -47,7 +47,8 @@
   outline: none;
   position: relative;
 
-      box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.1), 1px 1px 3px rgba(0, 0, 0, 0.5);
+  /* Inset highlight only — outer drop shadow removed for the flat look. */
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 

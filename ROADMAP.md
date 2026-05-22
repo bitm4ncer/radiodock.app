@@ -1,5 +1,32 @@
 # Roadmap
 
+## v2.4 — Notes / Diary 🚧
+
+Local-first notes feature for capturing radio moments. **No recording, no rewind buffer** — those stay out of scope (see v3+ list at bottom).
+
+- [ ] **N0** `src/data/storage.js` — bump `DB_VERSION` to 4, add `notes` + `notePages` object stores (with `byPage` + `byCreatedAt` indexes on `notes`).
+- [ ] **N1** `src/data/notes.js` — facade for pages + notes CRUD; lazily creates the default `journal` page on first read; rejects deletion of the Journal page.
+- [ ] **N2** `src/ui/notes-panel.js` — flag-tab dock at the right edge, draggable card (~360×560), open/close, position persisted to IDB (`notesPanelPos` / `notesPanelOpen`).
+- [ ] **N3** Note list rendering with day-grouping (Today / Yesterday / locale date) + sticky day headers + sticky "+ New note" footer.
+- [ ] **N4** Capture path: `metadata`-event cache in `main.js`; mini capture button on the player-card next to ❤️; large "Capture now" button inside the panel; silent capture + undo-toast (extended `toast.js` to accept an action button).
+- [ ] **N5** Per-card ⋯ menu: Edit · Copy as text · Play this station (capture only) · Move to page… · Delete (with undo-toast).
+- [ ] **N6** Pages tab-strip in the header (horizontal scroll); page ⋯ menu (Rename, Delete-with-confirm, Export all notes); Journal-page protected from delete.
+- [ ] **N7** Search toggle in header: live substring filter across `station.name`, `track.artist/title/nowPlaying`, and `body`.
+- [ ] **N8** Mobile path: hamburger drawer gets a "Notes" entry; same panel renders as a fullscreen slide-in overlay; no flag, no drag.
+- [ ] **N9** `src/data/notes-export.js` — JSON export (envelope `{ version, exportDate, pages, notes }`) downloaded via the Page ⋯ menu.
+- [ ] **N10** Analytics events (`note-capture`, `note-create`, `note-delete`, `note-page-create`, `note-export`); light-theme styling; polish + this checklist tickoff.
+
+Out of scope for v2.4, possible v3.0:
+
+- **Audio recording of stream segments.** `<audio>` carries no `crossorigin` (forbidden by mixed-content rules for most stations), so `captureStream()` is blocked for ICY/MP3. Only HLS via hls.js is technically untainted (~10% of stations). Recording would also push the product thematically toward "Radio DAW" and introduces copyright optics.
+- **Rolling rewind buffer (last-minute cache).** Same CORS-tainted-audio problem; additionally, only HLS streams support seek-back natively.
+- **Multi-window mode** (pop-out of a single page into a second draggable panel). Doubles the window-management complexity for an edge use case.
+- Markdown / rich-text editor (plain text + auto-linkify is enough for atomic captures).
+- Cross-device sync of notes (RadioDock is bewusst BYO-storage — would require a backend).
+- Tags, pins, filter-by-station.
+
+---
+
 ## v2.3 — List sharing ✅
 
 - [x] **S0** `src/data/share.js` — gzip + base64url encoding of the existing extension-compatible JSON export shape; round-trips cleanly through `parseExport` on the import side, so the existing import pipeline handles the new transport.
