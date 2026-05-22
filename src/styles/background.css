@@ -28,27 +28,6 @@ body {
   opacity: 1;
 }
 
-/* Gradient mode: when a layer carries `data-gradient`, its `background`
-   is a stack of four radial gradients consuming CSS variables for
-   position / colour / radius. The drift loop mutates --pN-x / --pN-y
-   directly on the layer; no string re-parsing. Applies to the gallery
-   thumbnail elements too — they're styled via the same vars. */
-.app-background[data-gradient],
-.bg-gallery__item[data-gradient],
-.bg-create__preset[data-gradient] {
-  /* `ellipse <pct> <pct>` is required here — CSS spec disallows percentage
-     radii for `circle <length>`, so the previous `circle 70%` parsed as
-     invalid and the entire shorthand fell back to the body bg (= nothing
-     visible between the handles). Ellipse with equal x/y percentages reads
-     as a circle visually but with browser-accepted syntax. */
-  background:
-    radial-gradient(ellipse var(--p0-r) var(--p0-r) at var(--p0-x) var(--p0-y), var(--p0-c) 0%, transparent 55%),
-    radial-gradient(ellipse var(--p1-r) var(--p1-r) at var(--p1-x) var(--p1-y), var(--p1-c) 0%, transparent 55%),
-    radial-gradient(ellipse var(--p2-r) var(--p2-r) at var(--p2-x) var(--p2-y), var(--p2-c) 0%, transparent 55%),
-    radial-gradient(ellipse var(--p3-r) var(--p3-r) at var(--p3-x) var(--p3-y), var(--p3-c) 0%, transparent 55%),
-    var(--base);
-}
-
 /* --- Shared button theme tokens (defined at :root for cascade safety) --- */
 :root {
   --bg-btn-bg:           rgba(13, 13, 13, 0.72);
@@ -146,6 +125,7 @@ body.footer-revealed .bg-controls.is-blank .bg-btn--menu {
   border-radius: 12px;
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
   display: none;
   flex-direction: column;
   gap: 2px;
@@ -229,6 +209,7 @@ body.footer-revealed .bg-controls.is-blank .bg-btn--menu {
   background: #141414;
   border: 1px solid var(--bg-surface-border);
   border-radius: 12px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
   overflow: hidden;
 }
 .bg-gallery.is-open {
@@ -354,278 +335,12 @@ body.footer-revealed .bg-controls.is-blank .bg-btn--menu {
   height: 11px;
 }
 
-/* --- Gradient editor panel ---
-   Same dock + surface treatment as the gallery (solid background in both
-   themes — busy gradient backdrops would render the editor unreadable). */
-.bg-create {
-  position: fixed;
-  right: 14px;
-  bottom: 90px;
-  z-index: 66;        /* one above gallery so they can co-exist visually */
-  width: 280px;
-  max-height: 78vh;
-  display: none;
-  flex-direction: column;
-  background: #141414;
-  border: 1px solid var(--bg-surface-border);
-  border-radius: 12px;
-  overflow: hidden;
-  color: var(--text);
-}
-.bg-create.is-open {
-  display: flex;
-}
-:root.theme-light .bg-create {
-  background: #d5d5d5;
-}
-
-.bg-create__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--bg-surface-border);
-}
-.bg-create__title {
-  margin: 0;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-.bg-create__close {
-  width: 22px;
-  height: 22px;
-  border: 0;
-  background: transparent;
-  color: var(--text-muted);
-  cursor: pointer;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-.bg-create__close:hover {
-  background: var(--bg-menu-hover);
-  color: var(--text);
-}
-.bg-create__close svg {
-  display: block;
-  width: 14px;
-  height: 14px;
-}
-
-.bg-create__body {
-  padding: 10px 12px 4px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.bg-create__group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.bg-create__group-title {
-  margin: 0;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.bg-create__presets {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 6px;
-}
-.bg-create__preset {
-  aspect-ratio: 1 / 1;
-  border-radius: 6px;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  background-size: cover;     /* fallback */
-  outline: 1px solid var(--bg-surface-border);
-  outline-offset: -1px;
-  transition: transform 100ms ease, outline-color 100ms ease;
-}
-.bg-create__preset:hover {
-  transform: scale(1.06);
-  outline-color: rgba(255, 255, 255, 0.35);
-}
-:root.theme-light .bg-create__preset:hover {
-  outline-color: rgba(0, 0, 0, 0.35);
-}
-
-.bg-create__points {
-  display: flex;
-  gap: 6px;
-}
-.bg-create__point {
-  flex: 1;
-  height: 28px;
-  border: 1px solid var(--bg-surface-border);
-  border-radius: 6px;
-  background: var(--text-muted);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  transition: outline-color 100ms ease, transform 100ms ease;
-}
-.bg-create__point.is-selected {
-  outline: 2px solid var(--text);
-  outline-offset: 1px;
-  transform: scale(1.04);
-}
-
-.bg-create__swatches {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
-}
-.bg-create__swatch {
-  aspect-ratio: 1 / 1;
-  border: 1px solid var(--bg-surface-border);
-  border-radius: 50%;
-  padding: 0;
-  cursor: pointer;
-  transition: transform 100ms ease;
-}
-.bg-create__swatch:hover {
-  transform: scale(1.12);
-}
-
-.bg-create__custom-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 11px;
-  color: var(--text-muted);
-  cursor: pointer;
-}
-.bg-create__custom-input {
-  width: 32px;
-  height: 22px;
-  padding: 0;
-  border: 1px solid var(--bg-surface-border);
-  border-radius: 4px;
-  background: transparent;
-  cursor: pointer;
-}
-
-.bg-create__size {
-  width: 100%;
-  accent-color: var(--text);
-}
-
-.bg-create__drift {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--text);
-  cursor: pointer;
-  padding: 6px 0;
-}
-.bg-create__drift-input {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--text);
-}
-
-.bg-create__footer {
-  display: flex;
-  gap: 8px;
-  padding: 10px 12px;
-  border-top: 1px solid var(--bg-surface-border);
-}
-.bg-create__btn {
-  flex: 1;
-  height: 32px;
-  border-radius: 8px;
-  border: 1px solid var(--bg-surface-border);
-  background: transparent;
-  color: var(--text);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 100ms ease, border-color 100ms ease;
-}
-.bg-create__btn:hover {
-  background: var(--bg-menu-hover);
-}
-.bg-create__btn--primary {
-  background: var(--text);
-  color: var(--bg);
-  border-color: var(--text);
-}
-.bg-create__btn--primary:hover {
-  background: var(--text);
-  opacity: 0.9;
-}
-
-/* --- Mesh-point drag handles (overlay on the viewport while editor open) --- */
-.bg-mesh-handles {
-  position: fixed;
-  inset: 0;
-  z-index: 64;        /* above bg layers (z-1) and container (z-5), under panels */
-  pointer-events: none; /* container ignores; handles re-enable below */
-  display: none;
-}
-.bg-mesh-handles.is-open {
-  display: block;
-}
-.bg-mesh-handle {
-  position: absolute;
-  width: 28px;
-  height: 28px;
-  margin: 0;
-  padding: 0;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  cursor: grab;
-  pointer-events: auto;
-  transform: translate(-50%, -50%);
-  /* Inset hairline keeps the handle legible against pale backgrounds
-     without a literal drop shadow. */
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
-  transition: transform 100ms ease;
-}
-.bg-mesh-handle:hover {
-  transform: translate(-50%, -50%) scale(1.12);
-}
-.bg-mesh-handle.is-selected {
-  border-width: 3px;
-  /* Concentric ring (dark + white) marks the selected handle without
-     any blur-based shadow — flat outlines only. */
-  box-shadow:
-    0 0 0 2px rgba(0, 0, 0, 0.6),
-    0 0 0 4px rgba(255, 255, 255, 0.85);
-}
-.bg-mesh-handle.is-dragging {
-  cursor: grabbing;
-  transform: translate(-50%, -50%) scale(1.20);
-}
-
 /* Mobile — hide everything related to backgrounds (we already hide the
-   controls; also hide the gallery, menu, and editor if they somehow open). */
+   controls; also hide the gallery and menu if they somehow open). */
 @media (max-width: 699px) {
   .bg-controls,
   .bg-menu,
-  .bg-gallery,
-  .bg-create,
-  .bg-mesh-handles {
+  .bg-gallery {
     display: none !important;
   }
 }

@@ -31,11 +31,6 @@ import {
   setPref,
 } from '../data/storage.js';
 import { createGallery } from './background-gallery.js';
-import {
-  createBackgroundEditor,
-  applyGradientToElement,
-  clearGradientFromElement,
-} from './background-create.js';
 
 const PREF_INDEX = 'backgroundIndex';
 const PREF_MODE = 'backgroundMode';        // 'manual' | 'shuffle' | 'blank'
@@ -58,16 +53,9 @@ let menuBtn = null;
 let menuPopup = null;
 let fileInputEl = null;
 let gallery = null;
-let editor = null;
-let editorSnapshot = null;     // {idx, mode} captured when editor opens so Cancel can revert
 let midnightTimer = null;
 
-// rAF drift loop state — keyed per layer so each can independently drift
-// (or not) without stepping on the other. The loop reads spec.points by
-// reference so live edits in the editor are picked up next tick.
-const driftHandles = new WeakMap();
-
-let images = [];               // [{ id, kind: 'builtin' | 'user' | 'gradient', url?, spec?, name }]
+let images = [];               // [{ id, kind: 'builtin' | 'user', url, name }]
 let currentIdx = 0;
 let mode = 'manual';
 let orderIds = [];
@@ -103,13 +91,6 @@ export async function mountBackground() {
     onSelect: selectImageById,
     onReorder: handleReorder,
     onDelete: deleteImageById,
-  });
-
-  // Gradient editor (also lazy-mounted on first open).
-  editor = createBackgroundEditor({
-    onPreview: previewGradient,
-    onSave: saveGradient,
-    onCancel: cancelGradientPreview,
   });
 
   // Outside-click / Escape handlers for menu + gallery.
@@ -192,10 +173,6 @@ function buildMenu() {
       <span class="bg-menu__icon">${iconPlus()}</span>
       <span class="bg-menu__label">Add background image</span>
     </button>
-    <button type="button" class="bg-menu__item" role="menuitem" data-action="create">
-      <span class="bg-menu__icon">${iconWand()}</span>
-      <span class="bg-menu__label">Create gradient</span>
-    </button>
     <button type="button" class="bg-menu__item" role="menuitem" data-action="delete">
       <span class="bg-menu__icon">${iconTrash()}</span>
       <span class="bg-menu__label">Delete current background</span>
@@ -269,12 +246,6 @@ async function refresh() {
   ]);
 
   const userEntries = userRows.map((row) => {
-    // Discriminate by `kind`. Older image rows shipped without an explicit
-    // kind field — treat the missing field as the image case to stay
-    // compatible with the v3 storage shape.
-    if (row.kind === 'gradient') {
-      return { id: row.id, kind: 'gradient', spec: row.spec, name: row.name };
-    }
     let url = objectUrls.get(row.id);
     if (!url) {
       url = URL.createObjectURL(row.blob);
@@ -341,95 +312,26 @@ async function applyCurrent({ instant = false } = {}) {
   if (!cur) {
     layerA.classList.remove('is-visible');
     layerB.classList.remove('is-visible');
-    stopDrift(layerA);
-    stopDrift(layerB);
     return;
   }
+  try { await preload(cur.url); }
+  catch (err) { console.warn('Background preload failed:', err); }
 
   const incoming = activeLayer === 'a' ? layerB : layerA;
   const outgoing = activeLayer === 'a' ? layerA : layerB;
-
-  if (cur.kind === 'gradient') {
-    paintGradientOnLayer(incoming, cur.spec);
-  } else {
-    paintImageOnLayer(incoming, cur.url);
-    try { await preload(cur.url); }
-    catch (err) { console.warn('Background preload failed:', err); }
-  }
-
+  incoming.style.backgroundImage = `url(${JSON.stringify(cur.url)})`;
   if (instant) {
     incoming.style.transition = 'none';
     incoming.classList.add('is-visible');
     outgoing.classList.remove('is-visible');
-    stopDrift(outgoing);
     requestAnimationFrame(() => requestAnimationFrame(() => {
       incoming.style.transition = '';
     }));
   } else {
     incoming.classList.add('is-visible');
     outgoing.classList.remove('is-visible');
-    // Outgoing keeps drifting through the crossfade window; stop it after
-    // the 520 ms fade so the GPU isn't doing pointless work on an invisible
-    // layer.
-    setTimeout(() => {
-      if (!outgoing.classList.contains('is-visible')) stopDrift(outgoing);
-    }, 600);
   }
   activeLayer = activeLayer === 'a' ? 'b' : 'a';
-}
-
-function paintImageOnLayer(layer, url) {
-  stopDrift(layer);
-  clearGradientFromElement(layer);
-  layer.style.background = '';
-  layer.style.backgroundImage = `url(${JSON.stringify(url)})`;
-}
-
-function paintGradientOnLayer(layer, spec) {
-  stopDrift(layer);
-  applyGradientToElement(layer, spec);
-  if (spec.drift) startDrift(layer, spec);
-}
-
-// --- drift loop -----------------------------------------------------------
-
-function startDrift(layer, spec) {
-  stopDrift(layer);
-  const t0 = performance.now();
-  let lastWrite = 0;
-  const handle = {};
-
-  const tick = (now) => {
-    if (!driftHandles.get(layer)) return; // stopped externally
-    // Throttle to ~30 Hz — CSS-var writes are cheap but updating 8 vars
-    // per layer at 60 Hz is unnecessary; the human eye reads the slow
-    // drift identically at 30.
-    if (now - lastWrite >= 33) {
-      lastWrite = now;
-      const t = (now - t0) / 1000;
-      const period = 75; // ~75 s for the slowest cycle
-      const w = (2 * Math.PI) / period;
-      for (let i = 0; i < 4; i++) {
-        const p = spec.points[i];
-        const wx = w * (0.7 + i * 0.13);
-        const wy = w * (0.5 + i * 0.17);
-        const ox = 0.08 * Math.sin(t * wx + i * 1.13);
-        const oy = 0.08 * Math.sin(t * wy + i * 1.79 + 0.5);
-        layer.style.setProperty(`--p${i}-x`, ((p.x + ox) * 100) + '%');
-        layer.style.setProperty(`--p${i}-y`, ((p.y + oy) * 100) + '%');
-      }
-    }
-    handle.rafId = requestAnimationFrame(tick);
-  };
-  handle.rafId = requestAnimationFrame(tick);
-  driftHandles.set(layer, handle);
-}
-
-function stopDrift(layer) {
-  const h = driftHandles.get(layer);
-  if (!h) return;
-  cancelAnimationFrame(h.rafId);
-  driftHandles.delete(layer);
 }
 
 function preload(url) {
@@ -509,7 +411,6 @@ async function handleMenuAction(action) {
   switch (action) {
     case 'blank':       return setMode(mode === 'blank' ? 'manual' : 'blank');
     case 'add':         return fileInputEl?.click();
-    case 'create':      return openGradientEditor();
     case 'delete':      return deleteCurrentBackground();
     case 'shuffle':     return setMode(mode === 'shuffle' ? 'manual' : 'shuffle');
     case 'gallery':     return openGallery();
@@ -663,74 +564,6 @@ function openGallery() {
   gallery.render(images, getCurrent()?.id);
 }
 
-// ---------------------------------------------------------------- gradient editor ---
-
-function openGradientEditor() {
-  // Capture enough state to restore the visual on Cancel. Mode + index
-  // suffice — the layers themselves get re-painted from the restored
-  // index via applyCurrent.
-  editorSnapshot = { mode, currentIdx };
-  // Seed the editor with the currently-displayed gradient if it is one,
-  // so the user starts from familiar territory; otherwise let the editor
-  // pick its own default neutral spec.
-  const cur = getCurrent();
-  const seed = (cur && cur.kind === 'gradient') ? cur.spec : null;
-  editor.open(seed);
-}
-
-// Called by the editor on every change (preset load, swatch click, drag,
-// size slider, drift toggle). We paint the working spec onto the incoming
-// layer directly — no IDB write, no images[] mutation. Save persists.
-function previewGradient(spec) {
-  if (!layerA || !layerB) return;
-  const incoming = activeLayer === 'a' ? layerB : layerA;
-  // Don't bother with crossfade during edit — replace in place.
-  paintGradientOnLayer(incoming, spec);
-  incoming.classList.add('is-visible');
-  const outgoing = activeLayer === 'a' ? layerA : layerB;
-  outgoing.classList.remove('is-visible');
-  stopDrift(outgoing);
-  // Don't flip activeLayer — every preview overwrites the same incoming
-  // layer so the active layer for the next applyCurrent stays predictable.
-}
-
-async function saveGradient(spec) {
-  const id = `user:${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-  await putUserBackground({
-    id, kind: 'gradient', spec,
-    name: 'Custom gradient',
-    addedAt: Date.now(),
-  });
-  await refresh();
-  // Switch to manual + jump to the new gradient.
-  if (mode !== 'manual') {
-    mode = 'manual';
-    await setPref(PREF_MODE, mode);
-  }
-  const idx = images.findIndex((i) => i.id === id);
-  if (idx !== -1) {
-    currentIdx = idx;
-    await persistIndex();
-  }
-  // Flip activeLayer since previewGradient kept it pinned — applyCurrent
-  // expects to crossfade to a fresh layer.
-  activeLayer = activeLayer === 'a' ? 'b' : 'a';
-  editorSnapshot = null;
-  updateControlsVisibility();
-  await applyCurrent({ instant: true });
-  if (gallery.isOpen()) gallery.render(images, getCurrent()?.id);
-}
-
-function cancelGradientPreview() {
-  if (!editorSnapshot) return;
-  mode = editorSnapshot.mode;
-  currentIdx = editorSnapshot.currentIdx;
-  editorSnapshot = null;
-  // Same activeLayer flip rationale as saveGradient.
-  activeLayer = activeLayer === 'a' ? 'b' : 'a';
-  applyCurrent({ instant: true });
-}
-
 // ---------------------------------------------------------------- midnight ---
 
 function scheduleNextMidnight() {
@@ -777,14 +610,6 @@ function iconPlus() {
 function iconTrash() {
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <path d="M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/>
-  </svg>`;
-}
-function iconWand() {
-  // Four-point asterisk / spark — reads as "generate" without the literal
-  // wizard wand cliché. Symmetric so it sits flush with the other menu
-  // glyphs (plus, trash, shuffle, grid).
-  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <path d="M12 4v4M12 16v4M4 12h4M16 12h4M6.3 6.3l2.8 2.8M14.9 14.9l2.8 2.8M6.3 17.7l2.8-2.8M14.9 9.1l2.8-2.8"/>
   </svg>`;
 }
 function iconShuffle() {

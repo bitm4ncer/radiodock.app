@@ -125,8 +125,7 @@
 
 .install-section__btn.is-current {
   border-color: var(--red);
-  /* Inset hairline only — outer glow removed for the flat look. */
-  box-shadow: 0 0 0 1px rgba(205, 0, 37, 0.2) inset;
+  box-shadow: 0 0 0 1px rgba(205, 0, 37, 0.2) inset, 0 0 12px rgba(205, 0, 37, 0.18);
   color: var(--text);
 }
 
@@ -231,6 +230,7 @@
     background: var(--bg-list-active);
     border: 1px solid var(--border);
     border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
     z-index: 60;
   }
 

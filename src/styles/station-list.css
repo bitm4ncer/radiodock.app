@@ -296,11 +296,12 @@ body.search-active .favorites-list {
 
 .station-item.dragging {
   background: var(--bg-list-active);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
   transform: scale(1.02);
   opacity: 0.95;
   z-index: 5;
   position: relative;
-  transition: transform 120ms ease;
+  transition: transform 120ms ease, box-shadow 120ms ease;
 }
 
 /* Mobile: there is no hover, so the actions stayed invisible and users

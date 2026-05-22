@@ -9,8 +9,6 @@
 // `.is-solid` class is mirrored from the container so the gallery follows
 // the user's chosen panel style.
 
-import { applyGradientToElement } from './background-create.js';
-
 export function createGallery({ onSelect, onReorder, onDelete }) {
   let mounted = false;
   let root = null;
@@ -58,14 +56,7 @@ export function createGallery({ onSelect, onReorder, onDelete }) {
       item.draggable = true;
       item.setAttribute('role', 'listitem');
       item.setAttribute('title', img.name);
-      // Render gradient thumbs via the same CSS-vars pipeline as the
-      // full-size background — no rasterisation, no preview drift even
-      // when spec.drift is true (drift on a 72 px chip is just noise).
-      if (img.kind === 'gradient') {
-        applyGradientToElement(item, img.spec);
-      } else {
-        item.style.backgroundImage = `url(${JSON.stringify(img.url)})`;
-      }
+      item.style.backgroundImage = `url(${JSON.stringify(img.url)})`;
       item.innerHTML = `
         <button type="button" class="bg-gallery__item-delete" aria-label="Delete background" title="Delete">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
