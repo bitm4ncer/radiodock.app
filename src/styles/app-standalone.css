@@ -101,3 +101,28 @@ html.is-standalone .list-remove-btn { display: none !important; }
 html.is-standalone .list-more-btn { display: flex; }
 
 html.is-standalone .install-section { display: none !important; }
+
+/* PWA standalone mirrors the mobile layout: the desktop-only chrome that
+   isn't keyed off `.desktop-only` (because it lives in modules that mount
+   themselves at runtime) gets hidden here too. */
+html.is-standalone .app-background,
+html.is-standalone #appBackgroundA,
+html.is-standalone #appBackgroundB,
+html.is-standalone .bg-controls,
+html.is-standalone .bg-menu,
+html.is-standalone .bg-gallery,
+html.is-standalone .bg-create,
+html.is-standalone .bg-mesh-handles,
+html.is-standalone .notes-flag,
+html.is-standalone .container-solid-toggle {
+  display: none !important;
+}
+
+/* Restore the opaque dark body bg in standalone — background.css forces
+   it to transparent on `pointer: fine` so the .app-background layer
+   shows through. In standalone the layer is hidden, so without this
+   override the body would show <html>'s dark bg, which is fine, but
+   the explicit token-driven value keeps theme-light correct too. */
+html.is-standalone body {
+  background: var(--bg);
+}
