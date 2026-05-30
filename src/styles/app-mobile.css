@@ -3,6 +3,27 @@
    on small viewports. Treat the app as a real mobile app: fixed bottom
    player, fullscreen overlays, off-canvas drawer. */
 
+/* Belt-and-braces hide for desktop-chrome surfaces that mount themselves
+   at runtime — these are normally gated by `html.is-standalone`, but the
+   inline detection in <head> can mis-fire on some PWA browsers. Tying
+   the hide directly to the SAME media query that triggers the mobile
+   regime guarantees they vanish whenever mobile layout applies, no
+   matter the JS detection state. */
+@media (max-width: 699px), not (display-mode: browser) {
+  .app-background,
+  #appBackgroundA,
+  #appBackgroundB,
+  .bg-controls,
+  .bg-menu,
+  .bg-gallery,
+  .bg-create,
+  .bg-mesh-handles,
+  .notes-flag,
+  .container-solid-toggle {
+    display: none !important;
+  }
+}
+
 @media (max-width: 699px), not (display-mode: browser) {
   /* The desktop dock-title row (logo + dropdown) is hidden — the mobile
      top bar takes its job. */

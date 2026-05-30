@@ -22,13 +22,16 @@
             if (meta) meta.content = '#E1E1E1';
           }
           // Mark the document as standalone before paint so CSS can flip
-          // to the mobile-app layout flash-free. Checking every non-browser
-          // display mode is defensive — Vivaldi's PWAs ship in minimal-ui
-          // (and sometimes browser despite the windowed presentation), and
-          // window-controls-overlay covers Chromium's PWA title-bar feature.
+          // to the mobile-app layout flash-free. We use the SAME condition
+          // as app-mobile.css's `not (display-mode: browser)` arm — that
+          // catches every non-browser mode (standalone, minimal-ui,
+          // fullscreen, window-controls-overlay, tabbed, borderless, and
+          // any future modes) without having to enumerate each one.
+          // Without this, modes I forgot to list left the page in the
+          // desktop-chrome layout with backgrounds + notes flag leaking
+          // through even though the CSS regime was already mobile.
           var standalone = window.navigator.standalone === true ||
-            ['standalone', 'minimal-ui', 'fullscreen', 'window-controls-overlay']
-              .some(function (m) { return matchMedia('(display-mode: ' + m + ')').matches; });
+            !matchMedia('(display-mode: browser)').matches;
           if (standalone) document.documentElement.classList.add('is-standalone');
         } catch (e) {}
       })();

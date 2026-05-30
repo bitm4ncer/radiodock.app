@@ -80,11 +80,18 @@ export async function mountBackground() {
   if (mounted) return;
   // Browser-only feature. Skip when:
   //   - coarse pointer (mobile / tablet) — controls assume hover precision.
-  //   - installed PWA (`html.is-standalone`) — the standalone window is
-  //     intentionally chrome-light and mirrors the mobile layout; floating
-  //     wallpaper + cycle controls there look out of place.
+  //   - installed PWA — the standalone window is intentionally chrome-light
+  //     and mirrors the mobile layout; floating wallpaper + cycle controls
+  //     there look out of place.
   if (matchMedia('(pointer: coarse)').matches) return;
   if (document.documentElement.classList.contains('is-standalone')) return;
+  // Belt-and-braces: same predicate as `app-mobile.css`'s mobile-regime
+  // arm. If we got here without the html class set but the page is in a
+  // non-browser display-mode (the head detection mis-fired), the regime
+  // is still mobile and the background system has no business mounting.
+  try {
+    if (!matchMedia('(display-mode: browser)').matches) return;
+  } catch {}
   mounted = true;
 
   // Background layers (two stacked for crossfade).
