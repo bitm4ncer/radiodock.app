@@ -244,7 +244,7 @@
         RadioDock uses a <strong>self-hosted instance of Umami</strong> (open-source, privacy-friendly analytics) running on the operator's own server hosted in <strong>Germany</strong> (Hetzner). All analytics data stays within the EU — there is no third-party analytics provider and no transfer to a third country. Umami does not set cookies, does not store persistent identifiers on your device, does not fingerprint your browser, and does not track you across sites.
       </p>
       <p>
-        <strong>What is recorded:</strong> pageviews, and a small set of named interaction events (which station was played, which install button was clicked, search filter used, list created/imported/exported/deleted, stream errors). The events do not contain any text you have typed (no search queries, no list names, no station notes).
+        <strong>What is recorded:</strong> pageviews, and a small set of named interaction events (which station was played and — via an anonymous once-per-minute "listening" event — for roughly how long, including whether the app was in the foreground or background at that moment; which install button was clicked; search filter used; list created/imported/exported/deleted; stream errors). The events do not contain any text you have typed (no search queries, no list names, no station notes), and the listening events carry no identifier linking them to you or your device.
       </p>
       <p>
         <strong>What Umami briefly processes:</strong> your IP address is used on the Umami server to derive a country code and to generate a daily-rotating, hashed session identifier. Neither the IP nor the session hash is retained after the day rolls over, and neither is exposed to the site operator.
