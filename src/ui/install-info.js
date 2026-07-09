@@ -76,19 +76,20 @@ function html(platform) {
         <ul class="install-info__benefits">
           <li>Dedicated window, dedicated dock icon</li>
           <li>Works on Windows, macOS, and Linux</li>
-          <li>Requires <strong>Chrome</strong>, <strong>Edge</strong>, <strong>Brave</strong>, <strong>Opera</strong>, or <strong>Vivaldi</strong></li>
+          <li>One-click button: <strong>Chrome</strong>, <strong>Edge</strong>, <strong>Brave</strong>, <strong>Opera</strong></li>
+          <li>Two clicks via tab menu: <strong>Vivaldi</strong>, dock menu: <strong>Safari</strong></li>
         </ul>
         <button type="button" class="install-info__primary" data-action="install">Install Now</button>
         <p class="install-info__hint" data-role="prompt-hint">
-          Installs instantly in <strong>Chrome</strong>, <strong>Edge</strong>, <strong>Brave</strong> and <strong>Opera</strong>.
-          Other browsers need one manual step — the button shows it.
+          The button opens the install dialog in Chrome, Edge, Brave and Opera.
+          In Vivaldi and Safari it shows the manual route instead.
         </p>
         <div class="install-info__manual" data-role="manual-install" hidden>
           <p class="install-info__lead">
-            Your browser doesn't offer the automatic dialog — install it manually:
+            Your browser doesn't offer the automatic dialog — install it this way:
           </p>
           <ul class="install-info__benefits">
-            <li><strong>Vivaldi:</strong> right-click this page's tab → <strong>Install RadioDock…</strong></li>
+            <li><strong>Vivaldi:</strong> right-click this page's tab → <strong>Progressive Web Apps</strong> → <strong>Install RadioDock…</strong> (reads <strong>Open in RadioDock</strong> once installed)</li>
             <li><strong>Chrome / Edge / Brave / Opera:</strong> ⋮ menu → <strong>Install RadioDock</strong> (sometimes under <strong>Save and share</strong> or <strong>Apps</strong>)</li>
             <li><strong>Safari on macOS:</strong> File → <strong>Add to Dock</strong></li>
             <li><strong>Firefox:</strong> has no desktop-app support — use the <strong>Browser Extension</strong> instead, or any Chromium browser</li>
