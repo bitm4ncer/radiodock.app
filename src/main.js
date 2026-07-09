@@ -30,6 +30,7 @@ import { mountFooterReveal } from './ui/footer-reveal.js';
 import { mountNotesPanel } from './ui/notes-panel.js';
 import { mountNotesCaptureButton } from './ui/notes-capture-button.js';
 import { track } from './analytics/umami.js';
+import { attachListenHeartbeat } from './analytics/listen-heartbeat.js';
 import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
 import { detectPlatform, detectStandalone, canPromptInstall, promptInstall } from './platform.js';
 
@@ -52,6 +53,7 @@ mountIdbBlockedBanner();
 attachRecovery(player);
 attachMetadataPoller(player);
 attachMediaSession(player);
+attachListenHeartbeat(player);
 initModals();
 
 // User-facing version label, computed at build time from git commit
