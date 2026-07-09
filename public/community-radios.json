@@ -157,11 +157,11 @@
     },
     {
       "countrycode": "FR",
-      "favicon": "",
+      "favicon": "https://www.radio-sofa.com/apple-icon.jpg",
       "homepage": "https://www.radio-sofa.com/",
       "id": "4a72fae3-8384-473c-8d1b-f17cdc60f387",
       "name": "Radio Sofa",
-      "url": "https://listen.radioking.com/radio/292531/stream/338878"
+      "url": "https://radio.radio-sofa.com/listen/radio_sofa/radio.mp3"
     },
     {
       "countrycode": "US",
