@@ -9,27 +9,15 @@
 // matching install-info modal (or the Web Store link).
 
 import * as storage from '../data/storage.js';
-
-function detectPlatform() {
-  const ua = navigator.userAgent;
-  const isStandalone =
-    window.matchMedia('(display-mode: standalone)').matches ||
-    window.navigator.standalone === true;
-  if (isStandalone) return 'installed';
-  if (/iphone|ipad|ipod/i.test(ua)) return 'ios';
-  if (/android/i.test(ua)) return 'android';
-  // Chromium family: Chrome, Edge, Brave, Opera, Vivaldi. All support both
-  // the Web Store extension AND PWA install.
-  if (/Chrome|Edg|Brave|OPR|Vivaldi/i.test(ua) && !/Firefox/i.test(ua)) return 'chromium-desktop';
-  return 'desktop';
-}
+import { detectPlatform } from '../platform.js';
 
 // Which buttons to highlight as the user's relevant install path(s). Returns
 // an array so multiple buttons can be highlighted at once (Chromium desktop
 // users have both the extension AND PWA-install paths available, so both
 // get highlighted).
 function highlightTargetsFor(platform) {
-  if (platform === 'ios' || platform === 'android') return ['ios'];
+  if (platform.startsWith('ios')) return ['ios'];
+  if (platform === 'android') return ['android'];
   if (platform === 'chromium-desktop') return ['chrome-ext', 'desktop'];
   return ['desktop'];
 }
@@ -40,7 +28,8 @@ function highlightTargetsFor(platform) {
 // installable here. Desktop users see everything (extension + PWA + a
 // "how to install on your phone" link for cross-device discovery).
 function visibleTargetsFor(platform) {
-  if (platform === 'ios' || platform === 'android') return ['ios'];
+  if (platform.startsWith('ios')) return ['ios'];
+  if (platform === 'android') return ['android'];
   return ['chrome-ext', 'desktop', 'ios'];
 }
 
@@ -102,6 +91,9 @@ export async function mountInstallSection({ container, installInfo, animateIn = 
           </button>` : ''}
           ${showsBtn('desktop') ? `<button type="button" class="install-section__btn${isCurrent('desktop')}" data-target="desktop">
             Desktop
+          </button>` : ''}
+          ${showsBtn('android') ? `<button type="button" class="install-section__btn${isCurrent('android')}" data-target="android">
+            Android
           </button>` : ''}
           ${showsBtn('ios') ? `<button type="button" class="install-section__btn${isCurrent('ios')}" data-target="ios">
             iOS
@@ -252,6 +244,7 @@ export async function mountInstallSection({ container, installInfo, animateIn = 
     const branchMap = {
       'chrome-ext': 'browser-ext',
       desktop: 'desktop',
+      android: 'android',
       ios: 'ios-safari',
     };
     const branch = branchMap[target];

@@ -31,6 +31,7 @@ import { mountNotesPanel } from './ui/notes-panel.js';
 import { mountNotesCaptureButton } from './ui/notes-capture-button.js';
 import { track } from './analytics/umami.js';
 import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
+import { detectPlatform, detectStandalone, canPromptInstall, promptInstall } from './platform.js';
 
 const COMMUNITY_LIST_ID = listsApi.COMMUNITY_LIST_ID;
 
@@ -215,13 +216,6 @@ mountInstallSection({
 // The CSS regime (display-mode: standalone-aware media queries) makes
 // the whole app use the mobile layout in standalone, so the off-canvas
 // drawer already exposes the rest of the nav.
-function detectStandalone() {
-  const modes = ['standalone', 'minimal-ui', 'fullscreen', 'window-controls-overlay'];
-  return (
-    window.navigator.standalone === true ||
-    modes.some((m) => window.matchMedia(`(display-mode: ${m})`).matches)
-  );
-}
 const inStandalone = detectStandalone();
 if (inStandalone) {
   document.documentElement.classList.add('is-standalone');
@@ -287,11 +281,18 @@ mountNotesCaptureButton({
 mountOffCanvas({
   triggerBtn: document.getElementById('menuBtn'),
   panel: document.getElementById('mobileMenu'),
-  onInstallClick: () => {
-    // Hand off to the install-section's first applicable platform — for
-    // a phone user this resolves to the mobile branch of the modal.
-    const ua = navigator.userAgent;
-    const branch = /android/i.test(ua) ? 'android' : 'ios-safari';
+  onInstallClick: async () => {
+    const platform = detectPlatform();
+    // Android with a captured beforeinstallprompt: skip the explainer
+    // modal and fire the native install dialog straight away.
+    if (platform === 'android' && canPromptInstall()) {
+      track('install-click', { platform: 'android', source: 'drawer' });
+      await promptInstall();
+      return;
+    }
+    const branch =
+      { android: 'android', 'ios-safari': 'ios-safari', 'ios-other': 'ios-other' }[platform] ??
+      'desktop';
     track('install-click', { platform: branch, source: 'drawer' });
     installInfo.open(branch);
   },

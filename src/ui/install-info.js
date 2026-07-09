@@ -12,30 +12,12 @@
 import { openModal, closeModal } from './modals.js';
 import { toast } from './toast.js';
 import * as storage from '../data/storage.js';
+import { detectPlatform, promptInstall } from '../platform.js';
 
 const NO_PROMPT_HINT = "Browser didn't offer a prompt — use the ⋮ menu → Install app.";
 
 const CHROME_STORE_URL =
   'https://chromewebstore.google.com/detail/radiodock/dcjmegapbbplapeghilpbdddhkgndbbh';
-
-const ANDROID_PLATFORMS = /android/i;
-const IOS_PLATFORMS = /iphone|ipad|ipod/i;
-
-function detectPlatform() {
-  const ua = navigator.userAgent;
-  const isStandalone =
-    window.matchMedia('(display-mode: standalone)').matches ||
-    window.navigator.standalone === true;
-  if (isStandalone) return 'installed';
-
-  if (IOS_PLATFORMS.test(ua)) {
-    const isiOSSafari =
-      /Safari/.test(ua) && !/(CriOS|FxiOS|EdgiOS|OPiOS|Brave|YaBrowser)/.test(ua);
-    return isiOSSafari ? 'ios-safari' : 'ios-other';
-  }
-  if (ANDROID_PLATFORMS.test(ua)) return 'android';
-  return 'desktop';
-}
 
 const SHARE_ICON_SVG = `<svg class="install-info__inline-icon" viewBox="0 0 24 24" aria-hidden="true">
   <path d="M12 3v12m0-12-4 4m4-4 4 4M5 14v4a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
@@ -201,12 +183,6 @@ export function mountInstallInfo() {
   // the .open(branch) API works from the install section — but the section
   // hides itself in that case, so this code path is rarely exercised.
 
-  let deferredPrompt = null;
-  window.addEventListener('beforeinstallprompt', (evt) => {
-    evt.preventDefault();
-    deferredPrompt = evt;
-  });
-
   let modalEl = document.getElementById('installInfoModal');
   if (!modalEl) {
     modalEl = document.createElement('div');
@@ -226,10 +202,7 @@ export function mountInstallInfo() {
       if (!actionEl && evt.target !== modalEl) return;
       const action = actionEl?.dataset.action ?? 'dismiss';
       if (action === 'install') {
-        if (deferredPrompt) {
-          deferredPrompt.prompt();
-          await deferredPrompt.userChoice.catch(() => {});
-          deferredPrompt = null;
+        if (await promptInstall()) {
           closeModal(modalEl);
         } else {
           // No native prompt available (already installed once, browser
@@ -273,10 +246,7 @@ export function mountInstallInfo() {
         if (!actionEl) return;
         const action = actionEl.dataset.action;
         if (action === 'install') {
-          if (deferredPrompt) {
-            deferredPrompt.prompt();
-            await deferredPrompt.userChoice.catch(() => {});
-            deferredPrompt = null;
+          if (await promptInstall()) {
             await storage.setPref('seenInstallHint', true);
             onClose?.();
           } else {
