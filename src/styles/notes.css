@@ -636,13 +636,14 @@ body.container-solid .notes-panel {
 
 .btn-capture-note.is-pulsing {
   animation: notes-capture-pulse 480ms ease;
-  color: var(--red);
 }
 
+/* Red lives in the keyframes (not the class) so it reverts when the
+   pulse ends — the .is-pulsing class itself stays on the element. */
 @keyframes notes-capture-pulse {
-  0%   { transform: scale(1); }
+  0%   { transform: scale(1); color: var(--red); }
   35%  { transform: scale(1.22); }
-  100% { transform: scale(1); }
+  100% { transform: scale(1); color: var(--red); }
 }
 
 /* ============================================================ Toast action button
