@@ -5,7 +5,7 @@
 //     of the viewport with a × dismiss button. The badge is sticky and
 //     stays visible until the user dismisses it (persisted in IndexedDB)
 //     or the app is in standalone mode.
-// In both regimes, clicking one of the three platform buttons opens the
+// In both regimes, clicking one of the platform buttons opens the
 // matching install-info modal (or the Web Store link).
 
 import * as storage from '../data/storage.js';
@@ -30,7 +30,7 @@ function highlightTargetsFor(platform) {
 function visibleTargetsFor(platform) {
   if (platform.startsWith('ios')) return ['ios'];
   if (platform === 'android') return ['android'];
-  return ['chrome-ext', 'desktop', 'ios'];
+  return ['chrome-ext', 'desktop', 'android', 'ios'];
 }
 
 const CHEVRON_SVG = `<svg class="install-section__chevron" viewBox="0 0 24 24" aria-hidden="true">
