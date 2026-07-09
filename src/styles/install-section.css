@@ -225,7 +225,7 @@
     position: fixed;
     right: 20px;
     bottom: 20px;
-    width: 340px;
+    width: 400px;
     max-width: calc(100vw - 40px);
     padding: 14px 16px 16px;
     background: var(--bg-list-active);
