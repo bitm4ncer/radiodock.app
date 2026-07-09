@@ -10,8 +10,12 @@ const STALL_THRESHOLD_MS = 15000;
 export function attachRecovery(player) {
   const audio = player._element();
   let attempts = 0;
+  let gaveUp = false;
   let stallTimer = null;
   let recoveryTimer = null;
+
+  const emit = (type, detail) =>
+    player.events?.dispatchEvent(new CustomEvent(type, { detail }));
 
   const clearStallTimer = () => {
     if (stallTimer) clearTimeout(stallTimer);
@@ -24,7 +28,21 @@ export function attachRecovery(player) {
   };
 
   const reset = () => {
+    // Playback resumed after at least one scheduled retry — the recovery
+    // layer actually healed something, worth surfacing to analytics.
+    if (attempts > 0 && !gaveUp) emit('recovered', { attempts });
     attempts = 0;
+    gaveUp = false;
+    clearStallTimer();
+    clearRecoveryTimer();
+  };
+
+  // Manual station switch: drop pending retries and reset the counter
+  // silently, so the new station neither inherits the old one's attempt
+  // budget nor produces a phantom 'recovered' when it starts playing.
+  const resetSilently = () => {
+    attempts = 0;
+    gaveUp = false;
     clearStallTimer();
     clearRecoveryTimer();
   };
@@ -34,6 +52,10 @@ export function attachRecovery(player) {
     if (!station) return;
     if (attempts >= MAX_ATTEMPTS) {
       console.warn(`[recovery] giving up after ${MAX_ATTEMPTS} attempts`);
+      if (!gaveUp) {
+        gaveUp = true;
+        emit('recoveryfailed', { attempts });
+      }
       return;
     }
     const delay = DELAYS_MS[attempts] ?? DELAYS_MS.at(-1);
@@ -49,6 +71,15 @@ export function attachRecovery(player) {
 
   audio.addEventListener('playing', reset);
   audio.addEventListener('pause', clearStallTimer);
+  // playStation() emits stationchange on every call — including our own
+  // retries of the SAME station — so only an actual id change may reset,
+  // otherwise each retry would refill its own attempt budget.
+  let lastStationId = null;
+  player.on('stationchange', (evt) => {
+    const id = evt.detail?.station?.id ?? null;
+    if (lastStationId !== null && id !== lastStationId) resetSilently();
+    lastStationId = id;
+  });
   audio.addEventListener('ended', () => {
     // Live streams shouldn't "end" — treat as a recoverable error.
     tryRecover();

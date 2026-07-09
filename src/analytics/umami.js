@@ -5,13 +5,33 @@
 
 const ENABLED = import.meta.env.PROD;
 
+function devLog(name, data) {
+  if (import.meta.env.DEV && typeof window !== 'undefined') {
+    const log = (window.__analyticsDebug ??= []);
+    log.push({ name, data });
+    if (log.length > 200) log.shift();
+  }
+}
+
+// Attach anonymous session-scoped data (shown in Umami's Sessions view).
+// Last write wins, so callers can send cumulative values repeatedly.
+export function identifySession(data) {
+  if (!ENABLED) {
+    devLog('$identify', data);
+    return;
+  }
+  const u = typeof window !== 'undefined' ? window.umami : null;
+  if (!u || typeof u.identify !== 'function') return;
+  try {
+    u.identify(data);
+  } catch {
+    // Analytics failures must never break the app.
+  }
+}
+
 export function track(name, data) {
   if (!ENABLED) {
-    if (import.meta.env.DEV && typeof window !== 'undefined') {
-      const log = (window.__analyticsDebug ??= []);
-      log.push({ name, data });
-      if (log.length > 200) log.shift();
-    }
+    devLog(name, data);
     return;
   }
   const u = typeof window !== 'undefined' ? window.umami : null;

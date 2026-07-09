@@ -448,10 +448,26 @@ player.on('stationchange', async (evt) => {
 });
 
 player.on('error', (evt) => {
+  // AbortError is just fast station-zapping (the new play() interrupts the
+  // previous load) — noise, not a stream problem.
+  if (evt.detail?.name === 'AbortError') return;
   const station = player.getCurrentStation();
   track('stream-error', {
     station: station?.name ?? '',
     errorName: evt.detail?.name ?? '',
+  });
+});
+
+player.on('recovered', (evt) => {
+  track('stream-recovered', {
+    station: player.getCurrentStation()?.name ?? '',
+    attempts: evt.detail?.attempts ?? 0,
+  });
+});
+
+player.on('recoveryfailed', () => {
+  track('stream-dead', {
+    station: player.getCurrentStation()?.name ?? '',
   });
 });
 
