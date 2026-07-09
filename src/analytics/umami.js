@@ -6,7 +6,14 @@
 const ENABLED = import.meta.env.PROD;
 
 export function track(name, data) {
-  if (!ENABLED) return;
+  if (!ENABLED) {
+    if (import.meta.env.DEV && typeof window !== 'undefined') {
+      const log = (window.__analyticsDebug ??= []);
+      log.push({ name, data });
+      if (log.length > 200) log.shift();
+    }
+    return;
+  }
   const u = typeof window !== 'undefined' ? window.umami : null;
   if (!u || typeof u.track !== 'function') return;
   try {
