@@ -120,6 +120,9 @@ html.is-standalone .list-more-btn { display: flex; }
 
 html.is-standalone .install-section { display: none !important; }
 
+/* Already running as the installed app — an Install entry is noise. */
+html.is-standalone #offCanvasInstall { display: none !important; }
+
 /* PWA standalone mirrors the mobile layout: the desktop-only chrome that
    isn't keyed off `.desktop-only` (because it lives in modules that mount
    themselves at runtime) gets hidden here too. */

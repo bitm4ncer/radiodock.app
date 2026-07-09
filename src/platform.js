@@ -34,6 +34,10 @@ export async function promptInstall() {
 }
 
 export function detectStandalone() {
+  // The inline <head> script owns the canonical detection (display-mode
+  // probe + the ?pwa=1 start_url marker for browsers whose app windows
+  // misreport display-mode) and stamps it on <html> before modules run.
+  if (document.documentElement.classList.contains('is-standalone')) return true;
   const modes = ['standalone', 'minimal-ui', 'fullscreen', 'window-controls-overlay'];
   return (
     window.navigator.standalone === true ||
