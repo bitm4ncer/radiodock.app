@@ -22,8 +22,8 @@ function buildId() {
 // To start a new minor cycle (e.g. v1.1), bump VERSION_MAJOR_MINOR and
 // reset VERSION_BASELINE_COMMIT_COUNT to the current `git rev-list
 // --count HEAD` value.
-const VERSION_MAJOR_MINOR = '1.0';
-const VERSION_BASELINE_COMMIT_COUNT = 38;
+const VERSION_MAJOR_MINOR = '1.1';
+const VERSION_BASELINE_COMMIT_COUNT = 114;
 
 function appVersion() {
   try {
