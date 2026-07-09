@@ -21,6 +21,12 @@
   --red: #cd0025;
   --green: #22c55e;
 
+  /* Backdrop behind transparent station favicons. #767676 is the
+     contrast-neutral pivot: pure-white AND pure-black logo marks both
+     land near 4.5:1 on it, so no brand's transparent logo can vanish.
+     Same value in both themes — neutrality is theme-independent. */
+  --logo-chip-bg: #767676;
+
   /* Aliases used by my web-app shell tokens */
   --surface: var(--bg-list-active);
   --surface-2: var(--bg-list-hover);

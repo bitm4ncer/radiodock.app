@@ -182,7 +182,7 @@ body.search-active .favorites-list {
   object-fit: cover;
   margin-right: 12px;
   flex-shrink: 0;
-  background-color: white;
+  background-color: var(--logo-chip-bg);
 }
 
 .station-item-initials {

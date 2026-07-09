@@ -42,7 +42,7 @@
   height: 60px;
   border-radius: 12px;
   object-fit: cover;
-  background: white;
+  background: var(--logo-chip-bg);
   flex-shrink: 0;
 }
 

@@ -155,7 +155,7 @@
   border: solid 2px var(--bg-light);
   border-radius: 50%;
   object-fit: cover;
-  background-color: var(--text);
+  background-color: var(--logo-chip-bg);
   cursor: pointer;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
