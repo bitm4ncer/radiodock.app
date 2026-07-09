@@ -2,7 +2,7 @@
   "name": "RadioDock",
   "short_name": "RadioDock",
   "description": "Internet radio in your browser, on your home screen.",
-  "start_url": "/",
+  "start_url": "/?pwa=1",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",

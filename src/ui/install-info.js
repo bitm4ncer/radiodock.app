@@ -14,7 +14,19 @@ import { toast } from './toast.js';
 import * as storage from '../data/storage.js';
 import { detectPlatform, promptInstall } from '../platform.js';
 
-const NO_PROMPT_HINT = "Browser didn't offer a prompt — use the ⋮ menu → Install app.";
+const NO_PROMPT_HINT = "No install dialog — use ⋮ → Install app (Vivaldi: right-click the tab → Install).";
+
+// The native prompt isn't available (unsupported browser, already
+// installed once, or consumed earlier this session): swap the Install
+// button for the per-browser manual instructions.
+function revealManualInstall(scopeEl) {
+  const manual = scopeEl?.querySelector('[data-role="manual-install"]');
+  if (!manual) return false;
+  manual.hidden = false;
+  scopeEl.querySelector('[data-action="install"]')?.setAttribute('hidden', '');
+  scopeEl.querySelector('[data-role="prompt-hint"]')?.setAttribute('hidden', '');
+  return true;
+}
 
 const CHROME_STORE_URL =
   'https://chromewebstore.google.com/detail/radiodock/dcjmegapbbplapeghilpbdddhkgndbbh';
@@ -67,9 +79,21 @@ function html(platform) {
           <li>Requires <strong>Chrome</strong>, <strong>Edge</strong>, <strong>Brave</strong>, <strong>Opera</strong>, or <strong>Vivaldi</strong></li>
         </ul>
         <button type="button" class="install-info__primary" data-action="install">Install Now</button>
-        <p class="install-info__hint">
-          Button greyed out? Open your browser's <strong>⋮</strong> menu and choose <strong>Install app</strong> (or <strong>Apps → Install this site as an app</strong>).
+        <p class="install-info__hint" data-role="prompt-hint">
+          Installs instantly in <strong>Chrome</strong>, <strong>Edge</strong>, <strong>Brave</strong> and <strong>Opera</strong>.
+          Other browsers need one manual step — the button shows it.
         </p>
+        <div class="install-info__manual" data-role="manual-install" hidden>
+          <p class="install-info__lead">
+            Your browser doesn't offer the automatic dialog — install it manually:
+          </p>
+          <ul class="install-info__benefits">
+            <li><strong>Vivaldi:</strong> right-click this page's tab → <strong>Install RadioDock…</strong></li>
+            <li><strong>Chrome / Edge / Brave / Opera:</strong> ⋮ menu → <strong>Install RadioDock</strong> (sometimes under <strong>Save and share</strong> or <strong>Apps</strong>)</li>
+            <li><strong>Safari on macOS:</strong> File → <strong>Add to Dock</strong></li>
+            <li><strong>Firefox:</strong> has no desktop-app support — use the <strong>Browser Extension</strong> instead, or any Chromium browser</li>
+          </ul>
+        </div>
         <button type="button" class="install-info__secondary" data-action="dismiss">Maybe later</button>
       `;
 
@@ -205,11 +229,7 @@ export function mountInstallInfo() {
         if (await promptInstall()) {
           closeModal(modalEl);
         } else {
-          // No native prompt available (already installed once, browser
-          // doesn't support it, or user dismissed it earlier this session).
-          // Keep the modal open so the user can see the hint paragraph
-          // beneath the button — the toast just calls it out explicitly.
-          toast(NO_PROMPT_HINT, 4000);
+          if (!revealManualInstall(modalEl)) toast(NO_PROMPT_HINT, 4000);
           return;
         }
         await storage.setPref('seenInstallHint', true);
@@ -249,7 +269,7 @@ export function mountInstallInfo() {
           if (await promptInstall()) {
             await storage.setPref('seenInstallHint', true);
             onClose?.();
-          } else {
+          } else if (!revealManualInstall(container)) {
             toast(NO_PROMPT_HINT, 4000);
           }
         } else if (action === 'dismiss') {

@@ -17,6 +17,18 @@
 
 html.is-standalone .desktop-only { display: none !important; }
 
+/* Vivaldi-class PWA windows report `display-mode: browser`, so at ≥700 px
+   app-desktop.css's `.mobile-only { display: none !important }` fires
+   INSIDE the installed app window and would remove the entire mobile
+   chrome (top bar, station carousel — i.e. the whole station list).
+   `html.is-standalone` now flips reliably via the ?pwa=1 start_url
+   marker, so re-assert each element with its real display type here
+   (a blanket `display: revert` would also revert author styles). */
+html.is-standalone .mobile-topbar { display: flex !important; }
+html.is-standalone .mobile-lists { display: flex !important; }
+html.is-standalone .search-overlay { display: block !important; }
+html.is-standalone .off-canvas { display: block !important; }
+
 html.is-standalone,
 html.is-standalone body {
   height: 100dvh;
@@ -59,6 +71,12 @@ html.is-standalone .favorites-section .list-dropdown-menu {
 }
 
 html.is-standalone .search-section { display: none; }
+
+/* Sibling of app-mobile.css's `.favorites-list { max-height: none }` —
+   without it the desktop 225px max-height caps every carousel page's
+   list to a tiny internally-scrolling box and the page itself never
+   overflows, so the stations appear unscrollable. */
+html.is-standalone .favorites-list { max-height: none; }
 
 html.is-standalone .player-section {
   position: fixed;

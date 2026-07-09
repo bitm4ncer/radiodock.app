@@ -30,8 +30,21 @@
           // Without this, modes I forgot to list left the page in the
           // desktop-chrome layout with backgrounds + notes flag leaking
           // through even though the CSS regime was already mobile.
+          //
+          // Belt & braces for browsers whose PWA windows misreport
+          // display-mode as `browser` (Vivaldi): the manifest start_url
+          // carries ?pwa=1, so a launch from the installed icon is
+          // identifiable without any display-mode probe. sessionStorage
+          // (not localStorage — per-window is exactly the right scope)
+          // keeps the flag alive across in-app navigations.
+          var pwaLaunch = false;
+          try {
+            if (/[?&]pwa=1/.test(location.search)) sessionStorage.setItem('radiodock-pwa', '1');
+            pwaLaunch = sessionStorage.getItem('radiodock-pwa') === '1';
+          } catch (e) {}
           var standalone = window.navigator.standalone === true ||
-            !matchMedia('(display-mode: browser)').matches;
+            !matchMedia('(display-mode: browser)').matches ||
+            pwaLaunch;
           if (standalone) document.documentElement.classList.add('is-standalone');
         } catch (e) {}
       })();
