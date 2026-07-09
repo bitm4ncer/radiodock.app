@@ -218,6 +218,78 @@
       "id": "0d58fb3f-190e-45be-b74b-ec78f8301e42",
       "name": "HKCR",
       "url": "https://stream-test.hkcr.live/hls/main.m3u8"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://chunt.org/images/logo_fishe_calm_256.png",
+      "homepage": "https://chunt.org/",
+      "id": "02ec5302-9dc4-42f7-9801-2278c06c1073",
+      "name": "Chunt FM",
+      "url": "https://fm.chunt.org/stream"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://www.worldwidefm.net/favicon.ico",
+      "homepage": "https://www.worldwidefm.net/",
+      "id": "1651c32f-55d8-4429-995d-872ea0dcf520",
+      "name": "Worldwide FM",
+      "url": "https://worldwide-fm.radiocult.fm/stream"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://www.voicesradio.co.uk/favicon.ico",
+      "homepage": "https://www.voicesradio.co.uk/",
+      "id": "b4684acd-cf54-47a9-9bcf-dfe17f3f7245",
+      "name": "Voices Radio",
+      "url": "https://voicesradio.out.airtime.pro/voicesradio_a"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://sohoradiolondon.com/wp-content/themes/sohoradio-jan-2023/build/images/favicons/sohoradio-192x192.jpg",
+      "homepage": "https://sohoradiolondon.com/",
+      "id": "20bcbbc0-75b1-43ab-9919-6230ce0d8bba",
+      "name": "Soho Radio London",
+      "url": "https://sohoradiomusic.doughunt.co.uk:8010/128mp3"
+    },
+    {
+      "countrycode": "FR",
+      "favicon": "https://www.radioflouka.com/favicon.ico",
+      "homepage": "https://www.radioflouka.com/",
+      "id": "14582ba2-827c-4dba-b4db-19d0320741af",
+      "name": "Radio Flouka",
+      "url": "https://flouka.out.airtime.pro/flouka_a"
+    },
+    {
+      "countrycode": "US",
+      "favicon": "https://wfmu.org/images/wfmu_logo_94.gif",
+      "homepage": "https://wfmu.org/",
+      "id": "61d90ec1-615e-489b-a175-110076596a3b",
+      "name": "WFMU",
+      "url": "http://stream2.wfmu.org/freeform-128k"
+    },
+    {
+      "countrycode": "HU",
+      "favicon": "",
+      "homepage": "https://www.lahmacun.hu/",
+      "id": "1af63c5f-4112-11ea-a9fa-52543be04c81",
+      "name": "Lahmacun Radio",
+      "url": "https://streaming.lahmacun.hu/radio/8000/radio.mp3"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://www.resonancefm.com/assets/logo-a79206a34394173ba3e41d66a3388f4c.png",
+      "homepage": "https://www.resonancefm.com/",
+      "id": "912578f9-181a-4582-844f-301143ec0319",
+      "name": "Resonance 104.4 FM",
+      "url": "https://stream.resonance.fm/resonance"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://assets.radioplayer.org/826/8261333/86/48/kwdqej23.png",
+      "homepage": "https://www.resonancefm.com/",
+      "id": "2a9a4f4b-436a-40ed-8e4f-0c0f2671dd46",
+      "name": "Resonance Extra",
+      "url": "https://stream.resonance.fm/resonance-extra"
     }
   ]
 }
