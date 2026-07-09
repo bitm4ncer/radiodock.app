@@ -53,6 +53,7 @@ events/month; the event set below averages ~3 per session.
 - [x] **A3** Search: `search` (`{ filter, resultCount }`) fired once per debounced API call. The query string itself is intentionally **not** sent (PII concern).
 - [x] **A4** Install funnel: `install-click` (`{ platform }`) from each install-section button + the mobile drawer's Install row; `pwa-installed` from the window `appinstalled` event.
 - [x] **A5** Verified on production — events visible in the Umami dashboard, no errors in console, dev-server requests do not show up in the data.
+- [x] **A6** Listening duration: `listen-ping` heartbeat (`{ station, country, background }`) once per minute of audible playback via `src/analytics/listen-heartbeat.js` — ping count per station in Umami's Properties view equals listening minutes; `background: yes|no` splits foreground vs. locked-screen/background listening. Dev builds buffer all events to `window.__analyticsDebug` instead of sending.
 
 ---
 
