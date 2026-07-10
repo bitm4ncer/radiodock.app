@@ -290,6 +290,30 @@
       "id": "2a9a4f4b-436a-40ed-8e4f-0c0f2671dd46",
       "name": "Resonance Extra",
       "url": "https://stream.resonance.fm/resonance-extra"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "/logos/subtle-radio.jpg",
+      "homepage": "https://www.subtleradio.com/",
+      "id": "1dbdc89f-f0d1-4bf7-8922-266edeb912dd",
+      "name": "Subtle Radio",
+      "url": "https://subtle.out.airtime.pro/subtle_a"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://cdn.prod.website-files.com/62bc4b9b51f455e9a386fdd1/62be3ea967ffbeb32ccfe453_android-chrome-256x256.png",
+      "homepage": "https://www.reprezentradio.org.uk/",
+      "id": "962d6d54-0601-11e8-ae97-52543be04c81",
+      "name": "Reprezent Radio",
+      "url": "https://radio.canstream.co.uk:8022/live.mp3"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "",
+      "homepage": "http://netilradio.com/",
+      "id": "2a85a1c6-0cec-428a-a7df-126e4d8a90d9",
+      "name": "Netil Radio",
+      "url": "https://netilradio.out.airtime.pro/netilradio_a"
     }
   ]
 }
