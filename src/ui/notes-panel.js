@@ -433,6 +433,10 @@ export async function mountNotesPanel({ player, getLatestMetadata }) {
     });
     state.notesByPage.set(state.currentPageId, [created, ...(state.notesByPage.get(state.currentPageId) ?? [])]);
     trackCaptureEvent(source, station, created.track);
+    // A capture from the player-card opens the panel (mobile: fullscreen
+    // overlay) so the result is visible and immediately editable — a
+    // silent capture behind a closed panel reads as "nothing happened".
+    if (source === 'player-card' && !state.open) openPanel();
     if (state.open) {
       // Focus body for inline edit.
       state.editingNoteId = created.id;
@@ -440,12 +444,15 @@ export async function mountNotesPanel({ player, getLatestMetadata }) {
       // Scroll list to top so the new card is visible.
       const listEl = panel.querySelector('[data-role="list"]');
       listEl.scrollTop = 0;
+      toast('Captured · Undo', {
+        action: { label: 'Undo', callback: () => undoCreate(created.id) },
+      });
     } else {
       render();
+      toast('Captured · Tap to edit · Undo', {
+        action: { label: 'Undo', callback: () => undoCreate(created.id) },
+      });
     }
-    toast('Captured · Tap to edit · Undo', {
-      action: { label: 'Undo', callback: () => undoCreate(created.id) },
-    });
     return created;
   }
 
