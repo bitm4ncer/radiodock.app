@@ -4,7 +4,7 @@ PWA rebuild of the RadioDock Chrome extension. Lives at <https://radiodock.app> 
 
 ## Project status
 
-Follow [ROADMAP.md](./ROADMAP.md). It is the user's primary status surface — **tick checkboxes after every milestone commit**. M0–M4 are done; M5+ pending.
+Follow [ROADMAP.md](./ROADMAP.md). It is the user's primary status surface — **tick checkboxes after every milestone commit**. v1.0 (M0–M7) and v2.0–v2.4 are shipped; the v2.1 visualizer is fully built but feature-flagged off in production (`VISUALIZER_ENABLED = false` in `src/main.js`).
 
 ## Stack
 
@@ -26,24 +26,54 @@ npm run build
 ```
 src/
 ├─ main.js                # orchestration, state, callbacks, bootstrap
+├─ platform.js            # platform / standalone detection, beforeinstallprompt capture
+├─ analytics/
+│  ├─ umami.js            # track() wrapper; dev builds buffer to window.__analyticsDebug
+│  └─ listen-heartbeat.js # listen-ping heartbeat, 1/min of audible playback
 ├─ player/
 │  ├─ audio.js            # <audio> wrapper, HLS branch, EventTarget bus
 │  ├─ recovery.js         # error/stalled/ended retry with backoff
-│  └─ metadata-poller.js  # poll proxy for now-playing, pauses on tab-hidden
+│  ├─ metadata-poller.js  # poll proxy for now-playing, pauses on tab-hidden
+│  └─ media-session.js    # lock-screen / notification-shade controls
 ├─ data/
-│  ├─ storage.js          # IndexedDB wrapper (lists, prefs stores)
+│  ├─ storage.js          # IndexedDB wrapper (lists, prefs, notes, notePages stores)
 │  ├─ lists.js            # high-level list ops, lazy default Favorites
+│  ├─ notes.js            # notes + pages CRUD facade (lazy Journal page)
+│  ├─ notes-export.js     # notes JSON export envelope
 │  ├─ import-export.js    # JSON export/import (extension-compatible)
+│  ├─ share.js            # gzip+base64url share-link codec (#s= hash)
 │  ├─ radio-browser.js    # Radio Browser API client + mirror fallback
-│  └─ metadata.js         # radiodock-metadata-proxy client
+│  ├─ metadata.js         # radiodock-metadata-proxy client
+│  ├─ wikipedia.js        # Wikipedia summary lookup for station info
+│  ├─ logo-resolver.js    # station-logo fallback chain (override → original → DDG)
+│  └─ gradient-presets.js # built-in background gradients
 ├─ ui/
-│  ├─ player-card.js
+│  ├─ player-card.js      # now-playing card, play/pause, volume dots, marquee
+│  ├─ player-card-drag.js # drag + minimize-to-pill (desktop)
 │  ├─ station-list.js     # drag-drop reorder, remove-from-list
-│  ├─ list-dropdown.js    # rename/export/delete per row
-│  ├─ search.js
-│  ├─ modals.js           # open/close manager
-│  ├─ modal-helpers.js    # promise-based prompt/confirm
-│  └─ toast.js
+│  ├─ station-logo.js     # logo slot rendering + fallback behaviour
+│  ├─ station-info.js     # station bottom-sheet (Radio Browser by-uuid + Wikipedia)
+│  ├─ list-dropdown.js    # rename/share/export/delete per row
+│  ├─ list-tabs.js        # mobile horizontal tab strip (long-press menu)
+│  ├─ lists-carousel.js   # mobile scroll-snap carousel of lists
+│  ├─ search.js           # input + debounce + filter tabs + result states
+│  ├─ search-overlay.js   # mobile fullscreen search overlay
+│  ├─ notes-panel.js      # notes dock/panel: pages, search, day grouping, card menu
+│  ├─ notes-capture-button.js # mini capture button on the player card
+│  ├─ modals.js           # open/close manager (.show class)
+│  ├─ modal-helpers.js    # promise-based prompt/confirm/choice
+│  ├─ toast.js            # toasts, optional action button (undo pattern)
+│  ├─ theme.js            # light/dark toggle + OS-pref subscription
+│  ├─ background.js       # fullscreen background images + cycle controls (desktop)
+│  ├─ background-gallery.js  # background picker
+│  ├─ background-create.js   # gradient editor
+│  ├─ install-info.js     # install onboarding modal (platform branches)
+│  ├─ install-section.js  # floating install badge (desktop)
+│  ├─ off-canvas.js       # mobile drawer
+│  ├─ footer-reveal.js    # desktop footer auto-reveal
+│  └─ idb-blocked-banner.js # help banner when IndexedDB is blocked
+├─ visualizer/            # engine, registry, drawer, audio pipeline (desktop; flagged off)
+├─ visualizers/           # visualizer modules (spectrum bars, oscilloscope, …)
 └─ styles/                # split by component, classnames mirror popup.css
 ```
 

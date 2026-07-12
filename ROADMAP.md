@@ -1,20 +1,33 @@
 # Roadmap
 
-## v2.4 — Notes / Diary 🚧
+## v2.5 — Desktop QoL 🚧
+
+Small, independent quality-of-life features. Implementation plan:
+`docs/superpowers/plans/2026-07-12-desktop-qol.md`.
+
+- [x] **Q0** Docs reconciliation — CLAUDE.md module map + project status brought in line with shipped code; v2.4 ticked off (was fully implemented but unticked).
+- [ ] **Q1** Network-aware recovery — `recovery.js` parks retries while `navigator.onLine === false` (no wasted attempt budget) and replays the current station immediately on the window `online` event.
+- [ ] **Q2** Mute toggle — `player.toggleMute()` (remembers last audible volume), speaker button below the volume dots, `volumechange` listener in `main.js` becomes the single dots-sync point.
+- [ ] **Q3** Volume mouse-wheel — wheel over the volume strip adjusts ±10% per notch.
+- [ ] **Q4** Keyboard shortcuts (`src/ui/keyboard.js`) — Space = play/pause, ↑/↓ = volume, `/` = focus search (opens overlay in mobile/standalone regime), `M` = mute. Ignored while typing or while a modal is open.
+
+---
+
+## v2.4 — Notes / Diary ✅
 
 Local-first notes feature for capturing radio moments. **No recording, no rewind buffer** — those stay out of scope (see v3+ list at bottom).
 
-- [ ] **N0** `src/data/storage.js` — bump `DB_VERSION` to 4, add `notes` + `notePages` object stores (with `byPage` + `byCreatedAt` indexes on `notes`).
-- [ ] **N1** `src/data/notes.js` — facade for pages + notes CRUD; lazily creates the default `journal` page on first read; rejects deletion of the Journal page.
-- [ ] **N2** `src/ui/notes-panel.js` — flag-tab dock at the right edge, draggable card (~360×560), open/close, position persisted to IDB (`notesPanelPos` / `notesPanelOpen`).
-- [ ] **N3** Note list rendering with day-grouping (Today / Yesterday / locale date) + sticky day headers + sticky "+ New note" footer.
-- [ ] **N4** Capture path: `metadata`-event cache in `main.js`; mini capture button on the player-card next to ❤️; large "Capture now" button inside the panel; silent capture + undo-toast (extended `toast.js` to accept an action button).
-- [ ] **N5** Per-card ⋯ menu: Edit · Copy as text · Play this station (capture only) · Move to page… · Delete (with undo-toast).
-- [ ] **N6** Pages tab-strip in the header (horizontal scroll); page ⋯ menu (Rename, Delete-with-confirm, Export all notes); Journal-page protected from delete.
-- [ ] **N7** Search toggle in header: live substring filter across `station.name`, `track.artist/title/nowPlaying`, and `body`.
-- [ ] **N8** Mobile path: hamburger drawer gets a "Notes" entry; same panel renders as a fullscreen slide-in overlay; no flag, no drag.
-- [ ] **N9** `src/data/notes-export.js` — JSON export (envelope `{ version, exportDate, pages, notes }`) downloaded via the Page ⋯ menu.
-- [ ] **N10** Analytics events (`note-capture`, `note-create`, `note-delete`, `note-page-create`, `note-export`); light-theme styling; polish + this checklist tickoff.
+- [x] **N0** `src/data/storage.js` — `DB_VERSION` bumped to 3, added `notes` + `notePages` object stores (with `byPage` + `byCreatedAt` indexes on `notes`).
+- [x] **N1** `src/data/notes.js` — facade for pages + notes CRUD; lazily creates the default `journal` page on first read; rejects deletion of the Journal page.
+- [x] **N2** `src/ui/notes-panel.js` — flag-tab dock at the right edge, draggable card (~360×560), open/close, position persisted to IDB (`notesPanelPos` / `notesPanelOpen`).
+- [x] **N3** Note list rendering with day-grouping (Today / Yesterday / locale date) + sticky day headers + sticky "+ New note" footer.
+- [x] **N4** Capture path: `metadata`-event cache in `main.js`; mini capture button on the player-card next to ❤️; large "Capture now" button inside the panel; silent capture + undo-toast (extended `toast.js` to accept an action button).
+- [x] **N5** Per-card ⋯ menu: Edit · Copy as text · Play this station (capture only) · Move to page… · Delete (with undo-toast).
+- [x] **N6** Pages tab-strip in the header (horizontal scroll); page ⋯ menu (Rename, Delete-with-confirm, Export all notes); Journal-page protected from delete.
+- [x] **N7** Search toggle in header: live substring filter across `station.name`, `track.artist/title/nowPlaying`, and `body`.
+- [x] **N8** Mobile path: hamburger drawer gets a "Notes" entry; same panel renders as a fullscreen slide-in overlay; no flag, no drag.
+- [x] **N9** `src/data/notes-export.js` — JSON export (envelope `{ version, exportDate, pages, notes }`) downloaded via the Page ⋯ menu.
+- [x] **N10** Analytics events (`note-capture`, `note-create`, `note-delete`, `note-page-create`, `note-export`); light-theme styling; polish + this checklist tickoff.
 
 Out of scope for v2.4, possible v3.0:
 
@@ -58,6 +71,8 @@ events/month; the event set below averages ~3 per session.
 ---
 
 ## v2.1 — Audio visualizer (desktop) 🚧
+
+Built end-to-end but **feature-flagged off in production** (`VISUALIZER_ENABLED = false` in `src/main.js`) while it matures. Flip the flag to test locally.
 
 - [x] **M8.0** Tiered audio-data pipeline (`src/visualizer/audio-source.js`): HLS-via-hls.js (untainted MSE blob) → `getDisplayMedia` tab-audio capture (opt-in) → procedural fallback. Audio-mode is surfaced honestly in the drawer status line. CORS-probe Tier 2 deferred to a later iteration.
 - [x] **M8.1** Rendering foundation (`src/visualizer/engine.js`): two stacked fullscreen canvases (Canvas 2D + WebGL via [regl](https://github.com/regl-project/regl)) since a single canvas can't expose both contexts. Single rAF loop, pauses on tab-hidden / master-off. DPR capped at 1.5 for shader visualizers with auto-fallback to 1.0 on sustained frame drops.
