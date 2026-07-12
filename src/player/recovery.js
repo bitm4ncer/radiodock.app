@@ -80,7 +80,12 @@ export function attachRecovery(player) {
   };
 
   audio.addEventListener('playing', reset);
-  audio.addEventListener('pause', clearStallTimer);
+  audio.addEventListener('pause', () => {
+    clearStallTimer();
+    // While parked no retries run, so a pause during park is user intent —
+    // don't let the online handler override it.
+    waitingForNetwork = false;
+  });
   // playStation() emits stationchange on every call — including our own
   // retries of the SAME station — so only an actual id change may reset,
   // otherwise each retry would refill its own attempt budget.
