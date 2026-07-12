@@ -738,8 +738,143 @@ Watch the Actions run until green, then spot-check https://radiodock.app once de
 
 ---
 
+### Task 6: Volume strip usability — bigger mouse target + drag cursor (Q5)
+
+*Added mid-execution on user feedback: "der volume slider ist nur fitzelig mit der maus zu erreichen … die reine touch area mit der maus muss größer sein … außerdem soll ein arrow-up-down cursor zu sehen sein während man dragged".*
+
+**Files:**
+- Modify: `src/styles/player-card.css` (`.volume-controls` block ≈ line 297, `.volume-dot` cursor ≈ line 319, new global drag-cursor rule after the `.is-dragging` rules ≈ line 347)
+- Modify: `src/ui/player-card.js` (`onDown` / `onUp` inside the volume IIFE — toggle an `html`-level class)
+- Modify: `ROADMAP.md` (add + tick a Q5 line in the v2.5 section)
+
+**Interfaces:**
+- Consumes: the existing container-level pointer handlers (`volumeWrap` `pointerdown`/`move`/`up`) whose `dotAtPoint` nearest-dot fallback makes the whole container box draggable — that fallback is WHY padding alone enlarges the effective hit area.
+- Produces: nothing new for later tasks.
+
+**Background:** The dots are 5 px circles in a container with `padding: 2px 4px` — the effective mouse target is ~13 px wide. Desktop-only surface (mobile: `display: none !important` in `app-mobile.css:118`; standalone: hidden in `app-standalone.css:100` — both unaffected).
+
+- [ ] **Step 1: `src/styles/player-card.css` — widen the hit box, keep the dots visually in place**
+
+Replace the `.volume-controls` block (≈ line 297) with:
+
+```css
+.volume-controls {
+  position: absolute;
+  right: -35px;
+  display: flex;
+  flex-direction: column-reverse;   /* small at bottom, large at top */
+  align-items: center;
+  gap: 3px;
+  /* The dots are 5 px circles; the container-level pointer handlers
+     (nearest-dot fallback) make the whole padded box draggable, so this
+     padding IS the mouse target. `right` compensates the extra horizontal
+     padding so the dot column stays visually where it was. */
+  padding: 6px 14px;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  touch-action: none;               /* enable pointer-drag without page-scroll */
+  cursor: ns-resize;
+}
+```
+
+(Old values: `right: -25px; padding: 2px 4px;` — horizontal padding grows by 10 px per side, so `right` moves out by 10 px to compensate.)
+
+Change `.volume-dot`'s `cursor: pointer;` (≈ line 319) to `cursor: ns-resize;`.
+
+After the `.volume-controls.is-dragging .volume-dot.is-filled` rule (≈ line 347), add:
+
+```css
+/* Pointer capture keeps a drag alive when the pointer leaves the strip —
+   pin the resize cursor globally so it doesn't flicker mid-drag. */
+html.volume-dragging,
+html.volume-dragging * {
+  cursor: ns-resize !important;
+}
+```
+
+The mute button keeps its own `cursor: pointer` (element rule wins over the container's `ns-resize`) — intentional: it's a click target, not part of the slider.
+
+- [ ] **Step 2: `src/ui/player-card.js` — toggle the drag class**
+
+In the volume IIFE, add to `onDown` (after the `volumeWrap.classList.add('is-dragging');` line):
+
+```js
+      document.documentElement.classList.add('volume-dragging');
+```
+
+and to `onUp` (after `volumeWrap.classList.remove('is-dragging');`):
+
+```js
+      document.documentElement.classList.remove('volume-dragging');
+```
+
+(`onUp` already handles `pointerup`, `pointercancel`, and `pointerleave`, so the class can't get stuck.)
+
+- [ ] **Step 3: Preview verification**
+
+Preview tooling notes from Task 3: `preview_click` does not reliably drive this page — dispatch real-coordinate `PointerEvent`s via `preview_eval` instead; the media element's `volumechange` fires as a queued task, so read volume/UI state in a follow-up eval, not the same one. Desktop viewport first (`preview_resize` 1280×800).
+
+1. `preview_inspect` on `.volume-controls` with styles `['padding','right','cursor']` → `6px 14px`, `-35px`, `ns-resize`.
+2. Hit-area test — press in the padding, clearly off the dot column:
+
+```js
+(() => {
+  const dot = document.querySelector('.volume-dot[data-volume="50"]');
+  const r = dot.getBoundingClientRect();
+  const wrap = document.getElementById('volumeControls');
+  const opts = { bubbles: true, cancelable: true, clientX: r.left - 10, clientY: r.top + r.height / 2, button: 0, pointerId: 7 };
+  wrap.dispatchEvent(new PointerEvent('pointerdown', opts));
+  return {
+    dragging: document.documentElement.classList.contains('volume-dragging'),
+    cursor: getComputedStyle(document.body).cursor,
+  };
+})()
+```
+
+Expected: `{ dragging: true, cursor: "ns-resize" }`.
+
+3. Follow-up eval — release and check the volume landed on the nearest dot:
+
+```js
+(() => {
+  const wrap = document.getElementById('volumeControls');
+  wrap.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, cancelable: true, button: 0, pointerId: 7 }));
+  return {
+    v: window.__radiodock.player.getVolume(),
+    dragging: document.documentElement.classList.contains('volume-dragging'),
+  };
+})()
+```
+
+Expected: `{ v: 0.5, dragging: false }`.
+
+4. Mute-button regression: real pointer sequence on `#volumeMuteBtn` (as in Task 3's fix verification) still mutes/unmutes — first click `{ v: 0, muted: true }`, second restores.
+5. `preview_screenshot` — dots sit just right of the player card, roughly where they were (compare against production if in doubt); no overlap with the card.
+6. Mobile regression: `preview_resize` mobile → `.volume-controls` still `display: none`. Resize back.
+7. `preview_console_logs` level error → none.
+
+- [ ] **Step 4: Commit + push (add + tick Q5)**
+
+Add to the v2.5 section in `ROADMAP.md`, after the Q4 line (already ticked — it ships in this commit):
+
+```markdown
+- [x] **Q5** Volume strip usability — wide padded mouse target (the 5 px dots were effectively the only hit area), `ns-resize` cursor on the strip and globally while dragging.
+```
+
+```bash
+git add src/styles/player-card.css src/ui/player-card.js ROADMAP.md docs/superpowers/plans/2026-07-12-desktop-qol.md
+git commit -m "Player: widen the volume strip's mouse target; ns-resize cursor while dragging
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
+git push
+```
+
+Watch the Actions run until green.
+
+---
+
 ## Task ordering & independence
 
-Task 1 (docs) must land first — it creates the Q0–Q4 checkboxes the other commits tick. Task 3 (mute) must precede Task 5 (keyboard needs `toggleMute`) and Task 4 benefits from Task 3's centralized dots-sync. Task 2 (recovery) is fully independent and can run any time after Task 1.
+Task 1 (docs) must land first — it creates the Q0–Q4 checkboxes the other commits tick. Task 3 (mute) must precede Task 5 (keyboard needs `toggleMute`) and Task 4 benefits from Task 3's centralized dots-sync. Task 2 (recovery) is fully independent and can run any time after Task 1. Task 6 (added mid-execution) touches the same volume code as Tasks 3/4 and runs after them.
 
-Recommended order: **1 → 2 → 3 → 4 → 5** (matches Q numbering).
+Recommended order: **1 → 2 → 3 → 4 → 5 → 6** (matches Q numbering).

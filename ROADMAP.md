@@ -1,6 +1,6 @@
 # Roadmap
 
-## v2.5 — Desktop QoL 🚧
+## v2.5 — Desktop QoL ✅
 
 Small, independent quality-of-life features. Implementation plan:
 `docs/superpowers/plans/2026-07-12-desktop-qol.md`.
@@ -10,6 +10,7 @@ Small, independent quality-of-life features. Implementation plan:
 - [x] **Q2** Mute toggle — `player.toggleMute()` (remembers last audible volume), speaker button below the volume dots, `volumechange` listener in `main.js` becomes the single dots-sync point.
 - [x] **Q3** Volume mouse-wheel — wheel over the volume strip adjusts ±10% per notch.
 - [x] **Q4** Keyboard shortcuts (`src/ui/keyboard.js`) — Space = play/pause, ↑/↓ = volume, `/` = focus search (opens overlay in mobile/standalone regime), `M` = mute. Ignored while typing or while a modal is open.
+- [x] **Q5** Volume strip usability — wide padded mouse target (the 5 px dots were effectively the only hit area), `ns-resize` cursor on the strip and globally while dragging.
 
 ---
 

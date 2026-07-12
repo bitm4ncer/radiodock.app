@@ -296,15 +296,20 @@
    is interacting, then collapses back to uniform on release. */
 .volume-controls {
   position: absolute;
-  right: -25px;
+  right: -35px;
   display: flex;
   flex-direction: column-reverse;   /* small at bottom, large at top */
   align-items: center;
   gap: 3px;
-  padding: 2px 4px;
+  /* The dots are 5 px circles; the container-level pointer handlers
+     (nearest-dot fallback) make the whole padded box draggable, so this
+     padding IS the mouse target. `right` compensates the extra horizontal
+     padding so the dot column stays visually where it was. */
+  padding: 6px 14px;
   opacity: 0;
   transition: opacity 0.1s ease;
   touch-action: none;               /* enable pointer-drag without page-scroll */
+  cursor: ns-resize;
 }
 
 .player-section .player-card.loaded + .volume-controls {
@@ -316,7 +321,7 @@
   height: 5px;
   border-radius: 50%;
   background: var(--bg-dark);
-  cursor: pointer;
+  cursor: ns-resize;
   transition: width 180ms ease, height 180ms ease, background 150ms ease;
   padding: 0;
   border: 0;
@@ -344,6 +349,13 @@
 
 .volume-controls.is-dragging .volume-dot.is-filled {
   background: var(--red);
+}
+
+/* Pointer capture keeps a drag alive when the pointer leaves the strip —
+   pin the resize cursor globally so it doesn't flicker mid-drag. */
+html.volume-dragging,
+html.volume-dragging * {
+  cursor: ns-resize !important;
 }
 
 .volume-mute-btn {

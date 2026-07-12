@@ -226,6 +226,7 @@ export function mountPlayerCard({ player }) {
       if (evt.target.closest('.volume-mute-btn')) return;
       dragging = true;
       volumeWrap.classList.add('is-dragging');
+      document.documentElement.classList.add('volume-dragging');
       try { volumeWrap.setPointerCapture?.(evt.pointerId); } catch {}
       setFromPoint(evt.clientX, evt.clientY);
       evt.preventDefault();
@@ -238,6 +239,7 @@ export function mountPlayerCard({ player }) {
       if (!dragging) return;
       dragging = false;
       volumeWrap.classList.remove('is-dragging');
+      document.documentElement.classList.remove('volume-dragging');
       try { volumeWrap.releasePointerCapture?.(evt.pointerId); } catch {}
     }
 
