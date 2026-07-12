@@ -251,6 +251,10 @@
 
           <!-- Volume slider — 11 dots tapering small→large representing 0→100%. -->
           <div class="volume-controls" id="volumeControls" role="slider" aria-label="Volume" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80" tabindex="0">
+            <button type="button" class="volume-mute-btn" id="volumeMuteBtn" aria-label="Mute" title="Mute (M)">
+              <svg class="icon-speaker" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z" fill="currentColor"/><path d="M16 8.5a4 4 0 0 1 0 7" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+              <svg class="icon-muted" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+            </button>
             <button type="button" class="volume-dot" data-volume="0"   aria-label="Mute"          style="--vd-size: 4px;"></button>
             <button type="button" class="volume-dot" data-volume="10"  aria-label="Volume 10%"    style="--vd-size: 5px;"></button>
             <button type="button" class="volume-dot" data-volume="20"  aria-label="Volume 20%"    style="--vd-size: 6px;"></button>

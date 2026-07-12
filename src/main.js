@@ -522,6 +522,7 @@ async function restoreVolume() {
   playerCard.setVolumePct(Math.round(v * 100));
 }
 player.on('volumechange', async (evt) => {
+  playerCard.setVolumePct(Math.round(evt.detail.volume * 100));
   await storage.setPref('volume', evt.detail.volume);
 });
 

@@ -346,6 +346,39 @@
   background: var(--red);
 }
 
+.volume-mute-btn {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--bg-dark);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.volume-mute-btn:hover {
+  color: var(--bg-light);
+}
+
+.volume-mute-btn .icon-muted {
+  display: none;
+}
+
+.volume-mute-btn.is-muted {
+  color: var(--red);
+}
+
+.volume-mute-btn.is-muted .icon-muted {
+  display: block;
+}
+
+.volume-mute-btn.is-muted .icon-speaker {
+  display: none;
+}
+
 .visit-btn {
  color: var(--bg-light);
   text-decoration: none;

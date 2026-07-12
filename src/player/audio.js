@@ -17,6 +17,7 @@ let currentStation = null;
 let hls = null;
 let hlsModulePromise = null;
 let playToken = 0;
+let lastAudibleVolume = 0.8;
 
 function getElement() {
   if (element) return element;
@@ -181,11 +182,17 @@ function stop() {
 
 function setVolume(level) {
   const v = Math.max(0, Math.min(1, Number(level) || 0));
+  if (v > 0) lastAudibleVolume = v;
   getElement().volume = v;
 }
 
 function getVolume() {
   return getElement().volume;
+}
+
+function toggleMute() {
+  const el = getElement();
+  el.volume = el.volume > 0 ? 0 : lastAudibleVolume;
 }
 
 function getCurrentStation() {
@@ -213,6 +220,7 @@ export const player = {
   resume,
   stop,
   setVolume,
+  toggleMute,
   getVolume,
   getCurrentStation,
   isPlaying,

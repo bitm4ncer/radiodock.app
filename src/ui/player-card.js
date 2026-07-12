@@ -19,6 +19,7 @@ export function mountPlayerCard({ player }) {
   const pauseIcon = playPauseBtn.querySelector('.pause-icon');
   const bufferingIcon = playPauseBtn.querySelector('.buffering-icon');
   const volumeWrap = document.getElementById('volumeControls');
+  const muteBtn = document.getElementById('volumeMuteBtn');
 
   let currentStation = null;
   let favoriteCallback = null;
@@ -252,6 +253,11 @@ export function mountPlayerCard({ player }) {
     favoriteCallback?.(currentStation);
   });
 
+  muteBtn?.addEventListener('click', () => {
+    haptic();
+    player.toggleMute();
+  });
+
   infoBtn.addEventListener('click', () => {
     if (!currentStation) return;
     haptic();
@@ -272,6 +278,9 @@ export function mountPlayerCard({ player }) {
     setNowPlaying(text);
   });
   player.on('error', () => setPlayState('play'));
+  player.on('volumechange', (evt) => {
+    muteBtn?.classList.toggle('is-muted', evt.detail.volume === 0);
+  });
 
   // Initial state
   setPlayState('play');
