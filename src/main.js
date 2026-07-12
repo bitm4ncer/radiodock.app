@@ -455,6 +455,21 @@ player.on('error', (evt) => {
   track('stream-error', {
     station: station?.name ?? '',
     errorName: evt.detail?.name ?? '',
+    message: evt.detail?.message ?? '',
+    phase: 'start',
+  });
+});
+
+// Element-level media errors carry the actual cause (network drop vs.
+// unsupported source) — phase 'playback' distinguishes them from failed
+// play() calls above. Whether it was serious shows in what follows:
+// stream-recovered = brief drop, stream-dead = station actually broken.
+player.on('mediaerror', (evt) => {
+  track('stream-error', {
+    station: player.getCurrentStation()?.name ?? '',
+    errorName: evt.detail?.name ?? '',
+    message: evt.detail?.message ?? '',
+    phase: 'playback',
   });
 });
 

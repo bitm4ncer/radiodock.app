@@ -5,6 +5,13 @@
 const events = new EventTarget();
 const emit = (type, detail) => events.dispatchEvent(new CustomEvent(type, { detail }));
 
+const MEDIA_ERR_NAMES = {
+  1: 'MEDIA_ERR_ABORTED',
+  2: 'MEDIA_ERR_NETWORK',
+  3: 'MEDIA_ERR_DECODE',
+  4: 'MEDIA_ERR_SRC_NOT_SUPPORTED',
+};
+
 let element = null;
 let currentStation = null;
 let hls = null;
@@ -24,6 +31,17 @@ function getElement() {
   element.addEventListener('waiting', () => emit('loading'));
   element.addEventListener('canplay', () => emit('canplay'));
   element.addEventListener('volumechange', () => emit('volumechange', { volume: element.volume }));
+  // Analytics-only signal. Recovery listens on the element directly and the
+  // UI error state keys off playStation failures, so nothing else reacts.
+  element.addEventListener('error', () => {
+    const err = element.error;
+    if (!err) return;
+    emit('mediaerror', {
+      code: err.code,
+      name: MEDIA_ERR_NAMES[err.code] ?? `MEDIA_ERR_${err.code}`,
+      message: err.message ?? '',
+    });
+  });
 
   return element;
 }
@@ -106,7 +124,7 @@ async function playStation(station) {
           destroyHls();
           audio.src = streamUrl;
           audio.load();
-          audio.play().catch((err) => emit('error', { message: err.message }));
+          audio.play().catch((err) => emit('error', { message: err.message, name: err.name }));
         });
 
         hls.loadSource(streamUrl);
