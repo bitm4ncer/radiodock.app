@@ -13,6 +13,7 @@ export function attachRecovery(player) {
   let gaveUp = false;
   let stallTimer = null;
   let recoveryTimer = null;
+  let waitingForNetwork = false;
 
   const emit = (type, detail) =>
     player.events?.dispatchEvent(new CustomEvent(type, { detail }));
@@ -33,6 +34,7 @@ export function attachRecovery(player) {
     if (attempts > 0 && !gaveUp) emit('recovered', { attempts });
     attempts = 0;
     gaveUp = false;
+    waitingForNetwork = false;
     clearStallTimer();
     clearRecoveryTimer();
   };
@@ -43,6 +45,7 @@ export function attachRecovery(player) {
   const resetSilently = () => {
     attempts = 0;
     gaveUp = false;
+    waitingForNetwork = false;
     clearStallTimer();
     clearRecoveryTimer();
   };
@@ -50,6 +53,13 @@ export function attachRecovery(player) {
   const tryRecover = () => {
     const station = player.getCurrentStation();
     if (!station) return;
+    if (!navigator.onLine) {
+      // No point burning the attempt budget without a network — park and
+      // let the window 'online' handler replay immediately.
+      waitingForNetwork = true;
+      clearRecoveryTimer();
+      return;
+    }
     if (attempts >= MAX_ATTEMPTS) {
       console.warn(`[recovery] giving up after ${MAX_ATTEMPTS} attempts`);
       if (!gaveUp) {
@@ -98,5 +108,25 @@ export function attachRecovery(player) {
     stallTimer = setTimeout(() => {
       if (!audio.paused) tryRecover();
     }, STALL_THRESHOLD_MS);
+  });
+
+  window.addEventListener('offline', () => {
+    if (recoveryTimer || stallTimer) {
+      waitingForNetwork = true;
+      clearRecoveryTimer();
+      clearStallTimer();
+    }
+  });
+
+  window.addEventListener('online', () => {
+    const station = player.getCurrentStation();
+    if (!station) return;
+    if (!waitingForNetwork && !recoveryTimer && !gaveUp) return;
+    waitingForNetwork = false;
+    gaveUp = false;
+    if (attempts === 0) attempts = 1;
+    clearRecoveryTimer();
+    clearStallTimer();
+    player.playStation(station);
   });
 }
