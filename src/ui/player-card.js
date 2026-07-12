@@ -298,7 +298,10 @@ export function mountPlayerCard({ player }) {
   });
   player.on('error', () => setPlayState('play'));
   player.on('volumechange', (evt) => {
-    muteBtn?.classList.toggle('is-muted', evt.detail.volume === 0);
+    const muted = evt.detail.volume === 0;
+    muteBtn?.classList.toggle('is-muted', muted);
+    muteBtn?.setAttribute('aria-label', muted ? 'Unmute' : 'Mute');
+    muteBtn?.setAttribute('title', muted ? 'Unmute (M)' : 'Mute (M)');
   });
 
   // Initial state
