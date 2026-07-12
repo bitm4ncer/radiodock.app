@@ -9,7 +9,7 @@ Small, independent quality-of-life features. Implementation plan:
 - [x] **Q1** Network-aware recovery — `recovery.js` parks retries while `navigator.onLine === false` (no wasted attempt budget) and replays the current station immediately on the window `online` event.
 - [x] **Q2** Mute toggle — `player.toggleMute()` (remembers last audible volume), speaker button below the volume dots, `volumechange` listener in `main.js` becomes the single dots-sync point.
 - [x] **Q3** Volume mouse-wheel — wheel over the volume strip adjusts ±10% per notch.
-- [ ] **Q4** Keyboard shortcuts (`src/ui/keyboard.js`) — Space = play/pause, ↑/↓ = volume, `/` = focus search (opens overlay in mobile/standalone regime), `M` = mute. Ignored while typing or while a modal is open.
+- [x] **Q4** Keyboard shortcuts (`src/ui/keyboard.js`) — Space = play/pause, ↑/↓ = volume, `/` = focus search (opens overlay in mobile/standalone regime), `M` = mute. Ignored while typing or while a modal is open.
 
 ---
 

@@ -13,6 +13,7 @@ import { mountListDropdown } from './ui/list-dropdown.js';
 import { mountListTabs } from './ui/list-tabs.js';
 import { mountListsCarousel } from './ui/lists-carousel.js';
 import { mountSearch } from './ui/search.js';
+import { mountKeyboardShortcuts } from './ui/keyboard.js';
 import { mountStationInfo } from './ui/station-info.js';
 import { initModals, openModal, closeModal } from './ui/modals.js';
 import { toast } from './ui/toast.js';
@@ -181,6 +182,22 @@ const search = mountSearch({
     return !!list?.stations.some((s) => s.id === stationId);
   },
   canAddToActiveList: () => true,
+});
+
+mountKeyboardShortcuts({
+  player,
+  playerCard,
+  onFocusSearch: () => {
+    // Mobile/standalone regime hides the inline search input; the visible
+    // trigger button opens the fullscreen overlay instead.
+    const trigger = document.getElementById('searchTriggerBtn');
+    if (trigger && trigger.offsetParent !== null) {
+      trigger.click();
+      setTimeout(() => search.focus(), 50);
+    } else {
+      search.focus();
+    }
+  },
 });
 
 // About modal. Wrapper that resets the tech-details toggle to collapsed

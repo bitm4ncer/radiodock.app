@@ -158,9 +158,8 @@ export function mountPlayerCard({ player }) {
   }
 
   // Wire interactions
-  playPauseBtn.addEventListener('click', () => {
+  function togglePlayPause() {
     if (!currentStation) return;
-    haptic();
     if (player.isPlaying()) {
       player.pause();
       return;
@@ -176,6 +175,11 @@ export function mountPlayerCard({ player }) {
     }
     // Audio is loaded and paused — just unpause.
     player.resume();
+  }
+
+  playPauseBtn.addEventListener('click', () => {
+    haptic();
+    togglePlayPause();
   });
 
   // Volume "slider but as separate dots": pointer drag picks the dot
@@ -303,6 +307,7 @@ export function mountPlayerCard({ player }) {
     setStation,
     setNowPlaying,
     setVolumePct,
+    togglePlayPause,
     onFavoriteClick(cb) {
       favoriteCallback = cb;
     },
