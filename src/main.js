@@ -473,6 +473,35 @@ player.on('mediaerror', (evt) => {
   });
 });
 
+// Tap-to-audio timing: stationchange marks the playStation() call, the
+// first 'playing' after it marks audible sound. Switching stations while
+// still loading re-arms the probe, so abandoned loads are never reported.
+// Resume-after-pause fires 'playing' without a probe and is skipped.
+let startupProbe = null;
+player.on('stationchange', (evt) => {
+  startupProbe = { station: evt.detail?.station ?? null, t0: performance.now() };
+});
+player.on('playing', () => {
+  if (!startupProbe) return;
+  const ms = Math.round(performance.now() - startupProbe.t0);
+  const station = startupProbe.station;
+  startupProbe = null;
+  track('stream-start', {
+    station: station?.name ?? '',
+    startupMs: ms,
+    bucket:
+      ms < 1000 ? '00-01s'
+      : ms < 2000 ? '01-02s'
+      : ms < 5000 ? '02-05s'
+      : ms < 10000 ? '05-10s'
+      : ms < 20000 ? '10-20s'
+      : '20s+',
+    hls: player.isHlsUrl(station?.url ?? '') ? 'yes' : 'no',
+    platform: matchMedia('(pointer: coarse)').matches ? 'touch' : 'desktop',
+    network: navigator.connection?.effectiveType ?? 'unknown',
+  });
+});
+
 player.on('recovered', (evt) => {
   track('stream-recovered', {
     station: player.getCurrentStation()?.name ?? '',
@@ -853,6 +882,18 @@ async function bootstrap() {
       // clears on the next stationchange (i.e. the moment they tap play).
       playerCard.setNowPlaying('Tap ▶ to resume');
     }
+  }
+
+  // hls.js is imported on demand at tap time — for HLS stations that
+  // download sits squarely inside the tap-to-audio delay (iOS fetches it
+  // too, only to find MSE unsupported). If any reachable station is HLS,
+  // warm the import in idle time instead. Keeps the dynamic-import rule:
+  // nothing lands in the eager bundle.
+  const hasHlsStation = [state.community, ...state.userLists]
+    .flatMap((l) => l?.stations ?? [])
+    .some((s) => player.isHlsUrl(s?.url ?? ''));
+  if (hasHlsStation) {
+    (window.requestIdleCallback ?? ((fn) => setTimeout(fn, 2000)))(() => player.prefetchHls());
   }
 }
 

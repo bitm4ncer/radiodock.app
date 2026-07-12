@@ -201,6 +201,12 @@ function on(type, handler) {
   return () => events.removeEventListener(type, handler);
 }
 
+// Warm the hls.js dynamic import without playing anything, so the ~520 kB
+// download doesn't sit between the user's tap and the first audio.
+function prefetchHls() {
+  loadHls().catch(() => {});
+}
+
 export const player = {
   playStation,
   pause,
@@ -211,6 +217,8 @@ export const player = {
   getCurrentStation,
   isPlaying,
   on,
+  prefetchHls,
+  isHlsUrl,
   // exposed for recovery + metadata-poller modules
   _element: getElement,
   events,
