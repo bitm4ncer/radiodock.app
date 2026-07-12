@@ -2,18 +2,22 @@
 // https://api.radio-browser.info — community-run global radio directory.
 // Multiple mirror servers exist; we cycle through them on error.
 
+// The mirror network shrank in 2026 (fi1/at1 no longer resolve). de1 is the
+// primary; `all.` is round-robin DNS the RB project keeps pointed at whatever
+// mirrors are alive, so the last entry stays valid even if the named ones die.
 const SERVERS = [
   'https://de1.api.radio-browser.info',
   'https://de2.api.radio-browser.info',
-  'https://fi1.api.radio-browser.info',
-  'https://at1.api.radio-browser.info',
+  'https://all.api.radio-browser.info',
 ];
 
 const USER_AGENT_HEADER = 'RadioDock/1.0';
 const DEFAULT_LIMIT = 30;
 const TIMEOUT_MS = 12000;
 
-let serverIndex = Math.floor(Math.random() * SERVERS.length);
+// Start on de1 (fastest, canonical) instead of a random mirror; rotation on
+// failure still cycles through the rest.
+let serverIndex = 0;
 
 function pickServer() {
   return SERVERS[serverIndex];
