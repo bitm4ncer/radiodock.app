@@ -289,11 +289,9 @@
 }
 
 /* Volume Controls */
-/* 11-dot volume slider.
-   Idle: all dots are uniform 6 px circles — calm, low-noise.
-   Dragging: each dot reveals its inline `--vd-size` (4..14 px) so the
-   slider visually "fans out" small→large from mute→full while the user
-   is interacting, then collapses back to uniform on release. */
+/* 11-dot volume slider. Dots stay a uniform 5 px at all times — the strip
+   keeps its size while dragging; only the fill colour changes to show the
+   live level (accent red for filled dots during a drag). */
 .volume-controls {
   position: absolute;
   right: -35px;
@@ -322,7 +320,7 @@
   border-radius: 50%;
   background: var(--bg-dark);
   cursor: ns-resize;
-  transition: width 180ms ease, height 180ms ease, background 150ms ease;
+  transition: background 150ms ease;
   padding: 0;
   border: 0;
   flex: 0 0 auto;
@@ -340,13 +338,8 @@
   background: var(--bg-light);
 }
 
-/* Dragging — reveal the small→large taper from the per-dot --vd-size,
-   and flip filled dots to the accent red so the live level is obvious. */
-.volume-controls.is-dragging .volume-dot {
-  width: var(--vd-size, 6px);
-  height: var(--vd-size, 6px);
-}
-
+/* Dragging — flip filled dots to the accent red so the live level is
+   obvious. Sizes stay uniform; the strip does not fan out. */
 .volume-controls.is-dragging .volume-dot.is-filled {
   background: var(--red);
 }
@@ -364,7 +357,7 @@ html.volume-dragging * {
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--bg-dark);
+  color: var(--bg-light);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -372,7 +365,7 @@ html.volume-dragging * {
 }
 
 .volume-mute-btn:hover {
-  color: var(--bg-light);
+  color: var(--text);
 }
 
 .volume-mute-btn .icon-muted {

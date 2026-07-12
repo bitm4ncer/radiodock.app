@@ -11,6 +11,7 @@ Small, independent quality-of-life features. Implementation plan:
 - [x] **Q3** Volume mouse-wheel — wheel over the volume strip adjusts ±10% per notch.
 - [x] **Q4** Keyboard shortcuts (`src/ui/keyboard.js`) — Space = play/pause, ↑/↓ = volume, `/` = focus search (opens overlay in mobile/standalone regime), `M` = mute. Ignored while typing or while a modal is open.
 - [x] **Q5** Volume strip usability — wide padded mouse target (the 5 px dots were effectively the only hit area), `ns-resize` cursor on the strip and globally while dragging.
+- [x] **Q6** Volume strip polish — mute button always visible (was dark-on-dark until hover); dots keep a uniform 5 px while dragging instead of fanning out (red fill still marks the live level).
 
 ---
 
