@@ -115,7 +115,7 @@ The value is exposed as the `__APP_VERSION__` build-time constant via Vite's `de
 
 ## Reused services
 
-- **Metadata proxy:** `https://radiodock-metadata-proxy-1.onrender.com/v1/metadata` — owned by the user (separate repo `bitm4ncer/RadioDock-metadata-proxy`). Returns `{ ok, source, artist, title, display, cacheTtl }`. Requires the calling origin to be on its CORS allowlist (PR in that repo lands as part of M5).
+- **Metadata proxy:** primary `https://stations.radiodock.app/v1/metadata` (Hetzner VPS, always-on), automatic fallback `https://radiodock-metadata-proxy-1.onrender.com/v1/metadata` (Render free tier, kept warm by cron). Same codebase, owned by the user (separate repo `bitm4ncer/RadioDock-metadata-proxy`). Returns `{ ok, source, artist, title, display, cacheTtl }`. Failover lives in `src/data/metadata.js` — transport/HTTP errors only, with a 60s primary cooldown.
 - **Radio Browser API:** `https://*.api.radio-browser.info/json/stations/search` — community-run, free, CORS-enabled. Rotate mirrors on failure.
 
 ## Things that bite
