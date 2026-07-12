@@ -25,13 +25,16 @@
 
   cursor: pointer;
   transition: background-color 180ms ease, color 180ms ease,
-              transform 200ms ease, opacity 200ms ease;
+              width 200ms ease, transform 200ms ease, opacity 200ms ease;
 }
 
+/* Grow inward by widening — the right edge stays glued to the viewport
+   edge (anchored via `right: 0`), so the flag protrudes a little more
+   instead of detaching and leaving a gap at the screen edge. */
 .notes-flag:hover {
   background: var(--bg-list-hover);
   color: var(--text);
-  transform: translateY(-50%) translateX(-3px);
+  width: 32px;
 }
 
 .notes-flag.is-tucked {
