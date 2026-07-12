@@ -157,6 +157,7 @@ const search = mountSearch({
   onPlay: (station) => {
     track('station-play', {
       station: station.name ?? '',
+      uuid: station.id ?? '',
       country: station.countrycode ?? '',
       source: 'search',
     });
@@ -547,6 +548,7 @@ player.on('volumechange', async (evt) => {
 stationList.onClick((station) => {
   track('station-play', {
     station: station.name ?? '',
+    uuid: station.id ?? '',
     country: station.countrycode ?? '',
     source: state.currentListId === COMMUNITY_LIST_ID ? 'community' : 'user-list',
   });
@@ -663,6 +665,7 @@ listsCarousel.onCurrentChange(async (listId) => {
 listsCarousel.onClick((station) => {
   track('station-play', {
     station: station.name ?? '',
+    uuid: station.id ?? '',
     country: station.countrycode ?? '',
     source: state.currentListId === COMMUNITY_LIST_ID ? 'community' : 'user-list',
   });

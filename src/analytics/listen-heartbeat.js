@@ -27,6 +27,7 @@ export function attachListenHeartbeat(player, { intervalMs = 60_000 } = {}) {
     stationsHeard.add(station.name ?? '');
     track('listen-ping', {
       station: station.name ?? '',
+      uuid: station.id ?? '',
       country: station.countrycode ?? '',
       background: background ? 'yes' : 'no',
       ...(currentShow ? { show: currentShow } : {}),
