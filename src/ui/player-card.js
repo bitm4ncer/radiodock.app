@@ -218,6 +218,8 @@ export function mountPlayerCard({ player }) {
     function onDown(evt) {
       // Ignore non-primary mouse buttons.
       if (evt.button !== undefined && evt.button !== 0) return;
+      // Presses on the mute button belong to its click handler, not the drag.
+      if (evt.target.closest('.volume-mute-btn')) return;
       dragging = true;
       volumeWrap.classList.add('is-dragging');
       try { volumeWrap.setPointerCapture?.(evt.pointerId); } catch {}
