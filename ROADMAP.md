@@ -8,7 +8,7 @@ Small, independent quality-of-life features. Implementation plan:
 - [x] **Q0** Docs reconciliation — CLAUDE.md module map + project status brought in line with shipped code; v2.4 ticked off (was fully implemented but unticked).
 - [x] **Q1** Network-aware recovery — `recovery.js` parks retries while `navigator.onLine === false` (no wasted attempt budget) and replays the current station immediately on the window `online` event.
 - [x] **Q2** Mute toggle — `player.toggleMute()` (remembers last audible volume), speaker button below the volume dots, `volumechange` listener in `main.js` becomes the single dots-sync point.
-- [ ] **Q3** Volume mouse-wheel — wheel over the volume strip adjusts ±10% per notch.
+- [x] **Q3** Volume mouse-wheel — wheel over the volume strip adjusts ±10% per notch.
 - [ ] **Q4** Keyboard shortcuts (`src/ui/keyboard.js`) — Space = play/pause, ↑/↓ = volume, `/` = focus search (opens overlay in mobile/standalone regime), `M` = mute. Ignored while typing or while a modal is open.
 
 ---

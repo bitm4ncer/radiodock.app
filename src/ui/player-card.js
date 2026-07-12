@@ -242,6 +242,17 @@ export function mountPlayerCard({ player }) {
     volumeWrap.addEventListener('pointerup', onUp);
     volumeWrap.addEventListener('pointercancel', onUp);
     volumeWrap.addEventListener('pointerleave', onUp);
+
+    volumeWrap.addEventListener(
+      'wheel',
+      (evt) => {
+        evt.preventDefault();
+        const step = evt.deltaY < 0 ? 0.1 : -0.1;
+        const next = Math.max(0, Math.min(1, player.getVolume() + step));
+        player.setVolume(Math.round(next * 10) / 10);
+      },
+      { passive: false },
+    );
   })();
 
   logoBtn.addEventListener('click', () => {
