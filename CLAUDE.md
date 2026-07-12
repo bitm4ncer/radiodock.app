@@ -4,7 +4,7 @@ PWA rebuild of the RadioDock Chrome extension. Lives at <https://radiodock.app> 
 
 ## Project status
 
-Follow [ROADMAP.md](./ROADMAP.md). It is the user's primary status surface — **tick checkboxes after every milestone commit**. v1.0 (M0–M7) and v2.0–v2.4 are shipped; the v2.1 visualizer is fully built but feature-flagged off in production (`VISUALIZER_ENABLED = false` in `src/main.js`).
+Follow [ROADMAP.md](./ROADMAP.md). It is the user's primary status surface — **tick checkboxes after every milestone commit**. v1.0 (M0–M7) and v2.0–v2.5 are shipped; the v2.1 visualizer is fully built but feature-flagged off in production (`VISUALIZER_ENABLED = false` in `src/main.js`).
 
 ## Stack
 
@@ -60,6 +60,7 @@ src/
 │  ├─ search-overlay.js   # mobile fullscreen search overlay
 │  ├─ notes-panel.js      # notes dock/panel: pages, search, day grouping, card menu
 │  ├─ notes-capture-button.js # mini capture button on the player card
+│  ├─ keyboard.js         # desktop shortcuts: Space, arrows, /, M
 │  ├─ modals.js           # open/close manager (.show class)
 │  ├─ modal-helpers.js    # promise-based prompt/confirm/choice
 │  ├─ toast.js            # toasts, optional action button (undo pattern)
