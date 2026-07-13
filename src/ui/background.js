@@ -130,19 +130,27 @@ export async function mountBackground() {
   document.addEventListener('pointerdown', onDocumentPointerDown, true);
   document.addEventListener('keydown', onKeyDown);
 
-  // Load persisted state.
+  // Load persisted state. PREF_INDEX defaults to null (not 0) so we can tell
+  // "user never picked one" apart from "user picked the first image".
   const [savedMode, savedIdx, savedOrder, savedHidden] = await Promise.all([
     getPref(PREF_MODE, 'manual'),
-    getPref(PREF_INDEX, 0),
+    getPref(PREF_INDEX, null),
     getPref(PREF_ORDER, []),
     getPref(PREF_HIDDEN, []),
   ]);
   mode = ['manual', 'shuffle', 'blank'].includes(savedMode) ? savedMode : 'manual';
-  currentIdx = Number.isInteger(savedIdx) ? savedIdx : 0;
+  const hasSavedIdx = Number.isInteger(savedIdx);
+  currentIdx = hasSavedIdx ? savedIdx : 0;
   orderIds = Array.isArray(savedOrder) ? savedOrder : [];
   hiddenIds = new Set(Array.isArray(savedHidden) ? savedHidden : []);
 
   await refresh();
+  // First-time default: background_04. Resolved by id after images are built
+  // so it survives probe/order changes; only when the user hasn't chosen yet.
+  if (!hasSavedIdx) {
+    const defaultI = images.findIndex((img) => img.id === 'builtin:04');
+    if (defaultI >= 0) currentIdx = defaultI;
+  }
   if (currentIdx >= images.length) currentIdx = 0;
 
   await applyCurrent({ instant: true });
