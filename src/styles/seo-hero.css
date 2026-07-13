@@ -1,0 +1,39 @@
+/* SEO hero — static content visible to crawlers and users without JS.
+   Hidden by main.js on app init (progressive enhancement). */
+.seo-hero {
+  padding: 24px 16px 8px;
+  text-align: center;
+  color: var(--text-primary, #e0e0e0);
+}
+
+.seo-hero h1 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+  line-height: 1.3;
+}
+
+.seo-hero__lead {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  margin: 0 auto 12px;
+  max-width: 400px;
+  color: var(--text-secondary, #aaa);
+}
+
+.seo-hero__features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-tertiary, #777);
+}
+
+.seo-hero__features li::before {
+  content: "✓ ";
+  color: var(--accent, #4a9eff);
+}

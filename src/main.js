@@ -57,6 +57,11 @@ attachMediaSession(player);
 attachListenHeartbeat(player);
 initModals();
 
+// Hide the static SEO hero now that JS has loaded.
+// Crawlers see this content; JS-capable users get the interactive app.
+const seoHero = document.getElementById('seo-hero');
+if (seoHero) seoHero.remove();
+
 // User-facing version label, computed at build time from git commit
 // count (see vite.config.js#appVersion). Populated into every
 // .app-version element on first paint — the inline HTML default is

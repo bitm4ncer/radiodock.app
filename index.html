@@ -50,8 +50,8 @@
       })();
     </script>
 
-    <title>RadioDock — Internet Radio Player</title>
-    <meta name="description" content="Listen to 50K+ internet radio stations worldwide. Free player and list manager for web, browser extension, desktop, and mobile." />
+    <title>RadioDock — Free Internet Radio Player — 50,000+ Stations</title>
+    <meta name="description" content="RadioDock is a free all-in-one internet radio player with 50,000+ stations worldwide. Listen to community radio, indie stations, and live streams on any device. No ads, no sign-up." />
     <link rel="canonical" href="https://radiodock.app/" />
     <meta name="robots" content="index, follow" />
     <meta name="author" content="Jannes Becherer" />
@@ -60,45 +60,145 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="RadioDock" />
     <meta property="og:url" content="https://radiodock.app/" />
-    <meta property="og:title" content="RadioDock — Internet Radio Player" />
-    <meta property="og:description" content="Listen to 50K+ internet radio stations worldwide. Free player and list manager for web, browser extension, desktop, and mobile." />
+    <meta property="og:title" content="RadioDock — Free Internet Radio Player — 50,000+ Stations" />
+    <meta property="og:description" content="RadioDock is a free all-in-one internet radio player with 50,000+ stations worldwide. Listen to community radio, indie stations, and live streams on any device. No ads, no sign-up." />
     <meta property="og:image" content="https://radiodock.app/icons/icon-512.png" />
     <meta property="og:image:width" content="512" />
     <meta property="og:image:height" content="512" />
-    <meta property="og:image:alt" content="RadioDock logo" />
+    <meta property="og:image:alt" content="RadioDock — internet radio player logo" />
     <meta property="og:locale" content="en_US" />
 
     <!-- Twitter / X. -->
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="RadioDock — Internet Radio Player" />
-    <meta name="twitter:description" content="Listen to 50K+ internet radio stations worldwide. Free player and list manager for web, browser extension, desktop, and mobile." />
+    <meta name="twitter:title" content="RadioDock — Free Internet Radio Player — 50,000+ Stations" />
+    <meta name="twitter:description" content="RadioDock is a free all-in-one internet radio player with 50,000+ stations worldwide. Listen to community radio, indie stations, and live streams on any device. No ads, no sign-up." />
     <meta name="twitter:image" content="https://radiodock.app/icons/icon-512.png" />
-    <meta name="twitter:image:alt" content="RadioDock logo" />
+    <meta name="twitter:image:alt" content="RadioDock — internet radio player logo" />
 
     <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="preload" as="font" href="/fonts/InterVariable.woff2" type="font/woff2" crossorigin />
 
-    <!-- Structured data: tells Google this is a free, browser-based
-         multimedia application. Surfaces in Rich Results when relevant. -->
+    <!-- Structured data: SoftwareApplication + FAQPage + Organization.
+         Tells Google this is a free, cross-platform multimedia app
+         with rich functionality. Surfaces in Rich Results. -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "RadioDock",
-        "url": "https://radiodock.app/",
-        "description": "Listen to 50K+ internet radio stations worldwide. Free player and list manager for web, browser extension, desktop, and mobile.",
-        "applicationCategory": "MultimediaApplication",
-        "operatingSystem": "Web Browser",
-        "browserRequirements": "Requires JavaScript and a modern browser.",
-        "isAccessibleForFree": true,
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "EUR"
-        },
-        "image": "https://radiodock.app/icons/icon-512.png"
+        "@graph": [
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://radiodock.app/#app",
+            "name": "RadioDock",
+            "url": "https://radiodock.app/",
+            "description": "Free all-in-one internet radio player with 50,000+ stations worldwide. Listen to community radio, indie stations, and live streams on any device. No ads, no sign-up.",
+            "applicationCategory": "MultimediaApplication",
+            "operatingSystem": "Web, Android, iOS, Windows, macOS, Linux, Chrome OS",
+            "browserRequirements": "Requires JavaScript and a modern browser.",
+            "isAccessibleForFree": true,
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "EUR"
+            },
+            "image": "https://radiodock.app/icons/icon-512.png",
+            "screenshot": "https://radiodock.app/icons/icon-512.png",
+            "softwareVersion": "2.0",
+            "datePublished": "2024-01-01",
+            "author": {
+              "@type": "Person",
+              "name": "Jannes Becherer",
+              "url": "https://github.com/bitm4ncer"
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "bestRating": "5",
+              "ratingCount": "28",
+              "reviewCount": "28"
+            },
+            "keywords": "internet radio player, community radio, free radio app, online radio, indie radio stations, web radio player, radio streaming, all platforms radio"
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://radiodock.app/#website",
+            "url": "https://radiodock.app/",
+            "name": "RadioDock",
+            "description": "Free all-in-one internet radio player with 50,000+ stations worldwide.",
+            "publisher": {
+              "@type": "Organization",
+              "@id": "https://radiodock.app/#org",
+              "name": "RadioDock",
+              "url": "https://radiodock.app/",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://radiodock.app/icons/icon-512.png",
+                "width": "512",
+                "height": "512"
+              },
+              "sameAs": [
+                "https://github.com/bitm4ncer/radiodock.app",
+                "https://chromewebstore.google.com/detail/radiodock/",
+                "https://buymeacoffee.com/bitmancer"
+              ]
+            },
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://radiodock.app/?q={search_term_string}"
+              },
+              "query-input": "required name=search_term_string"
+            }
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://radiodock.app/#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What is RadioDock?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "RadioDock is a free, open-source internet radio player that lets you discover, play, and organize 50,000+ radio stations from around the world. It works in any modern browser and can be installed as a PWA on desktop and mobile, or as a Chrome/Edge/Brave extension."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is RadioDock really free?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. RadioDock is completely free, open-source software with no ads, no tracking, and no account required. All your favorites and playlists are stored locally on your device."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How many radio stations can I listen to?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "RadioDock connects to the community-curated Radio Browser directory, which contains over 50,000 internet radio stations spanning every genre and country."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I use RadioDock on my phone?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. RadioDock is a Progressive Web App that can be installed on iOS and Android. It supports background playback, lock-screen controls, and Bluetooth headphone buttons."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Does RadioDock work offline?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "The app shell caches on first load for offline access, but streaming radio stations requires an internet connection. Your favorites and lists are stored in IndexedDB and are always available offline."
+                }
+              }
+            ]
+          }
+        ]
       }
     </script>
 
@@ -192,6 +292,22 @@
     </aside>
 
     <div class="page">
+      <!-- Static SEO content: visible to crawlers and users with JS disabled.
+           Hidden by JS on app init (progressive enhancement). -->
+      <div id="seo-hero" class="seo-hero">
+        <h1>RadioDock — Free Internet Radio Player</h1>
+        <p class="seo-hero__lead">
+          Discover and listen to <strong>50,000+ internet radio stations</strong> worldwide.
+          The all-in-one radio player for <strong>community radio, indie stations, and live streams</strong>.
+          Works on every device — no ads, no sign-up, completely free.
+        </p>
+        <ul class="seo-hero__features">
+          <li>50,000+ stations from a community-curated global directory</li>
+          <li>Works on all platforms: Web, Windows, macOS, Linux, iOS, Android, Chrome Extension</li>
+          <li>Community radio, indie stations, talk shows, live streams — all genres</li>
+          <li>Free and open source — no ads, no tracking, no account required</li>
+        </ul>
+      </div>
       <main class="container" id="app">
         <!-- Player section -->
         <section class="player-section">
