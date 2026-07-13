@@ -41,6 +41,31 @@ const CLOSE_SVG = `<svg viewBox="0 0 24 24" aria-hidden="true" width="14" height
   <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
 </svg>`;
 
+const ICONS = {
+  'chrome-ext': `<svg class="install-section__btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M20.5 11H19V7a2 2 0 0 0-2-2h-4V3.5a2.5 2.5 0 0 0-5 0V5H4a2 2 0 0 0-2 2v3.8h1.5a2.7 2.7 0 0 1 0 5.4H2V20a2 2 0 0 0 2 2h3.8v-1.5a2.7 2.7 0 0 1 5.4 0V22H17a2 2 0 0 0 2-2v-4h1.5a2.5 2.5 0 0 0 0-5z" fill="currentColor"/>
+  </svg>`,
+  desktop: `<svg class="install-section__btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M20 3H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h6v2H7a1 1 0 1 0 0 2h10a1 1 0 1 0 0-2h-3v-2h6a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Zm0 12H4V5h16v10Z" fill="currentColor"/>
+  </svg>`,
+  android: `<svg class="install-section__btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85a.637.637 0 0 0-.83.22l-1.88 3.24a11.463 11.463 0 0 0-9.42 0L5.17 5.67a.643.643 0 0 0-.83-.22c-.3.16-.42.54-.26.85L5.92 9.48C2.75 11.2.65 14.24.65 18h22.7c0-3.76-2.1-6.8-5.75-8.52M7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5m10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5" fill="currentColor"/>
+  </svg>`,
+  ios: `<svg class="install-section__btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M17.05 12.54c-.03-2.35 1.92-3.48 2-3.54-1.1-1.6-2.8-1.82-3.4-1.84-1.44-.15-2.82.85-3.55.85-.73 0-1.87-.83-3.07-.81-1.58.02-3.04.92-3.85 2.33-1.64 2.85-.42 7.07 1.18 9.38.78 1.13 1.71 2.4 2.93 2.35 1.18-.05 1.62-.76 3.05-.76s1.83.76 3.07.74c1.27-.02 2.07-1.15 2.85-2.29.9-1.31 1.27-2.58 1.29-2.65-.03-.01-2.47-.95-2.5-3.76zM14.7 5.6c.65-.79 1.09-1.88.97-2.97-.94.04-2.08.63-2.75 1.42-.6.7-1.13 1.81-.99 2.88 1.05.08 2.12-.53 2.77-1.33z" fill="currentColor"/>
+  </svg>`,
+};
+
+function tile(target, label, sub, currentClass) {
+  return `<button type="button" class="install-section__btn${currentClass}" data-target="${target}">
+    ${ICONS[target]}
+    <span class="install-section__btn-text">
+      <span class="install-section__btn-label">${label}</span>
+      <span class="install-section__btn-sub">${sub}</span>
+    </span>
+  </button>`;
+}
+
 export async function mountInstallSection({ container, installInfo, animateIn = false }) {
   const platform = detectPlatform();
   if (platform === 'installed') {
@@ -82,23 +107,15 @@ export async function mountInstallSection({ container, installInfo, animateIn = 
       ${CHEVRON_SVG}
     </button>
     <div class="install-section__body" id="installSectionBody">
-      <p class="install-section__intro">You can use RadioDock across devices.</p>
-      <div class="install-section__row">
-        <span class="install-section__label">Install:</span>
-        <div class="install-section__buttons" role="group">
-          ${showsBtn('chrome-ext') ? `<button type="button" class="install-section__btn${isCurrent('chrome-ext')}" data-target="chrome-ext">
-            Browser Extension
-          </button>` : ''}
-          ${showsBtn('desktop') ? `<button type="button" class="install-section__btn${isCurrent('desktop')}" data-target="desktop">
-            Desktop
-          </button>` : ''}
-          ${showsBtn('android') ? `<button type="button" class="install-section__btn${isCurrent('android')}" data-target="android">
-            Android
-          </button>` : ''}
-          ${showsBtn('ios') ? `<button type="button" class="install-section__btn${isCurrent('ios')}" data-target="ios">
-            iOS
-          </button>` : ''}
-        </div>
+      <div class="install-section__head">
+        <img class="install-section__logo" src="/icons/icon.svg" alt="" aria-hidden="true" />
+        <p class="install-section__intro">Use RadioDock on all devices</p>
+      </div>
+      <div class="install-section__buttons" role="group">
+        ${showsBtn('ios') ? tile('ios', 'iOS', 'Add to home screen', isCurrent('ios')) : ''}
+        ${showsBtn('desktop') ? tile('desktop', 'Desktop', 'Windows · macOS · Linux', isCurrent('desktop')) : ''}
+        ${showsBtn('android') ? tile('android', 'Android', 'Add to home screen', isCurrent('android')) : ''}
+        ${showsBtn('chrome-ext') ? tile('chrome-ext', 'Extension', 'Chrome · Edge · Brave', isCurrent('chrome-ext')) : ''}
       </div>
     </div>
   `;
