@@ -33,7 +33,6 @@ import { mountFooterReveal } from './ui/footer-reveal.js';
 import { mountNotesPanel } from './ui/notes-panel.js';
 import { mountNotesCaptureButton } from './ui/notes-capture-button.js';
 import { mountRecorder, isRecordingSupported } from './player/recorder.js';
-import { mountRecordingCable } from './ui/recording-cable.js';
 import { mountRecordButton } from './ui/record-button.js';
 import { mountSyncModal } from './ui/sync-modal.js';
 import { startLiveSync, stopLiveSync, pushWithStatus as syncPushWithStatus, getSyncToken, extractTokenFromInput, pullFromServer, applyImportPayload, markSyncDirty } from './data/sync.js';
@@ -357,17 +356,8 @@ player.on('stationchange', () => {
 // (off-canvas mounts synchronously but notesApi resolves a tick later).
 let notesApi = null;
 
-// Recorder + desktop cable flourish. The cable follows both windows while
-// recording; recorder events drive it from here so it works regardless of
-// which surface started the recording.
+// Recorder. Wired into the notes panel + record button below.
 const recorder = isRecordingSupported() ? mountRecorder({ maxDurationMs: 60 * 60 * 1000 }) : null;
-const recordingCable = mountRecordingCable();
-if (recorder) {
-  recorder.on('started', () => recordingCable.show());
-  recorder.on('stopped', () => recordingCable.hide());
-  recorder.on('streamdrop', () => recordingCable.hide());
-  recorder.on('error', () => recordingCable.hide());
-}
 
 // The record button only appears where recording actually works today:
 //   - Desktop browser  → in the notes panel (next to "Save Moment").
