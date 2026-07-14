@@ -125,6 +125,8 @@ The Electron installers ship from **one clean GitHub release** — tag `latest`,
 - **Never** put changelog or commit-message notes on a release. Users must not be able to see what changed build-to-build — keep the generic notes line only.
 - **No per-build versioned releases** (no `desktop-vN`). One `latest` release, updated in place (`gh release upload --clobber`), always `--latest`. The release job also **auto-deletes every release/tag that isn't `latest`** at the end of each build, so old builds never accumulate.
 - Keep the asset filenames `RadioDock-win.exe` / `RadioDock-mac.dmg` / `RadioDock-linux.AppImage` and the make-latest flag: the site's install buttons hit `/releases/latest/download/RadioDock-*` ([install-section.js](src/ui/install-section.js)).
+- **The mac DMG must be `universal`** (`mac.target: [{target: dmg, arch: universal}]` in `desktop/package.json`). GitHub's `macos-latest` runner is Apple Silicon, so a default build is arm64-only and Intel Macs fail with "not supported on this Mac". Universal runs on both.
+- The apps are **unsigned** (`identity: null`, no Windows cert). Users must bypass Gatekeeper on mac (right-click → Open, or `xattr -cr`) / SmartScreen on Windows. Don't add signing config without the user's certificates.
 
 ## Conventions
 

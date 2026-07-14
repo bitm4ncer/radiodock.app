@@ -36,7 +36,9 @@
       "icon": "icons/icon.ico"
     },
     "mac": {
-      "target": ["dmg"],
+      "target": [
+        { "target": "dmg", "arch": "universal" }
+      ],
       "icon": "icons/icon.png",
       "category": "public.app-category.music",
       "identity": null
