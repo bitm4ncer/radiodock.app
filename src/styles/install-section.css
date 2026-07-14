@@ -163,6 +163,37 @@
   letter-spacing: 0.01em;
 }
 
+/* Desktop-app download row — sits below the platform-install buttons. */
+.install-section__downloads {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.install-section__downloads-label {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.install-section__btn--download {
+  text-decoration: none;
+}
+
+.install-section__btn-dl-icon {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  margin-left: auto;
+  transition: color 120ms ease;
+}
+
+.install-section__btn--download:hover .install-section__btn-dl-icon {
+  color: var(--text);
+}
+
 
 /* Detail view inside the badge (desktop) — back arrow + the install-info
    branch content rendered inline. */

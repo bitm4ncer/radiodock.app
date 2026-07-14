@@ -18,8 +18,8 @@ import { detectPlatform } from '../platform.js';
 function highlightTargetsFor(platform) {
   if (platform.startsWith('ios')) return ['ios'];
   if (platform === 'android') return ['android'];
-  if (platform === 'chromium-desktop') return ['chrome-ext', 'desktop'];
-  return ['desktop'];
+  if (platform === 'chromium-desktop') return ['chrome-ext', 'browser-app'];
+  return ['browser-app'];
 }
 
 // Which buttons to actually show on this platform. Mobile users have no use
@@ -30,7 +30,7 @@ function highlightTargetsFor(platform) {
 function visibleTargetsFor(platform) {
   if (platform.startsWith('ios')) return ['ios'];
   if (platform === 'android') return ['android'];
-  return ['chrome-ext', 'desktop', 'android', 'ios'];
+  return ['chrome-ext', 'browser-app', 'android', 'ios'];
 }
 
 const CHEVRON_SVG = `<svg class="install-section__chevron" viewBox="0 0 24 24" aria-hidden="true">
@@ -45,7 +45,7 @@ const ICONS = {
   'chrome-ext': `<svg class="install-section__btn-icon" viewBox="0 0 24 24" aria-hidden="true">
     <path d="M20.5 11H19V7a2 2 0 0 0-2-2h-4V3.5a2.5 2.5 0 0 0-5 0V5H4a2 2 0 0 0-2 2v3.8h1.5a2.7 2.7 0 0 1 0 5.4H2V20a2 2 0 0 0 2 2h3.8v-1.5a2.7 2.7 0 0 1 5.4 0V22H17a2 2 0 0 0 2-2v-4h1.5a2.5 2.5 0 0 0 0-5z" fill="currentColor"/>
   </svg>`,
-  desktop: `<svg class="install-section__btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+  'browser-app': `<svg class="install-section__btn-icon" viewBox="0 0 24 24" aria-hidden="true">
     <path d="M20 3H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h6v2H7a1 1 0 1 0 0 2h10a1 1 0 1 0 0-2h-3v-2h6a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Zm0 12H4V5h16v10Z" fill="currentColor"/>
   </svg>`,
   android: `<svg class="install-section__btn-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -54,6 +54,25 @@ const ICONS = {
   ios: `<svg class="install-section__btn-icon" viewBox="0 0 24 24" aria-hidden="true">
     <path d="M17.05 12.54c-.03-2.35 1.92-3.48 2-3.54-1.1-1.6-2.8-1.82-3.4-1.84-1.44-.15-2.82.85-3.55.85-.73 0-1.87-.83-3.07-.81-1.58.02-3.04.92-3.85 2.33-1.64 2.85-.42 7.07 1.18 9.38.78 1.13 1.71 2.4 2.93 2.35 1.18-.05 1.62-.76 3.05-.76s1.83.76 3.07.74c1.27-.02 2.07-1.15 2.85-2.29.9-1.31 1.27-2.58 1.29-2.65-.03-.01-2.47-.95-2.5-3.76zM14.7 5.6c.65-.79 1.09-1.88.97-2.97-.94.04-2.08.63-2.75 1.42-.6.7-1.13 1.81-.99 2.88 1.05.08 2.12-.53 2.77-1.33z" fill="currentColor"/>
   </svg>`,
+  // Desktop app download icons — shown only on desktop (≥700px).
+  windows: `<svg class="install-section__btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M3 12V6l8-1v7H3zm0 1h8v7l-8-1v-6zm9-9.15L21 3v9h-9V3.85zM21 13v8l-9-1.15V13h9z" fill="currentColor"/>
+  </svg>`,
+  macos: `<svg class="install-section__btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" fill="currentColor"/>
+  </svg>`,
+  linux: `<svg class="install-section__btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-.15 14.5c-.2 0-.35-.1-.35-.25s.15-.25.35-.25c.2 0 .35.1.35.25s-.15.25-.35.25zm1.3 0c-.2 0-.35-.1-.35-.25s.15-.25.35-.25c.2 0 .35.1.35.25s-.15.25-.35.25zm-2.6-1c-.2 0-.35-.15-.35-.35s.15-.35.35-.35.35.15.35.35-.15.35-.35.35zm3.9 0c-.2 0-.35-.15-.35-.35s.15-.35.35-.35.35.15.35.35-.15.35-.35.35zM9.3 13.5c-.2 0-.35-.1-.35-.25s.15-.25.35-.25.35.1.35.25-.15.25-.35.25zm5.4 0c-.2 0-.35-.1-.35-.25s.15-.25.35-.25.35.1.35.25-.15.25-.35.25zM12 9c-.8 0-1.5.35-1.5.75s.7.75 1.5.75 1.5-.35 1.5-.75S12.8 9 12 9zm-2.5 1c-.25 0-.5.15-.5.35s.25.35.5.35.5-.15.5-.35-.25-.35-.5-.35zm5 0c-.25 0-.5.15-.5.35s.25.35.5.35.5-.15.5-.35-.25-.35-.5-.35z" fill="currentColor"/>
+  </svg>`,
+};
+
+// OS download URLs. The Electron wrapper is a thin client (loads the live
+// PWA), so builds are rare — only when Electron itself or preload.js changes.
+// Assets are published to GitHub Releases with stable, versionless names.
+const DOWNLOAD_URLS = {
+  windows: 'https://github.com/bitm4ncer/radiodock.app/releases/latest/download/RadioDock-win.exe',
+  macos:   'https://github.com/bitm4ncer/radiodock.app/releases/latest/download/RadioDock-mac.dmg',
+  linux:   'https://github.com/bitm4ncer/radiodock.app/releases/latest/download/RadioDock-linux.AppImage',
 };
 
 function tile(target, label, sub, currentClass) {
@@ -64,6 +83,20 @@ function tile(target, label, sub, currentClass) {
       <span class="install-section__btn-sub">${sub}</span>
     </span>
   </button>`;
+}
+
+function downloadTile(target, label, sub) {
+  const url = DOWNLOAD_URLS[target];
+  return `<a class="install-section__btn install-section__btn--download" href="${url}" target="_blank" rel="noopener" data-download="${target}">
+    ${ICONS[target]}
+    <span class="install-section__btn-text">
+      <span class="install-section__btn-label">${label}</span>
+      <span class="install-section__btn-sub">${sub}</span>
+    </span>
+    <svg class="install-section__btn-dl-icon" viewBox="0 0 24 24" aria-hidden="true" width="14" height="14">
+      <path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+  </a>`;
 }
 
 export async function mountInstallSection({ container, installInfo, animateIn = false }) {
@@ -113,9 +146,17 @@ export async function mountInstallSection({ container, installInfo, animateIn = 
       </div>
       <div class="install-section__buttons" role="group">
         ${showsBtn('ios') ? tile('ios', 'iOS', 'Add to home screen', isCurrent('ios')) : ''}
-        ${showsBtn('desktop') ? tile('desktop', 'Desktop', 'Windows · macOS · Linux', isCurrent('desktop')) : ''}
+        ${showsBtn('browser-app') ? tile('browser-app', 'Browser App', 'Install in browser', isCurrent('browser-app')) : ''}
         ${showsBtn('android') ? tile('android', 'Android', 'Add to home screen', isCurrent('android')) : ''}
         ${showsBtn('chrome-ext') ? tile('chrome-ext', 'Extension', 'Chrome · Edge · Brave', isCurrent('chrome-ext')) : ''}
+      </div>
+      <div class="install-section__downloads">
+        <p class="install-section__downloads-label">Or download the desktop app</p>
+        <div class="install-section__buttons">
+          ${downloadTile('windows', 'Windows', '.exe installer')}
+          ${downloadTile('macos', 'macOS', '.dmg disk image')}
+          ${downloadTile('linux', 'Linux', '.AppImage')}
+        </div>
       </div>
     </div>
   `;
@@ -260,7 +301,7 @@ export async function mountInstallSection({ container, installInfo, animateIn = 
     const target = targetBtn.dataset.target;
     const branchMap = {
       'chrome-ext': 'browser-ext',
-      desktop: 'desktop',
+      'browser-app': 'desktop',
       android: 'android',
       ios: 'ios-safari',
     };

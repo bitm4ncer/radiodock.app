@@ -1,0 +1,62 @@
+{
+  "name": "radiodock-desktop",
+  "version": "1.0.0",
+  "description": "RadioDock native desktop app — thin Electron wrapper around the PWA",
+  "main": "main.js",
+  "author": "Jannes Becherer",
+  "license": "MIT",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development electron .",
+    "start": "electron .",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "dependencies": {},
+  "build": {
+    "appId": "app.radiodock.desktop",
+    "productName": "RadioDock",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "tray.js",
+      "icons/**"
+    ],
+    "win": {
+      "target": ["nsis"],
+      "icon": "icons/icon.png",
+      "signAndEditExecutable": false
+    },
+    "mac": {
+      "target": ["dmg"],
+      "icon": "icons/icon.png",
+      "category": "public.app-category.music",
+      "identity": null
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "icon": "icons/icon.png",
+      "category": "Audio"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "RadioDock-win.${ext}"
+    },
+    "dmg": {
+      "artifactName": "RadioDock-mac.${ext}"
+    },
+    "appImage": {
+      "artifactName": "RadioDock-linux.${ext}"
+    }
+  }
+}
