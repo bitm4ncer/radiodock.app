@@ -69,11 +69,19 @@ attachListenHeartbeat(player);
 // prober covers only the NON-playing rows (audio-element probe); the station
 // the user is actually playing gets its status from the real audio pipeline
 // (recovery events below), merged in recomputeOffline().
+//
+// Temporarily disabled: the OFF detection still produces false verdicts in
+// the field. Flag gates both the network probing (prober never starts) and
+// the DOM badge (recomputeOffline is a no-op), so no data-offline is ever
+// applied. Flip back to true once the detection is trustworthy.
+const OFF_INDICATOR_ENABLED = false;
+
 let proberStatuses = {};        // non-playing rows, from the prober
 let playingStationOffline = false;  // active station, hard audio failure (recovery events)
 let playingDeadAir = false;         // active station, off-air but still streaming silence (metadata sentinel)
 
 function recomputeOffline() {
+  if (!OFF_INDICATOR_ENABLED) return;
   const merged = { ...proberStatuses };
   const playing = player.getCurrentStation();
   if (playing?.id) {
@@ -641,7 +649,7 @@ function renderActiveList() {
   // Re-apply offline status after DOM rebuild, and kick off a fresh
   // probe cycle for the new active list.
   Promise.resolve().then(() => recomputeOffline());
-  streamProber.refresh();
+  if (OFF_INDICATOR_ENABLED) streamProber.refresh();
 }
 
 function updateShareRowVisibility(list) {
@@ -907,7 +915,7 @@ listsCarousel.onCurrentChange(async (listId) => {
   stationList.setActive(state.currentStation?.id ?? null);
   updateFavoriteHeart();
   await storage.setPref('currentListId', listId);
-  streamProber.refresh();
+  if (OFF_INDICATOR_ENABLED) streamProber.refresh();
 });
 
 // Carousel row interactions: each page's station-list passes the
@@ -1143,7 +1151,7 @@ async function bootstrap() {
 
   await restoreVolume();
   renderActiveList();   // re-render with restored ordering + active list
-  streamProber.start(); // begin probing station URLs every 60s
+  if (OFF_INDICATOR_ENABLED) streamProber.start(); // begin probing station URLs every 60s
 
   // Restore current station view (without auto-playing — first play needs user gesture).
   if (prefs.currentStationId) {
