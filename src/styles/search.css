@@ -294,7 +294,14 @@ body.is-tiny-player .electron-titlebar {
   display: none !important;
 }
 
-/* Make everything around the pill see-through so the window looks pill-shaped. */
+/* Make everything around the pill see-through so the window looks pill-shaped.
+   The root <html> MUST be transparent too: layout.css paints
+   html{background:var(--bg)} (opaque, for the iOS rubber-band overscroll), and
+   that root background otherwise fills the whole transparent Electron window
+   behind everything — so the pill sits on an opaque rectangle and reads as a
+   clipped box instead of a floating pill. `is-tiny-player` lives on <body>, so
+   :has() reaches up to clear its parent <html>. */
+html:has(body.is-tiny-player),
 body.is-tiny-player,
 body.is-tiny-player .page,
 body.is-tiny-player .container {
