@@ -1,57 +1,98 @@
-// Stream prober: checks station URLs once per minute to detect offline streams.
-// Sequential probing (one at a time, 5s timeout each) so we don't flood the
-// network stack with parallel TCP connections to stream servers.
+// Off-air detection for the active list. Shows an OFF badge on rows whose
+// stream is not currently broadcasting (e.g. a community station that goes
+// off-air at night) — NOT a permanent dead-channel marker.
 //
-// Uses fetch() with mode: 'no-cors' for probing. Unlike regular fetch(),
-// no-cors requests succeed for cross-origin resources without CORS headers
-// (returning an opaque response). We can't read the response, but the fact
-// that the Promise resolved means the server is reachable. Only genuine
-// network errors (DNS failure, connection refused, timeout) reject.
+// Two signal sources, by design:
 //
-// Pauses when the tab is hidden (visibilitychange) — no point probing streams
-// nobody is looking at. Resumes on visibility restore + immediately re-probes.
+//   1. The station the user is ACTUALLY playing is never probed here. Its
+//      liveness is known authoritatively from the audio pipeline: recovery.js
+//      emits 'recoveryfailed' once reconnect attempts are exhausted, and
+//      'playing'/'recovered' when audio flows. main.js overlays that status.
+//      Probing the playing station would open a SECOND connection to the same
+//      URL, and many stream servers cap connections per IP — the second one
+//      gets refused, which is exactly the old "false OFF while sound plays"
+//      bug. So we skip it.
+//
+//   2. Every OTHER station is briefly loaded into a throwaway, muted <audio>
+//      element. <audio> loads cross-origin streams without CORS (the app
+//      forbids the crossorigin attribute for this very reason), so we get a
+//      real verdict where fetch() cannot:
+//        ONLINE  — the element reports audio data (loadedmetadata / canplay /
+//                  loadeddata / buffered progress).
+//        OFFLINE — any MediaError, or no data before the timeout.
+//      The crucial correctness point: a stream that has gone off-air usually
+//      returns a 404 / HTML error page. A no-cors fetch can't read that status
+//      (opaque response → looks online), and an earlier audio attempt wrongly
+//      counted the resulting decode error (MEDIA_ERR_SRC_NOT_SUPPORTED) as
+//      online. Here a decode error is OFFLINE — that is the off-air signal.
+//
+// Sequential-ish with small concurrency so a full pass over the active list
+// completes in ~40s without flooding stream servers, then re-checks each
+// minute. Pauses when the tab is hidden.
 
-const PROBE_INTERVAL_MS = 60_000;
-const PROBE_TIMEOUT_MS = 20_000;
+const PROBE_TIMEOUT_MS = 6_000;   // generous for a stream to emit headers/data
+const RECHECK_INTERVAL_MS = 60_000;
+const CONCURRENCY = 3;
 
-export function attachStreamProber({ getStations, onStatusChange }) {
+// Mixed-content upgrade, mirrors preferHttps() in audio.js: on secure origins
+// an http:// probe would be blocked and read as a false error.
+function preferHttps(url) {
+  if (typeof window !== 'undefined' && window.isSecureContext && url.startsWith('http://')) {
+    return 'https://' + url.slice('http://'.length);
+  }
+  return url;
+}
+
+export function attachStreamProber({ getStations, getPlayingId, onStatusChange }) {
   let timer = null;
-  let statuses = {};          // { stationId: 'online' | 'offline' }
+  let statuses = {};          // { stationId: 'online' | 'offline' } — non-playing rows only
   let probing = false;
   let aborted = false;
 
   /**
-   * Probe a single station URL via no-cors fetch.
-   *
-   * mode: 'no-cors' makes the browser send a real HTTP request but
-   * return an opaque response — we can't inspect status/headers, but
-   * we don't need to. If the Promise resolves, TCP + TLS succeeded
-   * and the server sent data back → reachable. If it rejects, the
-   * server is genuinely unreachable.
-   *
-   * @returns {'online' | 'offline'}
+   * Load a station URL into a throwaway muted <audio> and classify.
+   * @returns {Promise<'online' | 'offline'>}
    */
-  async function probeOne(station) {
-    try {
-      await fetch(station.url, {
-        method: 'GET',
-        mode: 'no-cors',
-        signal: AbortSignal.timeout(PROBE_TIMEOUT_MS),
-        cache: 'no-store',
-      });
-      return 'online';
-    } catch (err) {
-      // AbortError / TimeoutError → no response in time → offline.
-      if (err.name === 'AbortError' || err.name === 'TimeoutError') {
-        return 'offline';
-      }
-      // TypeError with 'Failed to fetch' / 'NetworkError' → offline.
-      if (err.name === 'TypeError') {
-        return 'offline';
-      }
-      // Anything else → inconclusive, keep previous status.
-      return null;
-    }
+  function probeOne(station) {
+    return new Promise((resolve) => {
+      let settled = false;
+      const audio = new Audio();
+      audio.muted = true;
+      audio.volume = 0;
+      audio.preload = 'auto';   // fetch enough to know data actually flows
+
+      const finish = (result) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        audio.removeEventListener('loadedmetadata', onData);
+        audio.removeEventListener('loadeddata', onData);
+        audio.removeEventListener('canplay', onData);
+        audio.removeEventListener('progress', onProgress);
+        audio.removeEventListener('error', onError);
+        // Release the connection immediately — we never keep streaming.
+        audio.removeAttribute('src');
+        try { audio.load(); } catch { /* teardown best-effort */ }
+        resolve(result);
+      };
+
+      const onData = () => finish('online');
+      const onProgress = () => {
+        if (audio.buffered && audio.buffered.length > 0) finish('online');
+      };
+      const onError = () => finish('offline');   // incl. off-air 404 → decode error
+
+      audio.addEventListener('loadedmetadata', onData);
+      audio.addEventListener('loadeddata', onData);
+      audio.addEventListener('canplay', onData);
+      audio.addEventListener('progress', onProgress);
+      audio.addEventListener('error', onError);
+
+      const timer = setTimeout(() => finish('offline'), PROBE_TIMEOUT_MS);
+
+      audio.src = preferHttps(station.url);
+      try { audio.load(); } catch { finish('offline'); }
+    });
   }
 
   async function runProbeCycle() {
@@ -59,65 +100,45 @@ export function attachStreamProber({ getStations, onStatusChange }) {
     probing = true;
     aborted = false;
 
-    const stations = getStations();
-    if (!stations || stations.length === 0) {
-      probing = false;
-      return;
-    }
+    const all = getStations?.() ?? [];
+    const playingId = getPlayingId?.() ?? null;
+    const queue = all.filter((s) => s?.url && s.id !== playingId);
 
-    const newStatuses = {};
-    let changed = false;
+    // Start from a clean map so stale ids (list switched) don't linger.
+    const next = {};
+    let cursor = 0;
 
-    for (const station of stations) {
-      if (aborted) break;
-      if (!station?.url) {
-        newStatuses[station.id] = 'online';
-        continue;
+    const worker = async () => {
+      while (cursor < queue.length && !aborted) {
+        const station = queue[cursor++];
+        const result = await probeOne(station);
+        if (aborted) return;
+        next[station.id] = result;
+        // Emit progressively so rows flip as the scan advances (~40s pass).
+        statuses = { ...next };
+        onStatusChange?.(statuses);
       }
+    };
 
-      const result = await probeOne(station);
-      if (result === null) {
-        newStatuses[station.id] = statuses[station.id] ?? 'online';
-      } else {
-        newStatuses[station.id] = result;
-      }
+    await Promise.all(Array.from({ length: CONCURRENCY }, worker));
 
-      if (newStatuses[station.id] !== (statuses[station.id] ?? 'online')) {
-        changed = true;
-      }
-    }
-
-    if (!changed) {
-      const oldKeys = Object.keys(statuses);
-      const newKeys = Object.keys(newStatuses);
-      if (oldKeys.length !== newKeys.length) changed = true;
-      else if (oldKeys.some(k => !(k in newStatuses))) changed = true;
-    }
-
-    if (changed || Object.keys(statuses).length === 0) {
-      statuses = newStatuses;
+    if (!aborted) {
+      statuses = next;
       onStatusChange?.(statuses);
-    } else {
-      statuses = newStatuses;
     }
-
     probing = false;
   }
 
   function startTimer() {
     stopTimer();
     timer = setInterval(() => {
-      if (document.visibilityState === 'visible') {
-        runProbeCycle();
-      }
-    }, PROBE_INTERVAL_MS);
+      if (document.visibilityState === 'visible') runProbeCycle();
+    }, RECHECK_INTERVAL_MS);
   }
 
   function stopTimer() {
-    if (timer) {
-      clearInterval(timer);
-      timer = null;
-    }
+    if (timer) clearInterval(timer);
+    timer = null;
   }
 
   function onVisibilityChange() {
@@ -130,8 +151,8 @@ export function attachStreamProber({ getStations, onStatusChange }) {
   }
 
   function start() {
+    aborted = false;
     statuses = {};
-    aborted = true;
     startTimer();
     if (!probing) runProbeCycle();
   }
@@ -144,8 +165,12 @@ export function attachStreamProber({ getStations, onStatusChange }) {
     onStatusChange?.({});
   }
 
+  // Active list changed: abort the in-flight pass and restart cleanly.
   function refresh() {
     aborted = true;
+    probing = false;
+    statuses = {};
+    onStatusChange?.({});
     setTimeout(() => {
       aborted = false;
       if (!probing) runProbeCycle();

@@ -62,15 +62,31 @@ attachMediaSession(player);
 attachListenHeartbeat(player);
 
 // --- Stream offline prober ---
-// Probes station URLs in the active list once per minute to detect
-// unreachable streams and show an OFF badge on the affected rows.
+// Detects off-air stations in the active list and shows an OFF badge. The
+// prober covers only the NON-playing rows (audio-element probe); the station
+// the user is actually playing gets its status from the real audio pipeline
+// (recovery events below), merged in recomputeOffline().
+let proberStatuses = {};        // non-playing rows, from the prober
+let playingStationOffline = false;  // active station, from recovery events
+
+function recomputeOffline() {
+  const merged = { ...proberStatuses };
+  const playing = player.getCurrentStation();
+  if (playing?.id) {
+    merged[playing.id] = playingStationOffline ? 'offline' : 'online';
+  }
+  applyOfflineStatus(merged);
+}
+
 const streamProber = attachStreamProber({
   getStations: () => {
     const list = findList(state.currentListId);
     return list?.stations ?? [];
   },
+  getPlayingId: () => player.getCurrentStation()?.id ?? null,
   onStatusChange: (statuses) => {
-    applyOfflineStatus(statuses);
+    proberStatuses = statuses;
+    recomputeOffline();
   },
 });
 
@@ -504,10 +520,7 @@ function renderActiveList() {
   updateShareRowVisibility(list);
   // Re-apply offline status after DOM rebuild, and kick off a fresh
   // probe cycle for the new active list.
-  const currentStatuses = streamProber.getStatuses();
-  if (Object.keys(currentStatuses).length > 0) {
-    Promise.resolve().then(() => applyOfflineStatus(currentStatuses));
-  }
+  Promise.resolve().then(() => recomputeOffline());
   streamProber.refresh();
 }
 
@@ -597,8 +610,16 @@ player.on('mediaerror', (evt) => {
 let startupProbe = null;
 player.on('stationchange', (evt) => {
   startupProbe = { station: evt.detail?.station ?? null, t0: performance.now() };
+  // New station: assume live until the pipeline says otherwise.
+  playingStationOffline = false;
+  recomputeOffline();
 });
 player.on('playing', () => {
+  // Audio is flowing → the active station is definitively online.
+  if (playingStationOffline) {
+    playingStationOffline = false;
+    recomputeOffline();
+  }
   if (!startupProbe) return;
   const ms = Math.round(performance.now() - startupProbe.t0);
   const station = startupProbe.station;
@@ -620,6 +641,8 @@ player.on('playing', () => {
 });
 
 player.on('recovered', (evt) => {
+  playingStationOffline = false;
+  recomputeOffline();
   track('stream-recovered', {
     station: player.getCurrentStation()?.name ?? '',
     attempts: evt.detail?.attempts ?? 0,
@@ -627,6 +650,9 @@ player.on('recovered', (evt) => {
 });
 
 player.on('recoveryfailed', () => {
+  // Reconnect attempts exhausted → the station we're on is off-air right now.
+  playingStationOffline = true;
+  recomputeOffline();
   track('stream-dead', {
     station: player.getCurrentStation()?.name ?? '',
   });
