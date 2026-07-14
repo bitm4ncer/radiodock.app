@@ -417,6 +417,14 @@
     transform: translateX(0);
   }
 
+  /* The top bar right above already carries the wordmark, so the About header's
+     logo is the same brand twice over — same reasoning that turned its ✕ into a
+     back arrow. Dropping it leaves the version as the page title on the left and
+     the back arrow on the right, which is exactly the Log header's shape. */
+  #infoModal.modal .dock-logo-modal {
+    display: none;
+  }
+
   /* Same header padding on every page. The About header's safe-area top padding
      is dropped on purpose: the page starts below the top bar now, so the bar
      already owns that inset. */
