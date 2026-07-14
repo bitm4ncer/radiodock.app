@@ -32,6 +32,9 @@ import { mountBackground } from './ui/background.js';
 import { mountFooterReveal } from './ui/footer-reveal.js';
 import { mountNotesPanel } from './ui/notes-panel.js';
 import { mountNotesCaptureButton } from './ui/notes-capture-button.js';
+import { mountRecorder, isRecordingSupported } from './player/recorder.js';
+import { mountRecordingCable } from './ui/recording-cable.js';
+import { mountRecordButton } from './ui/record-button.js';
 import { mountSyncModal } from './ui/sync-modal.js';
 import { autoSyncOnStartup as syncAutoStart, pushOnChange as syncPushOnChange, getSyncToken, extractTokenFromInput, pullFromServer, applyImportPayload, markSyncDirty } from './data/sync.js';
 import { track } from './analytics/umami.js';
@@ -353,9 +356,31 @@ player.on('stationchange', () => {
 // closure variable so the hamburger entry below can lazily reach it
 // (off-canvas mounts synchronously but notesApi resolves a tick later).
 let notesApi = null;
-mountNotesPanel({ player, getLatestMetadata: () => latestMetadata })
+
+// Recorder + desktop cable flourish. The cable follows both windows while
+// recording; recorder events drive it from here so it works regardless of
+// which surface started the recording.
+const recorder = isRecordingSupported() ? mountRecorder({ maxDurationMs: 60 * 60 * 1000 }) : null;
+const recordingCable = mountRecordingCable();
+if (recorder) {
+  recorder.on('started', () => recordingCable.show());
+  recorder.on('stopped', () => recordingCable.hide());
+  recorder.on('streamdrop', () => recordingCable.hide());
+  recorder.on('error', () => recordingCable.hide());
+}
+
+// "App mode" = narrow phone, installed PWA, or Electron — contexts where the
+// notes panel isn't a persistent surface. There the record button lives next
+// to search; in a regular desktop browser it lives in the notes panel instead.
+const recordAppMode = matchMedia('(pointer: coarse)').matches || detectStandalone() || isElectron();
+
+mountNotesPanel({ player, getLatestMetadata: () => latestMetadata, recorder, showPanelRecordButton: !recordAppMode })
   .then((api) => { notesApi = api; })
   .catch((err) => console.warn('Notes panel mount failed:', err));
+
+if (recordAppMode && recorder) {
+  mountRecordButton({ recorder, player, getNotesApi: () => notesApi });
+}
 
 // Mini capture button on the player-card.
 mountNotesCaptureButton({

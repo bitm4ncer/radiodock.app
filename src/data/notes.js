@@ -123,6 +123,30 @@ export async function createCapture({ pageId, station = null, track = null, body
   return note;
 }
 
+export async function createRecording({ pageId, station = null, track = null, blob, mime, durationMs = 0, bytes = 0 } = {}) {
+  if (!pageId) throw new Error('pageId is required.');
+  if (!blob) throw new Error('recording blob is required.');
+  const note = {
+    id: genNoteId(),
+    pageId,
+    type: 'recording',
+    body: '',
+    station: station ? sanitizeStationSnapshot(station) : null,
+    track: track ? sanitizeTrackSnapshot(track) : null,
+    mime: mime ?? blob.type ?? 'audio/webm',
+    durationMs,
+    bytes: bytes || blob.size,
+    createdAt: now(),
+  };
+  await storage.putRecordingAudio(note.id, blob);
+  await storage.putNote(note);
+  return note;
+}
+
+export async function getRecordingBlob(id) {
+  return storage.getRecordingAudio(id);
+}
+
 export async function updateNoteBody(id, body) {
   const all = await storage.getAllNotes();
   const note = all.find((n) => n.id === id);
@@ -144,6 +168,7 @@ export async function moveNote(id, targetPageId) {
 }
 
 export async function deleteNote(id) {
+  await storage.deleteRecordingAudio(id); // no-op for non-recordings
   await storage.deleteNote(id);
 }
 

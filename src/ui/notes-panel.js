@@ -14,7 +14,7 @@
 // `data/storage.js`). This module only owns DOM + interaction state.
 
 import * as notes from '../data/notes.js';
-import { getPref, setPref } from '../data/storage.js';
+import { getPref, setPref, sumRecordingBytes } from '../data/storage.js';
 import { toast } from './toast.js';
 import { promptDialog, confirmDialog } from './modal-helpers.js';
 import { exportNotesPayload } from '../data/notes-export.js';
@@ -23,6 +23,7 @@ import { track } from '../analytics/umami.js';
 const PREF_POS = 'notesPanelPos';
 const PREF_OPEN = 'notesPanelOpen';
 const PREF_CURRENT_PAGE = 'notesCurrentPageId';
+const MAX_RECORDING_BYTES = 500 * 1024 * 1024; // 500 MB total budget
 
 // Internal flag — replaced by player.getCurrentStation() / latestMetadata
 // at capture time. Captured here only so the module-internal capture
@@ -32,7 +33,7 @@ let getStation = () => null;
 let getMetadata = () => null;
 
 // Mount entrypoint. Returns API: { open, close, captureNow }.
-export async function mountNotesPanel({ player, getLatestMetadata }) {
+export async function mountNotesPanel({ player, getLatestMetadata, recorder = null, showPanelRecordButton = true }) {
   getStation = () => player.getCurrentStation?.() ?? null;
   getMetadata = () => getLatestMetadata?.() ?? null;
 
@@ -50,7 +51,7 @@ export async function mountNotesPanel({ player, getLatestMetadata }) {
 
   // ---- DOM ----
   const flag = isMobile ? null : buildFlag();
-  const panel = buildPanel({ isMobile });
+  const panel = buildPanel({ isMobile, showRecord: showPanelRecordButton });
   if (flag) document.body.appendChild(flag);
   document.body.appendChild(panel);
   let pageMenu = null;
@@ -105,6 +106,16 @@ export async function mountNotesPanel({ player, getLatestMetadata }) {
   player.on('stationchange', refreshCaptureBtnState);
   player.on('stopped', refreshCaptureBtnState);
 
+  if (recorder) {
+    recorder.on('started', () => refreshRecordBtnState());
+    recorder.on('progress', (e) => updateRecordTime(e.detail));
+    recorder.on('streamdrop', () => toast('Stream dropped — saved what was recorded.'));
+    recorder.on('error', (e) => { toast(e.detail?.message ?? 'Recording failed.'); refreshRecordBtnState(); });
+    recorder.on('stopped', (e) => onRecordingStopped(e.detail));
+    player.on('stationchange', refreshRecordBtnState);
+    player.on('stopped', refreshRecordBtnState);
+  }
+
   window.addEventListener('resize', () => {
     if (isMobile) return;
     const pos = getCurrentPosition();
@@ -115,6 +126,7 @@ export async function mountNotesPanel({ player, getLatestMetadata }) {
     open: openPanel,
     close: closePanel,
     captureNow,
+    toggleRecord,
     isOpen: () => state.open,
   };
 
@@ -137,7 +149,7 @@ export async function mountNotesPanel({ player, getLatestMetadata }) {
     return el;
   }
 
-  function buildPanel({ isMobile }) {
+  function buildPanel({ isMobile, showRecord = true }) {
     const el = document.createElement('aside');
     el.className = 'notes-panel' + (isMobile ? ' notes-panel--mobile' : ' notes-panel--desktop');
     el.setAttribute('aria-hidden', 'true');
@@ -164,12 +176,18 @@ export async function mountNotesPanel({ player, getLatestMetadata }) {
       <div class="notes-panel__search" data-role="search-wrap" hidden>
         <input type="text" class="notes-panel__search-input" data-role="search-input" placeholder="Search notes…" />
       </div>
-      <button type="button" class="notes-panel__capture-btn" data-action="capture" aria-label="Save moment">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M4 4h14a2 2 0 0 1 2 2v12l-4-3-4 3-4-3-4 3V6a2 2 0 0 1 2-2z"/>
-        </svg>
-        <span class="notes-panel__capture-label">Save Moment</span>
-      </button>
+      <div class="notes-panel__capture-row${showRecord ? '' : ' notes-panel__capture-row--norec'}">
+        ${showRecord ? `<button type="button" class="notes-panel__record-btn" data-action="record" aria-label="Record stream" title="Record">
+          <span class="notes-panel__record-dot" aria-hidden="true"></span>
+          <span class="notes-panel__record-time" data-role="record-time" hidden></span>
+        </button>` : ''}
+        <button type="button" class="notes-panel__capture-btn" data-action="capture" aria-label="Save moment">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 4h14a2 2 0 0 1 2 2v12l-4-3-4 3-4-3-4 3V6a2 2 0 0 1 2-2z"/>
+          </svg>
+          <span class="notes-panel__capture-label">Save Moment</span>
+        </button>
+      </div>
       <div class="notes-panel__list" data-role="list"></div>
       <footer class="notes-panel__footer">
         <button type="button" class="notes-panel__new-note" data-action="new-note">
@@ -286,6 +304,7 @@ export async function mountNotesPanel({ player, getLatestMetadata }) {
     renderPagePicker();
     renderList();
     refreshCaptureBtnState();
+    refreshRecordBtnState();
   }
 
   function renderPagePicker() {
@@ -299,6 +318,9 @@ export async function mountNotesPanel({ player, getLatestMetadata }) {
     const allNotes = state.notesByPage.get(state.currentPageId) ?? [];
     const filtered = filterNotes(allNotes, state.searchQuery);
 
+    listEl.querySelectorAll('[data-role="tape-audio"]').forEach((a) => {
+      if (a.src) { try { URL.revokeObjectURL(a.src); } catch {} a.pause(); }
+    });
     listEl.innerHTML = '';
     if (!filtered.length) {
       const empty = document.createElement('div');
@@ -333,6 +355,10 @@ export async function mountNotesPanel({ player, getLatestMetadata }) {
 
     const time = new Date(note.createdAt);
     const timeStr = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    if (note.type === 'recording') {
+      return renderTapeCard(note, timeStr);
+    }
 
     let meta = '';
     if (note.type === 'capture' && note.station) {
@@ -392,6 +418,171 @@ export async function mountNotesPanel({ player, getLatestMetadata }) {
     btn.disabled = !station;
     btn.classList.toggle('is-disabled', !station);
     btn.title = station ? `Save moment from ${station.name}` : 'No station playing';
+  }
+
+  // ============================================================== Recording
+
+  async function refreshRecordBtnState() {
+    const btn = panel.querySelector('[data-action="record"]');
+    if (!btn) return;
+    const station = getStation();
+    const rec = recorder?.isRecording?.() ?? false;
+    const overBudget = (await sumRecordingBytes()) >= MAX_RECORDING_BYTES;
+    btn.classList.toggle('is-recording', rec);
+    btn.disabled = !recorder || (!rec && (!station || overBudget));
+    btn.title = rec ? 'Stop recording'
+      : !recorder ? 'Recording not supported'
+      : overBudget ? 'Recording storage full (500 MB)'
+      : !station ? 'No station playing'
+      : `Record ${station.name}`;
+    if (!rec) {
+      const el = panel.querySelector('[data-role="record-time"]');
+      if (el) { el.hidden = true; el.textContent = ''; }
+    }
+  }
+
+  function updateRecordTime({ seconds, bytes }) {
+    const el = panel.querySelector('[data-role="record-time"]');
+    if (!el) return;
+    const mm = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const ss = String(seconds % 60).padStart(2, '0');
+    const mb = (bytes / (1024 * 1024)).toFixed(1);
+    el.hidden = false;
+    el.textContent = `${mm}:${ss} · ${mb} MB`;
+  }
+
+  // Snapshot of the now-playing show taken when recording STARTS — that is the
+  // show being taped (the track may change before the user stops).
+  let recordingStartTrack = null;
+
+  function snapshotTrack() {
+    const meta = getMetadata();
+    if (meta && (meta.artist || meta.title || meta.nowPlaying)) {
+      return { artist: meta.artist ?? null, title: meta.title ?? null, nowPlaying: meta.nowPlaying ?? null };
+    }
+    return null;
+  }
+
+  async function toggleRecord() {
+    if (!recorder) { toast('Recording is not supported in this browser.'); return; }
+    if (recorder.isRecording()) { recorder.stop(); return; }
+    const station = getStation();
+    if (!station) { toast('No station playing.'); return; }
+    if ((await sumRecordingBytes()) >= MAX_RECORDING_BYTES) {
+      toast('Recording storage is full (500 MB). Delete some recordings first.');
+      return;
+    }
+    recordingStartTrack = snapshotTrack();
+    recorder.start(station);
+    track('recording-started', {
+      country: station.countrycode ?? '',
+      hasShow: !!(recordingStartTrack?.artist || recordingStartTrack?.title || recordingStartTrack?.nowPlaying),
+    });
+  }
+
+  async function onRecordingStopped({ blob, mime, durationMs, bytes, station }) {
+    refreshRecordBtnState();
+    if (!blob || !bytes) { toast('Recording was empty.'); return; }
+    // Prefer the show captured when recording started; fall back to now.
+    const trackData = recordingStartTrack ?? snapshotTrack();
+    recordingStartTrack = null;
+    const created = await notes.createRecording({
+      pageId: state.currentPageId, station, track: trackData, blob, mime, durationMs, bytes,
+    });
+    state.notesByPage.set(state.currentPageId, [created, ...(state.notesByPage.get(state.currentPageId) ?? [])]);
+    track('recording-stopped', {
+      seconds: Math.round(durationMs / 1000),
+      mb: +(bytes / 1048576).toFixed(1),
+      hasShow: !!(trackData?.artist || trackData?.title || trackData?.nowPlaying),
+    });
+    if (!state.open) openPanel();
+    render();
+    const listEl = panel.querySelector('[data-role="list"]');
+    if (listEl) listEl.scrollTop = 0;
+    toast('Recording saved');
+  }
+
+  function renderTapeCard(note, timeStr) {
+    const card = document.createElement('article');
+    card.className = 'notes-card notes-card--recording';
+    card.dataset.noteId = note.id;
+    const stationName = escapeHtml(note.station?.name || 'Recording');
+    const dur = formatDuration(note.durationMs);
+    const mb = ((note.bytes ?? 0) / 1048576).toFixed(1);
+    const t = note.track;
+    const showDisplay = t
+      ? ((t.artist && t.title) ? `${escapeHtml(t.artist)} — ${escapeHtml(t.title)}` : (t.nowPlaying ? escapeHtml(t.nowPlaying) : ''))
+      : '';
+    const showLine = showDisplay ? `<div class="notes-card__track">♫ ${showDisplay}</div>` : '';
+    card.innerHTML = `
+      <div class="notes-card__head">
+        <div class="notes-card__meta">
+          <span class="notes-card__time">${timeStr}</span>
+          <span class="notes-card__sep">·</span>
+          <span class="notes-card__station">${stationName}</span>
+        </div>
+        <button type="button" class="notes-card__menu-btn" data-action="card-menu" aria-label="Recording options">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="18" r="1.5" fill="currentColor"/></svg>
+        </button>
+      </div>
+      ${showLine}
+      <div class="tape">
+        <button type="button" class="tape__play" data-action="tape-play" aria-label="Play recording">▶</button>
+        <div class="tape__reels" aria-hidden="true">
+          <svg viewBox="0 0 120 44" class="tape__svg">
+            <rect x="2" y="2" width="116" height="40" rx="6" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+            <g class="tape__reel"><circle cx="36" cy="22" r="12" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="36" cy="22" r="3" fill="currentColor"/><line x1="36" y1="10" x2="36" y2="34" stroke="currentColor" stroke-width="1"/><line x1="24" y1="22" x2="48" y2="22" stroke="currentColor" stroke-width="1"/></g>
+            <g class="tape__reel"><circle cx="84" cy="22" r="12" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="84" cy="22" r="3" fill="currentColor"/><line x1="84" y1="10" x2="84" y2="34" stroke="currentColor" stroke-width="1"/><line x1="72" y1="22" x2="96" y2="22" stroke="currentColor" stroke-width="1"/></g>
+          </svg>
+        </div>
+        <div class="tape__info">
+          <span class="tape__dur" data-role="tape-dur">${dur}</span>
+          <span class="tape__size">${mb} MB</span>
+        </div>
+        <button type="button" class="tape__dl" data-action="tape-download" aria-label="Download recording" title="Download">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+        </button>
+        <audio class="tape__audio" data-role="tape-audio" preload="none"></audio>
+      </div>
+    `;
+    return card;
+  }
+
+  async function toggleTapePlay(card, noteId) {
+    const audio = card?.querySelector('[data-role="tape-audio"]');
+    const playBtn = card?.querySelector('[data-action="tape-play"]');
+    if (!audio || !playBtn) return;
+    if (!audio.src) {
+      const blob = await notes.getRecordingBlob(noteId);
+      if (!blob) { toast('Recording data missing.'); return; }
+      audio.src = URL.createObjectURL(blob);
+      audio.addEventListener('ended', () => { card.classList.remove('is-playing'); playBtn.textContent = '▶'; });
+    }
+    if (audio.paused) { await audio.play(); card.classList.add('is-playing'); playBtn.textContent = '⏸'; }
+    else { audio.pause(); card.classList.remove('is-playing'); playBtn.textContent = '▶'; }
+  }
+
+  async function downloadRecording(noteId) {
+    const list = state.notesByPage.get(state.currentPageId) ?? [];
+    const note = list.find((n) => n.id === noteId);
+    if (!note) return;
+    const blob = await notes.getRecordingBlob(noteId);
+    if (!blob) { toast('Recording data missing.'); return; }
+    const ext = (note.mime || '').includes('mp4') ? 'm4a' : (note.mime || '').includes('ogg') ? 'ogg' : 'webm';
+    const stamp = new Date(note.createdAt).toISOString().slice(0, 16).replace(/[:T]/g, '');
+    const name = `${(note.station?.name || 'radiodock').replace(/[^\w-]+/g, '_')}-${stamp}.${ext}`;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+    track('recording-downloaded');
+    const del = await confirmDialog({
+      title: 'Downloaded',
+      message: 'Remove this recording from your notes?',
+      confirmLabel: 'Delete',
+      cancelLabel: 'Keep',
+    });
+    if (del) deleteNoteWithUndo(noteId);
   }
 
   // ============================================================== Filtering helpers
@@ -486,6 +677,9 @@ export async function mountNotesPanel({ player, getLatestMetadata }) {
     switch (action) {
       case 'close':           return closePanel();
       case 'capture':         return captureNow({ source: 'panel' });
+      case 'record':          return toggleRecord();
+      case 'tape-play':       return toggleTapePlay(card, noteId);
+      case 'tape-download':   return downloadRecording(noteId);
       case 'new-note':        return createBlankNote();
       case 'page-picker':     return openPagePicker(actionEl);
       case 'page-menu':       return openPageMenu(actionEl);
@@ -849,6 +1043,7 @@ export async function mountNotesPanel({ player, getLatestMetadata }) {
     );
     if (state.editingNoteId === noteId) state.editingNoteId = null;
     track('note-delete');
+    if (note.type === 'recording') track('recording-deleted');
     render();
     toast('Note deleted · Undo', {
       action: {
@@ -922,6 +1117,13 @@ export async function mountNotesPanel({ player, getLatestMetadata }) {
 }
 
 // ============================================================== Helpers (top-level)
+
+function formatDuration(ms) {
+  const s = Math.round((ms ?? 0) / 1000);
+  const mm = String(Math.floor(s / 60)).padStart(2, '0');
+  const ss = String(s % 60).padStart(2, '0');
+  return `${mm}:${ss}`;
+}
 
 function dayLabel(ts) {
   const d = new Date(ts);

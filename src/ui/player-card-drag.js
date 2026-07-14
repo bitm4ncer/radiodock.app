@@ -42,7 +42,7 @@ export async function mountPlayerCardDragMinimize() {
     className: 'container-solid-toggle',
     label: 'Solid',
     title: 'Toggle solid panel',
-    svg: discOutline(),
+    svg: panelOutline(),
     extraAttrs: { 'aria-label': 'Toggle solid panel', 'aria-pressed': 'false' },
     asButton: true,
   });
@@ -72,7 +72,7 @@ export async function mountPlayerCardDragMinimize() {
     document.body.classList.add('container-solid');
     solidBtn.classList.add('is-active');
     solidBtn.setAttribute('aria-pressed', 'true');
-    solidBtn.querySelector('.tool-btn__icon').innerHTML = discFilled();
+    solidBtn.querySelector('.tool-btn__icon').innerHTML = panelFilled();
   }
 
   if (savedPos && typeof savedPos.x === 'number' && typeof savedPos.y === 'number') {
@@ -166,7 +166,7 @@ export async function mountPlayerCardDragMinimize() {
     document.body.classList.toggle('container-solid', solid);
     solidBtn.classList.toggle('is-active', solid);
     solidBtn.setAttribute('aria-pressed', solid ? 'true' : 'false');
-    solidBtn.querySelector('.tool-btn__icon').innerHTML = solid ? discFilled() : discOutline();
+    solidBtn.querySelector('.tool-btn__icon').innerHTML = solid ? panelFilled() : panelOutline();
     // Drop focus so the :focus-visible pill label doesn't stay pinned over
     // adjacent tool buttons' tooltips after a mouse click. Keyboard users
     // tabbing through still get the focus ring + pill as expected.
@@ -223,18 +223,17 @@ function chevronUp() {
     <polyline points="6 15 12 9 18 15"/>
   </svg>`;
 }
-// Symmetric disc — outlined for OFF (transparent panel), filled for ON
-// (solid panel). Swapping the whole icon between states keeps the visual
-// centre of the button glyph stable, so the row of tool buttons reads
-// as evenly spaced — the previous half-filled disc had an asymmetric
-// centre of mass that made the strip look misaligned.
-function discOutline() {
+// Rounded-square "panel" glyph — outlined for OFF (transparent panel), filled
+// for ON (solid panel). A square (not a disc) so the toggle never reads as the
+// round record dot. Symmetric centre of mass keeps the tool strip evenly
+// spaced (the earlier half-filled disc looked misaligned).
+function panelOutline() {
   return `<svg viewBox="0 0 24 24" aria-hidden="true">
-    <circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+    <rect x="5" y="5" width="14" height="14" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/>
   </svg>`;
 }
-function discFilled() {
+function panelFilled() {
   return `<svg viewBox="0 0 24 24" aria-hidden="true">
-    <circle cx="12" cy="12" r="7" fill="currentColor"/>
+    <rect x="5" y="5" width="14" height="14" rx="3.5" fill="currentColor"/>
   </svg>`;
 }

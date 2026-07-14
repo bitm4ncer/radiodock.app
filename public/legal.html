@@ -225,6 +225,9 @@
           <strong>Radio stream servers</strong> — your browser connects directly to each station's stream server when you press play. We are not the operator of those servers; refer to each station's own privacy notice.
         </li>
         <li>
+          <strong>RadioDock Stations relay</strong> (<code>stations.radiodock.app</code>) — only when you actively <em>record</em> a station, its audio stream is routed through our own server instead of connecting directly, so your browser can capture it. The server relays the bytes live and never stores them; the recording is saved only on your device (IndexedDB). The relay is operated by the same person and logs only IP / timestamp / request path for operational diagnostics.
+        </li>
+        <li>
           <strong>GitHub Pages</strong> (host of this site) and <strong>Render.com</strong> (host of the metadata proxy) record standard server logs (IP address, browser type, timestamp). See
           <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener">GitHub's privacy statement</a>
           and

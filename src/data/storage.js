@@ -24,11 +24,12 @@ const DB_NAME = 'radiodock';
 //   v1 — initial: lists + prefs.
 //   v2 — added `userBackgrounds` store for the background-image feature.
 //   v3 — adds `notePages` + `notes` stores for the notes feature.
+//   v4 — adds `recordings` store (audio blobs for tape recording).
 // The upgrade handler is fully idempotent (every step uses `if (!contains)`
 // guards) so the migration runs cleanly from any starting version, AND
 // degrades safely when something goes wrong (the defensive wrappers
 // below catch every IDB error and the help banner surfaces the state).
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 const OPEN_TIMEOUT_MS = 5000;
 
 let dbPromise = null;
@@ -111,6 +112,10 @@ function openDb() {
         const notes = db.createObjectStore('notes', { keyPath: 'id' });
         notes.createIndex('byPage', 'pageId', { unique: false });
         notes.createIndex('byCreatedAt', 'createdAt', { unique: false });
+      }
+      // v4 — recording blobs. Kept separate so listing notes never loads audio.
+      if (!db.objectStoreNames.contains('recordings')) {
+        db.createObjectStore('recordings', { keyPath: 'id' });
       }
     };
     req.onsuccess = () => {
@@ -271,4 +276,24 @@ export async function deleteNotesForPage(pageId) {
       .map((n) => promisify(store.delete(n.id)));
     await Promise.all(tasks);
   });
+}
+
+// --- Recordings (audio Blob storage) ---
+
+export async function putRecordingAudio(id, blob) {
+  return safeWrite('recordings', (store) => promisify(store.put({ id, blob, bytes: blob.size })));
+}
+
+export async function getRecordingAudio(id) {
+  const row = await safeRead('recordings', (store) => promisify(store.get(id)), undefined);
+  return row?.blob;
+}
+
+export async function deleteRecordingAudio(id) {
+  return safeWrite('recordings', (store) => promisify(store.delete(id)));
+}
+
+export async function sumRecordingBytes() {
+  const rows = await safeRead('recordings', (store) => promisify(store.getAll()), []);
+  return (rows ?? []).reduce((n, r) => n + (r.bytes ?? 0), 0);
 }
