@@ -222,22 +222,17 @@ body.is-electron .electron-titlebar {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   height: var(--titlebar-h);
-  padding: 0 6px 0 12px;
+  /* Right padding keeps the buttons clear of the window's top-right corner
+     arc — at 6px the close button's hover fill clipped into it. */
+  padding: 0 12px;
   background: var(--bg-dark);
   border-bottom: 1px solid var(--border);
   z-index: 2000;
   /* The whole bar drags the frameless window; buttons opt out below. */
   -webkit-app-region: drag;
   user-select: none;
-}
-
-.electron-titlebar__brand {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--text-muted);
 }
 
 .electron-titlebar__controls {
@@ -295,7 +290,7 @@ body.is-electron .install-section { display: none !important; }
    which has its own fully-transparent pill treatment below. */
 html:has(body.is-electron:not(.is-tiny-player)) {
   --rd-window-radius: 48px;
-  --rd-window-radius-top: 12px;
+  --rd-window-radius-top: 25px;
 }
 
 html:has(body.is-electron:not(.is-tiny-player)),
@@ -308,7 +303,17 @@ body.is-electron:not(.is-tiny-player)::after {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: var(--bg);
+  /* The title bar's dark band is painted here rather than on
+     .electron-titlebar itself. The bar is only --titlebar-h tall, so CSS
+     would scale a larger top radius down to that height on it while this
+     full-height layer renders the radius at full size — leaving a lighter
+     wedge of --bg in each top corner. Keeping both bands on one layer means
+     one radius, no clamping, no mismatch. */
+  background: linear-gradient(
+    to bottom,
+    var(--bg-dark) 0 var(--titlebar-h),
+    var(--bg) var(--titlebar-h)
+  );
   border-top-left-radius: var(--rd-window-radius-top);
   border-top-right-radius: var(--rd-window-radius-top);
   border-bottom-left-radius: var(--rd-window-radius);
@@ -316,11 +321,8 @@ body.is-electron:not(.is-tiny-player)::after {
   pointer-events: none;
 }
 
-/* The title bar is the topmost opaque layer, so it — not just the backdrop —
-   has to carry the top radius or its square corners cover it. */
 body.is-electron:not(.is-tiny-player) .electron-titlebar {
-  border-top-left-radius: var(--rd-window-radius-top);
-  border-top-right-radius: var(--rd-window-radius-top);
+  background: transparent;
 }
 
 body.is-electron:not(.is-tiny-player) .player-section {

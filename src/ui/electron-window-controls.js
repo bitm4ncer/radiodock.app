@@ -41,7 +41,6 @@ export function mountElectronWindowControls({ electronBridge } = {}) {
   const bar = document.createElement('div');
   bar.className = 'electron-titlebar';
   bar.innerHTML = `
-    <span class="electron-titlebar__brand">RadioDock</span>
     <div class="electron-titlebar__controls">
       <button type="button" class="electron-win-btn" data-win="min" title="Minimize" aria-label="Minimize">${MINIMIZE_SVG}</button>
       <button type="button" class="electron-win-btn" data-win="pin" title="Always on top" aria-label="Always on top">${PIN_SVG}</button>
