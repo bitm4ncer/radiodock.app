@@ -17,7 +17,7 @@ export function mountRecordingCable() {
   });
   const path = document.createElementNS(NS, 'path');
   path.setAttribute('fill', 'none');
-  path.setAttribute('stroke', '#e23b3b');
+  path.setAttribute('stroke', '#cd0025');
   path.setAttribute('stroke-width', '3');
   path.setAttribute('stroke-linecap', 'round');
   svg.appendChild(path);

@@ -677,7 +677,7 @@ body.notes-overlay-open {
 
 .notes-panel__capture-row {
   display: flex;
-  align-items: stretch;
+  align-items: center;
   gap: 8px;
   margin: 10px;
 }
@@ -689,14 +689,17 @@ body.notes-overlay-open {
 .notes-panel__record-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  min-width: 40px;
-  padding: 9px 12px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
   border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
+  border-radius: 50%;
   background-color: var(--bg-list-active);
   color: var(--text);
   cursor: pointer;
+  flex: 0 0 auto;
 }
 .notes-panel__record-btn:hover {
   background-color: var(--bg-list-hover);
@@ -711,15 +714,19 @@ body.notes-overlay-open {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #e23b3b;
+  background: var(--red);
   flex: 0 0 auto;
 }
 .notes-panel__record-btn:disabled .notes-panel__record-dot {
   background: var(--text-muted);
 }
+/* Expand to a pill while recording so the live time/size fits. */
 .notes-panel__record-btn.is-recording {
-  border-color: #e23b3b;
-  box-shadow: 0 0 0 2px rgba(226, 59, 59, 0.35);
+  width: auto;
+  padding: 0 12px;
+  border-radius: var(--radius-pill);
+  border-color: var(--red);
+  box-shadow: 0 0 0 2px rgba(205, 0, 37, 0.35);
 }
 .notes-panel__record-btn.is-recording .notes-panel__record-dot {
   animation: notes-rec-pulse 1s ease-in-out infinite;
@@ -758,6 +765,10 @@ body.notes-overlay-open {
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
+}
+.tape__dl svg {
+  width: 15px;
+  height: 15px;
 }
 .tape__svg {
   width: 110px;

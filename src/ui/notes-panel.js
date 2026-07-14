@@ -451,6 +451,18 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     el.textContent = `${mm}:${ss} · ${mb} MB`;
   }
 
+  // Snapshot of the now-playing show taken when recording STARTS — that is the
+  // show being taped (the track may change before the user stops).
+  let recordingStartTrack = null;
+
+  function snapshotTrack() {
+    const meta = getMetadata();
+    if (meta && (meta.artist || meta.title || meta.nowPlaying)) {
+      return { artist: meta.artist ?? null, title: meta.title ?? null, nowPlaying: meta.nowPlaying ?? null };
+    }
+    return null;
+  }
+
   async function toggleRecord() {
     if (!recorder) { toast('Recording is not supported in this browser.'); return; }
     if (recorder.isRecording()) { recorder.stop(); return; }
@@ -460,22 +472,29 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
       toast('Recording storage is full (500 MB). Delete some recordings first.');
       return;
     }
+    recordingStartTrack = snapshotTrack();
     recorder.start(station);
-    track('recording-started', { country: station.countrycode ?? '' });
+    track('recording-started', {
+      country: station.countrycode ?? '',
+      hasShow: !!(recordingStartTrack?.artist || recordingStartTrack?.title || recordingStartTrack?.nowPlaying),
+    });
   }
 
   async function onRecordingStopped({ blob, mime, durationMs, bytes, station }) {
     refreshRecordBtnState();
     if (!blob || !bytes) { toast('Recording was empty.'); return; }
-    const meta = getMetadata();
-    const trackData = (meta && (meta.artist || meta.title || meta.nowPlaying))
-      ? { artist: meta.artist ?? null, title: meta.title ?? null, nowPlaying: meta.nowPlaying ?? null }
-      : null;
+    // Prefer the show captured when recording started; fall back to now.
+    const trackData = recordingStartTrack ?? snapshotTrack();
+    recordingStartTrack = null;
     const created = await notes.createRecording({
       pageId: state.currentPageId, station, track: trackData, blob, mime, durationMs, bytes,
     });
     state.notesByPage.set(state.currentPageId, [created, ...(state.notesByPage.get(state.currentPageId) ?? [])]);
-    track('recording-stopped', { seconds: Math.round(durationMs / 1000), mb: +(bytes / 1048576).toFixed(1) });
+    track('recording-stopped', {
+      seconds: Math.round(durationMs / 1000),
+      mb: +(bytes / 1048576).toFixed(1),
+      hasShow: !!(trackData?.artist || trackData?.title || trackData?.nowPlaying),
+    });
     if (!state.open) openPanel();
     render();
     const listEl = panel.querySelector('[data-role="list"]');
@@ -490,6 +509,11 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     const stationName = escapeHtml(note.station?.name || 'Recording');
     const dur = formatDuration(note.durationMs);
     const mb = ((note.bytes ?? 0) / 1048576).toFixed(1);
+    const t = note.track;
+    const showDisplay = t
+      ? ((t.artist && t.title) ? `${escapeHtml(t.artist)} — ${escapeHtml(t.title)}` : (t.nowPlaying ? escapeHtml(t.nowPlaying) : ''))
+      : '';
+    const showLine = showDisplay ? `<div class="notes-card__track">♫ ${showDisplay}</div>` : '';
     card.innerHTML = `
       <div class="notes-card__head">
         <div class="notes-card__meta">
@@ -501,6 +525,7 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="18" r="1.5" fill="currentColor"/></svg>
         </button>
       </div>
+      ${showLine}
       <div class="tape">
         <button type="button" class="tape__play" data-action="tape-play" aria-label="Play recording">▶</button>
         <div class="tape__reels" aria-hidden="true">
@@ -514,7 +539,9 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
           <span class="tape__dur" data-role="tape-dur">${dur}</span>
           <span class="tape__size">${mb} MB</span>
         </div>
-        <button type="button" class="tape__dl" data-action="tape-download" aria-label="Download recording" title="Download">⬇</button>
+        <button type="button" class="tape__dl" data-action="tape-download" aria-label="Download recording" title="Download">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+        </button>
         <audio class="tape__audio" data-role="tape-audio" preload="none"></audio>
       </div>
     `;
