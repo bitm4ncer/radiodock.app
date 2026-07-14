@@ -47,7 +47,10 @@ function createWindow() {
     // window, so it still looks like a normal solid window. hasShadow off so a
     // rectangular OS shadow doesn't trace the pill's transparent corners.
     transparent: true,
-    backgroundColor: '#00000000',
+    // macOS renders an explicit backgroundColor (even fully-transparent
+    // '#00000000') as opaque, which kills the tiny-player see-through corners —
+    // omit it there. Windows keeps it (verified working with it).
+    ...(process.platform === 'darwin' ? {} : { backgroundColor: '#00000000' }),
     hasShadow: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
