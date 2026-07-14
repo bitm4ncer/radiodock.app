@@ -128,7 +128,7 @@ export async function buildExportPayload() {
   return { exportJson, stationCount, listCount: exportLists.length };
 }
 
-export async function pushToServer(token) {
+export async function pushToServer(token, signal) {
   const { exportJson, stationCount, listCount } = await buildExportPayload();
   const hash = await computeContentHash(exportJson);
   const lastHash = await storage.getPref('syncLastHash', null);
@@ -146,6 +146,7 @@ export async function pushToServer(token) {
       station_count: stationCount,
     }),
     referrerPolicy: 'no-referrer',
+    signal,
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
@@ -266,7 +267,7 @@ export async function pushOnChange(token) {
   cancelPendingPush();
   pendingPushController = new AbortController();
   try {
-    const result = await pushToServer(token);
+    const result = await pushToServer(token, pendingPushController.signal);
     return result;
   } catch (err) {
     if (err.name === 'AbortError') return null;
