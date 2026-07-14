@@ -225,6 +225,148 @@
   color: var(--text);
 }
 
+/* Periodic attention cue on the support tile: a soft red glow, a red glare
+   gliding across, and a heartbeat pulse on the heart icon — once every 45s,
+   to gently point at the support ask. The burst takes ~4s (slow glide) and
+   the tile idles the rest; a 5s initial delay lets the badge settle before
+   the first pass. Red-tinted (not white) so it reads on both the dark tile
+   (#0D0D0D) and the light one (#CDCDCD) — --red is identical across themes. */
+.install-section__btn--support {
+  position: relative;
+  overflow: hidden;
+  animation: support-glow 45s ease-in-out 5s infinite;
+}
+
+.install-section__btn--support::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 34%,
+    rgba(205, 0, 37, 0.2) 47%,
+    rgba(205, 0, 37, 0.34) 50%,
+    rgba(205, 0, 37, 0.2) 53%,
+    transparent 66%
+  );
+  transform: translateX(-160%);
+  animation: support-glare 45s ease-in-out 5s infinite;
+}
+
+/* Heartbeat pulse — a soft double-beat (lub-dub) on the heart, in sync with
+   the glare/glow burst, then still for the rest of the cycle. */
+.install-section__btn--support .install-section__btn-icon {
+  transform-origin: center;
+  animation: support-heartbeat 45s ease-in-out 5s infinite;
+}
+
+@keyframes support-glare {
+  0% {
+    transform: translateX(-160%);
+  }
+  6% {
+    transform: translateX(160%);
+  }
+  100% {
+    transform: translateX(160%);
+  }
+}
+
+@keyframes support-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(205, 0, 37, 0);
+  }
+  3% {
+    box-shadow: 0 0 16px 1px rgba(205, 0, 37, 0.5);
+  }
+  7% {
+    box-shadow: 0 0 0 0 rgba(205, 0, 37, 0);
+  }
+}
+
+@keyframes support-heartbeat {
+  0%,
+  9%,
+  100% {
+    transform: scale(1);
+  }
+  2.5% {
+    transform: scale(1.22);
+  }
+  5% {
+    transform: scale(1);
+  }
+  7% {
+    transform: scale(1.16);
+  }
+}
+
+/* Hovering anywhere on the install popup replays the burst once, on demand —
+   the same glare/glow/heartbeat, but as a single ~2.6s pass (own keyframes,
+   0%→100% so they begin and end at rest). Overriding the 45s loop here means
+   leaving hover simply restarts that loop from its rest frame — no jump. */
+.install-section:hover .install-section__btn--support {
+  animation: support-glow-burst 2.6s ease-in-out;
+}
+
+.install-section:hover .install-section__btn--support::after {
+  animation: support-glare-burst 2.6s ease-in-out;
+}
+
+.install-section:hover .install-section__btn--support .install-section__btn-icon {
+  animation: support-heartbeat-burst 2.6s ease-in-out;
+}
+
+@keyframes support-glare-burst {
+  0% {
+    transform: translateX(-160%);
+  }
+  100% {
+    transform: translateX(160%);
+  }
+}
+
+@keyframes support-glow-burst {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(205, 0, 37, 0);
+  }
+  40% {
+    box-shadow: 0 0 16px 1px rgba(205, 0, 37, 0.5);
+  }
+}
+
+@keyframes support-heartbeat-burst {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.22);
+  }
+  45% {
+    transform: scale(1);
+  }
+  65% {
+    transform: scale(1.16);
+  }
+  85% {
+    transform: scale(1);
+  }
+}
+
+/* Respect users who ask for less motion — no sweep, no glow, no heartbeat,
+   on the loop or on hover. !important so the hover rules can't re-enable it. */
+@media (prefers-reduced-motion: reduce) {
+  .install-section__btn--support,
+  .install-section__btn--support::after,
+  .install-section__btn--support .install-section__btn-icon {
+    animation: none !important;
+  }
+}
+
 
 /* Detail view inside the badge (desktop) — back arrow + the install-info
    branch content rendered inline. */
