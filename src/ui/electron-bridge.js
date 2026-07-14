@@ -35,13 +35,13 @@ export function mountElectronBridge({ player, getActiveStation }) {
   let currentStation = null;
 
   function syncPlaybackState() {
-    api.updatePlayback({ playing, station: currentStation });
+    api.updatePlayback?.({ playing, station: currentStation });
     updateTrayIcon();
   }
 
   function updateTrayIcon() {
     if (!playing) {
-      api.setTrayIcon(null);
+      api.setTrayIcon?.(null);
       return;
     }
     const canvas = document.createElement('canvas');
@@ -91,27 +91,31 @@ export function mountElectronBridge({ player, getActiveStation }) {
   });
 
   // --- Electron tray menu → Player ---
-  const unsubPlayPause = api.onTrayPlayPause(() => {
+  // Optional-chained: the renderer runs the live site while preload.js is
+  // baked into the installed binary, so an older/newer installer may not
+  // expose every method. A missing one must degrade the feature, never throw.
+  const noop = () => {};
+  const unsubPlayPause = api.onTrayPlayPause?.(() => {
     if (player.isPlaying()) {
       player.pause();
     } else {
       player.resume();
     }
-  });
+  }) ?? noop;
 
-  const unsubPrevious = api.onTrayPrevious(() => {
+  const unsubPrevious = api.onTrayPrevious?.(() => {
     window.dispatchEvent(new CustomEvent('electron:trayPrevious'));
-  });
+  }) ?? noop;
 
-  const unsubNext = api.onTrayNext(() => {
+  const unsubNext = api.onTrayNext?.(() => {
     window.dispatchEvent(new CustomEvent('electron:trayNext'));
-  });
+  }) ?? noop;
 
   return {
-    setAlwaysOnTop: (onTop) => api.setAlwaysOnTop(onTop),
-    getAlwaysOnTop: () => api.getAlwaysOnTop(),
-    setAutoStart: (enabled) => api.setAutoStart(enabled),
-    getAutoStart: () => api.getAutoStart(),
+    setAlwaysOnTop: (onTop) => api.setAlwaysOnTop?.(onTop),
+    getAlwaysOnTop: () => api.getAlwaysOnTop?.() ?? Promise.resolve(false),
+    setAutoStart: (enabled) => api.setAutoStart?.(enabled),
+    getAutoStart: () => api.getAutoStart?.() ?? Promise.resolve(false),
     cleanup: () => {
       unsubPlayPause();
       unsubPrevious();

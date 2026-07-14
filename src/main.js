@@ -458,10 +458,21 @@ mountFooterReveal();
 // Electron desktop bridge — wires native features (tray, always-on-top,
 // auto-start) when running inside the Electron wrapper. In the browser,
 // isElectron() returns false and this is a no-op.
-const electronBridge = mountElectronBridge({
-  player,
-  getActiveStation: () => state.currentStation,
-});
+// Wrapped so an Electron-integration failure can NEVER block the core app.
+// The desktop app is a thin client: the renderer loads the live site while
+// preload.js is baked into the installed binary, so a version skew (old
+// installer + newer web code, or vice versa) is inevitable. Without this a
+// single missing preload method threw here and aborted the whole boot — an
+// empty app. Native features degrade; radio does not.
+let electronBridge = null;
+try {
+  electronBridge = mountElectronBridge({
+    player,
+    getActiveStation: () => state.currentStation,
+  });
+} catch (err) {
+  console.warn('Electron bridge mount failed (native features disabled):', err);
+}
 
 // Electron tray "Next Station" → advance to next station in active list.
 window.addEventListener('electron:trayNext', () => {
@@ -484,7 +495,11 @@ window.addEventListener('electron:trayPrevious', () => {
 // Electron-only frameless title bar (drag + minimize/pin/close).
 // In the browser, isElectron() returns false and this block is skipped.
 if (isElectron()) {
-  mountElectronWindowControls({ electronBridge });
+  try {
+    mountElectronWindowControls({ electronBridge });
+  } catch (err) {
+    console.warn('Electron window controls mount failed:', err);
+  }
 }
 
 // --- Helpers ---
