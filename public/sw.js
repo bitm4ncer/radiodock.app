@@ -1,10 +1,17 @@
-// RadioDock service worker — app-shell cache only.
+// RadioDock service worker — app-shell cache.
 //
 // Strategy:
-//   - Cache-first for the app shell (index.html + hashed JS/CSS + icons +
-//     community-radios.json). Survives offline.
+//   - Network-FIRST for the HTML document (/, *.html): always load the current
+//     index.html so it references the current hashed asset filenames; fall
+//     back to the cached shell only when offline. Cache-first here is a trap
+//     for a hashed-asset SPA — a background-refreshed index.html would point
+//     at new asset hashes that weren't cached, so an offline/flaky launch
+//     served fresh HTML with missing JS/CSS → an unstyled page.
+//   - Cache-FIRST for hashed assets, icons, fonts, community-radios.json (they
+//     are immutable-hashed or tolerant of one-visit staleness), revalidated in
+//     the background. Survives offline.
 //   - Network-only for everything else (Radio Browser API, metadata proxy,
-//     audio streams). Cache-first on those would serve stale "Now Playing".
+//     audio streams). Cache-first there would serve stale "Now Playing".
 //
 // Cache name is bumped on every deploy via the BUILD_ID placeholder that
 // Vite replaces at build time. The activate handler purges old caches.
@@ -57,6 +64,10 @@ function isAppShellRequest(url) {
   return false;
 }
 
+function isHtmlRequest(req, url) {
+  return req.mode === 'navigate' || url.pathname === '/' || url.pathname.endsWith('.html');
+}
+
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
@@ -66,31 +77,42 @@ self.addEventListener('fetch', (event) => {
     return; // let the browser handle it (network)
   }
 
+  // HTML document: network-first so it always references current asset hashes.
+  if (isHtmlRequest(req, url)) {
+    event.respondWith(
+      (async () => {
+        const cache = await caches.open(CACHE_NAME);
+        try {
+          const res = await fetch(req);
+          if (res && res.ok) cache.put(req, res.clone());
+          return res;
+        } catch (err) {
+          const cached =
+            (await cache.match(req)) ||
+            (await cache.match('/index.html')) ||
+            (await cache.match('/'));
+          if (cached) return cached;
+          throw err;
+        }
+      })(),
+    );
+    return;
+  }
+
+  // Hashed assets / icons / fonts / json: cache-first + background refresh.
   event.respondWith(
     (async () => {
       const cache = await caches.open(CACHE_NAME);
       const cached = await cache.match(req);
       if (cached) {
-        // Refresh in the background so the next visit is up-to-date.
         fetch(req)
-          .then((res) => {
-            if (res && res.ok) cache.put(req, res.clone());
-          })
+          .then((res) => { if (res && res.ok) cache.put(req, res.clone()); })
           .catch(() => {});
         return cached;
       }
-      try {
-        const res = await fetch(req);
-        if (res && res.ok) cache.put(req, res.clone());
-        return res;
-      } catch (err) {
-        // Last-resort offline fallback for navigations: serve index.html.
-        if (req.mode === 'navigate') {
-          const fallback = await cache.match('/index.html');
-          if (fallback) return fallback;
-        }
-        throw err;
-      }
+      const res = await fetch(req);
+      if (res && res.ok) cache.put(req, res.clone());
+      return res;
     })(),
   );
 });
