@@ -53,16 +53,37 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
+      # Flatpak toolchain + the Freedesktop runtime/SDK and the Electron base app
+      # the bundled Electron links against inside the sandbox.
+      - name: Install Flatpak toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder elfutils
+          flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
+          flatpak install --user -y flathub \
+            org.freedesktop.Platform//23.08 \
+            org.freedesktop.Sdk//23.08 \
+            org.electronjs.Electron2.BaseApp//23.08
       - run: npm ci
         working-directory: desktop
-      - run: npx electron-builder --linux --publish=never
+      - name: Build AppImage
+        run: npx electron-builder --linux AppImage --publish=never
         env:
           USE_SYSTEM_FPM: 1
+        working-directory: desktop
+      # Flatpak is newer/experimental here; if it fails, the AppImage and the rest
+      # of the release still ship. The release job only attaches it when it exists.
+      - name: Build Flatpak (non-blocking)
+        continue-on-error: true
+        run: npx electron-builder --linux flatpak --publish=never
         working-directory: desktop
       - uses: actions/upload-artifact@v4
         with:
           name: installer-linux
-          path: desktop/dist/RadioDock-linux.AppImage
+          path: |
+            desktop/dist/RadioDock-linux.AppImage
+            desktop/dist/RadioDock-linux.flatpak
+          if-no-files-found: warn
           retention-days: 1
 
   release:
@@ -83,6 +104,7 @@ jobs:
         run: |
           NOTES="The latest stable version of RadioDock for desktop. Download the installer for your platform below."
           FILES="installers/RadioDock-win.exe installers/RadioDock-mac.dmg installers/RadioDock-linux.AppImage"
+          [ -f installers/RadioDock-linux.flatpak ] && FILES="$FILES installers/RadioDock-linux.flatpak"
           if gh release view latest --repo "$REPO" >/dev/null 2>&1; then
             gh release edit latest --repo "$REPO" --title "RadioDock" --notes "$NOTES" --latest
             gh release upload latest --repo "$REPO" --clobber $FILES

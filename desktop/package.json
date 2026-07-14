@@ -44,7 +44,7 @@
       "identity": null
     },
     "linux": {
-      "target": ["AppImage"],
+      "target": ["AppImage", "flatpak"],
       "icon": "icons/icon.png",
       "category": "Audio"
     },
@@ -58,6 +58,24 @@
     },
     "appImage": {
       "artifactName": "RadioDock-linux.${ext}"
+    },
+    "flatpak": {
+      "runtime": "org.freedesktop.Platform",
+      "runtimeVersion": "23.08",
+      "sdk": "org.freedesktop.Sdk",
+      "base": "org.electronjs.Electron2.BaseApp",
+      "baseVersion": "23.08",
+      "finishArgs": [
+        "--share=ipc",
+        "--socket=x11",
+        "--socket=wayland",
+        "--socket=pulseaudio",
+        "--share=network",
+        "--device=dri",
+        "--talk-name=org.freedesktop.Notifications",
+        "--own-name=org.mpris.MediaPlayer2.*"
+      ],
+      "artifactName": "RadioDock-linux.flatpak"
     }
   }
 }
