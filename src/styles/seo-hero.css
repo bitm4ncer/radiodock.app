@@ -1,39 +1,18 @@
-/* SEO hero — static content visible to crawlers and users without JS.
-   Hidden by main.js on app init (progressive enhancement). */
+/* SEO hero — descriptive h1 + lead + feature list for crawlers and screen
+   readers. Kept in the rendered DOM: JS-rendering crawlers (Googlebot)
+   snapshot the live DOM, so removing it on load would hide it from exactly
+   the crawler it's written for. Visually hidden via the standard sr-only
+   clip pattern — no flash, no layout shift; sighted users see the app shell.
+   (Was previously styled visible and then .remove()-d by main.js, which both
+   flashed on every load and deleted the content before indexing.) */
 .seo-hero {
-  padding: 24px 16px 8px;
-  text-align: center;
-  color: var(--text-primary, #e0e0e0);
-}
-
-.seo-hero h1 {
-  font-size: 1.35rem;
-  font-weight: 700;
-  margin: 0 0 8px;
-  line-height: 1.3;
-}
-
-.seo-hero__lead {
-  font-size: 0.95rem;
-  line-height: 1.55;
-  margin: 0 auto 12px;
-  max-width: 400px;
-  color: var(--text-secondary, #aaa);
-}
-
-.seo-hero__features {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 10px;
-  justify-content: center;
-  list-style: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
   padding: 0;
-  margin: 0;
-  font-size: 0.8rem;
-  color: var(--text-tertiary, #777);
-}
-
-.seo-hero__features li::before {
-  content: "✓ ";
-  color: var(--accent, #4a9eff);
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

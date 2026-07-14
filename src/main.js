@@ -92,10 +92,10 @@ const streamProber = attachStreamProber({
 
 initModals();
 
-// Hide the static SEO hero now that JS has loaded.
-// Crawlers see this content; JS-capable users get the interactive app.
-const seoHero = document.getElementById('seo-hero');
-if (seoHero) seoHero.remove();
+// The SEO hero (h1 + lead) stays in the DOM — it's visually hidden via the
+// sr-only pattern in seo-hero.css, so JS-rendering crawlers still index it and
+// screen readers still announce it, without a flash or layout shift. (It used
+// to be .remove()-d here, which deleted it before Googlebot's render snapshot.)
 
 // User-facing version label, computed at build time from git commit
 // count (see vite.config.js#appVersion). Populated into every
