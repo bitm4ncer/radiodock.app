@@ -53,15 +53,16 @@ jobs:
           make_latest: true
 
   linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
-      - run: sudo apt-get update && sudo apt-get install -y libfuse2t64 libfuse3-dev || sudo apt-get install -y libfuse2
       - run: npm ci
         working-directory: desktop
-      - run: npx electron-builder --linux
+      - run: npx electron-builder --linux --publish=never
+        env:
+          USE_SYSTEM_FPM: 1
         working-directory: desktop
       - name: Upload to Release
         uses: softprops/action-gh-release@v2

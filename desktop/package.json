@@ -43,7 +43,7 @@
       "identity": null
     },
     "linux": {
-      "target": ["AppImage", "deb"],
+      "target": ["AppImage"],
       "icon": "icons/icon.png",
       "category": "Audio"
     },
