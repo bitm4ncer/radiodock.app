@@ -80,12 +80,16 @@ export function mountElectronBridge({ player, getActiveStation }) {
     syncPlaybackState();
   });
 
-  player.on('pause', () => {
+  // The audio player emits 'paused' / 'stopped' (see player/audio.js) — NOT
+  // 'pause' / 'ended'. Listening for the wrong names left these handlers dead,
+  // so `playing` never went back to false and the tray "now playing" dot stuck
+  // on after pause/stop.
+  player.on('paused', () => {
     playing = false;
     syncPlaybackState();
   });
 
-  player.on('ended', () => {
+  player.on('stopped', () => {
     playing = false;
     syncPlaybackState();
   });
