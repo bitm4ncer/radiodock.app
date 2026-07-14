@@ -283,6 +283,51 @@ body.is-electron .electron-titlebar {
 body.is-electron #offCanvasInstall,
 body.is-electron .install-section { display: none !important; }
 
+/* ---- Frameless-window bottom rounding (Electron, full mode) ---- */
+/* The window is transparent + frameless (desktop/main.js). It still looks
+   like a solid rectangle because layout.css's html{background:var(--bg)}
+   propagates to the window canvas, and the canvas ignores border-radius.
+   To round only the bottom corners: kill that propagation (transparent
+   html + body) and repaint the opaque app background on a fixed ::after
+   layer whose bottom corners are rounded, so the transparent window shows
+   through there. The fixed player bar sits on top of that layer, so round
+   its bottom corners to the same radius. Excluded in tiny-player mode,
+   which has its own fully-transparent pill treatment below. */
+html:has(body.is-electron:not(.is-tiny-player)) {
+  --rd-window-radius: 48px;
+  --rd-window-radius-top: 12px;
+}
+
+html:has(body.is-electron:not(.is-tiny-player)),
+body.is-electron:not(.is-tiny-player) {
+  background: transparent !important;
+}
+
+body.is-electron:not(.is-tiny-player)::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--bg);
+  border-top-left-radius: var(--rd-window-radius-top);
+  border-top-right-radius: var(--rd-window-radius-top);
+  border-bottom-left-radius: var(--rd-window-radius);
+  border-bottom-right-radius: var(--rd-window-radius);
+  pointer-events: none;
+}
+
+/* The title bar is the topmost opaque layer, so it — not just the backdrop —
+   has to carry the top radius or its square corners cover it. */
+body.is-electron:not(.is-tiny-player) .electron-titlebar {
+  border-top-left-radius: var(--rd-window-radius-top);
+  border-top-right-radius: var(--rd-window-radius-top);
+}
+
+body.is-electron:not(.is-tiny-player) .player-section {
+  border-bottom-left-radius: var(--rd-window-radius);
+  border-bottom-right-radius: var(--rd-window-radius);
+}
+
 /* ---- Tiny-player mode (Electron) ---- */
 /* The window becomes a transparent rectangle; only the player pill is opaque,
    so it reads as a floating pill. The main process shrinks it, docks it
