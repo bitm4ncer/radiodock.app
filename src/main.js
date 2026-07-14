@@ -369,16 +369,20 @@ if (recorder) {
   recorder.on('error', () => recordingCable.hide());
 }
 
-// "App mode" = narrow phone, installed PWA, or Electron — contexts where the
-// notes panel isn't a persistent surface. There the record button lives next
-// to search; in a regular desktop browser it lives in the notes panel instead.
-const recordAppMode = matchMedia('(pointer: coarse)').matches || detectStandalone() || isElectron();
+// The record button only appears where recording actually works today:
+//   - Desktop browser  → in the notes panel (next to "Save Moment").
+//   - Desktop app (installed PWA / Electron) → top bar, next to search.
+// Mobile is deliberately excluded for now — recording is broken there (double
+// audio + empty capture). Hidden until the mobile path is properly designed
+// (and dropped entirely if iOS/PWA can't support it).
+const isCoarsePointer = matchMedia('(pointer: coarse)').matches;
+const recordDesktopApp = !isCoarsePointer && (detectStandalone() || isElectron());
 
-mountNotesPanel({ player, getLatestMetadata: () => latestMetadata, recorder, showPanelRecordButton: !recordAppMode })
+mountNotesPanel({ player, getLatestMetadata: () => latestMetadata, recorder, showPanelRecordButton: !isCoarsePointer && !recordDesktopApp })
   .then((api) => { notesApi = api; })
   .catch((err) => console.warn('Notes panel mount failed:', err));
 
-if (recordAppMode && recorder) {
+if (recordDesktopApp && recorder) {
   mountRecordButton({ recorder, player, getNotesApi: () => notesApi });
 }
 
