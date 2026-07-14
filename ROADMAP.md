@@ -9,7 +9,9 @@
 - [x] Tape-player note card — spinning SVG reels, inline playback, download-then-delete confirm
 - [x] Desktop cable connecting player + notes panel while recording (physics-ish sag, tracks drag)
 - [x] Analytics events + legal-page relay note
-- [ ] Ship to production (push `main`) + on-device mobile pass (iOS foreground recording)
+- [x] Desktop shipped to production
+- [x] Mobile recording via server-side capture (iOS/WebKit can't capture client-side) — VPS `/api/record/*` temp-buffers + delete-on-fetch; `mobile-recorder` mirrors the desktop recorder; background recording survives app restart; verified vs live server
+- [ ] On-device iPhone verification (no double audio, non-empty file, background→return→save) — ship gate
 
 ## v2.5 — Desktop QoL ✅
 

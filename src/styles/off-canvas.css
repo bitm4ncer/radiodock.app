@@ -256,3 +256,11 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }
 }
+
+/* Server-recording (mobile): elapsed timer + saving state on the top-bar button */
+.record-adjacent-btn__time {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  margin-left: 4px;
+}
+.record-adjacent-btn.is-fetching { opacity: 0.6; }

@@ -110,6 +110,7 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     recorder.on('started', () => refreshRecordBtnState());
     recorder.on('progress', (e) => updateRecordTime(e.detail));
     recorder.on('streamdrop', () => toast('Stream dropped — saved what was recorded.'));
+    recorder.on('fetching', () => toast('Saving recording…'));
     recorder.on('error', (e) => { toast(e.detail?.message ?? 'Recording failed.'); refreshRecordBtnState(); });
     recorder.on('stopped', (e) => onRecordingStopped(e.detail));
     player.on('stationchange', refreshRecordBtnState);
