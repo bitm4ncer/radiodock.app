@@ -105,6 +105,14 @@ The value is exposed as the `__APP_VERSION__` build-time constant via Vite's `de
 
 `.github/workflows/deploy.yml` checkout uses `fetch-depth: 0` — without it the runner has a shallow clone and `git rev-list --count HEAD` would always be 1.
 
+## Desktop releases
+
+The Electron installers ship from **one clean GitHub release** — tag `latest`, title "RadioDock", **no changelog**. `.github/workflows/desktop-build.yml` builds win/mac/linux in parallel, then a single `release` job publishes/updates that one release with the three installers.
+
+- **Never** put changelog or commit-message notes on a release. Users must not be able to see what changed build-to-build — keep the generic notes line only.
+- **No per-build versioned releases** (no `desktop-vN`). One `latest` release, updated in place (`gh release upload --clobber`), always `--latest`.
+- Keep the asset filenames `RadioDock-win.exe` / `RadioDock-mac.dmg` / `RadioDock-linux.AppImage` and the make-latest flag: the site's install buttons hit `/releases/latest/download/RadioDock-*` ([install-section.js](src/ui/install-section.js)).
+
 ## Conventions
 
 - Default to writing no code comments. Only write a comment when the WHY is non-obvious — a hidden constraint, a workaround, a subtle invariant. No "// updates the station" narration.

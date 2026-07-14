@@ -33,8 +33,7 @@
     ],
     "win": {
       "target": ["nsis"],
-      "icon": "icons/icon.ico",
-      "signAndEditExecutable": false
+      "icon": "icons/icon.ico"
     },
     "mac": {
       "target": ["dmg"],
