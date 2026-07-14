@@ -7,6 +7,7 @@ const {
   ipcMain,
   dialog,
   shell,
+  screen,
 } = require('electron');
 const path = require('path');
 const { createTray, updateTrayIcon, updateTrayMenu, destroyTray } = require('./tray');
@@ -18,6 +19,9 @@ let mainWindow = null;
 let alwaysOnTop = false;
 let playbackState = { playing: false, station: null };
 let autoStart = false;
+// Saved window state so tiny-player mode can restore the full window.
+let preTinyBounds = null;
+let preTinyMinSize = null;
 
 function createWindow() {
   const iconPath = path.join(__dirname, 'icons', 'icon.png');
@@ -146,6 +150,34 @@ function setupIPC() {
   });
 
   ipcMain.handle('rd:window:isMaximized', () => mainWindow?.isMaximized() ?? false);
+
+  // --- Tiny player: shrink to a mini window docked bottom-right, or restore ---
+  ipcMain.handle('rd:window:tinyPlayer', (_, enabled) => {
+    if (!mainWindow) return false;
+    if (enabled) {
+      // Remember the full-size state to restore later.
+      preTinyBounds = mainWindow.getBounds();
+      preTinyMinSize = mainWindow.getMinimumSize();
+
+      const W = 360, H = 132, MARGIN = 12;
+      // workArea excludes the taskbar, so this docks just above/left of it.
+      const wa = screen.getPrimaryDisplay().workArea;
+      // Relax the min size (the full window's 380×480 floor would clamp us).
+      mainWindow.setMinimumSize(240, 96);
+      mainWindow.setResizable(false);
+      mainWindow.setBounds({
+        width: W,
+        height: H,
+        x: wa.x + wa.width - W - MARGIN,
+        y: wa.y + wa.height - H - MARGIN,
+      });
+    } else {
+      mainWindow.setResizable(true);
+      if (preTinyMinSize) mainWindow.setMinimumSize(preTinyMinSize[0], preTinyMinSize[1]);
+      if (preTinyBounds) mainWindow.setBounds(preTinyBounds);
+    }
+    return enabled;
+  });
 
   // --- External links ---
   ipcMain.handle('rd:shell:openExternal', (_, url) => {

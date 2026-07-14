@@ -278,3 +278,23 @@ body.is-electron .electron-titlebar {
 /* Hide install entry points when running as Electron desktop app. */
 body.is-electron #offCanvasInstall,
 body.is-electron .install-section { display: none !important; }
+
+/* ---- Tiny-player mode (Electron) ---- */
+/* Collapse the window to just the title bar + the now-playing player. The main
+   process shrinks the frameless window and docks it bottom-right; it stays
+   draggable via the title bar. Everything else is hidden. */
+body.is-tiny-player .mobile-topbar,
+body.is-tiny-player .mobile-lists,
+body.is-tiny-player .search-overlay,
+body.is-tiny-player .off-canvas,
+body.is-tiny-player .notes-flag,
+body.is-tiny-player .app-background {
+  display: none !important;
+}
+
+/* Fill the area below the 34px title bar with the player, centered. */
+body.is-tiny-player .player-section {
+  top: 34px;
+  justify-content: center;
+  padding: 8px 10px;
+}

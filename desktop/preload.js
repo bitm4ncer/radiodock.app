@@ -23,6 +23,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   close: () => ipcRenderer.invoke('rd:window:close'),
   isMaximized: () => ipcRenderer.invoke('rd:window:isMaximized'),
 
+  // --- Tiny player: shrink + dock bottom-right, or restore ---
+  setTinyPlayer: (enabled) => ipcRenderer.invoke('rd:window:tinyPlayer', enabled),
+
   // --- Shell ---
   openExternal: (url) => ipcRenderer.invoke('rd:shell:openExternal', url),
 

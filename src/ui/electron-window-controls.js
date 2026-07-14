@@ -23,10 +23,20 @@ const CLOSE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" st
   <path d="M6 6l12 12M18 6 6 18"/>
 </svg>`;
 
+// Picture-in-picture style: a small pane docked in the corner of a frame.
+const TINY_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <rect x="3" y="4" width="18" height="16" rx="2"/>
+  <rect x="12.5" y="12" width="6.5" height="5" rx="1" fill="currentColor" stroke="none"/>
+</svg>`;
+
 export function mountElectronWindowControls({ electronBridge } = {}) {
   if (document.querySelector('.electron-titlebar')) return;
 
   const api = typeof window !== 'undefined' ? window.electronAPI : null;
+  // Capability-gate the tiny-player toggle: it needs the native resize/dock
+  // method. On an older installed app that lacks it, we hide the button
+  // entirely rather than let it collapse the UI in a window that won't shrink.
+  const hasTiny = typeof api?.setTinyPlayer === 'function';
 
   const bar = document.createElement('div');
   bar.className = 'electron-titlebar';
@@ -35,6 +45,7 @@ export function mountElectronWindowControls({ electronBridge } = {}) {
     <div class="electron-titlebar__controls">
       <button type="button" class="electron-win-btn" data-win="min" title="Minimize" aria-label="Minimize">${MINIMIZE_SVG}</button>
       <button type="button" class="electron-win-btn" data-win="pin" title="Always on top" aria-label="Always on top">${PIN_SVG}</button>
+      ${hasTiny ? `<button type="button" class="electron-win-btn" data-win="tiny" title="Tiny player" aria-label="Tiny player">${TINY_SVG}</button>` : ''}
       <button type="button" class="electron-win-btn electron-win-btn--close" data-win="close" title="Close" aria-label="Close">${CLOSE_SVG}</button>
     </div>
   `;
@@ -57,6 +68,21 @@ export function mountElectronWindowControls({ electronBridge } = {}) {
     if (electronBridge?.setAlwaysOnTop) await electronBridge.setAlwaysOnTop(onTop);
     else await api?.setAlwaysOnTop?.(onTop);
   });
+
+  // Tiny-player toggle: collapse to just the title bar + player, docked
+  // bottom-right by the main process; toggle again to restore.
+  const tinyBtn = bar.querySelector('[data-win="tiny"]');
+  if (tinyBtn) {
+    let tiny = false;
+    tinyBtn.addEventListener('click', async () => {
+      tiny = !tiny;
+      document.body.classList.toggle('is-tiny-player', tiny);
+      tinyBtn.classList.toggle('is-active', tiny);
+      tinyBtn.title = tiny ? 'Exit tiny player' : 'Tiny player';
+      try { await api.setTinyPlayer(tiny); }
+      catch (err) { console.warn('Tiny player toggle failed:', err); }
+    });
+  }
 
   // Restore persisted always-on-top state.
   const getState = electronBridge?.getAlwaysOnTop
