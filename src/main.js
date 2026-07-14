@@ -33,7 +33,7 @@ import { mountFooterReveal } from './ui/footer-reveal.js';
 import { mountNotesPanel } from './ui/notes-panel.js';
 import { mountNotesCaptureButton } from './ui/notes-capture-button.js';
 import { mountSyncModal } from './ui/sync-modal.js';
-import { autoSyncOnStartup as syncAutoStart, pushOnChange as syncPushOnChange, getSyncToken, extractTokenFromInput, pullFromServer, applyImportPayload } from './data/sync.js';
+import { autoSyncOnStartup as syncAutoStart, pushOnChange as syncPushOnChange, getSyncToken, extractTokenFromInput, pullFromServer, applyImportPayload, markSyncDirty } from './data/sync.js';
 import { track } from './analytics/umami.js';
 import { attachListenHeartbeat } from './analytics/listen-heartbeat.js';
 import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
@@ -1352,6 +1352,10 @@ let __radiodockExports;
 // Sync push-on-change debounce
 let syncPushTimer = null;
 export function scheduleSyncPush() {
+  // Mark dirty synchronously so an unpushed edit survives if the app closes
+  // within the debounce window — the next startup pushes instead of pulling
+  // and clobbering it.
+  getSyncToken().then((token) => { if (token) markSyncDirty(); });
   if (syncPushTimer) clearTimeout(syncPushTimer);
   syncPushTimer = setTimeout(async () => {
     const token = await getSyncToken();

@@ -4,7 +4,8 @@ import { toast } from './toast.js';
 import * as storage from '../data/storage.js';
 import {
   generateToken, pushToServer, pullFromServer, deleteFromServer,
-  getSyncToken, buildExportPayload, applyImportPayload, extractTokenFromInput, SyncError,
+  getSyncToken, buildExportPayload, applyImportPayload, extractTokenFromInput,
+  getRemoteMeta, SyncError,
 } from '../data/sync.js';
 
 const SYNC_URL_PREFIX = `${window.location.origin}/#sync=`;
@@ -47,14 +48,12 @@ export function mountSyncModal({ onListsChanged, track }) {
 
     show(states.generating);
     try {
-      const metaRes = await fetch(`https://stations.radiodock.app/api/sync/${token}?meta=1`, {
-        referrerPolicy: 'no-referrer',
-      });
-      if (!metaRes.ok) {
+      // token is the secret; getRemoteMeta derives the record id server-side.
+      const meta = await getRemoteMeta(token);
+      if (!meta) {
         showState('unlinked');
         return;
       }
-      const meta = await metaRes.json();
 
       const url = `${SYNC_URL_PREFIX}${token}`;
       const countText = `Syncing ${meta.list_count} list${meta.list_count !== 1 ? 's' : ''} (${meta.station_count} stations)`;
