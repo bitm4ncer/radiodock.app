@@ -8,13 +8,16 @@ on:
       - '.github/workflows/desktop-build.yml'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   windows:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 20 }
+        with: { node-version: 22 }
       - run: npm ci
         working-directory: desktop
       - run: npx electron-builder --win
@@ -34,7 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 20 }
+        with: { node-version: 22 }
       - run: npm ci
         working-directory: desktop
       - run: npx electron-builder --mac
@@ -54,7 +57,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 20 }
+        with: { node-version: 22 }
+      - run: sudo apt-get update && sudo apt-get install -y libfuse2
       - run: npm ci
         working-directory: desktop
       - run: npx electron-builder --linux
