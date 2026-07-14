@@ -36,7 +36,7 @@ import { mountRecorder, isRecordingSupported } from './player/recorder.js';
 import { mountRecordingCable } from './ui/recording-cable.js';
 import { mountRecordButton } from './ui/record-button.js';
 import { mountSyncModal } from './ui/sync-modal.js';
-import { autoSyncOnStartup as syncAutoStart, pushOnChange as syncPushOnChange, getSyncToken, extractTokenFromInput, pullFromServer, applyImportPayload, markSyncDirty } from './data/sync.js';
+import { startLiveSync, stopLiveSync, pushWithStatus as syncPushWithStatus, getSyncToken, extractTokenFromInput, pullFromServer, applyImportPayload, markSyncDirty } from './data/sync.js';
 import { track } from './analytics/umami.js';
 import { attachListenHeartbeat } from './analytics/listen-heartbeat.js';
 import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
@@ -392,12 +392,28 @@ mountNotesCaptureButton({
   onCapture: () => notesApi?.captureNow({ source: 'player-card' }),
 });
 
+// Start the live-sync engine: an immediate sync + a poll loop so a change on
+// another device shows up here while the app is open. Safe to call repeatedly
+// (it restarts cleanly); called on boot when linked and after link/connect.
+function startSyncEngine() {
+  startLiveSync({
+    getToken: getSyncToken,
+    onRemoteChange: async () => {
+      state.userLists = await listsApi.getUserLists();
+      renderActiveList();
+      track('sync-pull', { source: 'live-sync' });
+    },
+  });
+}
+
 // Sync modal
 const syncModal = mountSyncModal({
   onListsChanged: async () => {
     state.userLists = await listsApi.getUserLists();
     renderActiveList();
   },
+  onLinked: startSyncEngine,
+  onUnlinked: stopLiveSync,
   track,
 });
 
@@ -1160,14 +1176,7 @@ bootstrap().then(async () => {
   await handleInboundSyncHash();
   await handleSharedTokenFromQuery();
   const token = await getSyncToken();
-  if (token) {
-    const result = await syncAutoStart(token);
-    if (result === 'pulled') {
-      state.userLists = await listsApi.getUserLists();
-      renderActiveList();
-      track('sync-pull', { source: 'auto-sync' });
-    }
-  }
+  if (token) startSyncEngine();
 });
 
 // Also run the handler on hashchange, so pasting a share URL into an
@@ -1459,7 +1468,7 @@ export function scheduleSyncPush() {
   syncPushTimer = setTimeout(async () => {
     const token = await getSyncToken();
     if (token) {
-      const result = await syncPushOnChange(token);
+      const result = await syncPushWithStatus(token);
       if (result) {
         track('sync-push', {
           stationCount: result.station_count ?? 0,

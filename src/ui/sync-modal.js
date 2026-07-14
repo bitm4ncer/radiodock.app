@@ -5,8 +5,28 @@ import * as storage from '../data/storage.js';
 import {
   generateToken, pushToServer, pullFromServer, deleteFromServer,
   getSyncToken, buildExportPayload, applyImportPayload, extractTokenFromInput,
-  getRemoteMeta, SyncError,
+  getRemoteMeta, onSyncStatus, SyncError,
 } from '../data/sync.js';
+
+// Human-readable "synced N ago" from a ms timestamp.
+function relativeTime(at) {
+  if (!at) return '';
+  const s = Math.max(0, Math.round((Date.now() - at) / 1000));
+  if (s < 5) return 'just now';
+  if (s < 60) return `${s}s ago`;
+  const m = Math.round(s / 60);
+  if (m < 60) return `${m} min ago`;
+  const h = Math.round(m / 60);
+  return `${h} h ago`;
+}
+
+const STATUS_TEXT = {
+  syncing: () => '↻ Syncing…',
+  synced: (at) => `✓ Up to date${at ? ` · synced ${relativeTime(at)}` : ''}`,
+  offline: () => '⚠ Offline — will sync when back online',
+  error: () => '⚠ Sync error — retrying…',
+  unlinked: () => '',
+};
 
 const SYNC_URL_PREFIX = `${window.location.origin}/#sync=`;
 
@@ -38,7 +58,26 @@ async function renderSyncQr(url) {
   }
 }
 
-export function mountSyncModal({ onListsChanged, track }) {
+export function mountSyncModal({ onListsChanged, onLinked, onUnlinked, track }) {
+  // Live status line — subscribed once; a slow timer keeps the relative time
+  // fresh while the modal is open.
+  const statusEl = () => document.getElementById('syncLiveStatus');
+  let lastStatus = { state: 'unlinked', at: null };
+  function renderStatus(status) {
+    lastStatus = status;
+    const el = statusEl();
+    if (!el) return;
+    const text = (STATUS_TEXT[status.state] ?? (() => ''))(status.at);
+    el.textContent = text;
+    el.dataset.state = status.state;
+    el.hidden = !text;
+  }
+  onSyncStatus(renderStatus);
+  setInterval(() => {
+    if (lastStatus.state === 'synced' && !document.getElementById('syncModal')?.classList.contains('show')) return;
+    renderStatus(lastStatus);
+  }, 10000);
+
   const states = {
     unlinked: document.getElementById('syncStateUnlinked'),
     generating: document.getElementById('syncStateGenerating'),
@@ -110,6 +149,7 @@ export function mountSyncModal({ onListsChanged, track }) {
 
       showState('linked');
       renderSyncQr(url);
+      onLinked?.();
       track?.('sync-link', {
         stationCount: result?.station_count ?? 0,
         listCount: result?.list_count ?? 0,
@@ -137,6 +177,7 @@ export function mountSyncModal({ onListsChanged, track }) {
         pulled.exportJson, pulled.hash, pulled.updated_at,
       );
       await storage.setPref('syncToken', token);
+      onLinked?.();
       closeModal('syncModal');
       onListsChanged?.();
       track?.('sync-pull', { stationCount, listCount: imported, source: 'manual-connect' });
@@ -189,6 +230,7 @@ export function mountSyncModal({ onListsChanged, track }) {
     if (!ok) return;
     try {
       await deleteFromServer(await getSyncToken());
+      onUnlinked?.();
       closeModal('syncModal');
       track?.('sync-unlink');
       toast('Sync removed');

@@ -28,6 +28,17 @@
   margin: 0 0 14px;
 }
 
+/* Live sync status line (syncing / up-to-date / offline / error). */
+.sync-live-status {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 4px 0 10px;
+  transition: color 160ms ease;
+}
+.sync-live-status[data-state="synced"] { color: var(--green); }
+.sync-live-status[data-state="offline"],
+.sync-live-status[data-state="error"] { color: var(--red); }
+
 .sync-divider {
   display: flex;
   align-items: center;

@@ -331,13 +331,22 @@ export async function autoSyncOnStartup(secret) {
     if (pushed) return 'pushed';
     return 'unchanged';
   } catch (err) {
+    // A "not found" may be a transient read-after-write race (right after a
+    // fresh push) or a real "unlinked/expired elsewhere". Don't self-nuke the
+    // link on one blip — report it; the live engine clears the link only after
+    // repeated confirmation (see syncNow).
     if (err instanceof SyncError && err.type === 'server' && err.message.includes('not found')) {
-      await storage.setPref('syncToken', undefined);
-      await storage.setPref('syncLastHash', undefined);
-      await storage.setPref('syncLastUpdatedAt', undefined);
+      return 'notfound';
     }
     return 'error';
   }
+}
+
+async function clearSyncPrefsLocal() {
+  await storage.setPref('syncToken', undefined);
+  await storage.setPref('syncLastHash', undefined);
+  await storage.setPref('syncLastUpdatedAt', undefined);
+  await storage.setPref('syncDirty', false);
 }
 
 // --- Push-on-change with external debounce + AbortController ---
@@ -359,8 +368,129 @@ export async function pushOnChange(secret) {
   } catch (err) {
     if (err.name === 'AbortError') return null;
     console.warn('Sync push failed:', err);
-    return null;
+    throw err;
   } finally {
     pendingPushController = null;
+  }
+}
+
+// ===== Live sync engine =====
+// Status broadcasting + a poll loop so a change made on device A shows up on
+// device B while the app is open — not only on the next startup. The loop is
+// cheap: an idle tick is a single GET of the meta endpoint (hash compare), and
+// it only runs while the tab is visible and the browser is online.
+
+const statusListeners = new Set();
+let syncStatus = { state: 'unlinked', at: null };
+
+export function getSyncStatus() {
+  return syncStatus;
+}
+
+export function onSyncStatus(cb) {
+  statusListeners.add(cb);
+  try { cb(syncStatus); } catch { /* listener error must not break sync */ }
+  return () => statusListeners.delete(cb);
+}
+
+function setStatus(state, at = syncStatus.at) {
+  syncStatus = { state, at };
+  for (const cb of statusListeners) {
+    try { cb(syncStatus); } catch { /* ignore listener errors */ }
+  }
+}
+
+let liveTimer = null;
+let liveGetToken = null;
+let liveOnChange = null;
+let liveInFlight = false;
+let notFoundStreak = 0;
+const LIVE_POLL_MS = 25_000;
+const NOTFOUND_UNLINK_THRESHOLD = 3;
+
+// The actual sync — dirty-aware push/pull, applies pulls, drives status. Not
+// visibility-gated: used for the immediate sync on link/startup and on
+// visibility/online resume, which should always run.
+async function syncNow() {
+  if (liveInFlight) return;
+  if (typeof navigator !== 'undefined' && !navigator.onLine) { setStatus('offline'); return; }
+  const secret = await liveGetToken?.();
+  if (!secret) { setStatus('unlinked'); return; }
+  liveInFlight = true;
+  setStatus('syncing');
+  try {
+    const result = await autoSyncOnStartup(secret);
+    if (result === 'notfound') {
+      // A 404 right after a fresh push is usually a read-after-write race, not a
+      // real unlink. Retry quickly a few times before concluding the record is
+      // gone; only then unlink locally. (Server-down gives a network 'error',
+      // not 'notfound', so a real outage never trips this.)
+      if (++notFoundStreak >= NOTFOUND_UNLINK_THRESHOLD) {
+        notFoundStreak = 0;
+        await clearSyncPrefsLocal();
+        setStatus('unlinked');
+      } else {
+        setStatus('syncing');
+        setTimeout(() => { if (!liveInFlight) syncNow(); }, 2500);
+      }
+    } else if (result === 'error') {
+      notFoundStreak = 0;
+      setStatus(navigator.onLine ? 'error' : 'offline');
+    } else {
+      notFoundStreak = 0;
+      setStatus('synced', Date.now());
+      if (result === 'pulled') liveOnChange?.();
+    }
+  } finally {
+    liveInFlight = false;
+  }
+}
+
+// Periodic poll — skipped while the tab is hidden (no point syncing a tab
+// nobody is looking at; it resumes on visibilitychange).
+function liveTick() {
+  if (typeof document !== 'undefined' && document.visibilityState !== 'visible') return;
+  syncNow();
+}
+
+function onVisibleResume() {
+  if (typeof document !== 'undefined' && document.visibilityState === 'visible') syncNow();
+}
+function onOffline() { setStatus('offline'); }
+
+export function startLiveSync({ getToken, onRemoteChange } = {}) {
+  stopLiveSync();
+  liveGetToken = getToken;
+  liveOnChange = onRemoteChange;
+  liveTimer = setInterval(liveTick, LIVE_POLL_MS);
+  document.addEventListener('visibilitychange', onVisibleResume);
+  window.addEventListener('online', syncNow);
+  window.addEventListener('offline', onOffline);
+  syncNow(); // immediate first sync, regardless of visibility
+  return { stop: stopLiveSync, syncNow };
+}
+
+export function stopLiveSync() {
+  if (liveTimer) clearInterval(liveTimer);
+  liveTimer = null;
+  liveGetToken = null;
+  liveOnChange = null;
+  document.removeEventListener('visibilitychange', onVisibleResume);
+  window.removeEventListener('online', syncNow);
+  window.removeEventListener('offline', onOffline);
+  setStatus('unlinked');
+}
+
+// Wrap a debounced push so the status reflects push activity too (called from
+// the app's push-on-change scheduler).
+export async function pushWithStatus(secret) {
+  setStatus('syncing');
+  try {
+    const result = await pushOnChange(secret);
+    setStatus('synced', Date.now());
+    return result;
+  } catch {
+    setStatus(navigator.onLine ? 'error' : 'offline');
+    return null;
   }
 }
