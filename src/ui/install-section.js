@@ -149,7 +149,7 @@ export async function mountInstallSection({ container, installInfo, animateIn = 
     <div class="install-section__body" id="installSectionBody">
       <div class="install-section__head">
         <img class="install-section__logo" src="/icons/icon.svg" alt="" aria-hidden="true" />
-        <p class="install-section__intro">Use RadioDock on all devices</p>
+        <p class="install-section__intro">Use RadioDock on any device</p>
       </div>
       <div class="install-section__buttons" role="group">
         ${showsBtn('ios') ? tile('ios', 'iOS', 'Add to home screen', isCurrent('ios')) : ''}
