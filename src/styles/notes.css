@@ -152,6 +152,13 @@ body.container-solid .notes-panel {
   transform: translateX(0);
 }
 
+/* Electron: start the full-page panel below the frameless title bar so its
+   header isn't clipped and the window controls stay reachable. */
+body.is-electron .notes-panel--mobile {
+  top: var(--titlebar-h);
+  height: calc(100dvh - var(--titlebar-h));
+}
+
 /* ============================================================ Header */
 .notes-panel__header {
   display: flex;
@@ -770,6 +777,14 @@ body.notes-overlay-open {
   width: 15px;
   height: 15px;
 }
+/* Play/pause icons swap on the card's .is-playing state (set in toggleTapePlay). */
+.tape__play svg {
+  width: 14px;
+  height: 14px;
+}
+.tape__play .tape__icon-pause { display: none; }
+.notes-card--recording.is-playing .tape__play .tape__icon-play { display: none; }
+.notes-card--recording.is-playing .tape__play .tape__icon-pause { display: block; }
 .tape__svg {
   width: 110px;
   height: 40px;

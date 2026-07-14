@@ -96,6 +96,13 @@
   transform: translateX(0);
 }
 
+/* In the Electron shell the frameless title bar (z 2000) paints above the drawer
+   (z 80). Start the panel below it so the header/logo isn't clipped and the
+   window controls stay reachable while the drawer is open. */
+body.is-electron .off-canvas__panel {
+  top: var(--titlebar-h);
+}
+
 .off-canvas__header {
   position: relative;
   display: flex;

@@ -33,11 +33,13 @@ let getStation = () => null;
 let getMetadata = () => null;
 
 // Mount entrypoint. Returns API: { open, close, captureNow }.
-export async function mountNotesPanel({ player, getLatestMetadata, recorder = null, showPanelRecordButton = true }) {
+export async function mountNotesPanel({ player, getLatestMetadata, recorder = null, showPanelRecordButton = true, fullPage }) {
   getStation = () => player.getCurrentStation?.() ?? null;
   getMetadata = () => getLatestMetadata?.() ?? null;
 
-  const isMobile = matchMedia('(pointer: coarse)').matches;
+  // Full-page (mobile-style) treatment on touch devices AND in the Electron
+  // desktop shell — a floating draggable panel doesn't fit the app-window feel.
+  const isMobile = fullPage ?? matchMedia('(pointer: coarse)').matches;
 
   const state = {
     pages: [],
@@ -530,7 +532,10 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
       </div>
       ${showLine}
       <div class="tape">
-        <button type="button" class="tape__play" data-action="tape-play" aria-label="Play recording">▶</button>
+        <button type="button" class="tape__play" data-action="tape-play" aria-label="Play recording">
+          <svg class="tape__icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+          <svg class="tape__icon-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"/></svg>
+        </button>
         <div class="tape__reels" aria-hidden="true">
           <svg viewBox="0 0 120 44" class="tape__svg">
             <rect x="2" y="2" width="116" height="40" rx="6" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
@@ -559,10 +564,21 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
       const blob = await notes.getRecordingBlob(noteId);
       if (!blob) { toast('Recording data missing.'); return; }
       audio.src = URL.createObjectURL(blob);
-      audio.addEventListener('ended', () => { card.classList.remove('is-playing'); playBtn.textContent = '▶'; });
+      audio.addEventListener('ended', () => {
+        card.classList.remove('is-playing');
+        playBtn.setAttribute('aria-label', 'Play recording');
+      });
     }
-    if (audio.paused) { await audio.play(); card.classList.add('is-playing'); playBtn.textContent = '⏸'; }
-    else { audio.pause(); card.classList.remove('is-playing'); playBtn.textContent = '▶'; }
+    // The .is-playing class swaps the play/pause SVG via CSS (notes.css).
+    if (audio.paused) {
+      await audio.play();
+      card.classList.add('is-playing');
+      playBtn.setAttribute('aria-label', 'Pause recording');
+    } else {
+      audio.pause();
+      card.classList.remove('is-playing');
+      playBtn.setAttribute('aria-label', 'Play recording');
+    }
   }
 
   async function downloadRecording(noteId) {

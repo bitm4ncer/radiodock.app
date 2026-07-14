@@ -370,7 +370,7 @@ const recorder = isCoarsePointer
 // The record button lives in exactly one place per app state:
 //   - Desktop browser  → in the notes panel (next to "Save Moment").
 //   - Desktop app / mobile → top bar, next to search.
-mountNotesPanel({ player, getLatestMetadata: () => latestMetadata, recorder, showPanelRecordButton: !isCoarsePointer && !recordDesktopApp })
+mountNotesPanel({ player, getLatestMetadata: () => latestMetadata, recorder, showPanelRecordButton: !isCoarsePointer && !recordDesktopApp, fullPage: isCoarsePointer || isElectron() })
   .then((api) => { notesApi = api; })
   .catch((err) => console.warn('Notes panel mount failed:', err));
 

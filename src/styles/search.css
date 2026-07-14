@@ -214,12 +214,16 @@ body.search-active #searchInput {
 /* In the Electron shell body is a flex column (mobile regime), so the bar is
    simply the first flex child and stacks above the mobile top bar — no fixed
    positioning, no overlap, no content clipped underneath. */
+/* Title-bar height as a variable so fixed overlays (off-canvas drawer, full-page
+   notes) can offset below the frameless title bar in the Electron shell. */
+body.is-electron { --titlebar-h: 34px; }
+
 body.is-electron .electron-titlebar {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
   justify-content: space-between;
-  height: 34px;
+  height: var(--titlebar-h);
   padding: 0 6px 0 12px;
   background: var(--bg-dark);
   border-bottom: 1px solid var(--border);
