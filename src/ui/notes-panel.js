@@ -122,6 +122,12 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     if (pos) applyPosition(pos.x, pos.y); // re-clamp
   });
 
+  // Snapshot of the now-playing show taken when recording STARTS — that is the
+  // show being taped (the track may change before the user stops). Declared
+  // here (before `return`) so the initializer actually runs; the recording
+  // handlers below are hoisted and close over it.
+  let recordingStartTrack = null;
+
   return {
     open: openPanel,
     close: closePanel,
@@ -450,10 +456,6 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     el.hidden = false;
     el.textContent = `${mm}:${ss} · ${mb} MB`;
   }
-
-  // Snapshot of the now-playing show taken when recording STARTS — that is the
-  // show being taped (the track may change before the user stops).
-  let recordingStartTrack = null;
 
   function snapshotTrack() {
     const meta = getMetadata();
