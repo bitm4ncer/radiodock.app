@@ -7,8 +7,9 @@ import { openModal } from './modals.js';
 
 const ISSUES_URL = 'https://github.com/bitm4ncer/radiodock.app/issues';
 
-// Monotonic "have you seen the newest release?" counter. Decoupled from the
-// version labels so string-compare pitfalls (v2.7 vs v2.10) never arise.
+// Monotonic "have you seen the newest release?" counter. Releases are named, not
+// numbered — the app's real version comes from the git commit count, so any label
+// here would only ever be a second, wrong one.
 // main.js compares this to the on-device `changelogSeenRevision` pref.
 export const CHANGELOG_REVISION = 7;
 
@@ -32,49 +33,42 @@ const ICONS = {
 // Newest release first. Each feature: { icon, title, body }.
 export const CHANGELOG = [
   {
-    version: 'v2.7',
     name: 'Cross-device sync',
     features: [
       { icon: 'sync', title: 'Sync across your devices', body: 'Scan a QR code (or paste a link) to connect your phone and computer. Your lists then stay in sync automatically — no account, and only your own devices can read them.' },
     ],
   },
   {
-    version: 'v2.6',
     name: 'Tape recording',
     features: [
       { icon: 'tape', title: 'Record straight to a note', body: 'Hit record on the player and RadioDock captures what you’re hearing into a note, like a tape deck. Replay it inline or download it whenever you like.' },
     ],
   },
   {
-    version: 'v2.5',
     name: 'Faster controls',
     features: [
       { icon: 'keyboard', title: 'Quicker controls', body: 'Keyboard shortcuts for play, volume, search and mute; one-click mute; and scroll over the volume strip to fine-tune it. (Desktop.)' },
     ],
   },
   {
-    version: 'v2.4',
     name: 'Notes & Diary',
     features: [
       { icon: 'note', title: 'Keep a radio diary', body: 'Tap capture and the station plus the track playing right now are saved into a timestamped note. Sort notes into pages, search them, and export anytime.' },
     ],
   },
   {
-    version: 'v2.3',
     name: 'Share a list',
     features: [
       { icon: 'share', title: 'Share a list by link', body: 'Send anyone a private link and they add your whole list of stations in one tap. No account, and the link’s contents never touch a server.' },
     ],
   },
   {
-    version: 'v2.0',
     name: 'Rebuilt for every screen',
     features: [
       { icon: 'devices', title: 'At home on phone and desktop', body: 'Layouts tuned for each device — a focused mobile view and a roomy desktop one — so it feels native wherever you open it.' },
     ],
   },
   {
-    version: 'v1.0',
     name: 'The essentials',
     features: [
       { icon: 'globe', title: '50,000+ stations', body: 'Browse a community-curated directory of internet radio from all over the world.' },
@@ -106,7 +100,6 @@ function releaseHtml(release, isNewest) {
   const cards = release.features.map((f) => cardHtml(f, isNewest)).join('');
   return `<section class="cl-release">
     <header class="cl-release__head">
-      <span class="cl-release__ver">${release.version}</span>
       <span class="cl-release__name">${release.name}</span>
     </header>
     <div class="cl-cards">${cards}</div>
