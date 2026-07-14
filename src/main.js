@@ -561,7 +561,14 @@ mountPlayerCardDragMinimize().catch((err) => console.warn('Player card drag moun
 // defaults), so the most that can happen on a hostile browser is "no
 // uploads, no persisted index" — the built-in image set still cycles in
 // memory. Coarse-pointer gate inside mountBackground keeps mobile clean.
-mountBackground().catch((err) => console.warn('Background mount failed:', err));
+// Intro reveal. mountBackground() settles once the chosen wallpaper is preloaded
+// (desktop browser) or returns straight away (mobile / installed PWA, where
+// there is no wallpaper), and `app-ready` then fades the intro overlay out and
+// slides the panels in. `finally` rather than `then` so a rejected mount still
+// reveals the app; the <head> timeout covers the case where this never settles.
+mountBackground()
+  .catch((err) => console.warn('Background mount failed:', err))
+  .finally(() => document.documentElement.classList.add('app-ready'));
 
 // Auto-reveal the desktop footer when the cursor approaches the bottom edge.
 // Pure DOM/CSS — no IDB dependency, no boot risk.

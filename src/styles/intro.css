@@ -1,0 +1,61 @@
+/* Intro reveal.
+ *
+ * The page paints plain (a theme-matched solid) behind a full-screen overlay
+ * so the user never sees a wrong/half-loaded background or a bare app. Once the
+ * chosen background image is ready (or a failsafe timeout fires), `app-ready`
+ * lands on <html>: the overlay fades out (the whole page fades in) and the
+ * player + install panels slide up into place.
+ *
+ * `app-ready` is set by main.js after mountBackground() settles (immediate on
+ * mobile / installed PWA, where there is no wallpaper to wait for), with a
+ * belt-and-braces timeout in the inline <head> script so a slow/failed image
+ * or a stalled module can never leave the page hidden.
+ */
+
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: #1a1a1a; /* dark-theme plain */
+  opacity: 1;
+  pointer-events: none; /* purely visual — never trap clicks, even at opacity 0 */
+  transition: opacity 0.55s ease;
+}
+
+html.theme-light .intro-overlay {
+  background: #e1e1e1; /* light-theme plain — matches the light theme-color meta */
+}
+
+html.app-ready .intro-overlay {
+  opacity: 0;
+}
+
+/* Panels slide up as the overlay clears. The player card already fades via its
+ * own `.loaded` class; here we add the slide and gate it on app-ready so it
+ * animates in coordination with the overlay rather than early underneath it. */
+.player-card,
+.install-section {
+  transition: opacity 0.5s ease, transform 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+html:not(.app-ready) .player-card,
+html:not(.app-ready) .install-section {
+  transform: translateY(18px);
+}
+
+html.app-ready .player-card,
+html.app-ready .install-section {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-overlay { transition: none; }
+  .player-card,
+  .install-section {
+    transition: opacity 0.5s ease;
+  }
+  html:not(.app-ready) .player-card,
+  html:not(.app-ready) .install-section {
+    transform: none;
+  }
+}

@@ -46,9 +46,26 @@
             !matchMedia('(display-mode: browser)').matches ||
             pwaLaunch;
           if (standalone) document.documentElement.classList.add('is-standalone');
+          // Intro reveal failsafe. main.js normally sets `app-ready` as soon as
+          // the wallpaper settles; this guarantees the page reveals even if that
+          // never happens (broken image, stalled module). Only ever the worst
+          // case — the normal reveal is much earlier.
+          setTimeout(function () {
+            document.documentElement.classList.add('app-ready');
+          }, 1500);
         } catch (e) {}
       })();
     </script>
+
+    <!-- Intro overlay, critical styles inline on purpose: it has to cover the
+         page from the very first paint. The app's CSS arrives through the module
+         graph, so leaning on it here would leave a window where the overlay is
+         in the DOM but not yet painted — exactly the flash it exists to prevent.
+         intro.css owns the fade-out and everything keyed on `app-ready`. -->
+    <style>
+      .intro-overlay { position: fixed; inset: 0; z-index: 300; background: #1a1a1a; pointer-events: none; }
+      html.theme-light .intro-overlay { background: #e1e1e1; }
+    </style>
 
     <title>RadioDock — Free Internet Radio Player — 50,000+ Stations</title>
     <meta name="description" content="Free internet radio player with 50,000+ stations worldwide — community radio, indie stations and live streams on any device. No ads, no sign-up." />
@@ -149,6 +166,11 @@
     <script type="module" src="/src/main.js"></script>
   </head>
   <body>
+    <!-- Intro overlay: a plain, theme-matched surface shown until `app-ready`,
+         so the app never flashes a bare or half-loaded state. First child so it
+         paints immediately; see the inline <style> above + intro.css. -->
+    <div id="introOverlay" class="intro-overlay" aria-hidden="true"></div>
+
     <!-- Mobile-only top bar. Hidden on desktop via .mobile-only. -->
     <header class="mobile-topbar mobile-only">
       <button type="button" id="menuBtn" class="mobile-topbar__btn" aria-label="Menu">
