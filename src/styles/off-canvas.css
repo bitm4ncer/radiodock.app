@@ -220,3 +220,38 @@
   color: var(--text-muted);
   font-size: 16px;
 }
+
+/* Record button grouped with the search icon in the mobile top bar (app mode) */
+.mobile-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.record-adjacent-btn {
+  position: relative;
+}
+.record-adjacent-btn__dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #e23b3b;
+  display: block;
+}
+.record-adjacent-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.record-adjacent-btn:disabled .record-adjacent-btn__dot {
+  background: var(--text-muted);
+}
+.record-adjacent-btn.is-recording {
+  background: var(--bg-list-hover);
+  box-shadow: inset 0 0 0 2px #e23b3b;
+}
+.record-adjacent-btn.is-recording .record-adjacent-btn__dot {
+  animation: record-adjacent-pulse 1s ease-in-out infinite;
+}
+@keyframes record-adjacent-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}

@@ -33,7 +33,7 @@ let getStation = () => null;
 let getMetadata = () => null;
 
 // Mount entrypoint. Returns API: { open, close, captureNow }.
-export async function mountNotesPanel({ player, getLatestMetadata, recorder = null }) {
+export async function mountNotesPanel({ player, getLatestMetadata, recorder = null, showPanelRecordButton = true }) {
   getStation = () => player.getCurrentStation?.() ?? null;
   getMetadata = () => getLatestMetadata?.() ?? null;
 
@@ -51,7 +51,7 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
 
   // ---- DOM ----
   const flag = isMobile ? null : buildFlag();
-  const panel = buildPanel({ isMobile });
+  const panel = buildPanel({ isMobile, showRecord: showPanelRecordButton });
   if (flag) document.body.appendChild(flag);
   document.body.appendChild(panel);
   let pageMenu = null;
@@ -126,6 +126,7 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     open: openPanel,
     close: closePanel,
     captureNow,
+    toggleRecord,
     isOpen: () => state.open,
   };
 
@@ -148,7 +149,7 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     return el;
   }
 
-  function buildPanel({ isMobile }) {
+  function buildPanel({ isMobile, showRecord = true }) {
     const el = document.createElement('aside');
     el.className = 'notes-panel' + (isMobile ? ' notes-panel--mobile' : ' notes-panel--desktop');
     el.setAttribute('aria-hidden', 'true');
@@ -175,11 +176,11 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
       <div class="notes-panel__search" data-role="search-wrap" hidden>
         <input type="text" class="notes-panel__search-input" data-role="search-input" placeholder="Search notes…" />
       </div>
-      <div class="notes-panel__capture-row">
-        <button type="button" class="notes-panel__record-btn" data-action="record" aria-label="Record stream" title="Record">
+      <div class="notes-panel__capture-row${showRecord ? '' : ' notes-panel__capture-row--norec'}">
+        ${showRecord ? `<button type="button" class="notes-panel__record-btn" data-action="record" aria-label="Record stream" title="Record">
           <span class="notes-panel__record-dot" aria-hidden="true"></span>
           <span class="notes-panel__record-time" data-role="record-time" hidden></span>
-        </button>
+        </button>` : ''}
         <button type="button" class="notes-panel__capture-btn" data-action="capture" aria-label="Save moment">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M4 4h14a2 2 0 0 1 2 2v12l-4-3-4 3-4-3-4 3V6a2 2 0 0 1 2-2z"/>
