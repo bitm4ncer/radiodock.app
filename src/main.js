@@ -282,6 +282,17 @@ function openAboutModal() {
 }
 document.getElementById('dockLogoBtn')?.addEventListener('click', openAboutModal);
 document.getElementById('footerAboutBtn')?.addEventListener('click', openAboutModal);
+
+// The mobile topbar logo is a real <a href="/">, which is right in a browser tab
+// (a link home, good for crawlers). In the installed app / Electron shell that
+// same link hard-reloads the whole app — white flash, lost state — so there it
+// means "go home" instead: close whatever page or modal is open.
+document.querySelector('.mobile-topbar__logo')?.addEventListener('click', (evt) => {
+  if (!detectStandalone() && !isElectron()) return;
+  evt.preventDefault();
+  notesApi?.close();
+  for (const el of document.querySelectorAll('.modal.show')) closeModal(el.id);
+});
 document.getElementById('aboutMoreBtn')?.addEventListener('click', () => {
   const body = document.getElementById('aboutModalBody');
   const btn = document.getElementById('aboutMoreBtn');

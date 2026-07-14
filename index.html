@@ -194,16 +194,16 @@
             <span>Install</span>
             <span class="off-canvas__chev">→</span>
           </button>
-          <button type="button" class="off-canvas__item" id="offCanvasAbout">
-            <span>About</span>
+          <button type="button" class="off-canvas__item" id="offCanvasSync">
+            <span>Sync</span>
             <span class="off-canvas__chev">→</span>
           </button>
           <button type="button" class="off-canvas__item" id="offCanvasNotes">
             <span>Notes</span>
             <span class="off-canvas__chev">→</span>
           </button>
-          <button type="button" class="off-canvas__item" id="offCanvasSync">
-            <span>Sync devices</span>
+          <button type="button" class="off-canvas__item" id="offCanvasAbout">
+            <span>About</span>
             <span class="off-canvas__chev">→</span>
           </button>
           <button type="button" class="off-canvas__item" id="offCanvasChangelog">
@@ -211,6 +211,11 @@
             <span class="nav-dot" data-changelog-dot></span>
             <span class="off-canvas__chev">→</span>
           </button>
+
+          <!-- Internal pages sit at the top; external links + theme + legal are
+               pushed to the bottom of the drawer by this flex spacer. -->
+          <div class="off-canvas__nav-spacer" aria-hidden="true"></div>
+
           <a class="off-canvas__item" href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener">GitHub</a>
           <a class="off-canvas__item" href="https://github.com/bitm4ncer/radiodock.app/issues" target="_blank" rel="noopener">Issues</a>
           <a class="off-canvas__item" href="https://buymeacoffee.com/bitmancer" target="_blank" rel="noopener">Support</a>
