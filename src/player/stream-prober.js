@@ -2,16 +2,17 @@
 // Sequential probing (one at a time, 5s timeout each) so we don't flood the
 // network stack with parallel TCP connections to stream servers.
 //
-// Uses temporary <audio> elements for probing — unlike fetch(), <audio> can
-// load cross-origin streams without CORS headers. We listen for the
-// 'loadedmetadata' event (server responded with audio data) vs 'error' with
-// MEDIA_ERR_NETWORK code (DNS failure, connection refused, etc.).
+// Uses fetch() with mode: 'no-cors' for probing. Unlike regular fetch(),
+// no-cors requests succeed for cross-origin resources without CORS headers
+// (returning an opaque response). We can't read the response, but the fact
+// that the Promise resolved means the server is reachable. Only genuine
+// network errors (DNS failure, connection refused, timeout) reject.
 //
 // Pauses when the tab is hidden (visibilitychange) — no point probing streams
 // nobody is looking at. Resumes on visibility restore + immediately re-probes.
 
 const PROBE_INTERVAL_MS = 60_000;
-const PROBE_TIMEOUT_MS = 5_000;
+const PROBE_TIMEOUT_MS = 8_000;
 
 export function attachStreamProber({ getStations, onStatusChange }) {
   let timer = null;
@@ -20,68 +21,41 @@ export function attachStreamProber({ getStations, onStatusChange }) {
   let aborted = false;
 
   /**
-   * Probe a single station URL by creating a temporary <audio> element.
-   * Audio elements bypass CORS — they load cross-origin streams natively.
+   * Probe a single station URL via no-cors fetch.
+   *
+   * mode: 'no-cors' makes the browser send a real HTTP request but
+   * return an opaque response — we can't inspect status/headers, but
+   * we don't need to. If the Promise resolves, TCP + TLS succeeded
+   * and the server sent data back → reachable. If it rejects, the
+   * server is genuinely unreachable.
    *
    * @returns {'online' | 'offline'}
-   *   'online'  — server responded with audio data (loadedmetadata) or a
-   *               non-network error (unsupported format, decode error).
-   *   'offline' — timeout (5s), MEDIA_ERR_NETWORK, or we aborted due to
-   *               list change.
    */
-  function probeOne(station) {
-    return new Promise((resolve) => {
-      let settled = false;
-      const audio = new Audio();
-      audio.preload = 'metadata';
-      audio.volume = 0;
-
-      const finish = (result) => {
-        if (settled) return;
-        settled = true;
-        clearTimeout(timeout);
-        audio.removeAttribute('src');
-        audio.load();
-        audio.remove();
-        resolve(result);
-      };
-
-      const timeout = setTimeout(() => {
-        finish('offline');
-      }, PROBE_TIMEOUT_MS);
-
-      audio.addEventListener('loadedmetadata', () => {
-        // Server sent audio data — station is reachable.
-        finish('online');
+  async function probeOne(station) {
+    try {
+      await fetch(station.url, {
+        method: 'GET',
+        mode: 'no-cors',
+        signal: AbortSignal.timeout(PROBE_TIMEOUT_MS),
+        cache: 'no-store',
       });
-
-      audio.addEventListener('error', () => {
-        const code = audio.error?.code;
-        // MEDIA_ERR_NETWORK (2): DNS failure, connection refused, timeout.
-        if (code === 2) {
-          finish('offline');
-        } else {
-          // MEDIA_ERR_SRC_NOT_SUPPORTED (4) or MEDIA_ERR_DECODE (3):
-          // Server responded with something, just not in a format we
-          // recognise. The endpoint is reachable → online.
-          finish('online');
-        }
-      });
-
-      // Also handle the 'canplay' event for streams that fire it before
-      // 'loadedmetadata' (some icecast servers). Don't rely on it alone
-      // though — 'loadedmetadata' is the canonical signal.
-      audio.addEventListener('canplay', () => {
-        // If canplay fires without loadedmetadata (edge case), treat as online.
-        if (!settled) finish('online');
-      });
-
-      audio.src = station.url;
-    });
+      return 'online';
+    } catch (err) {
+      // AbortError / TimeoutError → no response in time → offline.
+      if (err.name === 'AbortError' || err.name === 'TimeoutError') {
+        return 'offline';
+      }
+      // TypeError with 'Failed to fetch' / 'NetworkError' → offline.
+      if (err.name === 'TypeError') {
+        return 'offline';
+      }
+      // Anything else → inconclusive, keep previous status.
+      return null;
+    }
   }
 
   async function runProbeCycle() {
-    if (probing) return; // Previous cycle still running.
+    if (probing) return;
     probing = true;
     aborted = false;
 
@@ -95,22 +69,24 @@ export function attachStreamProber({ getStations, onStatusChange }) {
     let changed = false;
 
     for (const station of stations) {
-      if (aborted) break; // List changed mid-cycle — abort.
+      if (aborted) break;
       if (!station?.url) {
-        newStatuses[station.id] = 'online'; // No URL to probe, assume online.
+        newStatuses[station.id] = 'online';
         continue;
       }
 
       const result = await probeOne(station);
-      newStatuses[station.id] = result;
+      if (result === null) {
+        newStatuses[station.id] = statuses[station.id] ?? 'online';
+      } else {
+        newStatuses[station.id] = result;
+      }
 
       if (newStatuses[station.id] !== (statuses[station.id] ?? 'online')) {
         changed = true;
       }
     }
 
-    // Any stations that disappeared from the list — mark as changed so the
-    // caller can drop stale data-offline attributes.
     if (!changed) {
       const oldKeys = Object.keys(statuses);
       const newKeys = Object.keys(newStatuses);
@@ -146,8 +122,6 @@ export function attachStreamProber({ getStations, onStatusChange }) {
 
   function onVisibilityChange() {
     if (document.visibilityState === 'visible') {
-      // Tab just became visible — re-probe immediately so the user
-      // sees fresh status, then resume the regular interval.
       if (!probing) runProbeCycle();
       startTimer();
     } else {
@@ -155,12 +129,10 @@ export function attachStreamProber({ getStations, onStatusChange }) {
     }
   }
 
-  // Public API
   function start() {
     statuses = {};
-    aborted = true; // Abort any in-flight cycle from previous list.
+    aborted = true;
     startTimer();
-    // Probe immediately on first attach.
     if (!probing) runProbeCycle();
   }
 
@@ -173,9 +145,7 @@ export function attachStreamProber({ getStations, onStatusChange }) {
   }
 
   function refresh() {
-    // Force immediate re-probe (e.g. after list change).
     aborted = true;
-    // Wait for any in-flight cycle to notice the abort flag.
     setTimeout(() => {
       aborted = false;
       if (!probing) runProbeCycle();
