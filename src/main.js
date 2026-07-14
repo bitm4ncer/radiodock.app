@@ -37,6 +37,7 @@ import { track } from './analytics/umami.js';
 import { attachListenHeartbeat } from './analytics/listen-heartbeat.js';
 import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
 import { detectPlatform, detectStandalone, canPromptInstall, promptInstall } from './platform.js';
+import { attachStreamProber } from './player/stream-prober.js';
 
 const COMMUNITY_LIST_ID = listsApi.COMMUNITY_LIST_ID;
 
@@ -58,6 +59,20 @@ attachRecovery(player);
 attachMetadataPoller(player);
 attachMediaSession(player);
 attachListenHeartbeat(player);
+
+// --- Stream offline prober ---
+// Probes station URLs in the active list once per minute to detect
+// unreachable streams and show an OFF badge on the affected rows.
+const streamProber = attachStreamProber({
+  getStations: () => {
+    const list = findList(state.currentListId);
+    return list?.stations ?? [];
+  },
+  onStatusChange: (statuses) => {
+    applyOfflineStatus(statuses);
+  },
+});
+
 initModals();
 
 // Hide the static SEO hero now that JS has loaded.
@@ -425,6 +440,32 @@ function findList(id) {
   return state.userLists.find((l) => l.id === id);
 }
 
+function applyOfflineStatus(statuses) {
+  const offlineIds = new Set(
+    Object.entries(statuses)
+      .filter(([, status]) => status === 'offline')
+      .map(([id]) => id)
+  );
+  // Desktop station list
+  const desktopRows = document.querySelectorAll('#favoritesList .station-item[data-id]');
+  for (const row of desktopRows) {
+    if (offlineIds.has(row.dataset.id)) {
+      row.setAttribute('data-offline', '');
+    } else {
+      row.removeAttribute('data-offline');
+    }
+  }
+  // Mobile carousel pages — each has its own station-list DOM
+  const mobileRows = document.querySelectorAll('.list-page .station-item[data-id]');
+  for (const row of mobileRows) {
+    if (offlineIds.has(row.dataset.id)) {
+      row.setAttribute('data-offline', '');
+    } else {
+      row.removeAttribute('data-offline');
+    }
+  }
+}
+
 function renderActiveList() {
   const list = findList(state.currentListId) ?? state.community;
   state.currentListId = list.id;
@@ -445,6 +486,13 @@ function renderActiveList() {
   listsCarousel.setActiveStation(state.currentStation?.id ?? null);
   updateFavoriteHeart();
   updateShareRowVisibility(list);
+  // Re-apply offline status after DOM rebuild, and kick off a fresh
+  // probe cycle for the new active list.
+  const currentStatuses = streamProber.getStatuses();
+  if (Object.keys(currentStatuses).length > 0) {
+    Promise.resolve().then(() => applyOfflineStatus(currentStatuses));
+  }
+  streamProber.refresh();
 }
 
 function updateShareRowVisibility(list) {
@@ -695,6 +743,7 @@ listsCarousel.onCurrentChange(async (listId) => {
   stationList.setActive(state.currentStation?.id ?? null);
   updateFavoriteHeart();
   await storage.setPref('currentListId', listId);
+  streamProber.refresh();
 });
 
 // Carousel row interactions: each page's station-list passes the
@@ -930,6 +979,7 @@ async function bootstrap() {
 
   await restoreVolume();
   renderActiveList();   // re-render with restored ordering + active list
+  streamProber.start(); // begin probing station URLs every 60s
 
   // Restore current station view (without auto-playing — first play needs user gesture).
   if (prefs.currentStationId) {
