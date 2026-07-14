@@ -200,7 +200,20 @@ export async function getRemoteMeta(secret) {
   return res.json();
 }
 
-export async function pushToServer(secret, signal) {
+// Merge two export objects for a push conflict (409): union of lists by id.
+// If the same id exists on both sides, the local (pushing) side wins — a genuine
+// same-list simultaneous edit is rare; adds on either side are always preserved.
+// (Without a common ancestor a delete can't be told apart from "not yet synced",
+// so a list deleted on one device while untouched on the other may reappear —
+// an acceptable trade for a personal sync that never silently drops a change.)
+export function mergeExports(mine, theirs) {
+  const byId = new Map();
+  for (const l of (theirs?.lists ?? [])) if (l?.id) byId.set(l.id, l);
+  for (const l of (mine?.lists ?? [])) if (l?.id) byId.set(l.id, l);
+  return { version: '2.0', lists: [...byId.values()] };
+}
+
+export async function pushToServer(secret, signal, retries = 3) {
   const { exportJson, stationCount, listCount } = await buildExportPayload();
   const hash = await computeContentHash(exportJson);
   const lastHash = await storage.getPref('syncLastHash', null);
@@ -215,10 +228,32 @@ export async function pushToServer(secret, signal) {
   const res = await fetch(`${SYNC_BASE}/${recordId}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ payload: envelope, content_hash: hash, list_count: listCount, station_count: stationCount }),
+    // base_hash = the server state we edited from → the server CAS rejects with
+    // 409 if another device pushed since (backward compatible: old servers ignore it).
+    body: JSON.stringify({ payload: envelope, content_hash: hash, list_count: listCount, station_count: stationCount, base_hash: lastHash }),
     referrerPolicy: 'no-referrer',
     signal,
   });
+
+  // Compare-and-swap conflict: another device pushed since we last synced. Merge
+  // their state with ours, adopt it as our base, and retry the push.
+  if (res.status === 409) {
+    if (retries <= 0) throw new SyncError('Sync conflict could not be resolved', 'conflict');
+    const body = await res.json().catch(() => ({}));
+    const current = body.current;
+    if (!current?.payload || !current?.content_hash) throw new SyncError('Sync conflict', 'conflict');
+    const serverJson = await decryptPayload(current.payload, secret);
+    let mine, theirs;
+    try { mine = JSON.parse(exportJson); theirs = JSON.parse(serverJson); }
+    catch { throw new SyncError('Invalid sync payload', 'decrypt'); }
+    const mergedJson = JSON.stringify(mergeExports(mine, theirs));
+    // Reconcile local lists to the merge and adopt the server's hash as our base,
+    // so the retry pushes FROM the state we just conflicted with.
+    await applyImportPayload(mergedJson, current.content_hash, current.updated_at);
+    liveOnChange?.(); // the merge pulled in the other device's lists — re-render
+    return pushToServer(secret, signal, retries - 1);
+  }
+
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
     throw new SyncError(body.error || `Server error: ${res.status}`, 'server');
