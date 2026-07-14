@@ -26,6 +26,7 @@ import { searchStations } from './data/radio-browser.js';
 import { mountVisualizer } from './visualizer/bootstrap.js';
 import { mountPlayerCardDragMinimize } from './ui/player-card-drag.js';
 import { mountElectronBridge, isElectron } from './ui/electron-bridge.js';
+import { mountElectronWindowControls } from './ui/electron-window-controls.js';
 import { mountIdbBlockedBanner } from './ui/idb-blocked-banner.js';
 import { mountBackground } from './ui/background.js';
 import { mountFooterReveal } from './ui/footer-reveal.js';
@@ -416,7 +417,7 @@ mountFooterReveal();
 // Electron desktop bridge — wires native features (tray, always-on-top,
 // auto-start) when running inside the Electron wrapper. In the browser,
 // isElectron() returns false and this is a no-op.
-mountElectronBridge({
+const electronBridge = mountElectronBridge({
   player,
   getActiveStation: () => state.currentStation,
 });
@@ -429,6 +430,21 @@ window.addEventListener('electron:trayNext', () => {
   const next = list.stations[(idx + 1) % list.stations.length];
   if (next) player.playStation(next);
 });
+
+// Electron tray "Previous Station" → go back one in active list.
+window.addEventListener('electron:trayPrevious', () => {
+  const list = findList(state.currentListId);
+  if (!list?.stations?.length) return;
+  const idx = list.stations.findIndex((s) => s.id === state.currentStation?.id);
+  const prev = list.stations[(idx - 1 + list.stations.length) % list.stations.length];
+  if (prev) player.playStation(prev);
+});
+
+// Electron-only window control buttons — mounted next to the search input.
+// In the browser, isElectron() returns false and this block is skipped.
+if (isElectron()) {
+  mountElectronWindowControls({ electronBridge, player });
+}
 
 // --- Helpers ---
 function allListsForDropdown() {

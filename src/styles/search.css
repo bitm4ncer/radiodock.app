@@ -203,3 +203,54 @@ body.search-active #searchInput {
   background: rgba(107, 70, 193, 0.1);
   color: var(--accent-hover);
 }
+
+/* ---- Electron window controls (minimize + always-on-top) ---- */
+
+.electron-window-controls {
+  position: absolute;
+  right: 38px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 2px;
+}
+
+body:not(.is-electron) .electron-window-controls {
+  display: none;
+}
+
+.electron-win-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.electron-win-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.electron-win-btn:hover {
+  background: var(--overlay-med);
+  color: var(--text);
+}
+
+.electron-win-btn.is-active {
+  color: var(--red);
+}
+
+.electron-win-btn.is-active:hover {
+  color: var(--red);
+}
+
+/* Hide install entry points when running as Electron desktop app. */
+body.is-electron #offCanvasInstall,
+body.is-electron .install-section { display: none !important; }

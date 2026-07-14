@@ -37,6 +37,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('rd:tray:next', () => callback());
     return () => ipcRenderer.removeAllListeners('rd:tray:next');
   },
+  onTrayPrevious: (callback) => {
+    ipcRenderer.on('rd:tray:previous', () => callback());
+    return () => ipcRenderer.removeAllListeners('rd:tray:previous');
+  },
 
   // --- Platform check ---
   isElectron: true,

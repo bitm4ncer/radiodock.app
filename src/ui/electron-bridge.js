@@ -3,7 +3,7 @@
 // Detects window.electronAPI (injected by Electron's preload script).
 // When running inside the desktop wrapper, this module:
 //   1. Syncs playback state → tray icon + context menu
-//   2. Listens for tray menu actions (play/pause, next station)
+//   2. Listens for tray menu actions (play/pause, previous/next station)
 //   3. Exposes always-on-top toggle
 //   4. Manages auto-start preference
 //
@@ -22,6 +22,9 @@ export function isElectron() {
 export function mountElectronBridge({ player, getActiveStation }) {
   if (!isElectron()) return null;
 
+  // Stamp the body so CSS can show/hide Electron-only UI.
+  document.body.classList.add('is-electron');
+
   let playing = false;
   let currentStation = null;
 
@@ -32,23 +35,20 @@ export function mountElectronBridge({ player, getActiveStation }) {
 
   function updateTrayIcon() {
     if (!playing) {
-      api.setTrayIcon(null); // fall back to static tray icon
+      api.setTrayIcon(null);
       return;
     }
-    // Draw tray icon with playback indicator using Canvas
     const canvas = document.createElement('canvas');
     canvas.width = 64;
     canvas.height = 64;
     const ctx = canvas.getContext('2d');
 
-    // Use the app's icon as base
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.src = '/icons/icon-192.png';
     img.onload = () => {
       ctx.clearRect(0, 0, 64, 64);
       ctx.drawImage(img, 0, 0, 64, 64);
-      // Red indicator dot (bottom-right)
       const cx = 50, cy = 50, r = 8;
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
@@ -86,44 +86,30 @@ export function mountElectronBridge({ player, getActiveStation }) {
 
   // --- Electron tray menu → Player ---
   const unsubPlayPause = api.onTrayPlayPause(() => {
-    player.togglePlayPause();
+    if (player.isPlaying()) {
+      player.pause();
+    } else {
+      player.resume();
+    }
+  });
+
+  const unsubPrevious = api.onTrayPrevious(() => {
+    window.dispatchEvent(new CustomEvent('electron:trayPrevious'));
   });
 
   const unsubNext = api.onTrayNext(() => {
-    // Jump to next station in the active list — delegated to main.js
-    // via a custom event that main.js listens for.
     window.dispatchEvent(new CustomEvent('electron:trayNext'));
   });
 
-  // --- Always-on-top control ---
-  async function setAlwaysOnTop(onTop) {
-    const result = await api.setAlwaysOnTop(onTop);
-    return result;
-  }
-
-  async function getAlwaysOnTop() {
-    return api.getAlwaysOnTop();
-  }
-
-  // --- Auto-start control ---
-  async function setAutoStart(enabled) {
-    return api.setAutoStart(enabled);
-  }
-
-  async function getAutoStart() {
-    return api.getAutoStart();
-  }
-
-  const cleanup = () => {
-    unsubPlayPause();
-    unsubNext();
-  };
-
   return {
-    setAlwaysOnTop,
-    getAlwaysOnTop,
-    setAutoStart,
-    getAutoStart,
-    cleanup,
+    setAlwaysOnTop: (onTop) => api.setAlwaysOnTop(onTop),
+    getAlwaysOnTop: () => api.getAlwaysOnTop(),
+    setAutoStart: (enabled) => api.setAutoStart(enabled),
+    getAutoStart: () => api.getAutoStart(),
+    cleanup: () => {
+      unsubPlayPause();
+      unsubPrevious();
+      unsubNext();
+    },
   };
 }
