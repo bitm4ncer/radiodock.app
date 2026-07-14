@@ -69,19 +69,22 @@ export function mountElectronWindowControls({ electronBridge } = {}) {
     else await api?.setAlwaysOnTop?.(onTop);
   });
 
-  // Tiny-player toggle: collapse to just the title bar + player, docked
-  // bottom-right by the main process; toggle again to restore.
+  // Tiny-player mode: collapse to just the player pill (title bar hidden),
+  // docked bottom-right + always-on-top by the main process. Entered from this
+  // title-bar button; exited via the in-pill maximize button or the right-click
+  // context menu (both routed through the shared applyTiny below).
   const tinyBtn = bar.querySelector('[data-win="tiny"]');
   if (tinyBtn) {
-    let tiny = false;
-    tinyBtn.addEventListener('click', async () => {
-      tiny = !tiny;
-      document.body.classList.toggle('is-tiny-player', tiny);
-      tinyBtn.classList.toggle('is-active', tiny);
-      tinyBtn.title = tiny ? 'Exit tiny player' : 'Tiny player';
-      try { await api.setTinyPlayer(tiny); }
+    const applyTiny = async (on) => {
+      if (document.body.classList.contains('is-tiny-player') === on) return;
+      document.body.classList.toggle('is-tiny-player', on);
+      tinyBtn.classList.toggle('is-active', on);
+      try { await api.setTinyPlayer(on); }
       catch (err) { console.warn('Tiny player toggle failed:', err); }
-    });
+    };
+    tinyBtn.addEventListener('click', () => applyTiny(!document.body.classList.contains('is-tiny-player')));
+    window.addEventListener('rd:set-tiny', (e) => applyTiny(!!e.detail?.on));
+    api?.onTinyExit?.(() => applyTiny(false));
   }
 
   // Restore persisted always-on-top state.

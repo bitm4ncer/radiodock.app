@@ -22,6 +22,8 @@ let autoStart = false;
 // Saved window state so tiny-player mode can restore the full window.
 let preTinyBounds = null;
 let preTinyMinSize = null;
+let preTinyAlwaysOnTop = false;
+let tinyMode = false;
 
 function createWindow() {
   const iconPath = path.join(__dirname, 'icons', 'icon.png');
@@ -34,12 +36,19 @@ function createWindow() {
     icon: iconPath,
     alwaysOnTop,
     title: 'RadioDock',
-    backgroundColor: '#1a1a1a',
     show: false,
     // Frameless: the in-app Electron title bar (src/ui/electron-window-controls.js)
     // provides drag + minimize + always-on-top + close. Without this the native
     // OS frame sat on top of the compact mobile layout.
     frame: false,
+    // Transparent so tiny-player mode can be a true pill shape (the window is
+    // always a rectangle; the corners must be see-through to reveal the pill).
+    // In full mode the app's opaque body (background: var(--bg)) fills the whole
+    // window, so it still looks like a normal solid window. hasShadow off so a
+    // rectangular OS shadow doesn't trace the pill's transparent corners.
+    transparent: true,
+    backgroundColor: '#00000000',
+    hasShadow: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -64,6 +73,25 @@ function createWindow() {
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     if (/^https?:$/.test(new URL(url).protocol)) shell.openExternal(url);
     return { action: 'deny' };
+  });
+
+  // Right-click in tiny-player mode: toggle always-on-top or leave tiny mode.
+  mainWindow.webContents.on('context-menu', () => {
+    if (!tinyMode) return;
+    Menu.buildFromTemplate([
+      {
+        label: 'Always on top',
+        type: 'checkbox',
+        checked: mainWindow.isAlwaysOnTop(),
+        click: () => {
+          const v = !mainWindow.isAlwaysOnTop();
+          mainWindow.setAlwaysOnTop(v, 'floating');
+          alwaysOnTop = v;
+        },
+      },
+      { type: 'separator' },
+      { label: 'Exit tiny player', click: () => mainWindow.webContents.send('rd:tiny:exit') },
+    ]).popup();
   });
 
   mainWindow.once('ready-to-show', () => {
@@ -151,29 +179,39 @@ function setupIPC() {
 
   ipcMain.handle('rd:window:isMaximized', () => mainWindow?.isMaximized() ?? false);
 
-  // --- Tiny player: shrink to a mini window docked bottom-right, or restore ---
+  // --- Tiny player: a pill-sized always-on-top mini window docked bottom-right,
+  // or restore. Just the player pill (no title bar); exit via the in-pill
+  // maximize button or the right-click context menu. ---
   ipcMain.handle('rd:window:tinyPlayer', (_, enabled) => {
     if (!mainWindow) return false;
     if (enabled) {
       // Remember the full-size state to restore later.
       preTinyBounds = mainWindow.getBounds();
       preTinyMinSize = mainWindow.getMinimumSize();
+      preTinyAlwaysOnTop = mainWindow.isAlwaysOnTop();
 
-      const W = 360, H = 132, MARGIN = 12;
+      const W = 340, H = 76, MARGIN = 12;
       // workArea excludes the taskbar, so this docks just above/left of it.
       const wa = screen.getPrimaryDisplay().workArea;
       // Relax the min size (the full window's 380×480 floor would clamp us).
-      mainWindow.setMinimumSize(240, 96);
+      mainWindow.setMinimumSize(200, 56);
       mainWindow.setResizable(false);
+      // Default to always-on-top in tiny mode (toggleable via context menu).
+      mainWindow.setAlwaysOnTop(true, 'floating');
+      alwaysOnTop = true;
       mainWindow.setBounds({
         width: W,
         height: H,
         x: wa.x + wa.width - W - MARGIN,
         y: wa.y + wa.height - H - MARGIN,
       });
+      tinyMode = true;
     } else {
+      tinyMode = false;
       mainWindow.setResizable(true);
       if (preTinyMinSize) mainWindow.setMinimumSize(preTinyMinSize[0], preTinyMinSize[1]);
+      mainWindow.setAlwaysOnTop(preTinyAlwaysOnTop);
+      alwaysOnTop = preTinyAlwaysOnTop;
       if (preTinyBounds) mainWindow.setBounds(preTinyBounds);
     }
     return enabled;

@@ -25,6 +25,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // --- Tiny player: shrink + dock bottom-right, or restore ---
   setTinyPlayer: (enabled) => ipcRenderer.invoke('rd:window:tinyPlayer', enabled),
+  // Main → renderer: the context-menu "Exit tiny player" was chosen.
+  onTinyExit: (callback) => {
+    ipcRenderer.on('rd:tiny:exit', () => callback());
+    return () => ipcRenderer.removeAllListeners('rd:tiny:exit');
+  },
 
   // --- Shell ---
   openExternal: (url) => ipcRenderer.invoke('rd:shell:openExternal', url),

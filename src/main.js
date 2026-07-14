@@ -509,6 +509,9 @@ document.getElementById('tinyNextBtn')?.addEventListener('click', () => {
 document.getElementById('tinyHomeBtn')?.addEventListener('click', () => {
   document.getElementById('stationLogoBtn')?.click();
 });
+document.getElementById('tinyMaxBtn')?.addEventListener('click', () => {
+  window.dispatchEvent(new CustomEvent('rd:set-tiny', { detail: { on: false } }));
+});
 
 // Electron-only frameless title bar (drag + minimize/pin/close).
 // In the browser, isElectron() returns false and this block is skipped.
