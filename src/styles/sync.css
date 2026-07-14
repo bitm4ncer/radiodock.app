@@ -1,6 +1,106 @@
+/* ===== Sync panel — a draggable card (desktop) / fullscreen page (mobile),
+   not a modal (no blur backdrop). Mirrors the notes panel's surface + drag. ===== */
+.sync-panel {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  background: #4141415c;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  z-index: 90;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 200ms ease;
+}
+:root.theme-light .sync-panel { background: #9393935c; }
+body.container-solid .sync-panel { background: #141414; backdrop-filter: none; -webkit-backdrop-filter: none; }
+:root.theme-light body.container-solid .sync-panel { background: #d5d5d5; }
+
+.sync-panel.is-open { opacity: 1; pointer-events: auto; }
+
+/* Desktop: docked right, vertically centered; draggable anywhere. */
+.sync-panel--desktop {
+  top: 50%;
+  right: 24px;
+  transform: translate(40px, -50%);
+  width: 340px;
+  max-height: min(620px, calc(100vh - 60px));
+}
+.sync-panel--desktop.is-open { transform: translate(0, -50%); }
+.sync-panel--desktop.is-positioned {
+  top: var(--sync-y, 80px);
+  left: var(--sync-x, auto);
+  right: auto;
+  transform: none !important;
+}
+.sync-panel--desktop.is-dragging { transition: none; user-select: none; }
+
+/* Mobile: fullscreen page, slides in from the right. `inset: 0 !important`
+   neutralises any persisted desktop drag position (is-positioned). */
+.sync-panel--mobile {
+  inset: 0 !important;
+  width: 100%;
+  height: 100dvh;
+  border-radius: 0;
+  border: none;
+  transform: translateX(100%);
+}
+.sync-panel--mobile.is-open { transform: translateX(0); }
+body.sync-overlay-open { overflow: hidden; }
+
+.sync-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 8px 8px 6px;
+  border-bottom: 1px solid var(--overlay-soft);
+  flex-shrink: 0;
+}
+.sync-panel__drag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: var(--text-muted);
+  cursor: grab;
+  touch-action: none;
+}
+.sync-panel.is-dragging .sync-panel__drag { cursor: grabbing; }
+.sync-panel__drag svg { width: 16px; height: 16px; }
+.sync-panel--mobile .sync-panel__drag { display: none; }
+.sync-panel__title { margin: 0; font-size: 14px; font-weight: 600; color: var(--text); }
+.sync-panel__spacer { flex: 1; }
+.sync-panel__close {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  background: none;
+  color: var(--text-muted);
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 120ms ease, color 120ms ease;
+}
+.sync-panel__close:hover { background: var(--overlay-med); color: var(--text); }
+
+.sync-panel__body {
+  padding: 16px 18px 18px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
 /* Sync Modal */
 .sync-description {
-  color: #aaa;
+  color: var(--text-muted);
   font-size: 0.9rem;
   line-height: 1.4;
   margin-bottom: 1rem;
@@ -32,25 +132,62 @@
 .sync-live-status {
   font-size: 12px;
   color: var(--text-muted);
-  margin: 4px 0 10px;
+  margin: 2px 0 8px;
   transition: color 160ms ease;
 }
 .sync-live-status[data-state="synced"] { color: var(--green); }
 .sync-live-status[data-state="offline"],
 .sync-live-status[data-state="error"] { color: var(--red); }
 
+/* Inputs match the app surface (theme-aware) instead of the browser default
+   white box; red focus ring like the rest of the app. */
+.sync-panel .form-input {
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 10px 12px;
+  font-size: 13px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 160ms ease;
+}
+.sync-panel .form-input::placeholder { color: var(--text-muted); }
+.sync-panel .form-input:focus { border-color: var(--red); }
+
+/* Read-only link/token field + the copy-link / copy-token / share row. */
+.sync-link-field {
+  width: 100%;
+  margin-bottom: 8px;
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  cursor: text;
+  user-select: all;
+}
+.sync-copy-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.sync-copy-row .btn-secondary {
+  flex: 1;
+  min-width: 90px;
+}
+
 .sync-divider {
   display: flex;
   align-items: center;
   margin: 1rem 0;
-  color: #666;
+  color: var(--text-muted);
   font-size: 0.85rem;
 }
 .sync-divider::before,
 .sync-divider::after {
   content: '';
   flex: 1;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--border);
 }
 .sync-divider span {
   padding: 0 0.75rem;
@@ -66,14 +203,14 @@
 }
 
 .sync-status {
-  color: #4caf50;
+  color: var(--green);
   font-weight: 600;
   font-size: 1.1rem;
   margin-bottom: 0.75rem;
 }
 
 .sync-count {
-  color: #999;
+  color: var(--text-muted);
   font-size: 0.85rem;
   margin: 0.5rem 0 1rem;
 }
@@ -81,17 +218,17 @@
 .sync-actions {
   margin-top: 1.5rem;
   padding-top: 1rem;
-  border-top: 1px solid #333;
+  border-top: 1px solid var(--border);
 }
 
 .sync-loading p {
-  color: #999;
+  color: var(--text-muted);
   text-align: center;
   padding: 2rem 0;
 }
 
 .sync-error {
-  color: #f44336;
+  color: var(--red);
   margin-bottom: 1rem;
 }
 
@@ -103,9 +240,9 @@
 .sync-unlink-btn {
   width: 100%;
   background: transparent;
-  color: #f44336;
-  border: 1px solid #f44336;
+  color: var(--red);
+  border: 1px solid var(--red);
 }
 .sync-unlink-btn:hover {
-  background: #f4433622;
+  background: rgba(205, 0, 37, 0.13);
 }

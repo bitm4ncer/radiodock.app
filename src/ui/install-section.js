@@ -158,16 +158,6 @@ export async function mountInstallSection({ container, installInfo, animateIn = 
         ${showsBtn('android') ? tile('android', 'Android', 'Add to home screen', isCurrent('android')) : ''}
         ${showsBtn('chrome-ext') ? tile('chrome-ext', 'Extension', 'Chrome · Edge · Brave', isCurrent('chrome-ext')) : ''}
       </div>
-      <button type="button" class="install-section__sync" data-action="sync">
-        ${ICONS.sync}
-        <span class="install-section__btn-text">
-          <span class="install-section__btn-label">Sync your lists across devices</span>
-          <span class="install-section__btn-sub">Scan a QR code — no account needed</span>
-        </span>
-        <svg class="install-section__btn-dl-icon" viewBox="0 0 24 24" aria-hidden="true" width="14" height="14">
-          <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        </svg>
-      </button>
       <div class="install-section__downloads">
         <p class="install-section__downloads-label">Or download the desktop app</p>
         <div class="install-section__buttons">
@@ -177,6 +167,16 @@ export async function mountInstallSection({ container, installInfo, animateIn = 
           ${supportTile()}
         </div>
       </div>
+      <button type="button" class="install-section__sync" data-action="sync">
+        ${ICONS.sync}
+        <span class="install-section__btn-text">
+          <span class="install-section__btn-label">Sync devices</span>
+          <span class="install-section__btn-sub">QR code — no account needed</span>
+        </span>
+        <svg class="install-section__btn-dl-icon" viewBox="0 0 24 24" aria-hidden="true" width="14" height="14">
+          <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </button>
     </div>
   `;
   container.append(section);

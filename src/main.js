@@ -438,6 +438,13 @@ mountOffCanvas({
   },
   onAboutClick: openAboutModal,
   onNotesClick: () => notesApi?.open(),
+  onSyncClick: () => { track('sync-open', { source: 'drawer' }); syncModal.open(); },
+});
+
+// Desktop footer sync pill.
+document.getElementById('footerSyncBtn')?.addEventListener('click', () => {
+  track('sync-open', { source: 'footer' });
+  syncModal.open();
 });
 
 // Delegated tracking for the install-section's platform buttons. The

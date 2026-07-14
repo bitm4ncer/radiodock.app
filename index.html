@@ -202,6 +202,10 @@
             <span>Notes</span>
             <span class="off-canvas__chev">→</span>
           </button>
+          <button type="button" class="off-canvas__item" id="offCanvasSync">
+            <span>Sync devices</span>
+            <span class="off-canvas__chev">→</span>
+          </button>
           <a class="off-canvas__item" href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener">GitHub</a>
           <a class="off-canvas__item" href="https://github.com/bitm4ncer/radiodock.app/issues" target="_blank" rel="noopener">Issues</a>
           <a class="off-canvas__item" href="https://buymeacoffee.com/bitmancer" target="_blank" rel="noopener">Support</a>
@@ -461,6 +465,7 @@
           Install on Devices
         </button>
         <button type="button" class="footer-pill footer-pill--sm" id="footerAboutBtn">About</button>
+        <button type="button" class="footer-pill footer-pill--sm" id="footerSyncBtn">Sync</button>
         <a class="footer-pill footer-pill--sm" href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener">GitHub</a>
         <a class="footer-pill footer-pill--sm" href="https://github.com/bitm4ncer/radiodock.app/issues" target="_blank" rel="noopener">Issues</a>
         <a class="footer-pill footer-pill--sm" href="https://buymeacoffee.com/bitmancer" target="_blank" rel="noopener">Support</a>
@@ -614,13 +619,16 @@
     </div>
 
     <!-- Sync Devices Modal -->
-    <div id="syncModal" class="modal" aria-hidden="true">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>Sync Across Devices</h3>
-          <button class="modal-close-btn" aria-label="Close">×</button>
-        </div>
-        <div class="modal-body">
+    <aside id="syncPanel" class="sync-panel" aria-hidden="true" role="dialog" aria-label="Sync across devices">
+      <header class="sync-panel__header">
+        <span class="sync-panel__drag" data-role="drag" title="Drag" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>
+        </span>
+        <h3 class="sync-panel__title">Sync Across Devices</h3>
+        <span class="sync-panel__spacer"></span>
+        <button type="button" class="sync-panel__close" data-action="close" aria-label="Close">×</button>
+      </header>
+      <div class="sync-panel__body">
           <!-- State: Not linked -->
           <div id="syncStateUnlinked">
             <p class="sync-description">Sync your station lists across your devices without an account.</p>
@@ -641,16 +649,20 @@
           <!-- State: Linked (sender) -->
           <div id="syncStateLinked" hidden>
             <div class="sync-status">✓ Connected</div>
+            <div class="sync-live-status" id="syncLiveStatus" hidden></div>
+            <p class="sync-count" id="syncCount"></p>
+
             <div class="sync-qr" id="syncQr" aria-hidden="true"></div>
             <p class="sync-qr-caption">Scan with your phone's camera to sync</p>
-            <p class="sync-description">…or open this link on your other device:</p>
-            <div class="sync-input-row">
-              <input type="text" class="form-input" id="syncLinkInput" readonly>
-              <button class="btn-secondary" id="syncCopyBtn">Copy</button>
-              <button class="btn-secondary" id="syncShareBtn">Share</button>
+
+            <p class="sync-description">…or connect another device with the link or token:</p>
+            <input type="text" class="form-input sync-link-field" id="syncLinkInput" readonly>
+            <div class="sync-copy-row">
+              <button class="btn-secondary" id="syncCopyLinkBtn">Copy link</button>
+              <button class="btn-secondary" id="syncCopyTokenBtn">Copy token</button>
+              <button class="btn-secondary" id="syncShareBtn" hidden>Share</button>
             </div>
-            <p class="sync-count" id="syncCount"></p>
-            <div class="sync-live-status" id="syncLiveStatus" hidden></div>
+
             <div class="sync-actions">
               <button class="btn-danger sync-unlink-btn" id="syncUnlinkBtn">Unlink</button>
             </div>
@@ -671,9 +683,8 @@
             <p class="sync-error" id="syncErrorMsg"></p>
             <button class="btn-secondary" id="syncRetryBtn">Try Again</button>
           </div>
-        </div>
       </div>
-    </div>
+    </aside>
 
     <div id="stationInfoModal" class="modal" aria-hidden="true">
       <div class="modal-content">
