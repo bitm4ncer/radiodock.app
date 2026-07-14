@@ -411,14 +411,18 @@ document.body.addEventListener('click', (evt) => {
 // manual there, so iOS installs go uncounted at this layer.
 window.addEventListener('appinstalled', () => track('pwa-installed'));
 
-// Buy-Me-a-Coffee outbound link. Two link instances live in the DOM
-// (mobile drawer + desktop footer); delegating from body covers both
-// without per-element wiring. The link's container class disambiguates
-// which surface the click came from.
+// Buy-Me-a-Coffee outbound link. Several link instances live in the DOM
+// (mobile drawer + desktop footer + install badge); delegating from body
+// covers them all without per-element wiring. The link's container
+// disambiguates which surface the click came from.
 document.body.addEventListener('click', (evt) => {
   const link = evt.target.closest('a[href*="buymeacoffee.com"]');
   if (!link) return;
-  const source = link.closest('.off-canvas') ? 'drawer' : 'footer';
+  const source = link.closest('.off-canvas')
+    ? 'drawer'
+    : link.closest('.install-section')
+      ? 'install'
+      : 'footer';
   track('bmc-click', { source });
 });
 

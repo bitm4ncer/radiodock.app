@@ -179,8 +179,16 @@
   letter-spacing: 0.04em;
 }
 
-.install-section__btn--download {
+.install-section__btn--download,
+.install-section__btn--support {
   text-decoration: none;
+}
+
+/* Discreet by design: the support ask uses a muted coffee icon rather than
+   the red brand tint the platform/download tiles carry, so it doesn't read
+   as a fourth install CTA. */
+.install-section__btn--support .install-section__btn-icon {
+  color: var(--text-muted);
 }
 
 .install-section__btn-dl-icon {
@@ -190,7 +198,8 @@
   transition: color 120ms ease;
 }
 
-.install-section__btn--download:hover .install-section__btn-dl-icon {
+.install-section__btn--download:hover .install-section__btn-dl-icon,
+.install-section__btn--support:hover .install-section__btn-dl-icon {
   color: var(--text);
 }
 
