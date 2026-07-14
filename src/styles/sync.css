@@ -6,6 +6,28 @@
   margin-bottom: 1rem;
 }
 
+/* QR of the sync link — always dark-on-white in a rounded card so any phone
+   camera reads it regardless of the app theme. */
+.sync-qr {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0 10px;
+}
+.sync-qr img {
+  display: block;
+  width: 160px;
+  height: 160px;
+  background: #fff;
+  padding: 10px;
+  border-radius: 12px;
+}
+.sync-qr-caption {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 0 0 14px;
+}
+
 .sync-divider {
   display: flex;
   align-items: center;

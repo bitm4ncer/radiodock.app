@@ -13,6 +13,31 @@ const SYNC_URL_PREFIX = `${window.location.origin}/#sync=`;
 function show(el) { if (el) el.hidden = false; }
 function hide(el) { if (el) el.hidden = true; }
 
+// Render the sync URL as a scannable QR. qrcode is dynamically imported so it
+// stays out of the main bundle (same pattern as hls.js). Dark-on-white always,
+// independent of theme, so any phone camera reads it.
+let qrLib = null;
+let lastQrUrl = null;
+async function renderSyncQr(url) {
+  const container = document.getElementById('syncQr');
+  if (!container || !url) return;
+  if (url === lastQrUrl && container.childElementCount > 0) return; // already drawn
+  try {
+    qrLib = qrLib || (await import('qrcode')).default;
+    const dataUrl = await qrLib.toDataURL(url, {
+      margin: 1,
+      width: 320,
+      errorCorrectionLevel: 'M',
+      color: { dark: '#000000', light: '#ffffff' },
+    });
+    container.innerHTML = `<img src="${dataUrl}" alt="Sync QR code" width="160" height="160" />`;
+    lastQrUrl = url;
+  } catch (err) {
+    console.warn('QR render failed:', err);
+    container.innerHTML = '';
+  }
+}
+
 export function mountSyncModal({ onListsChanged, track }) {
   const states = {
     unlinked: document.getElementById('syncStateUnlinked'),
@@ -65,6 +90,7 @@ export function mountSyncModal({ onListsChanged, track }) {
       if (count) count.textContent = countText;
 
       showState('linked');
+      renderSyncQr(url);
     } catch {
       showState('unlinked');
     }
@@ -83,6 +109,7 @@ export function mountSyncModal({ onListsChanged, track }) {
         result ? `Syncing ${result.list_count} list${result.list_count !== 1 ? 's' : ''} (${result.station_count} stations)` : '';
 
       showState('linked');
+      renderSyncQr(url);
       track?.('sync-link', {
         stationCount: result?.station_count ?? 0,
         listCount: result?.list_count ?? 0,

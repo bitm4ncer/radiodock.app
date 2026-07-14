@@ -434,6 +434,13 @@ document.body.addEventListener('click', (evt) => {
   track('install-click', { platform: btn.dataset.target, source: 'badge' });
 });
 
+// Sync CTA in the install badge → open the sync modal (QR + link).
+document.body.addEventListener('click', (evt) => {
+  if (!evt.target.closest('.install-section__sync[data-action="sync"]')) return;
+  track('sync-open', { source: 'install-badge' });
+  syncModal.open();
+});
+
 // PWA install completion. Fires once per device when the user accepts
 // the install prompt (Android Chrome / Desktop Chromium). iOS Safari
 // does not fire this event — the Add-to-Home-Screen flow is entirely

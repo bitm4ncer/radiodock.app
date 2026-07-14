@@ -163,6 +163,35 @@
   letter-spacing: 0.01em;
 }
 
+/* Sync CTA — a full-width call-to-action below the platform tiles. */
+.install-section__sync {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+  background: var(--bg-dark);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 9px 12px;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.install-section__sync:hover {
+  background: var(--bg-list-hover);
+  border-color: var(--red);
+}
+
+.install-section__sync .install-section__btn-dl-icon {
+  margin-left: auto;
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
 /* Desktop-app download row — sits below the platform-install buttons. */
 .install-section__downloads {
   margin-top: 14px;

@@ -641,7 +641,9 @@
           <!-- State: Linked (sender) -->
           <div id="syncStateLinked" hidden>
             <div class="sync-status">✓ Connected</div>
-            <p class="sync-description">Share this link with your other device:</p>
+            <div class="sync-qr" id="syncQr" aria-hidden="true"></div>
+            <p class="sync-qr-caption">Scan with your phone's camera to sync</p>
+            <p class="sync-description">…or open this link on your other device:</p>
             <div class="sync-input-row">
               <input type="text" class="form-input" id="syncLinkInput" readonly>
               <button class="btn-secondary" id="syncCopyBtn">Copy</button>
