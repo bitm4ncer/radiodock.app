@@ -67,15 +67,32 @@ attachListenHeartbeat(player);
 // the user is actually playing gets its status from the real audio pipeline
 // (recovery events below), merged in recomputeOffline().
 let proberStatuses = {};        // non-playing rows, from the prober
-let playingStationOffline = false;  // active station, from recovery events
+let playingStationOffline = false;  // active station, hard audio failure (recovery events)
+let playingDeadAir = false;         // active station, off-air but still streaming silence (metadata sentinel)
 
 function recomputeOffline() {
   const merged = { ...proberStatuses };
   const playing = player.getCurrentStation();
   if (playing?.id) {
-    merged[playing.id] = playingStationOffline ? 'offline' : 'online';
+    // Either a hard pipeline failure or a dead-air metadata sentinel marks
+    // the active station OFF. Dead air keeps audio flowing (silence), so the
+    // pipeline stays happy — only the metadata gives it away.
+    merged[playing.id] = (playingStationOffline || playingDeadAir) ? 'offline' : 'online';
   }
   applyOfflineStatus(merged);
+}
+
+// Libretime's canonical off-air placeholder. A station hosted on Airtime keeps
+// the stream connected and broadcasts silence when nothing is scheduled, so no
+// MediaError ever fires — the recovery layer can't see it. This now-playing
+// sentinel (artist "Airtime", title "offline") is the only off-air signal.
+// Same-platform live stations (e.g. Kiosk Radio) report a real show title, so
+// the sentinel is specific to off-air, not to the platform.
+function isOffAirMetadata(artist, title) {
+  return (
+    String(artist ?? '').trim().toLowerCase() === 'airtime' &&
+    String(title ?? '').trim().toLowerCase() === 'offline'
+  );
 }
 
 const streamProber = attachStreamProber({
@@ -315,6 +332,14 @@ let latestMetadata = null;
 player.on('metadata', (evt) => {
   const { artist, title, nowPlaying } = evt.detail ?? {};
   latestMetadata = { artist, title, nowPlaying };
+  // Dead-air detection for the active station: audio still flows (silence), so
+  // only the metadata reveals it's off-air. Toggle both ways — a real title
+  // arriving means the station is back on the air.
+  const deadAir = isOffAirMetadata(artist, title);
+  if (deadAir !== playingDeadAir) {
+    playingDeadAir = deadAir;
+    recomputeOffline();
+  }
 });
 player.on('stationchange', () => {
   // Clear stale metadata so a capture taken between station change and
@@ -610,8 +635,10 @@ player.on('mediaerror', (evt) => {
 let startupProbe = null;
 player.on('stationchange', (evt) => {
   startupProbe = { station: evt.detail?.station ?? null, t0: performance.now() };
-  // New station: assume live until the pipeline says otherwise.
+  // New station: assume live until the pipeline or metadata says otherwise.
+  // Dead air must reset here (not in 'playing' — silence still fires 'playing').
   playingStationOffline = false;
+  playingDeadAir = false;
   recomputeOffline();
 });
 player.on('playing', () => {

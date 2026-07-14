@@ -19,12 +19,19 @@
 //      real verdict where fetch() cannot:
 //        ONLINE  — the element reports audio data (loadedmetadata / canplay /
 //                  loadeddata / buffered progress).
-//        OFFLINE — any MediaError, or no data before the timeout.
-//      The crucial correctness point: a stream that has gone off-air usually
-//      returns a 404 / HTML error page. A no-cors fetch can't read that status
-//      (opaque response → looks online), and an earlier audio attempt wrongly
-//      counted the resulting decode error (MEDIA_ERR_SRC_NOT_SUPPORTED) as
-//      online. Here a decode error is OFFLINE — that is the off-air signal.
+//        OFFLINE — a MediaError. A stream that has gone off-air usually
+//                  returns a 404 / HTML error page; the <audio> element can't
+//                  decode that and fires 'error' (MEDIA_ERR_SRC_NOT_SUPPORTED /
+//                  MEDIA_ERR_NETWORK). A hard error is the ONLY confident
+//                  off-air signal — that is when we badge OFF.
+//        UNKNOWN — the timeout expired with neither data nor error. This is
+//                  INCONCLUSIVE, never OFF. Many healthy stations have a slow,
+//                  variable cold-start first-byte (icecast under load) that
+//                  legitimately exceeds the timeout; flagging those OFF is the
+//                  worse error. A false OFF discourages tapping a working
+//                  station, so we only ever badge OFF on positive proof.
+//      (A no-cors fetch can't read HTTP status — an opaque response looks
+//      online — which is why the <audio> decode path is the right probe.)
 //
 // Sequential-ish with small concurrency so a full pass over the active list
 // completes in ~40s without flooding stream servers, then re-checks each
@@ -45,13 +52,13 @@ function preferHttps(url) {
 
 export function attachStreamProber({ getStations, getPlayingId, onStatusChange }) {
   let timer = null;
-  let statuses = {};          // { stationId: 'online' | 'offline' } — non-playing rows only
+  let statuses = {};          // { stationId: 'online' | 'offline' | 'unknown' } — non-playing rows only
   let probing = false;
   let aborted = false;
 
   /**
    * Load a station URL into a throwaway muted <audio> and classify.
-   * @returns {Promise<'online' | 'offline'>}
+   * @returns {Promise<'online' | 'offline' | 'unknown'>}
    */
   function probeOne(station) {
     return new Promise((resolve) => {
@@ -80,7 +87,7 @@ export function attachStreamProber({ getStations, getPlayingId, onStatusChange }
       const onProgress = () => {
         if (audio.buffered && audio.buffered.length > 0) finish('online');
       };
-      const onError = () => finish('offline');   // incl. off-air 404 → decode error
+      const onError = () => finish('offline');   // MediaError → confident off-air (404/decode)
 
       audio.addEventListener('loadedmetadata', onData);
       audio.addEventListener('loadeddata', onData);
@@ -88,7 +95,10 @@ export function attachStreamProber({ getStations, getPlayingId, onStatusChange }
       audio.addEventListener('progress', onProgress);
       audio.addEventListener('error', onError);
 
-      const timer = setTimeout(() => finish('offline'), PROBE_TIMEOUT_MS);
+      // Timeout = inconclusive, NOT offline. A slow-but-healthy stream that
+      // hasn't emitted data yet must never be badged OFF (that was the old
+      // false-OFF bug on cold-start icecast). Only a hard error flips to OFF.
+      const timer = setTimeout(() => finish('unknown'), PROBE_TIMEOUT_MS);
 
       audio.src = preferHttps(station.url);
       try { audio.load(); } catch { finish('offline'); }
