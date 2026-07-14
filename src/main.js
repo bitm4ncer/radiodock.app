@@ -1168,8 +1168,10 @@ async function handleInboundSyncHash() {
   try {
     const pulled = await pullFromServer(token);
     if (!pulled) {
-      toast('No data found — the link may have expired.');
+      // Same hash — already up to date. Just store the token for future auto-sync.
+      await storage.setPref('syncToken', token);
       clearSyncHash();
+      toast('Already linked — your lists are up to date.');
       return;
     }
     const ok = await confirmDialog({
