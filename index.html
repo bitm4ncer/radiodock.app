@@ -441,6 +441,12 @@
                         <span>Import List</span>
                       </button>
                       <input type="file" id="importListFile" accept=".json" style="display: none;" />
+                      <button id="syncListBtn" class="import-list-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="import-icon" aria-hidden="true">
+                          <path d="M12 4V1L8 5L12 9V6C15.31 6 18 8.69 18 12C18 13.01 17.75 13.97 17.3 14.8L18.76 16.26C19.54 15.03 20 13.57 20 12C20 7.58 16.42 4 12 4ZM12 18C8.69 18 6 15.31 6 12C6 10.99 6.25 10.03 6.7 9.2L5.24 7.74C4.46 8.97 4 10.43 4 12C4 16.42 7.58 20 12 20V23L16 19L12 15V18Z"/>
+                        </svg>
+                        <span>Sync Devices</span>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -649,6 +655,64 @@
           </p>
           <input type="text" id="shareLinkInput" readonly />
           <button type="button" id="copyShareLinkBtn" class="btn-primary share-copy-btn">Copy link</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sync Devices Modal -->
+    <div id="syncModal" class="modal" aria-hidden="true">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Sync Across Devices</h3>
+          <button class="modal-close-btn" aria-label="Close">×</button>
+        </div>
+        <div class="modal-body">
+          <!-- State: Not linked -->
+          <div id="syncStateUnlinked">
+            <p class="sync-description">Sync your station lists across your devices without an account.</p>
+            <button class="btn-primary sync-generate-btn" id="syncGenerateBtn">Generate Sync Link</button>
+            <div class="sync-divider"><span>or</span></div>
+            <p class="sync-description">Already have a token?</p>
+            <div class="sync-input-row">
+              <input type="text" class="form-input" id="syncTokenInput" placeholder="Paste URL or token…" autocomplete="off">
+              <button class="btn-secondary" id="syncConnectBtn">Connect</button>
+            </div>
+          </div>
+
+          <!-- State: Generating -->
+          <div id="syncStateGenerating" class="sync-loading" hidden>
+            <p>Generating sync link…</p>
+          </div>
+
+          <!-- State: Linked (sender) -->
+          <div id="syncStateLinked" hidden>
+            <div class="sync-status">✓ Connected</div>
+            <p class="sync-description">Share this link with your other device:</p>
+            <div class="sync-input-row">
+              <input type="text" class="form-input" id="syncLinkInput" readonly>
+              <button class="btn-secondary" id="syncCopyBtn">Copy</button>
+            </div>
+            <p class="sync-count" id="syncCount"></p>
+            <div class="sync-actions">
+              <button class="btn-danger sync-unlink-btn" id="syncUnlinkBtn">Unlink</button>
+            </div>
+          </div>
+
+          <!-- State: Connected (receiver) -->
+          <div id="syncStateConnected" hidden>
+            <div class="sync-status">✓ Connected</div>
+            <p class="sync-count" id="syncConnectedCount"></p>
+            <p class="sync-description" id="syncConnectedLast"></p>
+            <div class="sync-actions">
+              <button class="btn-danger sync-unlink-btn" id="syncUnlinkBtn2">Unlink</button>
+            </div>
+          </div>
+
+          <!-- State: Error -->
+          <div id="syncStateError" hidden>
+            <p class="sync-error" id="syncErrorMsg"></p>
+            <button class="btn-secondary" id="syncRetryBtn">Try Again</button>
+          </div>
         </div>
       </div>
     </div>

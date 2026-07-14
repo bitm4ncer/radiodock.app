@@ -25,11 +25,14 @@ import { buildShareUrl, tryDecodeShareHash } from './data/share.js';
 import { searchStations } from './data/radio-browser.js';
 import { mountVisualizer } from './visualizer/bootstrap.js';
 import { mountPlayerCardDragMinimize } from './ui/player-card-drag.js';
+import { mountElectronBridge, isElectron } from './ui/electron-bridge.js';
 import { mountIdbBlockedBanner } from './ui/idb-blocked-banner.js';
 import { mountBackground } from './ui/background.js';
 import { mountFooterReveal } from './ui/footer-reveal.js';
 import { mountNotesPanel } from './ui/notes-panel.js';
 import { mountNotesCaptureButton } from './ui/notes-capture-button.js';
+import { mountSyncModal } from './ui/sync-modal.js';
+import { autoSyncOnStartup as syncAutoStart, pushOnChange as syncPushOnChange, getSyncToken, extractTokenFromInput } from './data/sync.js';
 import { track } from './analytics/umami.js';
 import { attachListenHeartbeat } from './analytics/listen-heartbeat.js';
 import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
@@ -178,6 +181,7 @@ const search = mountSearch({
       else listDropdown.setLists(allListsForDropdown());
       search.refreshAddedFlags();
       track('station-add', { country: station.countrycode ?? '' });
+      scheduleSyncPush();
       toast(`Added to "${targetList.name}"`);
     } catch (err) {
       toast(err.message);
@@ -302,6 +306,15 @@ mountNotesCaptureButton({
   onCapture: () => notesApi?.captureNow({ source: 'player-card' }),
 });
 
+// Sync modal
+const syncModal = mountSyncModal({
+  onListsChanged: async () => {
+    state.userLists = await listsApi.getUserLists();
+    renderActiveList();
+  },
+  track,
+});
+
 // Mobile off-canvas drawer
 mountOffCanvas({
   triggerBtn: document.getElementById('menuBtn'),
@@ -384,6 +397,23 @@ mountBackground().catch((err) => console.warn('Background mount failed:', err));
 // Auto-reveal the desktop footer when the cursor approaches the bottom edge.
 // Pure DOM/CSS — no IDB dependency, no boot risk.
 mountFooterReveal();
+
+// Electron desktop bridge — wires native features (tray, always-on-top,
+// auto-start) when running inside the Electron wrapper. In the browser,
+// isElectron() returns false and this is a no-op.
+mountElectronBridge({
+  player,
+  getActiveStation: () => state.currentStation,
+});
+
+// Electron tray "Next Station" → advance to next station in active list.
+window.addEventListener('electron:trayNext', () => {
+  const list = findList(state.currentListId);
+  if (!list?.stations?.length) return;
+  const idx = list.stations.findIndex((s) => s.id === state.currentStation?.id);
+  const next = list.stations[(idx + 1) % list.stations.length];
+  if (next) player.playStation(next);
+});
 
 // --- Helpers ---
 function allListsForDropdown() {
@@ -566,6 +596,7 @@ stationList.onRemove(async (stationId) => {
   try {
     await listsApi.removeStationFromList(list.id, stationId);
     list.stations = list.stations.filter((s) => s.id !== stationId);
+    scheduleSyncPush();
     renderActiveList();
   } catch (err) {
     toast(err.message);
@@ -578,6 +609,7 @@ stationList.onReorder(async (orderedIds) => {
   try {
     const updated = await listsApi.reorderStationsInList(list.id, orderedIds, { baseline: list.stations });
     list.stations = updated.stations;
+    scheduleSyncPush();
     renderActiveList();
   } catch (err) {
     toast(err.message);
@@ -595,10 +627,12 @@ playerCard.onFavoriteClick(async (station) => {
       await listsApi.removeStationFromList(target.id, station.id);
       target.stations = target.stations.filter((s) => s.id !== station.id);
       toast(`Removed from "${target.name}"`);
+      scheduleSyncPush();
     } else {
       await listsApi.addStationToList(target.id, station);
       target.stations = [...target.stations, station];
       toast(`Added to "${target.name}"`);
+      scheduleSyncPush();
     }
     updateFavoriteHeart();
     if (state.currentListId === target.id) renderActiveList();
@@ -683,6 +717,7 @@ listsCarousel.onRemove(async (stationId, listId) => {
   try {
     await listsApi.removeStationFromList(list.id, stationId);
     list.stations = list.stations.filter((s) => s.id !== stationId);
+    scheduleSyncPush();
     renderActiveList();
   } catch (err) {
     toast(err.message);
@@ -695,6 +730,7 @@ listsCarousel.onReorder(async (orderedIds, listId) => {
   try {
     const updated = await listsApi.reorderStationsInList(list.id, orderedIds, { baseline: list.stations });
     list.stations = updated.stations;
+    scheduleSyncPush();
     renderActiveList();
   } catch (err) {
     toast(err.message);
@@ -721,6 +757,7 @@ async function promptCreateList() {
     renderActiveList();
     await storage.setPref('currentListId', created.id);
     track('list-create');
+    scheduleSyncPush();
     toast(`Created "${created.name}"`);
   } catch (err) {
     toast(err.message);
@@ -740,6 +777,7 @@ listDropdown.onRename(async (list) => {
   try {
     const updated = await listsApi.renameList(list.id, next);
     list.name = updated.name;
+    scheduleSyncPush();
     renderActiveList();
     toast(`Renamed to "${updated.name}"`);
   } catch (err) {
@@ -810,10 +848,13 @@ listDropdown.onDelete(async (list) => {
     renderActiveList();
     track('list-delete');
     toast(`Deleted "${list.name}"`);
+    scheduleSyncPush();
   } catch (err) {
     toast(err.message);
   }
 });
+
+listDropdown.onSyncDevices(() => syncModal.open());
 
 listDropdown.onImport(async (file) => {
   try {
@@ -923,12 +964,27 @@ async function bootstrap() {
   }
 }
 
-bootstrap().then(() => handleInboundShareHash());
+bootstrap().then(async () => {
+  await handleInboundShareHash();
+  await handleInboundSyncHash();
+  const token = await getSyncToken();
+  if (token) {
+    const result = await syncAutoStart(token);
+    if (result === 'pulled') {
+      state.userLists = await listsApi.getUserLists();
+      renderActiveList();
+      track('sync-pull', { source: 'auto-sync' });
+    }
+  }
+});
 
 // Also run the handler on hashchange, so pasting a share URL into an
 // already-open tab triggers the import flow (otherwise the URL change
 // is just a fragment shift and bootstrap wouldn't re-run).
-window.addEventListener('hashchange', () => handleInboundShareHash());
+window.addEventListener('hashchange', () => {
+  handleInboundShareHash();
+  handleInboundSyncHash();
+});
 
 // Inbound share-link handler. Runs after bootstrap so state.userLists is
 // populated and the collision check has something to compare against.
@@ -1003,6 +1059,7 @@ async function importSharedSingle({ name, stations }) {
     if (choice === 'primary') {
       const updated = await listsApi.replaceListStations(existing.id, stations);
       existing.stations = updated.stations;
+      scheduleSyncPush();
       await switchToList(existing.id);
       track('list-import-shared', { stationCount: stations.length, resolution: 'replace' });
       toast(`Updated "${existing.name}"`);
@@ -1044,6 +1101,55 @@ async function switchToList(id) {
   state.currentListId = id;
   await storage.setPref('currentListId', id);
   renderActiveList();
+}
+
+// Inbound sync hash handler (#sync=...)
+async function handleInboundSyncHash() {
+  const hash = window.location.hash;
+  if (!hash || !hash.startsWith('#sync=')) return;
+  const raw = hash.slice('#sync='.length);
+  if (!raw) return;
+  const token = extractTokenFromInput(raw);
+  if (!token) {
+    toast('Invalid sync link.');
+    clearSyncHash();
+    return;
+  }
+  try {
+    const { pullFromServer, applyImportPayload } = await import('./data/sync.js');
+    const pulled = await pullFromServer(token);
+    if (!pulled) {
+      toast('No data found — the link may have expired.');
+      clearSyncHash();
+      return;
+    }
+    const ok = await confirmDialog({
+      title: 'Import synced lists?',
+      message: `This will import ${pulled.list_count} list${pulled.list_count !== 1 ? 's' : ''}.`,
+      confirmLabel: 'Import',
+    });
+    if (!ok) {
+      clearSyncHash();
+      return;
+    }
+    const { imported, stationCount } = await applyImportPayload(pulled.exportJson, pulled.hash, pulled.updated_at);
+    await storage.setPref('syncToken', token);
+    state.userLists = await listsApi.getUserLists();
+    state.currentListId = state.userLists[0]?.id ?? COMMUNITY_LIST_ID;
+    renderActiveList();
+    track('sync-pull', { stationCount, listCount: imported, source: 'inbound-link' });
+    toast(`Synced ${imported} list${imported !== 1 ? 's' : ''} (${stationCount} stations)`);
+  } catch (err) {
+    console.warn('Sync hash handler failed:', err);
+    toast(`Sync failed: ${err.message}`);
+  }
+  clearSyncHash();
+}
+
+function clearSyncHash() {
+  if (window.location.hash?.startsWith('#sync=')) {
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+  }
 }
 
 function clearShareHash() {
@@ -1097,4 +1203,23 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
 }
 
 // Debug handle
+let __radiodockExports;
+
+// Sync push-on-change debounce
+let syncPushTimer = null;
+export function scheduleSyncPush() {
+  if (syncPushTimer) clearTimeout(syncPushTimer);
+  syncPushTimer = setTimeout(async () => {
+    const token = await getSyncToken();
+    if (token) {
+      const result = await syncPushOnChange(token);
+      if (result) {
+        track('sync-push', {
+          stationCount: result.station_count ?? 0,
+          listCount: result.list_count ?? 0,
+        });
+      }
+    }
+  }, 2000);
+}
 window.__radiodock = { player, playerCard, stationList, listDropdown, state, listsApi, storage };

@@ -29,6 +29,7 @@ export function mountListDropdown() {
   const addBtn = document.getElementById('addListBtn');
   const importBtn = document.getElementById('importListBtn');
   const importInput = document.getElementById('importListFile');
+  const syncBtn = document.getElementById('syncListBtn');
 
   let lists = [];
   let currentId = null;
@@ -40,6 +41,7 @@ export function mountListDropdown() {
   let shareCb = null;
   let deleteCb = null;
   let toggleCb = null;
+  let syncCb = null;
 
   // Toggle a marker class on the enclosing .favorites-section while the
   // dropdown is open. Without it, visualizer.css's overflow:hidden on
@@ -168,6 +170,11 @@ export function mountListDropdown() {
     close();
   });
 
+  syncBtn?.addEventListener('click', () => {
+    close();
+    syncCb?.();
+  });
+
   return {
     setLists(next) {
       lists = next ?? [];
@@ -185,6 +192,7 @@ export function mountListDropdown() {
     onShare(cb) { shareCb = cb; },
     onDelete(cb) { deleteCb = cb; },
     onToggle(cb) { toggleCb = cb; },
+    onSyncDevices(cb) { syncCb = cb; },
     openActionsSheet,
     open,
     close,
