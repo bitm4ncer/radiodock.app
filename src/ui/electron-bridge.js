@@ -15,6 +15,12 @@ export function isElectron() {
   return !!api?.isElectron;
 }
 
+// Stamp body immediately so CSS rules (hide install, show controls)
+// take effect before any rendering. The async bridge mount follows.
+if (isElectron()) {
+  document.body.classList.add('is-electron');
+}
+
 /**
  * Wire the Electron bridge to the app player and state.
  * @param {{ player: import('../player/audio.js').player, getActiveStation: () => object }} deps
