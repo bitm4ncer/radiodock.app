@@ -29,9 +29,9 @@ Because the server records on its own connection, **background recording works**
 
 Three endpoints. UUID-lookup only (stream URL resolved from the DB, never client-supplied → SSRF-safe, same as the relay/logo CDN). Rate-limited. **No transcoding** (raw byte passthrough → minimal CPU).
 
-- `POST /v1/record/start` `{ uuid }` → validate UUID; resolve stream URL; start fetching upstream → write to `data/rec-tmp/<id>.<ext>` (ext from upstream content-type). Returns `{ id, mime }` where **`id` is an unguessable random capability token** (there is no user auth — the token is what authorizes stop/fetch).
-- `POST /v1/record/stop` `{ id }` → abort the upstream fetch, finalize the file. Returns `{ id, bytes, mime, durationMs }`.
-- `GET /v1/record/fetch?id=<id>` → stream the finished file to the client (finite, with `Content-Length`), then **delete the temp file after a successful transfer**.
+- `POST /api/record/start` `{ uuid }` → validate UUID; resolve stream URL; start fetching upstream → write to `data/rec-tmp/<id>.<ext>` (ext from upstream content-type). Returns `{ id, mime }` where **`id` is an unguessable random capability token** (there is no user auth — the token is what authorizes stop/fetch).
+- `POST /api/record/stop` `{ id }` → abort the upstream fetch, finalize the file. Returns `{ id, bytes, mime, durationMs }`.
+- `GET /api/record/fetch?id=<id>` → stream the finished file to the client (finite, with `Content-Length`), then **delete the temp file after a successful transfer**.
 
 The upstream URL is fetched **as-is** (no https-upgrade — the server has no mixed-content constraint and http-only stations must keep working), mirroring the relay.
 

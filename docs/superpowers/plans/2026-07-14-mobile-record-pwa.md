@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Re-enable recording on mobile by driving the server-side `/v1/record/*` endpoints from a server-backed recorder that mirrors the existing client-side recorder's event interface, so the notes UI works unchanged and background recordings can be finished on return.
+**Goal:** Re-enable recording on mobile by driving the server-side `/api/record/*` endpoints from a server-backed recorder that mirrors the existing client-side recorder's event interface, so the notes UI works unchanged and background recordings can be finished on return.
 
 **Architecture:** A `mobile-recorder` (same `start/stop/isRecording/on` shape as `player/recorder.js`) calls a thin `record-client` (start/stop/fetch) against the Stations VPS, persists an in-flight handle to IndexedDB (`prefs.pendingRecording`) so it survives app restarts, and emits `stopped {blob,...}` after fetching the finished file — which the existing `onRecordingStopped` turns into the same tape card. `main.js` picks the mobile recorder on coarse pointers and the desktop recorder otherwise.
 
@@ -45,7 +45,7 @@ const BASE = 'https://stations.radiodock.app';
 export class RecordingExpiredError extends Error {}
 
 export async function startRecording(uuid) {
-  const res = await fetch(`${BASE}/v1/record/start`, {
+  const res = await fetch(`${BASE}/api/record/start`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ uuid }),
@@ -55,7 +55,7 @@ export async function startRecording(uuid) {
 }
 
 export async function stopRecording(id) {
-  const res = await fetch(`${BASE}/v1/record/stop`, {
+  const res = await fetch(`${BASE}/api/record/stop`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id }),
@@ -66,7 +66,7 @@ export async function stopRecording(id) {
 }
 
 export async function fetchRecording(id) {
-  const res = await fetch(`${BASE}/v1/record/fetch?id=${encodeURIComponent(id)}`);
+  const res = await fetch(`${BASE}/api/record/fetch?id=${encodeURIComponent(id)}`);
   if (res.status === 404) throw new RecordingExpiredError('recording expired');
   if (!res.ok) throw new Error(`fetch failed: ${res.status}`);
   return res.blob();
@@ -115,7 +115,7 @@ git commit -m "feat(data): record-client for server-side recording endpoints"
 ```js
 // src/player/mobile-recorder.js
 // Server-backed recorder for mobile (iOS can't capture client-side). Drives the
-// Stations /v1/record endpoints and persists an in-flight handle so a
+// Stations /api/record endpoints and persists an in-flight handle so a
 // background recording survives app restarts and can be finished on return.
 // Presents the SAME interface + events as player/recorder.js so notes-panel is
 // unchanged.
