@@ -12,7 +12,7 @@
 // nobody is looking at. Resumes on visibility restore + immediately re-probes.
 
 const PROBE_INTERVAL_MS = 60_000;
-const PROBE_TIMEOUT_MS = 8_000;
+const PROBE_TIMEOUT_MS = 20_000;
 
 export function attachStreamProber({ getStations, onStatusChange }) {
   let timer = null;
