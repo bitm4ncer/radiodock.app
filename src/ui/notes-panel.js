@@ -32,7 +32,7 @@ let getStation = () => null;
 let getMetadata = () => null;
 
 // Mount entrypoint. Returns API: { open, close, captureNow }.
-export async function mountNotesPanel({ player, getLatestMetadata }) {
+export async function mountNotesPanel({ player, getLatestMetadata, recorder = null }) {
   getStation = () => player.getCurrentStation?.() ?? null;
   getMetadata = () => getLatestMetadata?.() ?? null;
 
