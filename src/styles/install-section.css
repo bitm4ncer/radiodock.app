@@ -104,7 +104,7 @@
 .install-section__intro {
   margin: 0;
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.45;
 }
 
@@ -357,7 +357,7 @@
   }
 
   .install-section__intro {
-    font-size: 13px;
+    font-size: 16px;
     line-height: 1.5;
     color: var(--text);
   }
