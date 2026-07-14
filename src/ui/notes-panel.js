@@ -1015,6 +1015,7 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     );
     if (state.editingNoteId === noteId) state.editingNoteId = null;
     track('note-delete');
+    if (note.type === 'recording') track('recording-deleted');
     render();
     toast('Note deleted · Undo', {
       action: {

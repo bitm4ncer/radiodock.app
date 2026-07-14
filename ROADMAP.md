@@ -1,5 +1,16 @@
 # Roadmap
 
+## v2.6 — Tape recording in notes 🚧
+
+- [x] Stream relay on the Stations VPS (`stations.radiodock.app/api/relay?uuid=`) — UUID-lookup, SSRF-safe, passthrough, capped (separate `RadioDock-Stations` repo, M15)
+- [x] `recordings` IndexedDB store (v4) + `notes.createRecording` / `getRecordingBlob` + cascade audio delete
+- [x] `player/recorder.js` — dedicated crossorigin `<audio>` → Web Audio → MediaRecorder→Opus; verified live (real Opus captured, CORS bypassed)
+- [x] Record button left of Save Moment (live time/size, 500 MB budget gate, 60 min max)
+- [x] Tape-player note card — spinning SVG reels, inline playback, download-then-delete confirm
+- [x] Desktop cable connecting player + notes panel while recording (physics-ish sag, tracks drag)
+- [x] Analytics events + legal-page relay note
+- [ ] Ship to production (push `main`) + on-device mobile pass (iOS foreground recording)
+
 ## v2.5 — Desktop QoL ✅
 
 Small, independent quality-of-life features. Implementation plan:
