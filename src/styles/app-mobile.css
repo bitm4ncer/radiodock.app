@@ -262,4 +262,80 @@
     overflow-y: auto;
     flex: 1;
   }
+
+  /* ---- Pages navigate inside the app chrome ----
+     About / Notes / Sync / Log open BETWEEN the sticky top bar and the fixed
+     player bar: both stay put, only the surface between them changes. The
+     bounds are measured by ui/app-page-bounds.js and published as CSS vars —
+     the header grows with the safe-area and with the Electron title bar stacked
+     above it, and the player bar grows with its content, so neither can be
+     hard-coded here.
+     Deliberately NOT pages: the dialog sheets (confirm / prompt / share /
+     station info / list actions / new list) stay bottom-anchored — they're
+     transient actions, not destinations. */
+  .notes-panel--mobile,
+  #infoModal.modal,
+  #changelogModal.modal {
+    top: var(--app-page-top, 0px);
+    bottom: var(--app-page-bottom, 0px);
+    height: auto;
+  }
+
+  /* sync.css pins the panel with `inset: 0 !important`, so match that weight. */
+  .sync-panel--mobile {
+    top: var(--app-page-top, 0px) !important;
+    bottom: var(--app-page-bottom, 0px) !important;
+    height: auto !important;
+  }
+
+  /* Log is a destination here, not a bottom sheet: fill the page area and let
+     the body scroll inside it. */
+  #changelogModal.modal {
+    align-items: stretch;
+    justify-content: stretch;
+  }
+
+  #changelogModal.modal .modal-content {
+    width: 100%;
+    max-width: none;
+    max-height: none;
+    height: 100%;
+    border-radius: 0;
+    padding-bottom: 0;
+    animation: none;
+  }
+
+  /* ---- Sub-pages close with a back arrow, not a second ✕ ----
+     The app's own close already sits top-right (Electron title bar / browser
+     chrome), so a page-level ✕ directly under it reads as two ✕ stacked. A page
+     is somewhere you came FROM, so it goes back.
+     Done in CSS rather than in four separate headers' markup: font-size:0 drops
+     the ✕ glyph, any icon child is hidden, and the mask paints the arrow in
+     currentColor so hover/active colours keep working. */
+  #infoModal .modal-close-btn,
+  #changelogModal .modal-close-btn,
+  .sync-panel__close,
+  .notes-panel__close {
+    font-size: 0;
+  }
+
+  #infoModal .modal-close-btn > svg,
+  #changelogModal .modal-close-btn > svg,
+  .sync-panel__close > svg,
+  .notes-panel__close > svg {
+    display: none;
+  }
+
+  #infoModal .modal-close-btn::before,
+  #changelogModal .modal-close-btn::before,
+  .sync-panel__close::before,
+  .notes-panel__close::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 20px;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 18l-6-6 6-6'/%3E%3C/svg%3E") center / 20px 20px no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 18l-6-6 6-6'/%3E%3C/svg%3E") center / 20px 20px no-repeat;
+  }
 }

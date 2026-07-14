@@ -28,6 +28,7 @@ import { mountPlayerCardDragMinimize } from './ui/player-card-drag.js';
 import { mountElectronBridge, isElectron } from './ui/electron-bridge.js';
 import { mountElectronWindowControls } from './ui/electron-window-controls.js';
 import { mountIdbBlockedBanner } from './ui/idb-blocked-banner.js';
+import { mountAppPageBounds } from './ui/app-page-bounds.js';
 import { mountBackground } from './ui/background.js';
 import { mountFooterReveal } from './ui/footer-reveal.js';
 import { mountNotesPanel } from './ui/notes-panel.js';
@@ -185,6 +186,9 @@ fetch('https://radiodock-metadata-proxy-1.onrender.com/health', {
 }).catch(() => {});
 
 const playerCard = mountPlayerCard({ player });
+// Publishes --app-page-top / --app-page-bottom so About / Notes / Sync / Log open
+// between the top bar and the player instead of covering them.
+mountAppPageBounds();
 const stationInfo = mountStationInfo();
 playerCard.onInfoClick((station) => {
   stationInfo.open(station);

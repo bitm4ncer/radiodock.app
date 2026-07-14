@@ -152,12 +152,6 @@ body.container-solid .notes-panel {
   transform: translateX(0);
 }
 
-/* Electron: start the full-page panel below the frameless title bar so its
-   header isn't clipped and the window controls stay reachable. */
-body.is-electron .notes-panel--mobile {
-  top: var(--titlebar-h);
-  height: calc(100dvh - var(--titlebar-h));
-}
 
 /* ============================================================ Header */
 .notes-panel__header {
