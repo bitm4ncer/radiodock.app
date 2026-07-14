@@ -9,44 +9,16 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        include:
-          - os: ubuntu-latest
-            artifact: RadioDock-linux.AppImage
-          - os: macos-latest
-            artifact: RadioDock-mac.dmg
-          - os: windows-latest
-            artifact: RadioDock-win.exe
-
-    runs-on: ${{ matrix.os }}
-
+  windows:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
+        with: { node-version: 20 }
+      - run: npm ci
         working-directory: desktop
-        run: npm ci
-
-      - name: Build Electron app
+      - run: npx electron-builder --win
         working-directory: desktop
-        run: npx electron-builder --${{ matrix.os == 'ubuntu-latest' && 'linux' || matrix.os == 'macos-latest' && 'mac' || 'win' }}
-
-      - name: Find artifact
-        id: find
-        shell: bash
-        working-directory: desktop
-        run: |
-          FILE=$(find dist -name "${{ matrix.artifact }}" -o -name "RadioDock-win.exe" | head -1)
-          echo "path=$FILE" >> $GITHUB_OUTPUT
-          echo "name=$(basename "$FILE")" >> $GITHUB_OUTPUT
-
       - name: Upload to Release
         uses: softprops/action-gh-release@v2
         with:
@@ -54,7 +26,45 @@ jobs:
           name: "Desktop App — Build #${{ github.run_number }}"
           draft: false
           prerelease: false
-          files: desktop/${{ steps.find.outputs.path }}
+          files: desktop/dist/RadioDock-win.exe
           make_latest: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm ci
+        working-directory: desktop
+      - run: npx electron-builder --mac
+        working-directory: desktop
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: desktop-v${{ github.run_number }}
+          name: "Desktop App — Build #${{ github.run_number }}"
+          draft: false
+          prerelease: false
+          files: desktop/dist/RadioDock-mac.dmg
+          make_latest: true
+
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm ci
+        working-directory: desktop
+      - run: npx electron-builder --linux
+        working-directory: desktop
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: desktop-v${{ github.run_number }}
+          name: "Desktop App — Build #${{ github.run_number }}"
+          draft: false
+          prerelease: false
+          files: desktop/dist/RadioDock-linux.AppImage
+          make_latest: true
