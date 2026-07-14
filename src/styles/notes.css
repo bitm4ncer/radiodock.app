@@ -199,7 +199,9 @@ body.is-electron .notes-panel--mobile {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
+  /* Same padding as the Save Moment button below it (.notes-panel__capture-btn)
+     so the two pills in the panel read as one set. */
+  padding: 9px 14px;
   background: var(--bg-list-hover);
   border: 0;
   border-radius: var(--radius-pill);
