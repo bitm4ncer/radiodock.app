@@ -672,3 +672,112 @@ body.container-solid .notes-panel {
 body.notes-overlay-open {
   overflow: hidden;
 }
+
+/* ---- Recording: Rec button + tape-player card ---- */
+
+.notes-panel__capture-row {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  margin: 10px;
+}
+.notes-panel__capture-row .notes-panel__capture-btn {
+  flex: 1;
+  margin: 0;
+}
+
+.notes-panel__record-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 40px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background-color: var(--bg-list-active);
+  color: var(--text);
+  cursor: pointer;
+}
+.notes-panel__record-btn:hover {
+  background-color: var(--bg-list-hover);
+  border-color: var(--overlay-hard);
+}
+.notes-panel__record-btn:disabled {
+  background-color: transparent;
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+.notes-panel__record-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #e23b3b;
+  flex: 0 0 auto;
+}
+.notes-panel__record-btn:disabled .notes-panel__record-dot {
+  background: var(--text-muted);
+}
+.notes-panel__record-btn.is-recording {
+  border-color: #e23b3b;
+  box-shadow: 0 0 0 2px rgba(226, 59, 59, 0.35);
+}
+.notes-panel__record-btn.is-recording .notes-panel__record-dot {
+  animation: notes-rec-pulse 1s ease-in-out infinite;
+}
+.notes-panel__record-time {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+@keyframes notes-rec-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.notes-card--recording .tape {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--bg-list-active);
+}
+.tape__play,
+.tape__dl {
+  border: 1px solid var(--border);
+  background: var(--bg-list-hover);
+  color: var(--text);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+.tape__svg {
+  width: 110px;
+  height: 40px;
+  color: var(--text-muted);
+}
+.tape__reel {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.notes-card--recording.is-playing .tape__reel {
+  animation: tape-spin 1.6s linear infinite;
+}
+.tape__info {
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+@keyframes tape-spin {
+  to { transform: rotate(360deg); }
+}
