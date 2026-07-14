@@ -138,6 +138,22 @@ export function mountSyncModal({ onListsChanged, track }) {
     setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
   });
 
+  // Native share button (mobile: opens system share sheet with PWA as target)
+  document.getElementById('syncShareBtn')?.addEventListener('click', async () => {
+    const input = document.getElementById('syncLinkInput');
+    const url = input?.value;
+    if (!url || !navigator.share) return;
+    try {
+      await navigator.share({
+        title: 'RadioDock Sync Link',
+        text: 'Sync your RadioDock station lists with this link.',
+        url: url,
+      });
+    } catch (err) {
+      if (err.name !== 'AbortError') console.warn('Share failed:', err);
+    }
+  });
+
   async function handleUnlink() {
     const ok = await confirmDialog({
       title: 'Stop Syncing?',

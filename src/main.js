@@ -1033,6 +1033,7 @@ async function bootstrap() {
 bootstrap().then(async () => {
   await handleInboundShareHash();
   await handleInboundSyncHash();
+  await handleSharedTokenFromQuery();
   const token = await getSyncToken();
   if (token) {
     const result = await syncAutoStart(token);
@@ -1216,6 +1217,56 @@ async function handleInboundSyncHash() {
 function clearSyncHash() {
   if (window.location.hash?.startsWith('#sync=')) {
     history.replaceState(null, '', window.location.pathname + window.location.search);
+  }
+}
+
+// Handle Web Share Target: when another app shares a URL or text to RadioDock,
+// the PWA receives it as query params (registered via share_target in manifest).
+// Check if the shared content contains a sync token and process it.
+async function handleSharedTokenFromQuery() {
+  const params = new URLSearchParams(window.location.search);
+  const candidates = [params.get('url'), params.get('text'), params.get('title')].filter(Boolean);
+
+  let token = null;
+  for (const raw of candidates) {
+    const decoded = decodeURIComponent(raw);
+    token = extractTokenFromInput(decoded);
+    if (token) break;
+  }
+
+  if (!token) return;
+
+  // Clean the URL so reloads don't re-process
+  const cleanParams = new URLSearchParams(window.location.search);
+  for (const key of ['url', 'text', 'title', 'name', 'description']) {
+    cleanParams.delete(key);
+  }
+  const newSearch = cleanParams.toString();
+  history.replaceState(null, '', window.location.pathname + (newSearch ? `?${newSearch}` : ''));
+
+  try {
+    const pulled = await pullFromServer(token);
+    if (!pulled) {
+      await storage.setPref('syncToken', token);
+      toast('Already linked — your lists are up to date.');
+      return;
+    }
+    const ok = await confirmDialog({
+      title: 'Import synced lists?',
+      message: `This will import ${pulled.list_count} list${pulled.list_count !== 1 ? 's' : ''}.`,
+      confirmLabel: 'Import',
+    });
+    if (!ok) return;
+    const { imported, stationCount } = await applyImportPayload(pulled.exportJson, pulled.hash, pulled.updated_at);
+    await storage.setPref('syncToken', token);
+    state.userLists = await listsApi.getUserLists();
+    state.currentListId = state.userLists[0]?.id ?? COMMUNITY_LIST_ID;
+    renderActiveList();
+    track('sync-pull', { stationCount, listCount: imported, source: 'share-target' });
+    toast(`Synced ${imported} list${imported !== 1 ? 's' : ''} (${stationCount} stations)`);
+  } catch (err) {
+    console.warn('Share-target sync failed:', err);
+    toast(`Sync failed: ${err.message}`);
   }
 }
 
