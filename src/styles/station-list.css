@@ -361,3 +361,43 @@ body.search-active .favorites-list {
   height: 14px;
   flex-shrink: 0;
 }
+
+/* --- Offline indicator (stream-prober) --- */
+
+.station-item[data-offline] {
+  opacity: 0.45;
+  transition: opacity 0.3s ease;
+}
+
+/* Restore full opacity on hover so the row is still readable. */
+.station-item[data-offline]:hover {
+  opacity: 0.75;
+}
+
+/* The playing row keeps its emphasis. An offline station that's somehow
+   also the active station (shouldn't happen — stream would error) gets
+   the playing background but still faded to show something's wrong. */
+.station-item[data-offline].playing {
+  opacity: 0.6;
+}
+
+/* OFF badge — pill to the right of the station name.
+   Overrides the playing pulse-dot ::after when both .playing and
+   [data-offline] are present. */
+.station-item[data-offline] .station-item-name::after {
+  content: 'OFF';
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #fff;
+  background: var(--red);
+  border-radius: 3px;
+  padding: 1px 5px;
+  margin-left: 8px;
+  vertical-align: middle;
+  line-height: 1.4;
+  animation: none;
+  width: auto;
+  height: auto;
+}
