@@ -2,6 +2,19 @@
 
 PWA rebuild of the RadioDock Chrome extension. Lives at <https://radiodock.app> (GitHub Pages, custom domain). Source repo is `bitm4ncer/radiodock.app`. The original extension lives at `C:\GitHub\RadioDock` and is the source of truth for visual styling, copy, and station data.
 
+## Finishing a task — always end with a short test brief
+
+The user runs several agents at once and loses track of what changed and how to verify it. So **end every task with a short, skimmable brief** — a few bullets, never an essay:
+
+- **What changed** — one line.
+- **How to test it** — the exact thing to open / click / look at.
+- **Electron: reinstall or just restart?** — always state which, explicitly:
+  - **Restart is enough** when the change is renderer-only (`src/**` CSS/JS). The desktop app loads the live site from radiodock.app, so a redeploy reaches existing installs — note it may take a second launch for the service-worker cache to refresh.
+  - **Reinstall required** (link the latest `RadioDock-win.exe`) when the change is baked into the binary — anything under `desktop/**` (window config in `main.js`, tray, app icon, `package.json`).
+- **Next steps** — what's still open or what to do next, if anything.
+
+Keep it tight (bullets or a tiny table). This brief is the user's map across parallel agents — it is not optional.
+
 ## Project status
 
 Follow [ROADMAP.md](./ROADMAP.md). It is the user's primary status surface — **tick checkboxes after every milestone commit**. v1.0 (M0–M7) and v2.0–v2.5 are shipped; the v2.1 visualizer is fully built but feature-flagged off in production (`VISUALIZER_ENABLED = false` in `src/main.js`).
