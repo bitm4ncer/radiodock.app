@@ -1,5 +1,17 @@
 # Roadmap
 
+## v2.7 — Cross-device sync ✅
+
+Zero-knowledge sync of lists across devices. The secret lives only in the
+`#sync=` URL fragment; the server stores an AES-GCM blob keyed by a hash of the
+secret and never sees plaintext. Server side lives in `RadioDock-Stations`
+(`/api/sync/:token`).
+
+- [x] **Y0** Sync panel (was a modal) — QR code of the sync link, live status, Copy link / Copy token, Share (where `navigator.share` exists); draggable on desktop, fullscreen on mobile; entry points in the footer pill + drawer.
+- [x] **Y1** In-app QR scanner — `getUserMedia({ facingMode: 'environment' })` + `jsQR` decode loop to connect a device from its own camera; graceful permission-denied / no-camera fallbacks.
+- [x] **Y2** Live sync engine — 25 s visibility-gated poll + immediate push-on-change; per-token 60/min + per-IP 300/min rate limits (the old 10/min-per-IP locked out several devices behind one NAT).
+- [x] **Y3** Server compare-and-swap — PUT carries `base_hash`; if the server moved on since, it returns 409 + current state and the client merges (union by list id, local wins on a same-id tie) and retries, so a simultaneous edit on a second device is never silently clobbered. Verified end-to-end against the live server.
+
 ## v2.6 — Tape recording in notes 🚧
 
 - [x] Stream relay on the Stations VPS (`stations.radiodock.app/api/relay?uuid=`) — UUID-lookup, SSRF-safe, passthrough, capped (separate `RadioDock-Stations` repo, M15)
@@ -63,7 +75,7 @@ Out of scope for v2.4, possible v3.0:
 - [x] **S3** `choiceDialog` helper added to `modal-helpers.js` for the 3-way choice. `listsApi.replaceListStations` added for the wholesale-replace path. Hash is cleared via `history.replaceState` after the flow ends, so reload doesn't re-prompt.
 - [x] **S4** Analytics: `list-share` on dialog open, `list-import-shared` with `resolution: replace|new` on accept.
 
-Out of scope for v2.3, possible v3.0: QR-code in share modal, real cross-device sync (WebRTC + public signaling), extension-side share-link import.
+Out of scope for v2.3: QR-code and real cross-device sync (both shipped later in v2.7 — via a zero-knowledge server blob, not WebRTC); extension-side share-link import (still open).
 
 ---
 
