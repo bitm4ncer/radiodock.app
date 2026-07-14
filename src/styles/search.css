@@ -290,7 +290,10 @@ body.is-tiny-player .search-overlay,
 body.is-tiny-player .off-canvas,
 body.is-tiny-player .notes-flag,
 body.is-tiny-player .app-background,
-body.is-tiny-player .electron-titlebar {
+body.is-tiny-player .electron-titlebar,
+body.is-tiny-player .favorites-section,
+body.is-tiny-player .search-section,
+body.is-tiny-player .volume-controls {
   display: none !important;
 }
 
@@ -308,27 +311,46 @@ body.is-tiny-player .container {
   background: transparent !important;
 }
 
-/* The pill fills the little window with a small transparent margin. */
-body.is-tiny-player .player-section {
-  top: 0;
-  bottom: 0;
+/* Center the pill in the frameless window and undo the mobile-regime layout the
+   narrow (<=699px) tiny window inherits: app-mobile.css pins .player-section as
+   a fixed, opaque bottom bar and top-aligns .page. Here the pill is instead a
+   free-floating element centered in the window, so equal transparent space sits
+   above and below it and the drop shadow is never clipped by the frame. */
+body.is-tiny-player .page {
   justify-content: center;
-  padding: 7px;
+  overflow: visible;
+}
+body.is-tiny-player .container {
+  flex: 0 0 auto;
+  gap: 0;
+  padding: 0 !important;
+}
+/* Horizontal padding = side room for the drop shadow (the pill is full-width
+   minus this inset). Vertical shadow room comes from the window being taller
+   than the pill. */
+body.is-tiny-player .player-section {
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 0 18px;
   background: transparent !important;
   border: 0 !important;
 }
 
-/* The player-card IS the pill: opaque, fully rounded, its own shadow, and the
+/* The player-card IS the pill: opaque, fully rounded, content-sized (so a bigger
+   avatar simply makes the pill taller), with its own shadow, and it is the
    draggable surface of the frameless window. */
 body.is-tiny-player .player-card {
-  height: 100%;
+  height: auto;
   box-sizing: border-box;
   background: var(--bg-dark);
   border-radius: 100px;
-  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   -webkit-app-region: drag;
-  padding: 10px 14px 10px 10px;
-  gap: 12px;
+  padding: 12px 18px 12px 12px;
+  gap: 14px;
 }
 
 /* Give the text column room and keep both lines on one line each. */
@@ -338,19 +360,32 @@ body.is-tiny-player .now-playing {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-body.is-tiny-player .now-playing { margin-bottom: 2px; }
+/* Tight, deterministic vertical rhythm for the name / now-playing / controls
+   stack (the base .now-playing.show sets a generous 50px max-height + 6px
+   margin meant for the full card — too loose for the pill). */
+body.is-tiny-player .station-name {
+  font-size: 15px;
+  line-height: 1.3;
+  margin-bottom: 1px;
+}
+body.is-tiny-player .now-playing,
+body.is-tiny-player .now-playing.show {
+  max-height: 18px;
+  margin-bottom: 3px;
+}
 
-/* Smaller logo + play button so the pill stays compact and the name gets room. */
+/* Avatar + play button sized so the pill reads as a balanced mini-player. The
+   avatar drives the pill height (content-sized card above). */
 body.is-tiny-player .station-logo-container,
 body.is-tiny-player .station-logo-container img,
 body.is-tiny-player .station-logo-container .station-logo-fallback {
-  width: 44px !important;
-  height: 44px !important;
-  flex: 0 0 44px !important;
+  width: 56px !important;
+  height: 56px !important;
+  flex: 0 0 56px !important;
 }
 body.is-tiny-player .play-pause-btn {
-  width: 42px;
-  height: 42px;
+  width: 46px;
+  height: 46px;
 }
 
 /* Compact, evenly spaced control row (prev · home · next · maximize). */

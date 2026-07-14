@@ -190,7 +190,10 @@ function setupIPC() {
       preTinyMinSize = mainWindow.getMinimumSize();
       preTinyAlwaysOnTop = mainWindow.isAlwaysOnTop();
 
-      const W = 380, H = 88, MARGIN = 12;
+      // H is taller than the pill itself: the CSS centers the pill in the
+      // window and the extra vertical space is transparent margin so the pill's
+      // drop shadow renders instead of being clipped by the window frame.
+      const W = 384, H = 132, MARGIN = 12;
       // workArea excludes the taskbar, so this docks just above/left of it.
       const wa = screen.getPrimaryDisplay().workArea;
       // Relax the min size (the full window's 380×480 floor would clamp us).
