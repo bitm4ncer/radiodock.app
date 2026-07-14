@@ -301,12 +301,12 @@ body.is-tiny-player .container {
   background: transparent !important;
 }
 
-/* The pill fills the little window. */
+/* The pill fills the little window with a small transparent margin. */
 body.is-tiny-player .player-section {
   top: 0;
   bottom: 0;
   justify-content: center;
-  padding: 6px;
+  padding: 7px;
   background: transparent !important;
   border: 0 !important;
 }
@@ -314,11 +314,42 @@ body.is-tiny-player .player-section {
 /* The player-card IS the pill: opaque, fully rounded, its own shadow, and the
    draggable surface of the frameless window. */
 body.is-tiny-player .player-card {
+  height: 100%;
+  box-sizing: border-box;
   background: var(--bg-dark);
   border-radius: 100px;
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
   -webkit-app-region: drag;
+  padding: 10px 14px 10px 10px;
+  gap: 12px;
 }
+
+/* Give the text column room and keep both lines on one line each. */
+body.is-tiny-player .station-name,
+body.is-tiny-player .now-playing {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+body.is-tiny-player .now-playing { margin-bottom: 2px; }
+
+/* Smaller logo + play button so the pill stays compact and the name gets room. */
+body.is-tiny-player .station-logo-container,
+body.is-tiny-player .station-logo-container img,
+body.is-tiny-player .station-logo-container .station-logo-fallback {
+  width: 44px !important;
+  height: 44px !important;
+  flex: 0 0 44px !important;
+}
+body.is-tiny-player .play-pause-btn {
+  width: 42px;
+  height: 42px;
+}
+
+/* Compact, evenly spaced control row (prev · home · next · maximize). */
+body.is-tiny-player .tiny-player-controls { gap: 6px; margin-top: 1px; }
+body.is-tiny-player .tiny-player-controls .btn-icon { width: 22px; height: 22px; }
+body.is-tiny-player .tiny-player-controls .btn-icon svg { width: 14px; height: 14px; }
 
 /* Buttons and the logo stay clickable (not part of the drag surface). */
 body.is-tiny-player .player-card button,

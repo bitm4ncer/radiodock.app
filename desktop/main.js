@@ -190,11 +190,11 @@ function setupIPC() {
       preTinyMinSize = mainWindow.getMinimumSize();
       preTinyAlwaysOnTop = mainWindow.isAlwaysOnTop();
 
-      const W = 340, H = 76, MARGIN = 12;
+      const W = 380, H = 88, MARGIN = 12;
       // workArea excludes the taskbar, so this docks just above/left of it.
       const wa = screen.getPrimaryDisplay().workArea;
       // Relax the min size (the full window's 380×480 floor would clamp us).
-      mainWindow.setMinimumSize(200, 56);
+      mainWindow.setMinimumSize(200, 72);
       mainWindow.setResizable(false);
       // Default to always-on-top in tiny mode (toggleable via context menu).
       mainWindow.setAlwaysOnTop(true, 'floating');
