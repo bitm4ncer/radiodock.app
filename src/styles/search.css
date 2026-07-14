@@ -298,3 +298,20 @@ body.is-tiny-player .player-section {
   justify-content: center;
   padding: 8px 10px;
 }
+
+/* Tiny mode swaps the country + domain line for prev / homepage / next. */
+.tiny-player-controls { display: none; }
+
+body.is-tiny-player .station-country,
+body.is-tiny-player #visitStationBtn,
+body.is-tiny-player #stationInfoBtn,
+body.is-tiny-player #addToFavoritesBtn,
+body.is-tiny-player #captureNoteBtn {
+  display: none !important;
+}
+
+body.is-tiny-player .tiny-player-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}

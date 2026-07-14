@@ -496,6 +496,20 @@ window.addEventListener('electron:trayPrevious', () => {
   if (prev) player.playStation(prev);
 });
 
+// Tiny-player controls (Electron mini mode): prev / homepage / next. They
+// reuse the tray prev/next logic and the player-card's homepage-open on the
+// logo button. Wired unconditionally — the buttons are only visible in
+// body.is-tiny-player, so this is a no-op elsewhere.
+document.getElementById('tinyPrevBtn')?.addEventListener('click', () => {
+  window.dispatchEvent(new CustomEvent('electron:trayPrevious'));
+});
+document.getElementById('tinyNextBtn')?.addEventListener('click', () => {
+  window.dispatchEvent(new CustomEvent('electron:trayNext'));
+});
+document.getElementById('tinyHomeBtn')?.addEventListener('click', () => {
+  document.getElementById('stationLogoBtn')?.click();
+});
+
 // Electron-only frameless title bar (drag + minimize/pin/close).
 // In the browser, isElectron() returns false and this block is skipped.
 if (isElectron()) {

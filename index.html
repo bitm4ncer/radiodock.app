@@ -272,6 +272,20 @@
                       <path d="M16.5 3C19.5376 3 22 5.5 22 9C22 16 14.5 20 12 21.5C9.5 20 2 16 2 9C2 5.5 4.5 3 7.5 3C9.35997 3 11 4 12 5C13 4 14.64 3 16.5 3Z"></path>
                     </svg>
                   </button>
+
+                  <!-- Tiny-player mode only (Electron): prev / homepage / next.
+                       Replaces the country + domain line at mini size. -->
+                  <div class="tiny-player-controls">
+                    <button type="button" id="tinyPrevBtn" class="btn-icon" title="Previous station" aria-label="Previous station">
+                      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 6a1 1 0 0 1 2 0v4.4l8.5-4.9A1 1 0 0 1 19 6.4v11.2a1 1 0 0 1-1.5.9L9 13.6V18a1 1 0 0 1-2 0V6Z"/></svg>
+                    </button>
+                    <button type="button" id="tinyHomeBtn" class="btn-icon" title="Station homepage" aria-label="Station homepage">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M19 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4"/></svg>
+                    </button>
+                    <button type="button" id="tinyNextBtn" class="btn-icon" title="Next station" aria-label="Next station">
+                      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17 6a1 1 0 0 1 2 0v12a1 1 0 0 1-2 0v-4.4l-8.5 4.9A1 1 0 0 1 5 17.6V6.4a1 1 0 0 1 1.5-.9L15 10.4V6Z"/></svg>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
