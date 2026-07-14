@@ -15,7 +15,9 @@ export function mountRecordButton({ recorder, player, getNotesApi }) {
   btn.dataset.action = 'record-adjacent';
   btn.setAttribute('aria-label', 'Record stream');
   btn.title = 'Record';
-  btn.innerHTML = '<span class="record-adjacent-btn__dot" aria-hidden="true"></span><span class="record-adjacent-btn__time" data-role="rec-time" hidden></span>';
+  // Time first (left), dot second (right) — while recording the button grows
+  // into a pill showing "MM:SS ●"; idle it's just the centered dot.
+  btn.innerHTML = '<span class="record-adjacent-btn__time" data-role="rec-time" hidden></span><span class="record-adjacent-btn__dot" aria-hidden="true"></span>';
 
   // Group the record button with the search icon on the right of the top bar
   // so they sit adjacent (the bar uses justify-content: space-between, which

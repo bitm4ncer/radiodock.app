@@ -239,11 +239,11 @@ body.is-electron .off-canvas__panel {
   border-radius: 50%;
 }
 .record-adjacent-btn__dot {
-  width: 13px;
-  height: 13px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: var(--red);
-  display: block;
+  flex: 0 0 auto;
 }
 .record-adjacent-btn:disabled {
   opacity: 0.4;
@@ -252,22 +252,32 @@ body.is-electron .off-canvas__panel {
 .record-adjacent-btn:disabled .record-adjacent-btn__dot {
   background: var(--text-muted);
 }
+
+/* Recording: the round button grows into a pill — elapsed time on the left, a
+   pulsing red dot on the right, wrapped in a red border. */
 .record-adjacent-btn.is-recording {
+  width: auto;
+  height: 30px;
+  padding: 0 9px;
+  gap: 7px;
+  border-radius: 999px;
   background: var(--bg-list-hover);
-  box-shadow: inset 0 0 0 2px var(--red);
+  box-shadow: inset 0 0 0 1.5px var(--red);
 }
 .record-adjacent-btn.is-recording .record-adjacent-btn__dot {
-  animation: record-adjacent-pulse 1s ease-in-out infinite;
+  animation: record-adjacent-pulse 1.1s ease-in-out infinite;
 }
 @keyframes record-adjacent-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.82); }
 }
 
-/* Server-recording (mobile): elapsed timer + saving state on the top-bar button */
+/* Elapsed timer — sits to the left of the dot only while recording. */
 .record-adjacent-btn__time {
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
   font-variant-numeric: tabular-nums;
-  margin-left: 4px;
+  color: var(--text);
 }
 .record-adjacent-btn.is-fetching { opacity: 0.6; }
