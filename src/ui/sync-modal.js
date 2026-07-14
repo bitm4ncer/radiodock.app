@@ -252,9 +252,9 @@ export function mountSyncModal({ onListsChanged, onLinked, onUnlinked, track }) 
     }
   });
 
-  document.getElementById('syncConnectBtn')?.addEventListener('click', async () => {
-    const input = document.getElementById('syncTokenInput');
-    const token = extractTokenFromInput(input?.value ?? '');
+  // Shared by the paste-Connect flow and the QR scanner: pull the other
+  // device's lists and reconcile them into this device's own storage.
+  async function connectWithToken(token, source) {
     if (!token) {
       showError('Please enter a valid sync token or URL.');
       return;
@@ -273,7 +273,7 @@ export function mountSyncModal({ onListsChanged, onLinked, onUnlinked, track }) 
       onLinked?.();
       closePanel();
       onListsChanged?.();
-      track?.('sync-pull', { stationCount, listCount: imported, source: 'manual-connect' });
+      track?.('sync-pull', { stationCount, listCount: imported, source });
       toast(`Synced ${imported} list${imported !== 1 ? 's' : ''} (${stationCount} stations)`);
     } catch (err) {
       if (err instanceof SyncError && err.type === 'server' && err.message.includes('not found')) {
@@ -282,7 +282,85 @@ export function mountSyncModal({ onListsChanged, onLinked, onUnlinked, track }) 
         showError(err.message || 'Failed to connect.');
       }
     }
+  }
+
+  document.getElementById('syncConnectBtn')?.addEventListener('click', () => {
+    const token = extractTokenFromInput(document.getElementById('syncTokenInput')?.value ?? '');
+    connectWithToken(token, 'manual-connect');
   });
+
+  // --- In-app QR scanner (mobile): open the rear camera, decode with jsQR
+  // (dynamically imported), and run the same connect flow on the first valid
+  // token. This writes into the installed PWA's OWN storage — the point of
+  // scanning in-app rather than opening the link, which on iOS lands in Safari's
+  // separate storage. ---
+  async function openScanner() {
+    const overlay = document.createElement('div');
+    overlay.className = 'qr-scanner';
+    overlay.innerHTML = `
+      <div class="qr-scanner__stage">
+        <video class="qr-scanner__video" playsinline muted autoplay></video>
+        <div class="qr-scanner__reticle" aria-hidden="true"></div>
+      </div>
+      <p class="qr-scanner__hint">Point your camera at the QR code shown on your other device.</p>
+      <button type="button" class="btn-secondary qr-scanner__cancel">Cancel</button>
+    `;
+    document.body.appendChild(overlay);
+    const video = overlay.querySelector('video');
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    let stream = null;
+    let raf = null;
+    let cancelled = false;
+
+    const cleanup = () => {
+      cancelled = true;
+      if (raf) cancelAnimationFrame(raf);
+      if (stream) stream.getTracks().forEach((t) => t.stop());
+      overlay.remove();
+    };
+    overlay.querySelector('.qr-scanner__cancel').addEventListener('click', cleanup);
+
+    try {
+      const jsQR = (await import('jsqr')).default;
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      if (cancelled) { stream.getTracks().forEach((t) => t.stop()); return; }
+      video.srcObject = stream;
+      await video.play();
+
+      const tick = () => {
+        if (cancelled) return;
+        if (video.readyState >= 2 && video.videoWidth) {
+          const scale = Math.min(1, 640 / Math.max(video.videoWidth, video.videoHeight));
+          canvas.width = Math.round(video.videoWidth * scale);
+          canvas.height = Math.round(video.videoHeight * scale);
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const code = jsQR(img.data, img.width, img.height, { inversionAttempts: 'dontInvert' });
+          if (code) {
+            const token = extractTokenFromInput(code.data);
+            if (token) { cleanup(); connectWithToken(token, 'qr-scan'); return; }
+          }
+        }
+        raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
+    } catch (err) {
+      cleanup();
+      const msg = err?.name === 'NotAllowedError'
+        ? 'Camera permission denied — allow it to scan.'
+        : err?.name === 'NotFoundError'
+          ? 'No camera found on this device.'
+          : 'Could not open the camera.';
+      showError(msg);
+    }
+  }
+
+  // Only offer scanning where a camera is reachable.
+  if (typeof navigator !== 'undefined' && navigator.mediaDevices?.getUserMedia) {
+    document.getElementById('syncScanBtn')?.removeAttribute('hidden');
+  }
+  document.getElementById('syncScanBtn')?.addEventListener('click', openScanner);
 
   async function copyText(text, btn, label) {
     if (!text) return;
