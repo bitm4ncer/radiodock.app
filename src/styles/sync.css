@@ -176,6 +176,63 @@ body.sync-overlay-open { overflow: hidden; }
   min-width: 90px;
 }
 
+/* "Scan QR code" button (shown when a camera is available). */
+.sync-scan-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 0.75rem;
+}
+.sync-scan-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+/* Fullscreen camera scanner overlay — always dark (camera UI), above the
+   panel. Cancel or a decoded token closes it. */
+.qr-scanner {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 24px;
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+}
+.qr-scanner__stage {
+  position: relative;
+  width: min(80vw, 320px);
+  aspect-ratio: 1;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #111;
+}
+.qr-scanner__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.qr-scanner__reticle {
+  position: absolute;
+  inset: 12%;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+}
+.qr-scanner__hint {
+  color: #e0e0e0;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+  max-width: 320px;
+  margin: 0;
+}
+.qr-scanner__cancel {
+  min-width: 160px;
+}
+
 .sync-divider {
   display: flex;
   align-items: center;

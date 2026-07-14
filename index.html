@@ -634,7 +634,11 @@
             <p class="sync-description">Sync your station lists across your devices without an account.</p>
             <button class="btn-primary sync-generate-btn" id="syncGenerateBtn">Generate Sync Link</button>
             <div class="sync-divider"><span>or</span></div>
-            <p class="sync-description">Already have a token?</p>
+            <p class="sync-description">Connect to another device — scan its QR code, or paste its link/token:</p>
+            <button type="button" class="btn-secondary sync-scan-btn" id="syncScanBtn" hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              Scan QR code
+            </button>
             <div class="sync-input-row">
               <input type="text" class="form-input" id="syncTokenInput" placeholder="Paste URL or token…" autocomplete="off">
               <button class="btn-secondary" id="syncConnectBtn">Connect</button>
