@@ -456,10 +456,10 @@ window.addEventListener('electron:trayPrevious', () => {
   if (prev) player.playStation(prev);
 });
 
-// Electron-only window control buttons — mounted next to the search input.
+// Electron-only frameless title bar (drag + minimize/pin/close).
 // In the browser, isElectron() returns false and this block is skipped.
 if (isElectron()) {
-  mountElectronWindowControls({ electronBridge, player });
+  mountElectronWindowControls({ electronBridge });
 }
 
 // --- Helpers ---

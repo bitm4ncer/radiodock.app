@@ -32,15 +32,35 @@ function createWindow() {
     title: 'RadioDock',
     backgroundColor: '#1a1a1a',
     show: false,
+    // Frameless: the in-app Electron title bar (src/ui/electron-window-controls.js)
+    // provides drag + minimize + always-on-top + close. Without this the native
+    // OS frame sat on top of the compact mobile layout.
+    frame: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
-      sandbox: false,
+      // Remote content gets the full sandbox; the preload only uses
+      // ipcRenderer/contextBridge, so nothing here needs an unsandboxed renderer.
+      sandbox: true,
     },
   });
 
   mainWindow.loadURL(APP_URL);
+
+  // Lock navigation to our own origin — remote content must not be able to
+  // navigate the shell elsewhere or spawn windows with shell privileges.
+  const APP_ORIGIN = new URL(APP_URL).origin;
+  mainWindow.webContents.on('will-navigate', (e, url) => {
+    if (new URL(url).origin !== APP_ORIGIN) {
+      e.preventDefault();
+      shell.openExternal(url);
+    }
+  });
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (/^https?:$/.test(new URL(url).protocol)) shell.openExternal(url);
+    return { action: 'deny' };
+  });
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
@@ -79,15 +99,9 @@ function setupIPC() {
     playbackState = { ...playbackState, ...state };
     updateTrayIcon(playbackState.playing);
     updateTrayMenu(playbackState);
-    // Badge on Windows taskbar
-    if (mainWindow && process.platform === 'win32') {
-      mainWindow.setOverlayIcon(
-        playbackState.playing
-          ? nativeImage.createFromDataURL(createDotDataUrl())
-          : null,
-        'Playing',
-      );
-    }
+    // (The Windows taskbar overlay badge was removed — it was built from an
+    // SVG data URL, which nativeImage cannot decode, so it never rendered.
+    // The tray icon swap is the real playing indicator.)
   });
 
   // --- Auto-start ---
@@ -127,11 +141,20 @@ function setupIPC() {
     mainWindow?.minimize();
   });
 
+  ipcMain.handle('rd:window:close', () => {
+    mainWindow?.close();
+  });
+
   ipcMain.handle('rd:window:isMaximized', () => mainWindow?.isMaximized() ?? false);
 
   // --- External links ---
   ipcMain.handle('rd:shell:openExternal', (_, url) => {
-    return shell.openExternal(url);
+    // Only ever hand real web URLs to the OS — never arbitrary protocol
+    // handlers, in case the remote origin is ever compromised.
+    try {
+      if (/^https?:$/.test(new URL(url).protocol)) return shell.openExternal(url);
+    } catch { /* malformed URL → ignore */ }
+    return false;
   });
 
   // --- App info ---
@@ -141,18 +164,6 @@ function setupIPC() {
     autoStart,
     alwaysOnTop,
   }));
-}
-
-// Tiny 16×16 red dot as data URL for the Windows taskbar overlay icon.
-function createDotDataUrl() {
-  // 1×1 pixel red dot — nativeImage will scale it, but Windows overlays
-  // work best with at least a 16×16 icon. We draw a simple circle.
-  const size = 16;
-  const r = 6;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
-    <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="#ff4444"/>
-  </svg>`;
-  return `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`;
 }
 
 // --- App lifecycle ---

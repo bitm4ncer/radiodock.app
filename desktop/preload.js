@@ -20,6 +20,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // --- Window controls ---
   minimize: () => ipcRenderer.invoke('rd:window:minimize'),
+  close: () => ipcRenderer.invoke('rd:window:close'),
   isMaximized: () => ipcRenderer.invoke('rd:window:isMaximized'),
 
   // --- Shell ---

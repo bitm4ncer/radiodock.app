@@ -1,5 +1,9 @@
-// Electron-only window control buttons: Minimize + Always-on-Top.
-// Mounted next to the search input, only visible when running in Electron.
+// Electron-only title bar. The window is frameless (desktop/main.js), so this
+// slim bar IS the window chrome: a draggable region plus minimize, always-on-top
+// and close. It's prepended to <body> and shown only when body.is-electron, so
+// it never depends on the app's mobile/desktop layout regime (the previous
+// version lived inside .search-section, which the ≤699px mobile CSS hides — at
+// 460px that's always, so the controls were invisible/unclickable).
 
 const MINIMIZE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
   <path d="M5 12h14"/>
@@ -15,53 +19,50 @@ const PIN_FILLED_SVG = `<svg viewBox="0 0 24 24" fill="currentColor" stroke="cur
   <circle cx="12" cy="19" r="1.5"/>
 </svg>`;
 
-export function mountElectronWindowControls({ electronBridge, player }) {
-  const searchContainer = document.querySelector('.search-input-container');
-  if (!searchContainer) return;
+const CLOSE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+  <path d="M6 6l12 12M18 6 6 18"/>
+</svg>`;
 
-  // --- Container for the two buttons ---
-  const group = document.createElement('div');
-  group.className = 'electron-window-controls';
+export function mountElectronWindowControls({ electronBridge } = {}) {
+  if (document.querySelector('.electron-titlebar')) return;
 
-  // --- Minimize button ---
-  const minBtn = document.createElement('button');
-  minBtn.type = 'button';
-  minBtn.className = 'electron-win-btn';
-  minBtn.title = 'Minimize to tray';
-  minBtn.setAttribute('aria-label', 'Minimize');
-  minBtn.innerHTML = MINIMIZE_SVG;
-  minBtn.addEventListener('click', () => {
-    electronBridge?.cleanup; // no-op safety
-    if (window.electronAPI) window.electronAPI.minimize();
-  });
+  const api = typeof window !== 'undefined' ? window.electronAPI : null;
 
-  // --- Always-on-Top toggle ---
-  const pinBtn = document.createElement('button');
-  pinBtn.type = 'button';
-  pinBtn.className = 'electron-win-btn';
-  pinBtn.title = 'Always on top';
-  pinBtn.setAttribute('aria-label', 'Always on top');
-  pinBtn.innerHTML = PIN_SVG;
+  const bar = document.createElement('div');
+  bar.className = 'electron-titlebar';
+  bar.innerHTML = `
+    <span class="electron-titlebar__brand">RadioDock</span>
+    <div class="electron-titlebar__controls">
+      <button type="button" class="electron-win-btn" data-win="min" title="Minimize" aria-label="Minimize">${MINIMIZE_SVG}</button>
+      <button type="button" class="electron-win-btn" data-win="pin" title="Always on top" aria-label="Always on top">${PIN_SVG}</button>
+      <button type="button" class="electron-win-btn electron-win-btn--close" data-win="close" title="Close" aria-label="Close">${CLOSE_SVG}</button>
+    </div>
+  `;
+  document.body.prepend(bar);
 
+  const pinBtn = bar.querySelector('[data-win="pin"]');
   let onTop = false;
-  pinBtn.addEventListener('click', async () => {
-    onTop = !onTop;
+
+  const paintPin = () => {
     pinBtn.classList.toggle('is-active', onTop);
     pinBtn.title = onTop ? 'Always on top (on)' : 'Always on top';
     pinBtn.innerHTML = onTop ? PIN_FILLED_SVG : PIN_SVG;
-    if (electronBridge) await electronBridge.setAlwaysOnTop(onTop);
+  };
+
+  bar.querySelector('[data-win="min"]').addEventListener('click', () => api?.minimize?.());
+  bar.querySelector('[data-win="close"]').addEventListener('click', () => api?.close?.());
+  pinBtn.addEventListener('click', async () => {
+    onTop = !onTop;
+    paintPin();
+    if (electronBridge?.setAlwaysOnTop) await electronBridge.setAlwaysOnTop(onTop);
+    else await api?.setAlwaysOnTop?.(onTop);
   });
 
-  // Restore initial state
-  if (electronBridge) {
-    electronBridge.getAlwaysOnTop().then((v) => {
-      onTop = v;
-      pinBtn.classList.toggle('is-active', onTop);
-      pinBtn.title = onTop ? 'Always on top (on)' : 'Always on top';
-      pinBtn.innerHTML = onTop ? PIN_FILLED_SVG : PIN_SVG;
-    }).catch(() => {});
-  }
-
-  group.append(minBtn, pinBtn);
-  searchContainer.append(group);
+  // Restore persisted always-on-top state.
+  const getState = electronBridge?.getAlwaysOnTop
+    ? electronBridge.getAlwaysOnTop()
+    : api?.getAlwaysOnTop?.();
+  Promise.resolve(getState)
+    .then((v) => { onTop = !!v; paintPin(); })
+    .catch(() => {});
 }

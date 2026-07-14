@@ -204,29 +204,52 @@ body.search-active #searchInput {
   color: var(--accent-hover);
 }
 
-/* ---- Electron window controls (minimize + always-on-top) ---- */
+/* ---- Electron frameless title bar (minimize + always-on-top + close) ---- */
+/* Only present when running inside the Electron shell (body.is-electron). The
+   window is frameless, so this bar is the draggable window chrome. It's fixed
+   to the top and always visible regardless of the mobile/desktop CSS regime. */
 
-.electron-window-controls {
-  position: absolute;
-  right: 38px;
-  top: 50%;
-  transform: translateY(-50%);
+.electron-titlebar { display: none; }
+
+/* In the Electron shell body is a flex column (mobile regime), so the bar is
+   simply the first flex child and stacks above the mobile top bar — no fixed
+   positioning, no overlap, no content clipped underneath. */
+body.is-electron .electron-titlebar {
   display: flex;
-  gap: 2px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  height: 34px;
+  padding: 0 6px 0 12px;
+  background: var(--bg-dark);
+  border-bottom: 1px solid var(--border);
+  z-index: 2000;
+  /* The whole bar drags the frameless window; buttons opt out below. */
+  -webkit-app-region: drag;
+  user-select: none;
 }
 
-body:not(.is-electron) .electron-window-controls {
-  display: none;
+.electron-titlebar__brand {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.electron-titlebar__controls {
+  display: flex;
+  gap: 2px;
+  -webkit-app-region: no-drag;
 }
 
 .electron-win-btn {
-  width: 28px;
+  width: 30px;
   height: 28px;
   border: none;
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
-  border-radius: 50px;
+  border-radius: 6px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -247,8 +270,9 @@ body:not(.is-electron) .electron-window-controls {
   color: var(--red);
 }
 
-.electron-win-btn.is-active:hover {
-  color: var(--red);
+.electron-win-btn--close:hover {
+  background: var(--red);
+  color: #fff;
 }
 
 /* Hide install entry points when running as Electron desktop app. */
