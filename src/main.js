@@ -33,6 +33,7 @@ import { mountFooterReveal } from './ui/footer-reveal.js';
 import { mountNotesPanel } from './ui/notes-panel.js';
 import { mountNotesCaptureButton } from './ui/notes-capture-button.js';
 import { mountRecorder, isRecordingSupported } from './player/recorder.js';
+import { mountMobileRecorder } from './player/mobile-recorder.js';
 import { mountRecordingCable } from './ui/recording-cable.js';
 import { mountRecordButton } from './ui/record-button.js';
 import { mountSyncModal } from './ui/sync-modal.js';
@@ -357,33 +358,42 @@ player.on('stationchange', () => {
 // (off-canvas mounts synchronously but notesApi resolves a tick later).
 let notesApi = null;
 
-// Recorder + desktop cable flourish. The cable follows both windows while
-// recording; recorder events drive it from here so it works regardless of
-// which surface started the recording.
-const recorder = isRecordingSupported() ? mountRecorder({ maxDurationMs: 60 * 60 * 1000 }) : null;
+// Recording. Mobile records server-side (iOS/WebKit can't capture audio
+// client-side); desktop records client-side via Web Audio. Both expose the
+// same event interface, so the notes UI is identical either way.
+const isCoarsePointer = matchMedia('(pointer: coarse)').matches;
+const recordDesktopApp = !isCoarsePointer && (detectStandalone() || isElectron());
+
+const recorder = isCoarsePointer
+  ? mountMobileRecorder()
+  : (isRecordingSupported() ? mountRecorder({ maxDurationMs: 60 * 60 * 1000 }) : null);
+
+// Desktop cable flourish — only meaningful for the client-side (desktop) path.
 const recordingCable = mountRecordingCable();
-if (recorder) {
+if (recorder && !isCoarsePointer) {
   recorder.on('started', () => recordingCable.show());
   recorder.on('stopped', () => recordingCable.hide());
   recorder.on('streamdrop', () => recordingCable.hide());
   recorder.on('error', () => recordingCable.hide());
 }
 
-// The record button only appears where recording actually works today:
+// The record button lives in exactly one place per app state:
 //   - Desktop browser  → in the notes panel (next to "Save Moment").
-//   - Desktop app (installed PWA / Electron) → top bar, next to search.
-// Mobile is deliberately excluded for now — recording is broken there (double
-// audio + empty capture). Hidden until the mobile path is properly designed
-// (and dropped entirely if iOS/PWA can't support it).
-const isCoarsePointer = matchMedia('(pointer: coarse)').matches;
-const recordDesktopApp = !isCoarsePointer && (detectStandalone() || isElectron());
-
+//   - Desktop app / mobile → top bar, next to search.
 mountNotesPanel({ player, getLatestMetadata: () => latestMetadata, recorder, showPanelRecordButton: !isCoarsePointer && !recordDesktopApp })
   .then((api) => { notesApi = api; })
   .catch((err) => console.warn('Notes panel mount failed:', err));
 
-if (recordDesktopApp && recorder) {
+if ((recordDesktopApp || isCoarsePointer) && recorder) {
   mountRecordButton({ recorder, player, getNotesApi: () => notesApi });
+}
+
+// Mobile: if a background recording is still in flight after (re)launch, nudge
+// the user that it's running and tappable to save.
+if (isCoarsePointer && recorder?.hasPending) {
+  const nudge = () => { if (recorder.hasPending()) toast('Recording still running — tap ● to save it.'); };
+  recorder.on('resumed', nudge);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') nudge(); });
 }
 
 // Mini capture button on the player-card.

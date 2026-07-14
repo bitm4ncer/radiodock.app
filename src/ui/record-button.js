@@ -15,7 +15,7 @@ export function mountRecordButton({ recorder, player, getNotesApi }) {
   btn.dataset.action = 'record-adjacent';
   btn.setAttribute('aria-label', 'Record stream');
   btn.title = 'Record';
-  btn.innerHTML = '<span class="record-adjacent-btn__dot" aria-hidden="true"></span>';
+  btn.innerHTML = '<span class="record-adjacent-btn__dot" aria-hidden="true"></span><span class="record-adjacent-btn__time" data-role="rec-time" hidden></span>';
 
   // Group the record button with the search icon on the right of the top bar
   // so they sit adjacent (the bar uses justify-content: space-between, which
@@ -38,9 +38,19 @@ export function mountRecordButton({ recorder, player, getNotesApi }) {
     btn.title = rec ? 'Stop recording' : (station ? `Record ${station.name}` : 'No station playing');
   }
 
+  const timeEl = btn.querySelector('[data-role="rec-time"]');
+  recorder?.on('progress', (e) => {
+    const s = e.detail?.seconds ?? 0;
+    timeEl.hidden = false;
+    timeEl.textContent = `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+  });
+  const clearTransient = () => { btn.classList.remove('is-fetching'); timeEl.hidden = true; timeEl.textContent = ''; };
+  recorder?.on('fetching', () => { btn.classList.add('is-fetching'); });
+  recorder?.on('resumed', () => { refresh(); });
+
   recorder?.on('started', refresh);
-  recorder?.on('stopped', refresh);
-  recorder?.on('error', refresh);
+  recorder?.on('stopped', () => { clearTransient(); refresh(); });
+  recorder?.on('error', () => { clearTransient(); refresh(); });
   recorder?.on('streamdrop', refresh);
   player?.on('stationchange', refresh);
   player?.on('stopped', refresh);
