@@ -110,7 +110,7 @@ The value is exposed as the `__APP_VERSION__` build-time constant via Vite's `de
 The Electron installers ship from **one clean GitHub release** — tag `latest`, title "RadioDock", **no changelog**. `.github/workflows/desktop-build.yml` builds win/mac/linux in parallel, then a single `release` job publishes/updates that one release with the three installers.
 
 - **Never** put changelog or commit-message notes on a release. Users must not be able to see what changed build-to-build — keep the generic notes line only.
-- **No per-build versioned releases** (no `desktop-vN`). One `latest` release, updated in place (`gh release upload --clobber`), always `--latest`.
+- **No per-build versioned releases** (no `desktop-vN`). One `latest` release, updated in place (`gh release upload --clobber`), always `--latest`. The release job also **auto-deletes every release/tag that isn't `latest`** at the end of each build, so old builds never accumulate.
 - Keep the asset filenames `RadioDock-win.exe` / `RadioDock-mac.dmg` / `RadioDock-linux.AppImage` and the make-latest flag: the site's install buttons hit `/releases/latest/download/RadioDock-*` ([install-section.js](src/ui/install-section.js)).
 
 ## Conventions
