@@ -32,7 +32,7 @@ import { mountFooterReveal } from './ui/footer-reveal.js';
 import { mountNotesPanel } from './ui/notes-panel.js';
 import { mountNotesCaptureButton } from './ui/notes-capture-button.js';
 import { mountSyncModal } from './ui/sync-modal.js';
-import { autoSyncOnStartup as syncAutoStart, pushOnChange as syncPushOnChange, getSyncToken, extractTokenFromInput } from './data/sync.js';
+import { autoSyncOnStartup as syncAutoStart, pushOnChange as syncPushOnChange, getSyncToken, extractTokenFromInput, pullFromServer, applyImportPayload } from './data/sync.js';
 import { track } from './analytics/umami.js';
 import { attachListenHeartbeat } from './analytics/listen-heartbeat.js';
 import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
@@ -1116,7 +1116,6 @@ async function handleInboundSyncHash() {
     return;
   }
   try {
-    const { pullFromServer, applyImportPayload } = await import('./data/sync.js');
     const pulled = await pullFromServer(token);
     if (!pulled) {
       toast('No data found — the link may have expired.');
