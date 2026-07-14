@@ -206,6 +206,11 @@
             <span>Sync devices</span>
             <span class="off-canvas__chev">→</span>
           </button>
+          <button type="button" class="off-canvas__item" id="offCanvasChangelog">
+            <span>Log</span>
+            <span class="nav-dot" data-changelog-dot></span>
+            <span class="off-canvas__chev">→</span>
+          </button>
           <a class="off-canvas__item" href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener">GitHub</a>
           <a class="off-canvas__item" href="https://github.com/bitm4ncer/radiodock.app/issues" target="_blank" rel="noopener">Issues</a>
           <a class="off-canvas__item" href="https://buymeacoffee.com/bitmancer" target="_blank" rel="noopener">Support</a>
@@ -466,6 +471,7 @@
         </button>
         <button type="button" class="footer-pill footer-pill--sm" id="footerAboutBtn">About</button>
         <button type="button" class="footer-pill footer-pill--sm" id="footerSyncBtn">Sync</button>
+        <button type="button" class="footer-pill footer-pill--sm" id="footerChangelogBtn">Log<span class="nav-dot" data-changelog-dot></span></button>
         <a class="footer-pill footer-pill--sm" href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener">GitHub</a>
         <a class="footer-pill footer-pill--sm" href="https://github.com/bitm4ncer/radiodock.app/issues" target="_blank" rel="noopener">Issues</a>
         <a class="footer-pill footer-pill--sm" href="https://buymeacoffee.com/bitmancer" target="_blank" rel="noopener">Support</a>
@@ -563,6 +569,18 @@
           </div>
 
           <p class="about__footer">Source at <a href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener" class="text-link">github.com/bitm4ncer/radiodock.app</a>. Bugs and feature requests welcome.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="changelogModal" class="modal" aria-hidden="true">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Log</h3>
+          <button class="modal-close-btn" aria-label="Close">×</button>
+        </div>
+        <div class="modal-body" id="changelogBody">
+          <!-- Rendered by src/ui/changelog.js -->
         </div>
       </div>
     </div>

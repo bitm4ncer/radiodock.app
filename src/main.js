@@ -36,6 +36,7 @@ import { mountRecorder, isRecordingSupported } from './player/recorder.js';
 import { mountMobileRecorder } from './player/mobile-recorder.js';
 import { mountRecordButton } from './ui/record-button.js';
 import { mountSyncModal } from './ui/sync-modal.js';
+import { mountChangelog, CHANGELOG_REVISION } from './ui/changelog.js';
 import { startLiveSync, stopLiveSync, pushWithStatus as syncPushWithStatus, getSyncToken, extractTokenFromInput, pullFromServer, applyImportPayload, markSyncDirty } from './data/sync.js';
 import { track } from './analytics/umami.js';
 import { attachListenHeartbeat } from './analytics/listen-heartbeat.js';
@@ -425,6 +426,27 @@ const syncModal = mountSyncModal({
   track,
 });
 
+// "What's New" changelog. The footer pill + drawer item open it; a "new" dot on
+// both entry points shows until the reader has opened the newest release.
+const changelog = mountChangelog();
+
+function setChangelogDots(show) {
+  for (const el of document.querySelectorAll('[data-changelog-dot]')) {
+    el.classList.toggle('nav-dot--on', show);
+  }
+}
+async function refreshChangelogDot() {
+  const seen = await storage.getPref('changelogSeenRevision', 0);
+  setChangelogDots((seen ?? 0) < CHANGELOG_REVISION);
+}
+async function openChangelog(source) {
+  changelog.open();
+  track('changelog-open', { source });
+  setChangelogDots(false);
+  await storage.setPref('changelogSeenRevision', CHANGELOG_REVISION);
+}
+refreshChangelogDot();
+
 // Mobile off-canvas drawer
 mountOffCanvas({
   triggerBtn: document.getElementById('menuBtn'),
@@ -447,6 +469,7 @@ mountOffCanvas({
   onAboutClick: openAboutModal,
   onNotesClick: () => notesApi?.open(),
   onSyncClick: () => { track('sync-open', { source: 'drawer' }); syncModal.open(); },
+  onChangelogClick: () => openChangelog('drawer'),
 });
 
 // Desktop footer sync pill.
@@ -454,6 +477,9 @@ document.getElementById('footerSyncBtn')?.addEventListener('click', () => {
   track('sync-open', { source: 'footer' });
   syncModal.open();
 });
+
+// Desktop footer "What's New" pill.
+document.getElementById('footerChangelogBtn')?.addEventListener('click', () => openChangelog('footer'));
 
 // Delegated tracking for the install-section's platform buttons. The
 // section is mounted twice (auto + footer re-summon) and re-rendered on

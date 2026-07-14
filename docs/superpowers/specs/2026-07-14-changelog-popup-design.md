@@ -10,7 +10,8 @@ A read-only popup that gives users a **complete, user-level tour of RadioDock's
 features**, organised as a **changelog by release** (newest first). It doubles as
 a "what's new" surface: a small "new" dot on the entry points nudges returning
 users to re-open it after an update. A welcome banner frames the app as an
-open, evolving project and invites the community to file issues.
+open, evolving project — stating plainly that new features ship as live betas,
+tested in production — and invites the community to file issues.
 
 Every description is written on a **user level** — what the feature does for you
 and how to use it — never how it works technically.
@@ -99,14 +100,16 @@ inline SVG set (stroke style, no emoji, `currentColor`).
 
 ## Welcome / community banner
 
-> **Built in the open.** RadioDock ships small updates all the time, and some
-> features are still finding their feet. Spot a bug or have an idea? I'd love your
-> help shaping where this goes.
+> **Built in the open.** Every new feature lands here as a beta — I ship early and
+> test it live, in production, rather than behind closed doors. Expect the odd
+> rough edge. Found a bug or have an idea? I'd love your help shaping where this
+> goes.
 >
 > **[ Open an issue on GitHub → ]**
 
 CTA is a real `<a href="https://github.com/bitm4ncer/radiodock.app/issues"
-target="_blank" rel="noopener">`.
+target="_blank" rel="noopener">`. The "new features are live betas" framing is the
+core disclaimer — keep it explicit.
 
 ## Entry points + "new" dot
 

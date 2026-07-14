@@ -22,6 +22,7 @@
 @import './background.css';
 @import './notes.css';
 @import './sync.css';
+@import './changelog.css';
 @import './seo-hero.css';
 /* Regime files come last so their media-query rules can override
    component-level defaults. */

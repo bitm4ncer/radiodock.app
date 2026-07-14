@@ -1,0 +1,213 @@
+/* "What's New" changelog popup. Reuses the shared .modal shell (modals.css);
+   this file styles only the inner content — banner, release sections, feature
+   cards — plus the small "new" dot shared by the footer pill and drawer item.
+   All colours come from tokens so light + dark both work. */
+
+/* ---- Welcome / beta disclaimer banner ---- */
+.cl-banner {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 15px 16px 14px;
+  margin-bottom: 22px;
+  background: var(--overlay-soft);
+}
+
+.cl-banner__title {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.cl-banner__body {
+  margin: 0 0 13px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.cl-banner__cta {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--red);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: filter 160ms ease;
+}
+
+.cl-banner__cta:hover {
+  filter: brightness(1.1);
+}
+
+/* ---- Release section ---- */
+.cl-release {
+  margin-bottom: 20px;
+}
+
+.cl-release__head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--divider);
+}
+
+.cl-release__ver {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--red);
+}
+
+.cl-release__name {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ---- Feature cards ---- */
+.cl-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cl-card {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  /* Cards sit one step lighter than the modal (--bg-dark) so they read as
+     raised, in both themes. */
+  background: var(--bg);
+  border: 1px solid var(--divider);
+}
+
+.cl-card__icon {
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--overlay-med);
+  color: var(--text);
+}
+
+.cl-card__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.cl-card__text {
+  min-width: 0;
+}
+
+.cl-card__title {
+  margin: 0 0 3px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cl-card__body {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.cl-badge {
+  flex: 0 0 auto;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--red);
+  padding: 2px 6px;
+  border-radius: 999px;
+  line-height: 1;
+}
+
+/* ---- Footer line ---- */
+.cl-foot {
+  margin: 20px 0 2px;
+  padding-top: 14px;
+  border-top: 1px solid var(--divider);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* ---- "New" dot (footer pill + drawer item) ---- */
+.nav-dot {
+  display: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--red);
+}
+
+.nav-dot--on {
+  display: block;
+}
+
+/* Footer pill: dot tucked into the top-right corner. */
+#footerChangelogBtn {
+  position: relative;
+}
+
+#footerChangelogBtn .nav-dot--on {
+  position: absolute;
+  top: 3px;
+  right: 7px;
+}
+
+/* Breathing room between the title / close row and the header's bottom border.
+   The shared .modal-header pins the border flush (padding-bottom: 0); the
+   .modal#changelogModal chain matches the mobile `.modal:not(#infoModal)
+   .modal-header` specificity so this wins in both the desktop and bottom-sheet
+   regimes. */
+.modal#changelogModal .modal-header {
+  padding-bottom: 16px;
+}
+
+/* ---- Modal sizing ---- */
+/* Desktop: a touch wider than the standard card for the two-line cards.
+   (The generic desktop rule already makes .modal-body scroll at max 85vh.) */
+@media (min-width: 700px) and (display-mode: browser) {
+  #changelogModal .modal-content {
+    width: 560px;
+  }
+}
+
+/* Mobile bottom sheet: cap the height and scroll the body internally so a long
+   changelog never runs off the top of the sheet. */
+@media (max-width: 699px), not (display-mode: browser) {
+  #changelogModal .modal-content {
+    display: flex;
+    flex-direction: column;
+    max-height: 88dvh;
+  }
+
+  #changelogModal .modal-header {
+    flex: 0 0 auto;
+  }
+
+  #changelogModal .modal-body {
+    overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+}
