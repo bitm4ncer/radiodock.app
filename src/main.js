@@ -34,7 +34,6 @@ import { mountNotesPanel } from './ui/notes-panel.js';
 import { mountNotesCaptureButton } from './ui/notes-capture-button.js';
 import { mountRecorder, isRecordingSupported } from './player/recorder.js';
 import { mountMobileRecorder } from './player/mobile-recorder.js';
-import { mountRecordingCable } from './ui/recording-cable.js';
 import { mountRecordButton } from './ui/record-button.js';
 import { mountSyncModal } from './ui/sync-modal.js';
 import { startLiveSync, stopLiveSync, pushWithStatus as syncPushWithStatus, getSyncToken, extractTokenFromInput, pullFromServer, applyImportPayload, markSyncDirty } from './data/sync.js';
@@ -367,15 +366,6 @@ const recordDesktopApp = !isCoarsePointer && (detectStandalone() || isElectron()
 const recorder = isCoarsePointer
   ? mountMobileRecorder()
   : (isRecordingSupported() ? mountRecorder({ maxDurationMs: 60 * 60 * 1000 }) : null);
-
-// Desktop cable flourish — only meaningful for the client-side (desktop) path.
-const recordingCable = mountRecordingCable();
-if (recorder && !isCoarsePointer) {
-  recorder.on('started', () => recordingCable.show());
-  recorder.on('stopped', () => recordingCable.hide());
-  recorder.on('streamdrop', () => recordingCable.hide());
-  recorder.on('error', () => recordingCable.hide());
-}
 
 // The record button lives in exactly one place per app state:
 //   - Desktop browser  → in the notes panel (next to "Save Moment").

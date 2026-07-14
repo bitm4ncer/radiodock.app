@@ -90,3 +90,11 @@ jobs:
             gh release create latest --repo "$REPO" --target "$GITHUB_SHA" \
               --title "RadioDock" --notes "$NOTES" --latest $FILES
           fi
+          # Now that the fresh `latest` is published, delete every other release +
+          # tag so old builds never pile up — there is only ever one release.
+          for tag in $(gh release list --repo "$REPO" --limit 100 --json tagName --jq '.[].tagName'); do
+            if [ "$tag" != "latest" ]; then
+              echo "Removing old release: $tag"
+              gh release delete "$tag" --repo "$REPO" --yes --cleanup-tag
+            fi
+          done
