@@ -22,7 +22,7 @@ import * as listsApi from './data/lists.js';
 import * as storage from './data/storage.js';
 import { downloadList, parseExport, applyImport } from './data/import-export.js';
 import { buildShareUrl, tryDecodeShareHash } from './data/share.js';
-import { searchStations } from './data/radio-browser.js';
+import { searchStations } from './data/stations-source.js';
 import { mountVisualizer } from './visualizer/bootstrap.js';
 import { mountPlayerCardDragMinimize } from './ui/player-card-drag.js';
 import { mountElectronBridge, isElectron } from './ui/electron-bridge.js';

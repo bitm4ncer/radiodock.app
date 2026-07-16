@@ -16,7 +16,7 @@
 
 import { openModal } from './modals.js';
 import { fetchStationInfo } from '../data/wikipedia.js';
-import { getStationByUuid } from '../data/radio-browser.js';
+import { getStationByUuid } from '../data/stations-source.js';
 
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({
