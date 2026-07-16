@@ -592,6 +592,14 @@
               <li><strong>Self-hosted Umami</strong> for anonymous, cookieless usage analytics — opt-out toggle on <a href="/legal.html" target="_blank" rel="noopener" class="text-link">legal page</a></li>
               <li>Hosted on <strong>GitHub Pages</strong> · proxy on Render</li>
             </ul>
+
+            <h4 class="about__section">Data source <span class="about__beta">beta</span></h4>
+            <p>Where station search &amp; info are fetched from. <strong>Auto</strong> uses the RadioDock Stations API with Radio Browser as an automatic fallback — leave it there unless you're debugging.</p>
+            <div class="about__backend" id="aboutBackendToggle" role="group" aria-label="Data source">
+              <button type="button" class="about__backend-opt is-active" data-backend="auto">Auto</button>
+              <button type="button" class="about__backend-opt" data-backend="radiodock">RadioDock</button>
+              <button type="button" class="about__backend-opt" data-backend="radio-browser">Radio Browser</button>
+            </div>
           </div>
 
           <p class="about__footer">Source at <a href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener" class="text-link">github.com/bitm4ncer/radiodock.app</a>. Bugs and feature requests welcome.</p>

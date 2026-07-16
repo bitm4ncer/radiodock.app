@@ -193,6 +193,49 @@
   margin-top: 0;
 }
 
+/* Hidden beta backend toggle (About → technical details). Deliberately plain. */
+.about__beta {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--red);
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 0 5px;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+.about__backend {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.about__backend-opt {
+  font-size: 12px;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 12px;
+  background: transparent;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.about__backend-opt:hover {
+  color: var(--text);
+}
+
+.about__backend-opt.is-active {
+  color: var(--text);
+  border-color: var(--red);
+  background: rgba(205, 0, 37, 0.10);
+}
+
 /* Prose paragraphs inside the technical-details block were inheriting the
    modal-body's default 16 px / full-text-colour, so the bottom section
    visually shouted while the feature list whispered. Pin them to the same

@@ -7,6 +7,8 @@
 // MediaSession is a no-op on browsers that don't implement it
 // (e.g. Firefox Mobile prior to 130).
 
+import { getLogoUrl } from '../data/logo-resolver.js';
+
 export function attachMediaSession(player) {
   if (!('mediaSession' in navigator)) return;
 
@@ -36,12 +38,15 @@ export function attachMediaSession(player) {
 
   function buildArtwork(station) {
     const out = [];
-    if (station.favicon) {
-      // Most station favicons are small (16-128px). Browsers will scale, but
-      // having one entry at multiple advertised sizes keeps them happy.
-      out.push({ src: station.favicon, sizes: '96x96 192x192 256x256 512x512', type: 'image/png' });
+    // Single-origin artwork: our logo CDN (re-encoded, immutable-cached), keyed
+    // by UUID — not the station's third-party favicon. No `type` hint: the CDN
+    // serves webp and the OS sniffs the real bytes.
+    const logo = getLogoUrl(station, 512);
+    if (logo) {
+      out.push({ src: logo, sizes: '96x96 192x192 256x256 512x512' });
     }
-    // Fallback to the RadioDock app icons so the lock screen never goes blank.
+    // Fallback to the RadioDock app icons so the lock screen never goes blank
+    // (also covers a CDN 404 for stations with no cached logo).
     out.push({ src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' });
     out.push({ src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' });
     return out;

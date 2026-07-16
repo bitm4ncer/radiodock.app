@@ -91,6 +91,41 @@ test('a primary error trips the cooldown: the next call skips primary until it e
   assert.equal(primary.calls.search, 2);
 });
 
+test('onBackend reports which source answered a search', async () => {
+  const primary = makeClient('primary');
+  const failing = makeClient('primary', { search: async () => { throw new Error('down'); } });
+  const fallback = makeClient('fallback');
+
+  const okSrc = createStationsSource({ primary, fallback });
+  const seen = [];
+  await okSrc.searchStations({ query: 'x' }, { onBackend: (b) => seen.push(b) });
+  assert.deepEqual(seen, ['radiodock']);
+
+  const failSrc = createStationsSource({ primary: failing, fallback });
+  const seen2 = [];
+  await failSrc.searchStations({ query: 'x' }, { onBackend: (b) => seen2.push(b) });
+  assert.deepEqual(seen2, ['radio-browser']);
+});
+
+test('override radio-browser: forces the fallback even when primary would work', async () => {
+  const primary = makeClient('primary');
+  const fallback = makeClient('fallback');
+  const src = createStationsSource({ primary, fallback, getOverride: () => 'radio-browser' });
+
+  const out = await src.searchStations({ query: 'x' });
+  assert.equal(out[0].id, 'fallback-1');
+  assert.equal(primary.calls.search, 0);
+});
+
+test('override radiodock: forces primary and does NOT fall back on error', async () => {
+  const primary = makeClient('primary', { search: async () => { throw new Error('down'); } });
+  const fallback = makeClient('fallback');
+  const src = createStationsSource({ primary, fallback, getOverride: () => 'radiodock' });
+
+  await assert.rejects(() => src.searchStations({ query: 'x' }));
+  assert.equal(fallback.calls.search, 0);
+});
+
 test('a user-cancelled request rethrows and does not fall back', async () => {
   const primary = makeClient('primary', {
     search: async (_opts, transport) => { const e = new Error('aborted'); throw e; },

@@ -19,11 +19,23 @@ import * as radiobrowser from './radio-browser.js';
 
 const DEFAULT_RETRY_AFTER_MS = 60000;
 
+// Hidden beta toggle (About): force a backend for debugging. 'radiodock' pins
+// the primary (no fallback, so its raw behaviour is visible); 'radio-browser'
+// pins the fallback; null is the normal default+fallback behaviour.
+let backendOverride = null;
+export function setBackendOverride(mode) {
+  backendOverride = (mode === 'radiodock' || mode === 'radio-browser') ? mode : null;
+}
+export function getBackendOverride() {
+  return backendOverride;
+}
+
 export function createStationsSource({
   primary = radiodock,
   fallback = radiobrowser,
   retryAfterMs = DEFAULT_RETRY_AFTER_MS,
   now = () => Date.now(),
+  getOverride = () => null,
 } = {}) {
   let primaryDownUntil = 0;
 
@@ -31,38 +43,56 @@ export function createStationsSource({
   const tripCooldown = () => { primaryDownUntil = now() + retryAfterMs; };
 
   async function searchStations(opts, transport = {}) {
-    if (!primaryCooling()) {
-      try {
-        return await primary.searchStations(opts, transport);
-      } catch (err) {
-        if (transport.signal?.aborted) throw err; // user cancelled — don't fall back
-        tripCooldown();
-        console.warn('Stations API search failed, falling back to Radio Browser:', err?.message);
-      }
+    const override = getOverride();
+    const report = (b) => { try { transport.onBackend?.(b); } catch { /* analytics must never break search */ } };
+
+    if (override === 'radio-browser' || (override !== 'radiodock' && primaryCooling())) {
+      const r = await fallback.searchStations(opts, transport);
+      report('radio-browser');
+      return r;
     }
-    return fallback.searchStations(opts, transport);
+    try {
+      const r = await primary.searchStations(opts, transport);
+      report('radiodock');
+      return r;
+    } catch (err) {
+      if (transport.signal?.aborted) throw err; // user cancelled — don't fall back
+      if (override === 'radiodock') throw err;  // forced primary — surface the error
+      tripCooldown();
+      console.warn('Stations API search failed, falling back to Radio Browser:', err?.message);
+      const r = await fallback.searchStations(opts, transport);
+      report('radio-browser');
+      return r;
+    }
   }
 
   async function getStationByUuid(uuid, transport = {}) {
-    if (!primaryCooling()) {
-      try {
-        const station = await primary.getStationByUuid(uuid, transport);
-        if (station) return station;
-        // null = 404/unknown on the primary. Fall through to the fallback WITHOUT
-        // tripping the cooldown — the primary is up, this UUID is just not in our DB.
-      } catch (err) {
-        if (transport.signal?.aborted) throw err;
-        tripCooldown();
-        console.warn('Stations API byuuid failed, falling back to Radio Browser:', err?.message);
-      }
+    const override = getOverride();
+
+    if (override === 'radio-browser' || (override !== 'radiodock' && primaryCooling())) {
+      return fallback.getStationByUuid(uuid, transport);
     }
-    return fallback.getStationByUuid(uuid, transport);
+    try {
+      const station = await primary.getStationByUuid(uuid, transport);
+      if (station) return station;
+      // null = 404/unknown on the primary. Under a forced-primary override,
+      // report it honestly; otherwise fall through to the fallback WITHOUT
+      // tripping the cooldown — the primary is up, this UUID is just not in our DB.
+      if (override === 'radiodock') return null;
+      return fallback.getStationByUuid(uuid, transport);
+    } catch (err) {
+      if (transport.signal?.aborted) throw err;
+      if (override === 'radiodock') throw err;
+      tripCooldown();
+      console.warn('Stations API byuuid failed, falling back to Radio Browser:', err?.message);
+      return fallback.getStationByUuid(uuid, transport);
+    }
   }
 
   return { searchStations, getStationByUuid };
 }
 
-const defaultSource = createStationsSource();
+const defaultSource = createStationsSource({ getOverride: () => backendOverride });
 
 export const searchStations = defaultSource.searchStations;
 export const getStationByUuid = defaultSource.getStationByUuid;

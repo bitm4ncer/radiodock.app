@@ -22,7 +22,7 @@ import * as listsApi from './data/lists.js';
 import * as storage from './data/storage.js';
 import { downloadList, parseExport, applyImport } from './data/import-export.js';
 import { buildShareUrl, tryDecodeShareHash } from './data/share.js';
-import { searchStations } from './data/stations-source.js';
+import { searchStations, setBackendOverride } from './data/stations-source.js';
 import { cleanupOrphanedLogoPrefs } from './data/logo-resolver.js';
 import { mountVisualizer } from './visualizer/bootstrap.js';
 import { mountPlayerCardDragMinimize } from './ui/player-card-drag.js';
@@ -224,8 +224,12 @@ function scheduleSearchTrack(payload) {
 
 const search = mountSearch({
   onSearch: async ({ query, filter }, transport) => {
-    const results = await searchStations({ query, filter }, transport);
-    scheduleSearchTrack({ filter, resultCount: results?.length ?? 0 });
+    let backend = null;
+    const results = await searchStations(
+      { query, filter },
+      { ...transport, onBackend: (b) => { backend = b; } },
+    );
+    scheduleSearchTrack({ filter, resultCount: results?.length ?? 0, backend });
     return results;
   },
   onPlay: (station) => {
@@ -304,6 +308,33 @@ document.getElementById('aboutMoreBtn')?.addEventListener('click', () => {
   const expanded = body?.classList.toggle('show-tech');
   btn?.setAttribute('aria-expanded', String(!!expanded));
 });
+
+// Hidden beta toggle (About → technical details): force the search/info backend.
+// A debug tool, deliberately not surfaced prominently. Persisted so a forced
+// mode survives reload; restored on load below.
+const BACKEND_PREF = 'backendOverride';
+function wireBackendToggle() {
+  const group = document.getElementById('aboutBackendToggle');
+  if (!group) return;
+  const mark = (mode) => {
+    for (const b of group.querySelectorAll('.about__backend-opt')) {
+      b.classList.toggle('is-active', b.dataset.backend === mode);
+    }
+  };
+  group.addEventListener('click', (evt) => {
+    const btn = evt.target.closest('.about__backend-opt');
+    if (!btn) return;
+    const mode = btn.dataset.backend; // 'auto' | 'radiodock' | 'radio-browser'
+    setBackendOverride(mode);
+    storage.setPref(BACKEND_PREF, mode);
+    mark(mode);
+  });
+  storage.getPref(BACKEND_PREF, 'auto').then((mode) => {
+    setBackendOverride(mode);
+    mark(mode);
+  });
+}
+wireBackendToggle();
 // Legal Notice now lives on its own /legal.html page (noindex'd) — see footer.
 
 // Add-to-Home-Screen onboarding. The modal is opened from the Install
