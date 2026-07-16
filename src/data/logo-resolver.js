@@ -1,72 +1,50 @@
-// Logo source resolution for stations.
+// Single-origin logo resolution.
 //
-// Many Radio Browser entries ship without a usable `favicon`, and some that
-// have one are unrecognisable thumbnails. We layer fallbacks:
-//   1. station.favicon (whatever Radio Browser / community JSON shipped)
-//   2. DuckDuckGo icon service for the homepage domain
-//   3. Initials chip
+// Every station logo is served from our own CDN, keyed by station UUID:
+//   https://stations.radiodock.app/logos/{uuid}?size={64|512}
+// The server looks the favicon up by UUID in its own DB, re-encodes it to fixed
+// sizes, and serves it with immutable cache headers. It never accepts a
+// client-supplied URL, so there is no SSRF surface.
 //
-// Auto chain: try (1), on error try (2), on error or DDG-placeholder use (3).
-// The user can also manually pin a source per station via the cycle button —
-// that pin is stored as a pref keyed `logo:<stationId>` and overrides auto.
+// The chain is just: server logo → initials. All direct third-party favicon
+// loads and the DuckDuckGo fallback are gone — opening the app no longer leaks
+// the user's IP to dozens of station hosts before they press play (GDPR). If the
+// VPS is down, logos degrade to initials while playback and search are untouched.
 
-import { getPref, setPref } from './storage.js';
+import { STATIONS_BASE } from './stations-api.js';
+import { getAllPrefs, removePref } from './storage.js';
 
-export const LOGO_SOURCES = Object.freeze({
-  ORIGINAL: 'original',
-  DDG: 'ddg',
-  INITIALS: 'initials',
-});
+const LOGO_SIZE_PX = Object.freeze({ sm: 64, lg: 512 });
 
-// DuckDuckGo returns a 48×48 PNG placeholder (exactly 1478 bytes) when it has
-// no icon for a domain. We can't read content-length cross-origin, but the
-// natural size is reliably 48×48 — real station logos via DDG come back as
-// 30–32 px. This lets us detect a placeholder and fall through to initials.
-const DDG_PLACEHOLDER_SIZE = 48;
+const ORPHANED_PREF_PREFIX = 'logo:';
 
-const OVERRIDE_KEY_PREFIX = 'logo:';
+/**
+ * The CDN logo URL for a station, or '' when there is no id (caller shows initials).
+ * @param {{id?: string, stationuuid?: string}} station
+ * @param {number} [size=64] pixel size the CDN re-encodes to (64 list chip, 512 artwork)
+ */
+export function getLogoUrl(station, size = 64) {
+  const id = station?.id ?? station?.stationuuid ?? '';
+  if (!id) return '';
+  return `${STATIONS_BASE}/logos/${encodeURIComponent(id)}?size=${size}`;
+}
 
-export function extractDomain(homepage) {
-  if (!homepage) return '';
+export function logoSizePx(size) {
+  return LOGO_SIZE_PX[size] ?? LOGO_SIZE_PX.sm;
+}
+
+/**
+ * The manual logo-pin feature (a `logo:<stationId>` pref per station) is gone —
+ * a wrong logo is now fixed once in the dashboard for everyone. Those prefs are
+ * dead weight; sweep them on load. Returns the count removed.
+ */
+export async function cleanupOrphanedLogoPrefs() {
   try {
-    const u = new URL(homepage);
-    return u.hostname.replace(/^www\./, '');
+    const prefs = await getAllPrefs();
+    const orphaned = Object.keys(prefs ?? {}).filter((k) => k.startsWith(ORPHANED_PREF_PREFIX));
+    await Promise.all(orphaned.map((k) => removePref(k)));
+    return orphaned.length;
   } catch {
-    return '';
+    return 0;
   }
-}
-
-export function getDdgUrl(domain) {
-  if (!domain) return '';
-  return `https://icons.duckduckgo.com/ip3/${encodeURIComponent(domain)}.ico`;
-}
-
-// Returns the ordered list of *available* sources for a station, used both
-// for auto resolution and to drive the cycle button's next-state logic.
-export function getLogoCandidates(station) {
-  const out = [];
-  if (station?.favicon) {
-    out.push({ source: LOGO_SOURCES.ORIGINAL, url: station.favicon });
-  }
-  const domain = extractDomain(station?.homepage);
-  if (domain) {
-    out.push({ source: LOGO_SOURCES.DDG, url: getDdgUrl(domain) });
-  }
-  out.push({ source: LOGO_SOURCES.INITIALS, url: '' });
-  return out;
-}
-
-export function isDdgPlaceholder(imgEl) {
-  return imgEl?.naturalWidth === DDG_PLACEHOLDER_SIZE
-    && imgEl?.naturalHeight === DDG_PLACEHOLDER_SIZE;
-}
-
-export function getLogoOverride(stationId) {
-  if (!stationId) return Promise.resolve(null);
-  return getPref(OVERRIDE_KEY_PREFIX + stationId, null);
-}
-
-export function setLogoOverride(stationId, source) {
-  if (!stationId) return Promise.resolve();
-  return setPref(OVERRIDE_KEY_PREFIX + stationId, source);
 }

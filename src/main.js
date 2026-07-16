@@ -23,6 +23,7 @@ import * as storage from './data/storage.js';
 import { downloadList, parseExport, applyImport } from './data/import-export.js';
 import { buildShareUrl, tryDecodeShareHash } from './data/share.js';
 import { searchStations } from './data/stations-source.js';
+import { cleanupOrphanedLogoPrefs } from './data/logo-resolver.js';
 import { mountVisualizer } from './visualizer/bootstrap.js';
 import { mountPlayerCardDragMinimize } from './ui/player-card-drag.js';
 import { mountElectronBridge, isElectron } from './ui/electron-bridge.js';
@@ -1240,6 +1241,8 @@ bootstrap().then(async () => {
   await handleSharedTokenFromQuery();
   const token = await getSyncToken();
   if (token) startSyncEngine();
+  // Single-origin logos: the manual logo-pin prefs are dead now. Sweep them.
+  cleanupOrphanedLogoPrefs();
 });
 
 // Also run the handler on hashchange, so pasting a share URL into an

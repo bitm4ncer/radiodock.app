@@ -211,6 +211,10 @@ export async function setPref(key, value) {
   return safeWrite('prefs', (store) => promisify(store.put({ key, value })));
 }
 
+export async function removePref(key) {
+  return safeWrite('prefs', (store) => promisify(store.delete(key)));
+}
+
 export async function getAllPrefs() {
   const rows = await safeRead('prefs', (store) => promisify(store.getAll()), []);
   const out = {};
