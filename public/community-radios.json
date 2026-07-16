@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-07-12T22:44:32.700Z",
+  "exportDate": "2026-07-16T23:09:57.728Z",
   "listName": "Community Radios",
   "stations": [
     {
@@ -44,20 +44,20 @@
       "countrycode": "DE"
     },
     {
+      "countrycode": "GB",
+      "favicon": "",
+      "homepage": "http://netilradio.com/",
+      "id": "2a85a1c6-0cec-428a-a7df-126e4d8a90d9",
+      "name": "Netil Radio",
+      "url": "https://netilradio.out.airtime.pro/netilradio_a"
+    },
+    {
       "countrycode": "GE",
       "favicon": "https://www.mutantradio.net/icon?e5faaecf67dfe01a",
       "homepage": "https://www.mutantradio.net/",
       "id": "e81caf1f-5049-48ad-99b7-b5ebdd03d3f3",
       "name": "Mutant Radio",
       "url": "https://listen.radioking.com/radio/282820/stream/328621"
-    },
-    {
-      "countrycode": "FR",
-      "favicon": "https://lyl.live/favicon.ico",
-      "homepage": "https://lyl.live/",
-      "id": "lyl-radio-london-2025",
-      "name": "LYL Radio",
-      "url": "https://icecast.lyl.live/live"
     },
     {
       "countrycode": "DE",
@@ -77,11 +77,11 @@
     },
     {
       "countrycode": "GB",
-      "favicon": "http://www.nts.live/apple-touch-icon.png?v=47re43rrzb",
-      "homepage": "http://www.nts.live/",
-      "id": "9634ab94-0601-11e8-ae97-52543be04c81",
-      "name": "NTS Radio 2",
-      "url": "http://stream-relay-geo.ntslive.net/stream2"
+      "favicon": "/logos/subtle-radio.jpg",
+      "homepage": "https://www.subtleradio.com/",
+      "id": "1dbdc89f-f0d1-4bf7-8922-266edeb912dd",
+      "name": "Subtle Radio",
+      "url": "https://subtle.out.airtime.pro/subtle_a"
     },
     {
       "countrycode": "NL",
@@ -98,6 +98,30 @@
       "id": "6e2a1c0a-4c87-498e-9371-86e571f21eb9",
       "name": "Stegi Radio",
       "url": "https://movementathens.out.airtime.pro/movementathens_a"
+    },
+    {
+      "countrycode": "FR",
+      "favicon": "https://lyl.live/favicon.ico",
+      "homepage": "https://lyl.live/",
+      "id": "e11c170a-474f-11e9-aa55-52543be04c81",
+      "name": "LYL Radio",
+      "url": "https://icecast.lyl.live/live"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "http://www.nts.live/apple-touch-icon.png?v=47re43rrzb",
+      "homepage": "http://www.nts.live/",
+      "id": "9634ab94-0601-11e8-ae97-52543be04c81",
+      "name": "NTS Radio 2",
+      "url": "http://stream-relay-geo.ntslive.net/stream2"
+    },
+    {
+      "countrycode": "US",
+      "favicon": "https://cdn.prod.website-files.com/5f4bdfc87623ea5cc5d24cf3/606da84551eef3d5fa8c0cb9_icon.png",
+      "homepage": "https://thelotradio.com/",
+      "id": "434e9a4b-018a-4557-8ca1-8c328bb1e09d",
+      "name": "The Lot Radio",
+      "url": "https://livepeercdn.studio/hls/85c28sa2o8wppm58/index.m3u8"
     },
     {
       "countrycode": "GB",
@@ -122,14 +146,6 @@
       "id": "a33cdadf-a415-4844-b679-745d4f1795d2",
       "name": "Radio Relativa",
       "url": "https://streamer.radio.co/sd6131729c/listen"
-    },
-    {
-      "countrycode": "US",
-      "favicon": "https://cdn.prod.website-files.com/5f4bdfc87623ea5cc5d24cf3/606da84551eef3d5fa8c0cb9_icon.png",
-      "homepage": "https://thelotradio.com/",
-      "id": "434e9a4b-018a-4557-8ca1-8c328bb1e09d",
-      "name": "The Lot Radio",
-      "url": "https://livepeercdn.studio/hls/85c28sa2o8wppm58/index.m3u8"
     },
     {
       "countrycode": "AT",
@@ -173,7 +189,7 @@
     },
     {
       "countrycode": "ZA",
-      "favicon": "https://panafricanspacestation.org.za/wp-content/uploads/2026/06/PASS-MODULE-150x150.png",
+      "favicon": "",
       "homepage": "https://panafricanspacestation.org.za/",
       "id": "045f3748-7488-4249-bf43-6feb7bb8db3d",
       "name": "Pan African Space Station",
@@ -181,7 +197,7 @@
     },
     {
       "countrycode": "GB",
-      "favicon": "",
+      "favicon": "https://doyou.world/cdn/shop/files/ezgif.com-gif-maker_7_32x32.jpg?v=1617711129",
       "homepage": "https://doyou.world/",
       "id": "128d5561-8439-4e2a-9e6c-4e48ad4f0cc0",
       "name": "Do You Radio",
@@ -260,12 +276,12 @@
       "url": "https://flouka.out.airtime.pro/flouka_a"
     },
     {
-      "countrycode": "US",
-      "favicon": "https://wfmu.org/images/wfmu_logo_94.gif",
-      "homepage": "https://wfmu.org/",
-      "id": "61d90ec1-615e-489b-a175-110076596a3b",
-      "name": "WFMU",
-      "url": "http://stream2.wfmu.org/freeform-128k"
+      "countrycode": "",
+      "favicon": "http://www.datafruits.fm/apple-touch-icon-precomposed-328bdaade002db974132dd6a096ccd22.png",
+      "homepage": "http://www.datafruits.fm/",
+      "id": "5649bc0b-c5bc-11e8-aaf2-52543be04c81",
+      "name": "Datafruits",
+      "url": "https://streampusher-relay.club/datafruits.mp3"
     },
     {
       "countrycode": "HU",
@@ -277,8 +293,8 @@
     },
     {
       "countrycode": "GB",
-      "favicon": "https://www.resonancefm.com/assets/logo-a79206a34394173ba3e41d66a3388f4c.png",
-      "homepage": "https://www.resonancefm.com/",
+      "favicon": "https://extra.resonance.fm/favicon.ico",
+      "homepage": "https://extra.resonance.fm",
       "id": "912578f9-181a-4582-844f-301143ec0319",
       "name": "Resonance 104.4 FM",
       "url": "https://stream.resonance.fm/resonance"
@@ -292,12 +308,12 @@
       "url": "https://stream.resonance.fm/resonance-extra"
     },
     {
-      "countrycode": "GB",
-      "favicon": "/logos/subtle-radio.jpg",
-      "homepage": "https://www.subtleradio.com/",
-      "id": "1dbdc89f-f0d1-4bf7-8922-266edeb912dd",
-      "name": "Subtle Radio",
-      "url": "https://subtle.out.airtime.pro/subtle_a"
+      "countrycode": "US",
+      "favicon": "https://wfmu.org/images/wfmu_logo_94.gif",
+      "homepage": "https://wfmu.org/",
+      "id": "61d90ec1-615e-489b-a175-110076596a3b",
+      "name": "WFMU",
+      "url": "http://stream2.wfmu.org/freeform-128k"
     },
     {
       "countrycode": "GB",
@@ -308,12 +324,28 @@
       "url": "https://radio.canstream.co.uk:8022/live.mp3"
     },
     {
-      "countrycode": "GB",
-      "favicon": "",
-      "homepage": "http://netilradio.com/",
-      "id": "2a85a1c6-0cec-428a-a7df-126e4d8a90d9",
-      "name": "Netil Radio",
-      "url": "https://netilradio.out.airtime.pro/netilradio_a"
+      "countrycode": "US",
+      "favicon": "https://aw.bff.fm/assets/favicons/apple-touch-icon/d59257b71b2555397520753bc349890b785ca5d5.png",
+      "homepage": "https://bff.fm/",
+      "id": "1717c037-d5ce-409b-ab76-075ef7395154",
+      "name": "BFF.fm",
+      "url": "https://stream.bff.fm/1/mp3.mp3?_cacheBust=25055"
+    },
+    {
+      "countrycode": "",
+      "favicon": "https://internetradioprotocol.org/logos/hydefm.png",
+      "homepage": "https://hydefm.com",
+      "id": "1a7655e9-6022-4a0d-99b2-90f148639df9",
+      "name": "HydeFM",
+      "url": "https://hydefmradio-archive.s3.us-west-1.amazonaws.com/recordings/2026/06/show-20260630-010000.mp3#t=4824"
+    },
+    {
+      "id": "70b5b316-8810-41eb-bfb1-8c76a7cd7df3",
+      "name": "eist",
+      "url": "https://eist-radio.radiocult.fm/stream",
+      "homepage": "https://eist.radio/",
+      "favicon": "https://eist.radio/favicon.ico",
+      "countrycode": "IE"
     }
   ]
 }
