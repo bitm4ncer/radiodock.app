@@ -175,14 +175,20 @@ body.search-active .favorites-list {
 }
 
 .station-item-logo {
-  width: 32px;
-  height: 32px;
+  width: 43px;
+  height: 43px;
   border: solid 1px var(--bg-light);
   border-radius: 50%;
   object-fit: cover;
   margin-right: 12px;
   flex-shrink: 0;
   background-color: var(--logo-chip-bg);
+  transition: width 0.15s ease, height 0.15s ease;
+}
+
+.station-item:hover .station-item-logo {
+  width: 52px;
+  height: 52px;
 }
 
 .station-item-initials {
