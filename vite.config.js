@@ -23,9 +23,9 @@ function buildId() {
 // reset VERSION_BASELINE_COMMIT_COUNT to the current `git rev-list
 // --count HEAD` value.
 const VERSION_MAJOR_MINOR = '1.2';
-// Reset at the v1.2.0 go-live so the launch build reads patch 0; finalized to
-// the main commit count at merge time.
-const VERSION_BASELINE_COMMIT_COUNT = 114;
+// Reset at the v1.2.0 go-live so the launch build reads patch 0. Baseline is the
+// main commit count at that merge; subsequent commits increment the patch.
+const VERSION_BASELINE_COMMIT_COUNT = 257;
 
 function appVersion() {
   try {
