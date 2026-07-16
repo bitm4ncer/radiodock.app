@@ -36,7 +36,6 @@ function buildSearchUrl(server, { query, filter }) {
     reverse: 'true',
   });
   if (filter === 'tag') params.set('tag', query);
-  else if (filter === 'country') params.set('country', query);
   else params.set('name', query);
   return `${server}/json/stations/search?${params.toString()}`;
 }
@@ -60,7 +59,7 @@ function normaliseStation(rb) {
 
 /**
  * Search the Radio Browser API.
- * @param {{query: string, filter: 'name'|'tag'|'country'}} opts
+ * @param {{query: string, filter: 'name'|'tag'}} opts
  * @param {{signal?: AbortSignal}} [transport]
  * @returns {Promise<Array<{id, name, url, countrycode, favicon, homepage, tags, bitrate, codec}>>}
  */
