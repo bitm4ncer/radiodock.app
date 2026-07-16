@@ -3,6 +3,7 @@
 // actual API request and for play / add actions.
 
 import { renderLogoSlot, mountLogoBehavior } from './station-logo.js';
+import { mountNowPlayingHover } from './nowplaying-hover.js';
 
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({
@@ -51,6 +52,9 @@ export function mountSearch({ onSearch, onPlay, onAdd, isAlreadyInActiveList, ca
   let debounceTimer = null;
   let currentRequest = null;
   let lastResults = [];
+
+  // Desktop hover → live now-playing preview under the station name.
+  mountNowPlayingHover(resultsList, (row) => lastResults.find((s) => s.id === row.dataset.id) ?? null);
 
   function setVisibility({ filters, results, loading, error, list }) {
     filtersEl.style.display = filters ? '' : 'none';

@@ -6,6 +6,7 @@
 //   on iOS Safari, gave no auto-scroll near edges, and had no haptic feedback.
 
 import { renderLogoSlot, mountLogoBehavior } from './station-logo.js';
+import { mountNowPlayingHover } from './nowplaying-hover.js';
 
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({
@@ -188,6 +189,8 @@ export function mountStationList({ container }) {
     rowsHost.className = 'station-list-rows';
     listEl.append(rowsHost);
     mountLogoBehavior(rowsHost);
+    // Desktop hover → live now-playing preview under the station name.
+    mountNowPlayingHover(rowsHost, (row) => stations.find((s) => s.id === row.dataset.id) ?? null);
 
     rowsHost.addEventListener('click', (evt) => {
       if (suppressNextClick) {

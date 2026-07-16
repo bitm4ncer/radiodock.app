@@ -222,6 +222,27 @@ body.search-active .favorites-list {
   letter-spacing: 0.3px;
 }
 
+/* Desktop hover: live now-playing preview under the name (see nowplaying-hover.js). */
+.station-item-nowplaying {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.station-item-nowplaying.has-np::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2ecc71;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
 .station-item-actions {
   display: flex;
   align-items: center;
