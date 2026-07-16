@@ -228,14 +228,30 @@ body.search-active .favorites-list {
   letter-spacing: 0.3px;
 }
 
-/* Desktop hover: live now-playing preview under the name (see nowplaying-hover.js). */
+/* Desktop hover: live now-playing preview under the name (see nowplaying-hover.js).
+   Grows in vertically — the row's centred flex layout pushes the name + country
+   smoothly upward as the line expands. */
 .station-item-nowplaying {
   font-size: 11px;
   color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-top: 2px;
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+}
+
+/* A keyframe animation (not a transition) — transitions fire unreliably on
+   freshly-inserted elements; an animation runs deterministically on class-add.
+   `forwards` holds the grown end state. */
+.station-item-nowplaying.is-open {
+  animation: nowPlayingGrow 0.22s ease forwards;
+}
+
+@keyframes nowPlayingGrow {
+  from { max-height: 0; opacity: 0; margin-top: 0; }
+  to { max-height: 20px; opacity: 1; margin-top: 2px; }
 }
 
 .station-item-nowplaying.has-np::before {

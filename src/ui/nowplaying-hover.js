@@ -69,7 +69,7 @@ export function mountNowPlayingHover(rootEl, getStation) {
       let slot = info.querySelector('.station-item-nowplaying');
       if (!slot) {
         slot = document.createElement('div');
-        slot.className = 'station-item-nowplaying';
+        slot.className = 'station-item-nowplaying is-open';
         info.appendChild(slot);
       }
       slot.textContent = '…';

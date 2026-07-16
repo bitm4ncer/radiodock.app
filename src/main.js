@@ -176,15 +176,11 @@ subscribeThemeOSChange();
   );
 })();
 
-// Fire-and-forget warm-up ping to the metadata proxy. Render's free tier
-// spins down after 15 min of inactivity; the GitHub Actions cron keeps it
-// warm most of the time, but if a ping was skipped, this one wakes the
-// dyno before the user picks a station. Errors are silently ignored.
-fetch('https://radiodock-metadata-proxy-1.onrender.com/health', {
-  method: 'GET',
-  cache: 'no-store',
-  keepalive: true,
-}).catch(() => {});
+// Single-origin cold load: no warm-up ping to the Render metadata proxy on
+// boot. The proxy is only the fallback (primary is stations.radiodock.app), so
+// opening the app contacts no third-party host before the user presses play. If
+// the fallback is ever needed while Render's free tier is cold, we accept the
+// one-off cold-start delay in exchange for a leak-free launch.
 
 const playerCard = mountPlayerCard({ player });
 // Publishes --app-page-top / --app-page-bottom so About / Notes / Sync / Log open
