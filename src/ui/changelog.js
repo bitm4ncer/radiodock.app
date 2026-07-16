@@ -11,7 +11,7 @@ const ISSUES_URL = 'https://github.com/bitm4ncer/radiodock.app/issues';
 // numbered — the app's real version comes from the git commit count, so any label
 // here would only ever be a second, wrong one.
 // main.js compares this to the on-device `changelogSeenRevision` pref.
-export const CHANGELOG_REVISION = 7;
+export const CHANGELOG_REVISION = 8;
 
 // Stroke line icons, no emoji. Inner markup only; wrapped by iconTile() so they
 // share one viewBox + stroke treatment and inherit `currentColor`.
@@ -32,6 +32,14 @@ const ICONS = {
 
 // Newest release first. Each feature: { icon, title, body }.
 export const CHANGELOG = [
+  {
+    name: 'Faster & more private',
+    features: [
+      { icon: 'search', title: 'A cleaner station library', body: 'Search now runs on RadioDock’s own curated directory — fewer duplicates and better logos — and quietly falls back to the community source if ours is ever unreachable, so it keeps working.' },
+      { icon: 'lock', title: 'Logos load privately', body: 'Station artwork now comes only from RadioDock’s own servers. Opening the app no longer reaches out to dozens of other websites before you press play.' },
+      { icon: 'music', title: 'Peek at what’s on', body: 'On desktop, hover a station in your lists or search results to preview what’s playing right now — without pressing play first.' },
+    ],
+  },
   {
     name: 'Cross-device sync',
     features: [
