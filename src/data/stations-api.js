@@ -98,14 +98,26 @@ export async function getStationByUuid(uuid, { signal } = {}) {
   if (!id) return null;
 
   const url = `${STATIONS_BASE}/json/stations/byuuid/${encodeURIComponent(id)}`;
-  const res = await fetch(url, {
-    method: 'GET',
-    signal,
-    headers: { Accept: 'application/json', 'User-Agent': USER_AGENT_HEADER },
-  });
-  if (res.status === 404) return null;
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const data = await res.json();
-  if (!Array.isArray(data) || data.length === 0) return null;
-  return normaliseStation(data[0]);
+  // Own timeout linked to the caller's signal, so a VPS that accepts the socket
+  // but never responds aborts and lets the source layer fall back to Radio
+  // Browser instead of hanging the info panel forever.
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
+  const onAbort = () => ctl.abort();
+  signal?.addEventListener('abort', onAbort);
+  try {
+    const res = await fetch(url, {
+      method: 'GET',
+      signal: ctl.signal,
+      headers: { Accept: 'application/json', 'User-Agent': USER_AGENT_HEADER },
+    });
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (!Array.isArray(data) || data.length === 0) return null;
+    return normaliseStation(data[0]);
+  } finally {
+    clearTimeout(timer);
+    signal?.removeEventListener('abort', onAbort);
+  }
 }

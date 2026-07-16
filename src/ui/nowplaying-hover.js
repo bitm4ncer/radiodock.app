@@ -11,8 +11,9 @@ import { fetchNowPlaying } from '../data/metadata.js';
 
 const HOVER_INTENT_MS = 400;
 const CACHE_TTL_MS = 15000; // matches the proxy's ~15 s cache
+const CACHE_MAX = 200; // bound session growth — evict oldest past this
 
-const cache = new Map(); // key -> { at, value }
+const cache = new Map(); // key -> { at, value } (insertion-ordered)
 
 function canHover() {
   return typeof matchMedia === 'function' && matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -29,6 +30,7 @@ async function resolveNowPlaying(station) {
     country: station.countrycode,
   }).catch(() => null);
   cache.set(key, { at: Date.now(), value });
+  if (cache.size > CACHE_MAX) cache.delete(cache.keys().next().value);
   return value;
 }
 

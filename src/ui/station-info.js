@@ -17,6 +17,7 @@
 import { openModal } from './modals.js';
 import { fetchStationInfo } from '../data/wikipedia.js';
 import { getStationByUuid } from '../data/stations-source.js';
+import { getLogoUrl } from '../data/logo-resolver.js';
 
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({
@@ -68,10 +69,14 @@ export function mountStationInfo() {
     const initials = getInitials(data.name);
     const tags = Array.isArray(data.tags) ? data.tags.filter(Boolean).slice(0, 8) : [];
 
+    // Single-origin: the station logo comes from our own CDN (by UUID), never
+    // the station's third-party favicon. The Wikipedia hero thumbnail is a
+    // separate, documented enrichment source and stays.
+    const logoUrl = getLogoUrl(data, 512);
     const heroImage = wiki?.thumbnail
       ? `<img class="station-info__hero" src="${escapeHtml(wiki.thumbnail)}" alt="">`
-      : data.favicon
-        ? `<img class="station-info__logo" src="${escapeHtml(data.favicon)}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'station-info__initials',textContent:${JSON.stringify(initials)}}))">`
+      : logoUrl
+        ? `<img class="station-info__logo" src="${escapeHtml(logoUrl)}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'station-info__initials',textContent:${JSON.stringify(initials)}}))">`
         : `<div class="station-info__initials">${escapeHtml(initials)}</div>`;
 
     const tagsHtml = tags.length
