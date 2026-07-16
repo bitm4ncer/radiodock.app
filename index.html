@@ -568,7 +568,8 @@
           <!-- Part 2: technical details, revealed by More button. -->
           <div class="about__tech" id="aboutTech">
             <h4 class="about__section">Station directory</h4>
-            <p>The browseable directory comes from the <a href="https://www.radio-browser.info" target="_blank" rel="noopener" class="text-link">Radio Browser API</a> — a community-run database. Queries are sent directly from your browser; results are not stored anywhere by RadioDock.</p>
+            <p>Station data comes from RadioDock's own <strong>curated database</strong> (<a href="https://stations.radiodock.app" target="_blank" rel="noopener" class="text-link">stations.radiodock.app</a>) — de-duplicated, with corrected logos and hand-fixes layered on top of the community-run <a href="https://www.radio-browser.info" target="_blank" rel="noopener" class="text-link">Radio Browser</a> directory it is built from. If our server is unreachable the app automatically falls back to Radio Browser directly, so search never depends on us. Queries aren't stored; results aren't retained.</p>
+            <p><strong>Station logos</strong> are served only from our own origin (<code>stations.radiodock.app/logos/…</code>), looked up by station ID. The app never loads favicons from third-party websites, so opening it doesn't leak your IP to dozens of external hosts before you press play — logos degrade to a plain initials chip if unavailable.</p>
 
             <h4 class="about__section">"Now Playing" metadata</h4>
             <p>Most radio servers don't send a CORS header, so a browser can't read their stream metadata directly. RadioDock routes <em>only the stream URL</em> through a small open-source proxy (<a href="https://github.com/bitm4ncer/RadioDock-metadata-proxy" target="_blank" rel="noopener" class="text-link">source</a>) which:</p>
@@ -589,8 +590,9 @@
               <li><strong>hls.js</strong> for HLS streams, native <code>&lt;audio&gt;</code> for ICY/MP3/AAC</li>
               <li><strong>MediaSession API</strong> for lock-screen controls + Bluetooth headphone buttons</li>
               <li><strong>Service Worker</strong> for offline shell + PWA install</li>
+              <li><strong>RadioDock Stations API + logo CDN</strong> (self-hosted, Hetzner) — curated data source and single-origin station logos, with Radio Browser as an automatic fallback</li>
               <li><strong>Self-hosted Umami</strong> for anonymous, cookieless usage analytics — opt-out toggle on <a href="/legal.html" target="_blank" rel="noopener" class="text-link">legal page</a></li>
-              <li>Hosted on <strong>GitHub Pages</strong> · proxy on Render</li>
+              <li>Hosted on <strong>GitHub Pages</strong> · Stations API on Hetzner · metadata proxy on Hetzner + Render (fallback)</li>
             </ul>
 
             <h4 class="about__section">Data source <span class="about__beta">beta</span></h4>

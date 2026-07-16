@@ -4,13 +4,13 @@ Internet radio player for the web — installable as a PWA on desktop and mobile
 
 **Live: <https://radiodock.app>**
 
-RadioDock is the standalone web rebuild of the [RadioDock Chrome extension](https://github.com/bitm4ncer/RadioDock). It streams 50K+ stations via the community-run [Radio Browser](https://www.radio-browser.info/) directory, ships with a curated community station list, and keeps all user data on-device.
+RadioDock is the standalone web rebuild of the [RadioDock Chrome extension](https://github.com/bitm4ncer/RadioDock). It streams 50K+ stations from RadioDock's own curated [Stations API](https://stations.radiodock.app) — built on the community-run [Radio Browser](https://www.radio-browser.info/) directory, which stays the upstream source and an automatic fallback — ships with a curated community station list, serves station logos from a single origin, and keeps all user data on-device.
 
 ## Features
 
 - **Playback** — ICY/MP3 and HLS streams (`hls.js` loaded on demand), automatic error recovery with backoff, lock-screen / background playback via the Media Session API.
 - **Now playing** — live track metadata through a dedicated [metadata proxy](https://github.com/bitm4ncer/RadioDock-metadata-proxy), plus in-band ID3 for HLS streams.
-- **Search** — Radio Browser search by name, genre, or country with mirror-server fallback.
+- **Search** — by name or genre against the RadioDock Stations API, with automatic Radio Browser fallback (and a hidden backend toggle in About for debugging).
 - **Lists** — favorites and custom lists with drag-drop reorder, JSON import/export (extension-compatible), and shareable list URLs (gzip + base64url in the hash fragment — the payload never touches a server).
 - **Notes** — local-first journal for capturing radio moments (station + track + timestamp) with pages, search, and export.
 - **Visualizer** (desktop) — Canvas 2D and WebGL visualizers plus Milkdrop presets via [butterchurn](https://github.com/jberg/butterchurn), driven by a tiered audio pipeline (HLS/MSE → tab-audio capture → procedural fallback).
@@ -38,8 +38,9 @@ src/
 
 ## Services
 
-- **[Radio Browser API](https://www.radio-browser.info/)** — station directory and search (community-run, CORS-enabled).
-- **[RadioDock metadata proxy](https://github.com/bitm4ncer/RadioDock-metadata-proxy)** — now-playing metadata for ICY streams.
+- **[RadioDock Stations API](https://stations.radiodock.app)** — curated station directory, search, and single-origin logo CDN (`/logos/{uuid}`); self-hosted.
+- **[Radio Browser API](https://www.radio-browser.info/)** — the upstream community-run directory our data is built from, and the automatic search/info fallback when the Stations API is unreachable.
+- **[RadioDock metadata proxy](https://github.com/bitm4ncer/RadioDock-metadata-proxy)** — now-playing metadata for ICY streams (Hetzner primary, Render fallback).
 
 ## Deployment
 

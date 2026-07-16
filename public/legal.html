@@ -214,11 +214,17 @@
       <h2>Third-party services accessed when you use the app</h2>
       <ul>
         <li>
-          <strong>Radio Browser API</strong> (<code>*.api.radio-browser.info</code>) — when you search for stations, your query is sent to this community-run service.
+          <strong>RadioDock Stations API</strong> (<code>stations.radiodock.app</code>) — when you search for stations or open a station's info panel, your query is sent to our own curated station database. It is operated by the same person and logs only IP / timestamp / request path for operational diagnostics; logs are not retained long-term.
+        </li>
+        <li>
+          <strong>Radio Browser API</strong> (<code>*.api.radio-browser.info</code>) — the community-run directory our station data is built from. It is contacted directly from your browser only as an <em>automatic fallback</em>, if our Stations API is unavailable.
           <a href="https://www.radio-browser.info/" target="_blank" rel="noopener">Privacy info</a>.
         </li>
         <li>
-          <strong>RadioDock Metadata Proxy</strong> (<code>radiodock-metadata-proxy-1.onrender.com</code>) — when you play a station, the stream URL is sent to this proxy to fetch "now playing" metadata. The proxy is operated by the same person; source code is open at
+          <strong>Station logos</strong> (<code>stations.radiodock.app/logos/…</code>) — station artwork is served only from our own origin, looked up by station ID. The app no longer loads station favicons directly from third-party websites or an icon service, so opening the app does not leak your IP to dozens of external hosts before you interact with it. If a logo is unavailable the app shows a plain initials chip.
+        </li>
+        <li>
+          <strong>RadioDock Metadata Proxy</strong> (<code>stations.radiodock.app</code>, with <code>radiodock-metadata-proxy-1.onrender.com</code> as a fallback) — when you play a station, the stream URL is sent to this proxy to fetch "now playing" metadata. The proxy is operated by the same person; source code is open at
           <a href="https://github.com/bitm4ncer/RadioDock-metadata-proxy" target="_blank" rel="noopener">GitHub</a>. The proxy logs only IP / timestamp / request path for operational diagnostics; logs are not retained long-term.
         </li>
         <li>
