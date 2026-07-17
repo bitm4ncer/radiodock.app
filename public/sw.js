@@ -7,9 +7,12 @@
 //     for a hashed-asset SPA — a background-refreshed index.html would point
 //     at new asset hashes that weren't cached, so an offline/flaky launch
 //     served fresh HTML with missing JS/CSS → an unstyled page.
-//   - Cache-FIRST for hashed assets, icons, fonts, community-radios.json (they
-//     are immutable-hashed or tolerant of one-visit staleness), revalidated in
-//     the background. Survives offline.
+//   - Network-FIRST for dashboard-published curation data (community-radios.json):
+//     a Publish must reach every user on their next load, not a deploy + reload
+//     later. Falls back to the cached copy offline, or on a slow network via a
+//     short timeout, so boot never stalls.
+//   - Cache-FIRST for hashed assets, icons, fonts (immutable-hashed), revalidated
+//     in the background. Survives offline.
 //   - Network-only for everything else (Radio Browser API, metadata proxy,
 //     audio streams). Cache-first there would serve stale "Now Playing".
 //
@@ -33,6 +36,22 @@ const PRECACHE_URLS = [
   '/logo-text.svg',
   '/fonts/InterVariable.woff2',
 ];
+
+// Dashboard-published curation data served network-first — must reach users
+// promptly. (discover.json / metadata-overrides.json can join this list when
+// those milestones ship.)
+const NETWORK_FIRST_DATA = ['/community-radios.json'];
+const NETWORK_FIRST_TIMEOUT_MS = 4000;
+
+function isNetworkFirstData(url) {
+  return url.origin === self.location.origin && NETWORK_FIRST_DATA.includes(url.pathname);
+}
+
+function fetchWithTimeout(req, ms) {
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), ms);
+  return fetch(req, { signal: ctl.signal }).finally(() => clearTimeout(timer));
+}
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -99,7 +118,27 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Hashed assets / icons / fonts / json: cache-first + background refresh.
+  // Dashboard-published curation data: network-first so a Publish shows up on
+  // the next load. Fall back to cache when offline or the network is too slow.
+  if (isNetworkFirstData(url)) {
+    event.respondWith(
+      (async () => {
+        const cache = await caches.open(CACHE_NAME);
+        try {
+          const res = await fetchWithTimeout(req, NETWORK_FIRST_TIMEOUT_MS);
+          if (res && res.ok) cache.put(req, res.clone());
+          return res;
+        } catch (err) {
+          const cached = await cache.match(req);
+          if (cached) return cached;
+          throw err;
+        }
+      })(),
+    );
+    return;
+  }
+
+  // Hashed assets / icons / fonts: cache-first + background refresh.
   event.respondWith(
     (async () => {
       const cache = await caches.open(CACHE_NAME);
