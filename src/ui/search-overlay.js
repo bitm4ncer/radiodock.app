@@ -19,6 +19,8 @@ export function mountSearchOverlay({ triggerBtn, overlay }) {
 
   function open() {
     if (!isMobile() || !searchSection) return;
+    // Only one full-page surface open at a time — main.js closes the others.
+    window.dispatchEvent(new CustomEvent('rd:page-open', { detail: { id: 'search' } }));
     body.append(searchSection);
     overlay.classList.add('is-open');
     overlay.setAttribute('aria-hidden', 'false');

@@ -76,6 +76,8 @@ export function mountSyncModal({ onListsChanged, onLinked, onUnlinked, track }) 
 
   function openPanel() {
     if (!panel) return;
+    // Only one full-page surface open at a time — main.js closes the others.
+    window.dispatchEvent(new CustomEvent('rd:page-open', { detail: { id: 'sync' } }));
     const mob = isMobileNow();
     panel.classList.toggle('sync-panel--mobile', mob);
     panel.classList.toggle('sync-panel--desktop', !mob);
@@ -441,6 +443,7 @@ export function mountSyncModal({ onListsChanged, onLinked, onUnlinked, track }) 
       openPanel();
       await refreshState();
     },
+    close: closePanel,
     refresh: refreshState,
   };
 }

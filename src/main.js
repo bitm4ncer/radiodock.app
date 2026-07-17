@@ -283,6 +283,7 @@ function openAboutModal() {
   const body = document.getElementById('aboutModalBody');
   body?.classList.remove('show-tech');
   document.getElementById('aboutMoreBtn')?.setAttribute('aria-expanded', 'false');
+  window.dispatchEvent(new CustomEvent('rd:page-open', { detail: { id: 'infoModal' } }));
   openModal('infoModal');
 }
 document.getElementById('dockLogoBtn')?.addEventListener('click', openAboutModal);
@@ -565,9 +566,28 @@ document.body.addEventListener('click', (evt) => {
 });
 
 // Mobile fullscreen search overlay
-mountSearchOverlay({
+const searchOverlay = mountSearchOverlay({
   triggerBtn: document.getElementById('searchTriggerBtn'),
   overlay: document.getElementById('searchOverlay'),
+});
+
+// Only one full-page surface (Notes / Sync / About / Log / Search) is open at a
+// time: opening one closes the rest. Each page fires `rd:page-open` (detail.id)
+// as it opens; this listener closes every other page. The transient dialog
+// sheets (confirm / prompt / share / station info / list actions) are absent on
+// purpose — those may still appear over a page.
+const PAGE_CLOSERS = {
+  notes: () => notesApi?.close(),
+  sync: () => syncModal?.close?.(),
+  infoModal: () => closeModal('infoModal'),
+  changelogModal: () => closeModal('changelogModal'),
+  search: () => searchOverlay?.close(),
+};
+window.addEventListener('rd:page-open', (evt) => {
+  const keep = evt.detail?.id;
+  for (const [id, close] of Object.entries(PAGE_CLOSERS)) {
+    if (id !== keep) { try { close(); } catch { /* closers are idempotent */ } }
+  }
 });
 
 // Visualizer (desktop only; mounts trigger button into the player card).

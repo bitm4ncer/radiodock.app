@@ -143,6 +143,8 @@ export function mountChangelog() {
 
   return {
     open() {
+      // Only one full-page surface open at a time — main.js closes the others.
+      window.dispatchEvent(new CustomEvent('rd:page-open', { detail: { id: 'changelogModal' } }));
       render();
       openModal('changelogModal');
     },

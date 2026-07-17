@@ -212,6 +212,8 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
 
   function openPanel({ animate = true } = {}) {
     if (state.open) return;
+    // Only one full-page surface open at a time — main.js closes the others.
+    window.dispatchEvent(new CustomEvent('rd:page-open', { detail: { id: 'notes' } }));
     state.open = true;
     panel.classList.add('is-open');
     if (animate) panel.classList.add('is-animating');
