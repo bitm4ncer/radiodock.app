@@ -4,13 +4,13 @@
 // feedback. The actual capture + toast flow lives in `notes-panel`.
 
 export function mountNotesCaptureButton({ player, onCapture }) {
-  const row = document.querySelector('.station-country-line');
+  const row = document.getElementById('playerActionBar');
   if (!row) return null;
 
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.id = 'captureNoteBtn';
-  btn.className = 'btn-icon btn-capture-note';
+  btn.className = 'pab-btn btn-capture-note';
   btn.title = 'Capture this moment';
   btn.setAttribute('aria-label', 'Capture this moment');
   btn.style.display = 'none';
@@ -21,10 +21,10 @@ export function mountNotesCaptureButton({ player, onCapture }) {
     </svg>
   `;
 
-  // Slot the button just after the favorite heart so the row reads
-  // info · visit · ⓘ · ❤️ · 📌.
-  const favBtn = row.querySelector('#addToFavoritesBtn');
-  if (favBtn?.nextSibling) row.insertBefore(btn, favBtn.nextSibling);
+  // Slot the button just before the "next" control so the bar reads
+  // prev · ⓘ · ❤️ · 📌 · next.
+  const nextBtn = row.querySelector('#stationNextBtn');
+  if (nextBtn) row.insertBefore(btn, nextBtn);
   else row.appendChild(btn);
 
   btn.addEventListener('click', () => {

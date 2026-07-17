@@ -656,6 +656,16 @@ document.getElementById('tinyMaxBtn')?.addEventListener('click', () => {
   window.dispatchEvent(new CustomEvent('rd:set-tiny', { detail: { on: false } }));
 });
 
+// Player action bar prev / next — cycle the active list. Reuses the same
+// tray prev/next logic as the Electron tray and tiny player, so it works
+// identically in the browser.
+document.getElementById('stationPrevBtn')?.addEventListener('click', () => {
+  window.dispatchEvent(new CustomEvent('electron:trayPrevious'));
+});
+document.getElementById('stationNextBtn')?.addEventListener('click', () => {
+  window.dispatchEvent(new CustomEvent('electron:trayNext'));
+});
+
 // Electron-only frameless title bar (drag + minimize/pin/close).
 // In the browser, isElectron() returns false and this block is skipped.
 if (isElectron()) {
@@ -820,6 +830,14 @@ player.on('stationchange', (evt) => {
   playingDeadAir = false;
   recomputeOffline();
 });
+// Gate the list's active-station pulse dot on real playback. The row keeps
+// its .playing (active) styling when paused/stopped; only body.is-playing
+// lets the dot blink (station-list.css).
+player.on('playing', () => document.body.classList.add('is-playing'));
+player.on('paused', () => document.body.classList.remove('is-playing'));
+player.on('stopped', () => document.body.classList.remove('is-playing'));
+player.on('error', () => document.body.classList.remove('is-playing'));
+
 player.on('playing', () => {
   // Audio is flowing → the active station is definitively online.
   if (playingStationOffline) {

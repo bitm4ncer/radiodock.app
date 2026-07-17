@@ -311,8 +311,18 @@ export function mountStationList({ container }) {
       render();
     },
     setActive(id) {
-      activeId = id ?? null;
-      render();
+      const next = id ?? null;
+      if (next === activeId) return;
+      activeId = next;
+      // Surgically move the .playing highlight instead of re-rendering the
+      // whole list. A full innerHTML rebuild here would destroy the hover
+      // now-playing slot that nowplaying-hover.js injects into a row, so the
+      // metadata would flash out and back in whenever a station is selected.
+      if (!rowsHost) return;
+      const want = activeId == null ? null : String(activeId);
+      for (const row of rowsHost.children) {
+        row.classList.toggle('playing', want != null && row.dataset.id === want);
+      }
     },
     onClick(cb) { clickCb = cb; },
     onRemove(cb) { removeCb = cb; },
