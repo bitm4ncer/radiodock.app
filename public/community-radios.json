@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-07-17T01:05:55.043Z",
+  "exportDate": "2026-07-17T13:02:12.499Z",
   "listName": "Community Radios",
   "stations": [
     {
@@ -364,6 +364,14 @@
       "url": "https://radioadmin.kwsx.online/listen/kwsx/radio.mp3"
     },
     {
+      "countrycode": "BR",
+      "favicon": "https://api.community-radio-index.com/media/logos/2351138d-1f08-4d28-81dc-59fa8b4aa663.png",
+      "homepage": "https://listen.maracutaia.fm/",
+      "id": "4e952622-185b-4fda-8d3e-a98de4aaa55e",
+      "name": "maracutaia.fm",
+      "url": "https://maracutaiafm.radiocult.fm/stream"
+    },
+    {
       "countrycode": "DE",
       "favicon": "https://gatekeeperradio.com/favicons/gkr_favicon.svg",
       "homepage": "https://gatekeeperradio.com/",
@@ -434,14 +442,6 @@
       "id": "6329a6ad-02e4-49ae-b870-8e0e189fb8c0",
       "name": "NARR Radio",
       "url": "https://narr-f63a1220.radiocult.fm/stream"
-    },
-    {
-      "countrycode": "BR",
-      "favicon": "https://api.community-radio-index.com/media/logos/2351138d-1f08-4d28-81dc-59fa8b4aa663.png",
-      "homepage": "https://listen.maracutaia.fm/",
-      "id": "4e952622-185b-4fda-8d3e-a98de4aaa55e",
-      "name": "maracutaia.fm",
-      "url": "https://maracutaiafm.radiocult.fm/stream"
     }
   ]
 }
