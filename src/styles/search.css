@@ -229,7 +229,10 @@ body.is-electron .electron-titlebar {
   padding: 0 12px;
   background: var(--bg-dark);
   border-bottom: 1px solid var(--border);
-  z-index: 2000;
+  /* Topmost surface in the app: the window controls must stay clickable no
+     matter what is open. Above the off-canvas drawer (2100, off-canvas.css),
+     which in turn sits above every page. */
+  z-index: 2200;
   /* The whole bar drags the frameless window; buttons opt out below. */
   -webkit-app-region: drag;
   user-select: none;

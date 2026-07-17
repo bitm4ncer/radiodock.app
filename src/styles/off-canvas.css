@@ -54,7 +54,12 @@
 .off-canvas {
   position: fixed;
   inset: 0;
-  z-index: 80;
+  /* Above every page surface — the drawer is the way OUT of a page, so it can't
+     open behind one. It has to clear the highest of them: .modal (About/Log) at
+     2000, with .notes-panel / .sync-panel at 90 and .search-overlay at 70 below
+     that. The Electron title bar sits above this again (search.css), so the
+     drawer's full-bleed backdrop never covers the window controls. */
+  z-index: 2100;
   pointer-events: none;
   visibility: hidden;
 }
