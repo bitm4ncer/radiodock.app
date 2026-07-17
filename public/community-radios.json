@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-07-16T23:09:57.728Z",
+  "exportDate": "2026-07-17T00:28:08.316Z",
   "listName": "Community Radios",
   "stations": [
     {
@@ -346,6 +346,14 @@
       "homepage": "https://eist.radio/",
       "favicon": "https://eist.radio/favicon.ico",
       "countrycode": "IE"
+    },
+    {
+      "countrycode": "",
+      "favicon": "https://internetradioprotocol.org/logos/parea.png",
+      "homepage": "https://parearadio.com/",
+      "id": "326db2f8-52ed-498f-a89e-46d70eb56584",
+      "name": "Parea Radio",
+      "url": "https://parea-radio-b7474105.radiocult.fm/stream"
     }
   ]
 }
