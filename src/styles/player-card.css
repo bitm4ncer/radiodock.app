@@ -84,7 +84,7 @@
 }
 
 .play-pause-btn:focus {
-  box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.3);
+  box-shadow: 0 0 0 3px rgba(60, 60, 60, 0.9);
 }
 
 .play-pause-btn:disabled {
