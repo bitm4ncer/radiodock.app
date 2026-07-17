@@ -36,8 +36,12 @@ export function mountRecordButton({ recorder, player, getNotesApi }) {
     const rec = recorder?.isRecording?.() ?? false;
     const station = player?.getCurrentStation?.() ?? null;
     btn.classList.toggle('is-recording', rec);
-    btn.disabled = !recorder || (!rec && !station);
-    btn.title = rec ? 'Stop recording' : (station ? `Record ${station.name}` : 'No station playing');
+    // Keep the button a permanent, full-strength member of the always-complete
+    // action bar — never dim it for "no station" (a restored-but-not-yet-played
+    // station reads as no station via getCurrentStation until the first play).
+    // A tap with nothing playing just toasts via toggleRecord.
+    btn.disabled = !recorder;
+    btn.title = rec ? 'Stop recording' : (station ? `Record ${station.name}` : 'Record');
   }
 
   const timeEl = btn.querySelector('[data-role="rec-time"]');

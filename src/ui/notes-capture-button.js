@@ -13,7 +13,6 @@ export function mountNotesCaptureButton({ player, onCapture }) {
   btn.className = 'pab-btn btn-capture-note';
   btn.title = 'Capture this moment';
   btn.setAttribute('aria-label', 'Capture this moment');
-  btn.style.display = 'none';
   btn.innerHTML = `
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M4 4h14a2 2 0 0 1 2 2v12l-4-3-4 3-4-3-4 3V6a2 2 0 0 1 2-2z"/>
@@ -34,14 +33,8 @@ export function mountNotesCaptureButton({ player, onCapture }) {
     onCapture?.({ source: 'player-card' });
   });
 
-  function refresh() {
-    const station = player.getCurrentStation?.();
-    btn.style.display = station ? '' : 'none';
-  }
-
-  player.on('stationchange', refresh);
-  player.on('stopped', refresh);
-  refresh();
-
-  return { refresh };
+  // The button stays in the bar unconditionally — the action bar is a fixed,
+  // always-complete set. Visibility is owned by the bar itself (hidden until a
+  // station is selected). A capture with no playing station just toasts.
+  return { refresh() {} };
 }
