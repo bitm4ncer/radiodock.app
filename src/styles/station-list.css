@@ -151,7 +151,11 @@ body.search-active .favorites-list {
   background: var(--bg-list-playing);
 }
 
-.station-item.playing .station-item-name::after {
+/* The active-station dot appears only while audio is actually playing —
+   nothing shows when paused / stopped. body.is-playing is toggled by the
+   player events in main.js. Offline rows get the OFF badge instead (rule
+   further down), so they're excluded here. */
+body.is-playing .station-item.playing:not([data-offline]) .station-item-name::after {
   content: '';
   display: inline-block;
   width: 6px;

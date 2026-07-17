@@ -14,6 +14,7 @@ export function mountPlayerCard({ player }) {
   const visitBtn = document.getElementById('visitStationBtn');
   const infoBtn = document.getElementById('stationInfoBtn');
   const favBtn = document.getElementById('addToFavoritesBtn');
+  const actionBar = document.getElementById('playerActionBar');
   const playPauseBtn = document.getElementById('playPauseBtn');
   const playIcon = playPauseBtn.querySelector('.play-icon');
   const pauseIcon = playPauseBtn.querySelector('.pause-icon');
@@ -24,6 +25,14 @@ export function mountPlayerCard({ player }) {
   let currentStation = null;
   let favoriteCallback = null;
   let infoCallback = null;
+
+  // Now-playing scroll state. Hover devices get the extension's
+  // single hover-transition; touch devices get one auto-pass per new
+  // title plus tap-to-replay. lastNowPlaying dedupes the metadata
+  // poller so an unchanged title never restarts the slide mid-flight.
+  const canHover = window.matchMedia?.('(hover: hover)').matches ?? false;
+  let lastNowPlaying = '';
+  let autoPassTimer = null;
 
   // Tiny haptic tap on the main interactions. navigator.vibrate is
   // Android/Chromium only — iOS Safari ignores it silently — so this is
@@ -55,8 +64,9 @@ export function mountPlayerCard({ player }) {
     // wedges between the title and the country / URL row instead of
     // collapsing flat under the title like the extension does.
     nowPlayingTextEl.textContent = '';
+    lastNowPlaying = '';
     nowPlayingTextEl.closest('.now-playing')?.classList.remove('show');
-    nowPlayingTextEl.classList.remove('is-marquee');
+    resetScroll();
     if (!station) {
       nameEl.textContent = 'No station selected';
       countryEl.textContent = '';
@@ -64,6 +74,7 @@ export function mountPlayerCard({ player }) {
       visitBtn.style.display = 'none';
       infoBtn.style.display = 'none';
       favBtn.style.display = 'none';
+      if (actionBar) actionBar.style.display = 'none';
       return;
     }
     nameEl.textContent = station.name ?? '';
@@ -89,6 +100,7 @@ export function mountPlayerCard({ player }) {
     }
     infoBtn.style.display = '';
     favBtn.style.display = '';
+    if (actionBar) actionBar.style.display = '';
   }
 
   function hostnameFor(url) {
@@ -101,6 +113,8 @@ export function mountPlayerCard({ player }) {
 
   function setNowPlaying(text) {
     const value = text ?? '';
+    const changed = value !== lastNowPlaying;
+    lastNowPlaying = value;
     nowPlayingTextEl.textContent = value;
     // The .now-playing parent uses max-height: 0 by default so an empty
     // line doesn't take vertical space; flip on .show only when we have
@@ -108,40 +122,76 @@ export function mountPlayerCard({ player }) {
     // visually clipped to zero height on the mobile player.
     const wrap = nowPlayingTextEl.closest('.now-playing');
     wrap?.classList.toggle('show', value.length > 0);
-    updateMarquee();
+    // Only re-measure / re-trigger when the title actually changed. The
+    // metadata poller re-sends the same string every few seconds; without
+    // this guard that restarts the slide mid-flight (the visible "jump").
+    if (changed) updateScroll();
   }
 
-  // Toggle the auto-scrolling marquee on the now-playing line when the
-  // text is wider than the card can show. The default ellipsis state
-  // stays for short text; once .is-marquee flips on, CSS runs the
-  // keyframe animation that uses --marquee-shift + --marquee-duration
-  // (set here from the measured overflow). Mobile has no hover, so an
-  // automatic loop is the only way the full title is ever readable.
-  function updateMarquee() {
-    // Strip the state first so scrollWidth / clientWidth are measured
-    // in the truncated layout — gives the actual overflow regardless
-    // of whether the marquee was already running.
-    nowPlayingTextEl.classList.remove('is-marquee');
-    nowPlayingTextEl.style.removeProperty('--marquee-shift');
-    nowPlayingTextEl.style.removeProperty('--marquee-duration');
+  function resetScroll() {
+    clearTimeout(autoPassTimer);
+    nowPlayingTextEl.classList.remove('can-scroll', 'scroll-once');
+    nowPlayingTextEl.style.removeProperty('--scroll-distance');
+    nowPlayingTextEl.style.removeProperty('--scroll-duration');
+    nowPlayingTextEl.style.removeProperty('--pass-duration');
+  }
 
+  // Restart the touch one-shot pass from the top. Removing the class and
+  // forcing a reflow before re-adding is what makes the animation replay.
+  function runOnePass() {
+    if (canHover) return;
+    if (!nowPlayingTextEl.style.getPropertyValue('--scroll-distance')) return;
+    nowPlayingTextEl.classList.remove('scroll-once');
+    void nowPlayingTextEl.offsetWidth;
+    nowPlayingTextEl.classList.add('scroll-once');
+  }
+
+  // Measure the now-playing line and, if it overflows the card, arm the
+  // right scroll behaviour for the device: a hover-transition on desktop
+  // (see .player-card:hover CSS) or a single auto-pass on touch.
+  function updateScroll() {
+    // Strip prior state first so scrollWidth / clientWidth are measured
+    // in the truncated layout — gives the true overflow regardless of
+    // whether a scroll was already armed.
+    resetScroll();
     if (!nowPlayingTextEl.textContent) return;
 
-    // Defer one frame so the .show transition has applied + layout
-    // is stable. Without this the .now-playing parent's max-height
-    // collapse can still be in flight and scrollWidth reads 0.
+    // Defer one frame so the .show transition has applied + layout is
+    // stable. Without this the .now-playing parent's max-height collapse
+    // can still be in flight and scrollWidth reads 0.
     requestAnimationFrame(() => {
       if (!nowPlayingTextEl.textContent) return;
       const overflow = nowPlayingTextEl.scrollWidth - nowPlayingTextEl.clientWidth;
-      if (overflow <= 4) return; // Fits, no marquee needed.
+      if (overflow <= 4) return; // Fits, no scroll needed.
 
-      // Roughly 40 px/s scroll feels comfortable to read — matches the
-      // iOS lock-screen now-playing marquee. Floor at 7 s so very short
-      // overflows don't whip past, ceiling at 16 s for very long titles.
-      const dur = Math.max(7, Math.min(16, 4 + overflow / 40));
-      nowPlayingTextEl.style.setProperty('--marquee-shift', `-${overflow}px`);
-      nowPlayingTextEl.style.setProperty('--marquee-duration', `${dur}s`);
-      nowPlayingTextEl.classList.add('is-marquee');
+      // ~50 px/s outbound feels readable and matches the extension.
+      const distance = overflow + 12; // small trailing gap past the last glyph
+      const legDur = Math.max(2.5, distance / 50);
+      nowPlayingTextEl.style.setProperty('--scroll-distance', `-${distance}px`);
+      nowPlayingTextEl.style.setProperty('--scroll-duration', `${legDur}s`);
+
+      if (canHover) {
+        nowPlayingTextEl.classList.add('can-scroll');
+      } else {
+        // The keyframe's outbound leg spans 10%→50% (40% of the run), so
+        // total = legDur / 0.4 keeps the outbound speed at ~50 px/s.
+        nowPlayingTextEl.style.setProperty('--pass-duration', `${(legDur / 0.4).toFixed(2)}s`);
+        autoPassTimer = setTimeout(runOnePass, 1500);
+      }
+    });
+  }
+
+  // Touch: settle back to ellipsis once a pass finishes, and let a tap on
+  // the line replay it. Registered once — mountPlayerCard runs once.
+  if (!canHover) {
+    nowPlayingTextEl.addEventListener('animationend', (e) => {
+      if (e.animationName === 'now-playing-scroll-once') {
+        nowPlayingTextEl.classList.remove('scroll-once');
+      }
+    });
+    nowPlayingTextEl.addEventListener('click', () => {
+      clearTimeout(autoPassTimer);
+      runOnePass();
     });
   }
 
