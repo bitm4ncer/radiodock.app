@@ -264,8 +264,8 @@
   }
 
   /* ---- Pages navigate inside the app chrome ----
-     About / Notes / Sync / Log open BETWEEN the sticky top bar and the fixed
-     player bar: both stay put, only the surface between them changes. The
+     About / Notes / Sync / Log / Search open BETWEEN the sticky top bar and the
+     fixed player bar: both stay put, only the surface between them changes. The
      bounds are measured by ui/app-page-bounds.js and published as CSS vars —
      the header grows with the safe-area and with the Electron title bar stacked
      above it, and the player bar grows with its content, so neither can be
@@ -286,6 +286,17 @@
     top: var(--app-page-top, 0px) !important;
     bottom: var(--app-page-bottom, 0px) !important;
     height: auto !important;
+  }
+
+  /* Search is the fifth page. It used to cover the whole window, which put its
+     ✕ right under the app's own close — two ✕ stacked in the corner. Its rule in
+     search-overlay.css pins `inset: 0` across two selectors, and the viz-active
+     arm is the more specific one, so both are matched here rather than trusting
+     source order alone. */
+  .search-overlay,
+  body.viz-active .search-overlay {
+    top: var(--app-page-top, 0px);
+    bottom: var(--app-page-bottom, 0px);
   }
 
   /* Log is a destination here, not a bottom sheet: fill the page area and let
@@ -309,27 +320,30 @@
      The app's own close already sits top-right (Electron title bar / browser
      chrome), so a page-level ✕ directly under it reads as two ✕ stacked. A page
      is somewhere you came FROM, so it goes back.
-     Done in CSS rather than in four separate headers' markup: font-size:0 drops
+     Done in CSS rather than in five separate headers' markup: font-size:0 drops
      the ✕ glyph, any icon child is hidden, and the mask paints the arrow in
      currentColor so hover/active colours keep working. */
   #infoModal .modal-close-btn,
   #changelogModal .modal-close-btn,
   .sync-panel__close,
-  .notes-panel__close {
+  .notes-panel__close,
+  .search-overlay__close {
     font-size: 0;
   }
 
   #infoModal .modal-close-btn > svg,
   #changelogModal .modal-close-btn > svg,
   .sync-panel__close > svg,
-  .notes-panel__close > svg {
+  .notes-panel__close > svg,
+  .search-overlay__close > svg {
     display: none;
   }
 
   #infoModal .modal-close-btn::before,
   #changelogModal .modal-close-btn::before,
   .sync-panel__close::before,
-  .notes-panel__close::before {
+  .notes-panel__close::before,
+  .search-overlay__close::before {
     content: '';
     display: block;
     width: 20px;
@@ -417,6 +431,22 @@
     transform: translateX(0);
   }
 
+  /* Search came in from the RIGHT on its own 220ms curve — the odd one out.
+     Both arms of its rule are matched again to flip it, and the open state has
+     to be restated here too: overriding the closed transform from this file
+     would otherwise outweigh `.is-open` back in search-overlay.css and leave the
+     page stuck off-screen. */
+  .search-overlay,
+  body.viz-active .search-overlay {
+    transform: translateX(-100%);
+    transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .search-overlay.is-open,
+  body.viz-active .search-overlay.is-open {
+    transform: translateX(0);
+  }
+
   /* The top bar right above already carries the wordmark, so the About header's
      logo is the same brand twice over — same reasoning that turned its ✕ into a
      back arrow. Dropping it leaves the version as the page title on the left and
@@ -430,6 +460,7 @@
      already owns that inset. */
   .notes-panel__header,
   .sync-panel__header,
+  .search-overlay__header,
   #infoModal.modal .modal-header,
   #changelogModal.modal .modal-header {
     padding: 10px 10px 10px 12px;

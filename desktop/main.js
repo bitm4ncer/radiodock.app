@@ -29,9 +29,15 @@ function createWindow() {
   const iconPath = path.join(__dirname, 'icons', 'icon.png');
 
   mainWindow = new BrowserWindow({
-    width: 460,
+    // Opens at its narrowest — the compact column IS the desktop app, and it's
+    // what the app layout is tuned for. Capped one pixel below the desktop
+    // breakpoint (app-desktop.css takes over at min-width: 700px, and Electron
+    // reports display-mode: browser, so it would): the wide desktop regime
+    // belongs to the browser, not to this window.
+    width: 380,
     height: 760,
     minWidth: 380,
+    maxWidth: 699,
     minHeight: 480,
     icon: iconPath,
     alwaysOnTop,
