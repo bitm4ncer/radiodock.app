@@ -50,7 +50,11 @@ function isNetworkFirstData(url) {
 function fetchWithTimeout(req, ms) {
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), ms);
-  return fetch(req, { signal: ctl.signal }).finally(() => clearTimeout(timer));
+  // `cache: 'no-store'` bypasses the browser HTTP cache — GitHub Pages serves
+  // everything with `Cache-Control: max-age=600`, so a plain fetch would return
+  // the 10-min-stale copy and defeat network-first. This forces a fresh hit to
+  // the origin (the published file), which is the whole point here.
+  return fetch(req, { signal: ctl.signal, cache: 'no-store' }).finally(() => clearTimeout(timer));
 }
 
 self.addEventListener('install', (event) => {

@@ -1206,7 +1206,11 @@ async function bootstrap() {
   // --- Phase 1: community list (critical) -------------------------------
   let communityRes = null;
   try {
-    const r = await fetch('/community-radios.json');
+    // no-store bypasses the browser HTTP cache (Pages sets max-age=600) so a
+    // dashboard Publish shows up on the next load; the service worker also
+    // serves this path network-first. The SW/browser cache remains the offline
+    // fallback.
+    const r = await fetch('/community-radios.json', { cache: 'no-store' });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     communityRes = await r.json();
   } catch (err) {
@@ -1543,7 +1547,12 @@ fitWindowToExtensionSize();
 // fresh modules and a SW only gets in the way during development.
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch((err) => {
+    // updateViaCache: 'none' — GitHub Pages serves sw.js with max-age=600, and
+    // the default ('imports') lets the browser satisfy the SW update check from
+    // that 10-min HTTP cache, delaying every deploy. 'none' forces a fresh sw.js
+    // check on each navigation, so new builds (and cache-strategy fixes) roll
+    // out promptly.
+    navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).catch((err) => {
       console.warn('SW registration failed:', err);
     });
     // Long-lived app windows (background radio) never relaunch, so they'd
