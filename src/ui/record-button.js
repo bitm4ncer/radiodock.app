@@ -1,34 +1,34 @@
-// A record button placed next to the search icon in the mobile top bar.
-// Mounted only in "app" contexts (mobile / installed PWA / Electron), where
-// the top bar (and its search icon) is visible — `html.is-standalone` forces
-// the mobile top bar on even on desktop. In a regular desktop browser this
-// button is not mounted; the notes-panel record button is used instead, so the
-// record entry point shows in exactly one place per app state.
+// The record button that lives in the player action bar, alongside the
+// info / favorite / note / prev / next controls. Shown wherever the action
+// bar is (desktop card + mobile dock), so it replaces the old mobile top-bar
+// entry point. The desktop notes-panel keeps its own record button.
 //
 // The recording lifecycle stays centralized in notes-panel (via
 // notesApi.toggleRecord) — this module only renders the button and mirrors state.
+// Idle it's a centered red record dot sized like the other segment icons;
+// while recording the segment grows to show "MM:SS ●" with a pulsing dot.
 
 export function mountRecordButton({ recorder, player, getNotesApi }) {
+  const bar = document.getElementById('playerActionBar');
+  if (!bar) return null;
+
   const btn = document.createElement('button');
   btn.type = 'button';
-  btn.className = 'mobile-topbar__btn record-adjacent-btn';
-  btn.dataset.action = 'record-adjacent';
+  btn.className = 'pab-btn pab-record-btn';
+  btn.dataset.action = 'record';
   btn.setAttribute('aria-label', 'Record stream');
   btn.title = 'Record';
-  // Time first (left), dot second (right) — while recording the button grows
-  // into a pill showing "MM:SS ●"; idle it's just the centered dot.
-  btn.innerHTML = '<span class="record-adjacent-btn__time" data-role="rec-time" hidden></span><span class="record-adjacent-btn__dot" aria-hidden="true"></span>';
+  // Time first (left), record circle second (right). The circle shares the
+  // info icon's exact geometry so it renders at the same size; CSS makes it a
+  // muted outline idle, red outline on hover, filled red while recording. When
+  // recording the segment grows into a pill showing "MM:SS ⭕".
+  btn.innerHTML = '<span class="record-adjacent-btn__time" data-role="rec-time" hidden></span><svg class="pab-record-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/></svg>';
 
-  // Group the record button with the search icon on the right of the top bar
-  // so they sit adjacent (the bar uses justify-content: space-between, which
-  // would otherwise scatter a 4th child evenly and separate them).
-  const searchBtn = document.querySelector('#searchTriggerBtn');
-  if (!searchBtn?.parentNode) return null;
-  const group = document.createElement('div');
-  group.className = 'mobile-topbar__right';
-  searchBtn.parentNode.insertBefore(group, searchBtn);
-  group.appendChild(btn);
-  group.appendChild(searchBtn); // move the search icon into the group
+  // Slot the record button just before "next" so the bar reads
+  // prev · ⓘ · ❤️ · 📌 · ● · next.
+  const nextBtn = bar.querySelector('#stationNextBtn');
+  if (nextBtn) bar.insertBefore(btn, nextBtn);
+  else bar.appendChild(btn);
 
   btn.addEventListener('click', () => { getNotesApi()?.toggleRecord?.(); });
 

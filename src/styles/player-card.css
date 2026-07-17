@@ -363,6 +363,36 @@
   stroke: var(--red);
 }
 
+/* Record segment. The record symbol is an outlined circle with the info
+   icon's exact geometry (so .pab-btn svg sizing makes it the same size).
+   Idle: muted grey outline. Hover: red outline. Recording: filled red +
+   the segment grows to show the elapsed time beside a pulsing circle. */
+.player-action-bar .pab-record-btn {
+  gap: 6px;
+}
+.player-action-bar .pab-record-btn:hover .pab-record-icon circle {
+  stroke: var(--red);
+}
+.player-action-bar .pab-record-btn:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+.player-action-bar .pab-record-btn.is-recording {
+  width: auto;
+  padding: 0 12px;
+}
+.player-action-bar .pab-record-btn.is-recording .pab-record-icon {
+  transform-origin: center;
+  animation: record-adjacent-pulse 1.1s ease-in-out infinite;
+}
+.player-action-bar .pab-record-btn.is-recording .pab-record-icon circle {
+  fill: var(--red);
+  stroke: var(--red);
+}
+.player-action-bar .pab-record-btn.is-fetching {
+  opacity: 0.6;
+}
+
 /* Mobile dock is a fixed column-reverse stack (volume, then card bottom-up),
    which would place the action bar ABOVE the pill. order:-1 makes it the
    first item in the reversed column, i.e. the bottom-most row — directly
