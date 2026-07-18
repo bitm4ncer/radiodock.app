@@ -454,19 +454,35 @@ body.is-tiny-player .station-logo-container {
   -webkit-app-region: no-drag;
 }
 
-/* Tiny mode swaps the country + domain line for prev / homepage / next. */
 .tiny-player-controls { display: none; }
 
+/* Tiny mode reuses the full player action bar inside the pill (reparented into
+   the text column by electron-window-controls.js), so the bespoke tiny control
+   row and the country/domain line are dropped. */
 body.is-tiny-player .station-country,
 body.is-tiny-player #visitStationBtn,
-body.is-tiny-player #stationInfoBtn,
-body.is-tiny-player #addToFavoritesBtn,
-body.is-tiny-player #captureNoteBtn {
+body.is-tiny-player .tiny-player-controls {
   display: none !important;
 }
 
-body.is-tiny-player .tiny-player-controls {
-  display: flex;
-  align-items: center;
-  gap: 2px;
+/* The action bar sits flush in the pill's text column: transparent (the pill is
+   already opaque behind it) and compact. `display: flex !important` keeps it —
+   and the exit button appended into it — visible even when player-card.js has
+   inline-hidden the bar because no station is loaded, so exit is never lost. */
+body.is-tiny-player .player-action-bar {
+  display: flex !important;
+  margin: 3px 0 0;
+  background: transparent;
+  width: auto;
+  max-width: 100%;
+  justify-content: flex-start;
+  overflow: visible;
+}
+body.is-tiny-player .player-action-bar .pab-btn {
+  width: 27px;
+  height: 22px;
+}
+body.is-tiny-player .player-action-bar .pab-btn svg {
+  width: 14px;
+  height: 14px;
 }

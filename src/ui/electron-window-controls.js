@@ -74,8 +74,38 @@ export function mountElectronWindowControls({ electronBridge } = {}) {
   // context menu (both routed through the shared applyTiny below).
   const tinyBtn = bar.querySelector('[data-win="tiny"]');
   if (tinyBtn) {
+    // The pill reuses the full player action bar (prev · info · favourite ·
+    // record · note · next) plus the exit button, in place of a bespoke control
+    // row. The bar lives as a sibling of the card in full mode, so move it into
+    // the pill's text column on enter and back to its exact home on exit. Homes
+    // are captured lazily on first use, after any async-injected buttons exist.
+    const actionBar = document.getElementById('playerActionBar');
+    const exitBtn = document.getElementById('tinyMaxBtn');
+    const details = document.querySelector('.station-details');
+    let abHome = null, exitHome = null;
+
+    const relocatePill = (on) => {
+      if (!actionBar || !details) return;
+      if (on) {
+        abHome = { parent: actionBar.parentNode, next: actionBar.nextSibling };
+        details.appendChild(actionBar);
+        if (exitBtn) {
+          exitHome = { parent: exitBtn.parentNode, next: exitBtn.nextSibling };
+          exitBtn.classList.add('pab-btn');
+          actionBar.appendChild(exitBtn);
+        }
+      } else {
+        if (exitBtn && exitHome?.parent) {
+          exitBtn.classList.remove('pab-btn');
+          exitHome.parent.insertBefore(exitBtn, exitHome.next);
+        }
+        if (abHome?.parent) abHome.parent.insertBefore(actionBar, abHome.next);
+      }
+    };
+
     const applyTiny = async (on) => {
       if (document.body.classList.contains('is-tiny-player') === on) return;
+      relocatePill(on);
       document.body.classList.toggle('is-tiny-player', on);
       tinyBtn.classList.toggle('is-active', on);
       try { await api.setTinyPlayer(on); }

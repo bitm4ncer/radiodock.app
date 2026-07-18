@@ -418,9 +418,8 @@
 
 /* Tiny-player (Electron mini) collapses to its own inline control row, so
    the full bar has no place there. */
-body.is-tiny-player .player-action-bar {
-  display: none !important;
-}
+/* Tiny mode does NOT hide the action bar — it reparents it into the pill's text
+   column (electron-window-controls.js) and restyles it compact (search.css). */
 
 /* Volume Controls */
 /* 11-dot volume slider. Dots stay a uniform 5 px at all times — the strip
