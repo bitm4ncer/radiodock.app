@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-07-18T02:19:24.738Z",
+  "exportDate": "2026-07-18T23:54:46.780Z",
   "listName": "Community Radios",
   "stations": [
     {
@@ -466,14 +466,6 @@
       "id": "e6639188-dc36-4441-ba83-4b6832a58c83",
       "name": "Radio grenouille",
       "url": "https://live.radiogrenouille.com:8443/live"
-    },
-    {
-      "countrycode": "DK",
-      "favicon": "https://www.radiopanini.com/icon.png?icon.0l75m8dt-js2..png",
-      "homepage": "https://www.radiopanini.com/",
-      "id": "cd6cac01-31ef-4ea0-ade2-9189d68ed443",
-      "name": "Radio Panini",
-      "url": "https://radi-panini.radiocult.fm/stream"
     }
   ]
 }
