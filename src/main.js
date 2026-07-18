@@ -1295,15 +1295,13 @@ async function bootstrap() {
 
   // hls.js is imported on demand at tap time — for HLS stations that
   // download sits squarely inside the tap-to-audio delay (iOS fetches it
-  // too, only to find MSE unsupported). If any reachable station is HLS,
-  // warm the import in idle time instead. Keeps the dynamic-import rule:
-  // nothing lands in the eager bundle.
-  const hasHlsStation = [state.community, ...state.userLists]
-    .flatMap((l) => l?.stations ?? [])
-    .some((s) => player.isHlsUrl(s?.url ?? ''));
-  if (hasHlsStation) {
-    (window.requestIdleCallback ?? ((fn) => setTimeout(fn, 2000)))(() => player.prefetchHls());
-  }
+  // too, only to find MSE unsupported). Warm the import in idle time
+  // unconditionally: an HLS station found via search or a notes-panel
+  // capture (not just saved-list stations) must not pay the cold-import
+  // cost on first tap. The import is cheap and low-priority even if
+  // unused. Keeps the dynamic-import rule: nothing lands in the eager
+  // bundle.
+  (window.requestIdleCallback ?? ((fn) => setTimeout(fn, 2000)))(() => player.prefetchHls());
 }
 
 bootstrap().then(async () => {
