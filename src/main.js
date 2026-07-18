@@ -37,6 +37,8 @@ import { mountNotesCaptureButton } from './ui/notes-capture-button.js';
 import { mountRecorder, isRecordingSupported } from './player/recorder.js';
 import { mountMobileRecorder } from './player/mobile-recorder.js';
 import { mountRecordButton } from './ui/record-button.js';
+import { mountDetect } from './features/detect.js';
+import { mountDetectButton } from './ui/detect-button.js';
 import { mountSyncModal } from './ui/sync-modal.js';
 import { mountAddPanel } from './ui/add-panel.js';
 import { mountChangelog, CHANGELOG_REVISION } from './ui/changelog.js';
@@ -433,6 +435,9 @@ mountNotesPanel({ player, getLatestMetadata: () => latestMetadata, recorder, sho
 if (recorder) {
   mountRecordButton({ recorder, player, getNotesApi: () => notesApi });
 }
+
+const detect = mountDetect({ player });
+mountDetectButton({ onDetect: () => detect.run() });
 
 // Mobile: if a background recording is still in flight after (re)launch, nudge
 // the user that it's running and tappable to save.
