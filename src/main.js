@@ -38,6 +38,7 @@ import { mountRecorder, isRecordingSupported } from './player/recorder.js';
 import { mountMobileRecorder } from './player/mobile-recorder.js';
 import { mountRecordButton } from './ui/record-button.js';
 import { mountSyncModal } from './ui/sync-modal.js';
+import { mountAddPanel } from './ui/add-panel.js';
 import { mountChangelog, CHANGELOG_REVISION } from './ui/changelog.js';
 import { startLiveSync, stopLiveSync, pushWithStatus as syncPushWithStatus, getSyncToken, extractTokenFromInput, pullFromServer, applyImportPayload, markSyncDirty } from './data/sync.js';
 import { track } from './analytics/umami.js';
@@ -472,6 +473,21 @@ const syncModal = mountSyncModal({
   track,
 });
 
+// Add panel: submit a station to the public DB, or add a private local stream.
+// Reachable from the drawer item + desktop footer pill.
+const addPanel = mountAddPanel({
+  getUserLists: () => listsApi.getUserLists(),
+  getActiveListId: () => getActiveEditableList()?.id ?? null,
+  addStationToList: async (listId, station) => {
+    await listsApi.addStationToList(listId, station);
+    state.userLists = await listsApi.getUserLists();
+    if (state.currentListId === listId) renderActiveList();
+    else listDropdown.setLists(allListsForDropdown());
+    scheduleSyncPush();
+  },
+  track,
+});
+
 // "What's New" changelog. The footer pill + drawer item open it; a "new" dot on
 // both entry points shows until the reader has opened the newest release.
 const changelog = mountChangelog();
@@ -515,6 +531,7 @@ mountOffCanvas({
   onAboutClick: openAboutModal,
   onNotesClick: () => notesApi?.open(),
   onSyncClick: () => { track('sync-open', { source: 'drawer' }); syncModal.open(); },
+  onAddClick: () => { track('add-open', { source: 'drawer' }); addPanel.open(); },
   onChangelogClick: () => openChangelog('drawer'),
 });
 
@@ -522,6 +539,12 @@ mountOffCanvas({
 document.getElementById('footerSyncBtn')?.addEventListener('click', () => {
   track('sync-open', { source: 'footer' });
   syncModal.open();
+});
+
+// Desktop footer Add pill.
+document.getElementById('footerAddBtn')?.addEventListener('click', () => {
+  track('add-open', { source: 'footer' });
+  addPanel.open();
 });
 
 // Desktop footer "What's New" pill.
