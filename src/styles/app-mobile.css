@@ -281,8 +281,11 @@
     height: auto;
   }
 
-  /* sync.css pins the panel with `inset: 0 !important`, so match that weight. */
-  .sync-panel--mobile {
+  /* sync.css + add.css pin their panels with `inset: 0 !important`, so match
+     that weight. Add is a full-page surface too — it navigates between the top
+     bar and the player bar like Sync/Notes, not over them. */
+  .sync-panel--mobile,
+  .add-panel--mobile {
     top: var(--app-page-top, 0px) !important;
     bottom: var(--app-page-bottom, 0px) !important;
     height: auto !important;
@@ -327,6 +330,7 @@
   #changelogModal .modal-close-btn,
   .sync-panel__close,
   .notes-panel__close,
+  .add-panel__close,
   .search-overlay__close {
     font-size: 0;
   }
@@ -343,6 +347,7 @@
   #changelogModal .modal-close-btn::before,
   .sync-panel__close::before,
   .notes-panel__close::before,
+  .add-panel__close::before,
   .search-overlay__close::before {
     content: '';
     display: block;
@@ -363,6 +368,7 @@
      modals hold it in .modal-content and use the overlay only for positioning. */
   .notes-panel--mobile,
   .sync-panel--mobile,
+  .add-panel--mobile,
   #infoModal.modal .modal-content,
   #changelogModal.modal .modal-content {
     background: var(--bg);
@@ -379,8 +385,10 @@
      out in two different darks. */
   body.container-solid .notes-panel--mobile,
   body.container-solid .sync-panel--mobile,
+  body.container-solid .add-panel--mobile,
   :root.theme-light body.container-solid .notes-panel--mobile,
-  :root.theme-light body.container-solid .sync-panel--mobile {
+  :root.theme-light body.container-solid .sync-panel--mobile,
+  :root.theme-light body.container-solid .add-panel--mobile {
     background: var(--bg);
   }
 
@@ -417,6 +425,7 @@
   /* One entrance: in from the left, back out to the left. */
   .notes-panel--mobile,
   .sync-panel--mobile,
+  .add-panel--mobile,
   #infoModal.modal .modal-content,
   #changelogModal.modal .modal-content {
     transform: translateX(-100%);
@@ -426,6 +435,7 @@
 
   .notes-panel--mobile.is-open,
   .sync-panel--mobile.is-open,
+  .add-panel--mobile.is-open,
   #infoModal.modal.show .modal-content,
   #changelogModal.modal.show .modal-content {
     transform: translateX(0);
@@ -460,6 +470,7 @@
      already owns that inset. */
   .notes-panel__header,
   .sync-panel__header,
+  .add-panel__header,
   .search-overlay__header,
   #infoModal.modal .modal-header,
   #changelogModal.modal .modal-header {
