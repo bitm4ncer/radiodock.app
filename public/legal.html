@@ -237,6 +237,9 @@
           <strong>RadioDock Stations recorder</strong> (<code>stations.radiodock.app</code>) — on mobile, recording is done on our server because your device's browser can't capture the audio directly. The stream is briefly buffered on the server and <strong>deleted immediately after it is transferred to your device</strong>; it is never stored long-term. The recording lives only on your device (IndexedDB).
         </li>
         <li>
+          <strong>RadioDock Stations track detection</strong> (<code>stations.radiodock.app</code>) — only when you tap <strong>Detect</strong>, roughly 12 seconds of the station's current audio is captured on our server (the stream URL is looked up by station ID, never taken from your device) and sent to a cloud music-recognition service (ACRCloud's EU endpoint and/or AudD) to identify the track. Only stream audio — no personal data — leaves the server, and only on that tap; the audio is held in memory and never stored. If the service is unavailable, only Detect is affected — playback and search are not.
+        </li>
+        <li>
           <strong>GitHub Pages</strong> (host of this site) and <strong>Render.com</strong> (host of the metadata proxy) record standard server logs (IP address, browser type, timestamp). See
           <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener">GitHub's privacy statement</a>
           and
