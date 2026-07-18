@@ -39,3 +39,15 @@ test('503 → DetectError with reason', async () => {
   await withFetch(async () => new Response(JSON.stringify({ ok: false, reason: 'disabled' }), { status: 503 }),
     async () => { await assert.rejects(() => detectTrack(UUID), (e) => e instanceof DetectError && e.reason === 'disabled'); });
 });
+
+test('network failure throws DetectError, not a raw error', async () => {
+  await withFetch(async () => { throw new TypeError('Failed to fetch'); }, async () => {
+    await assert.rejects(() => detectTrack(UUID), (e) => e instanceof DetectError && e.status === 0);
+  });
+});
+
+test('timeout throws DetectError with reason timeout', async () => {
+  await withFetch(async () => { const e = new Error('t'); e.name = 'TimeoutError'; throw e; }, async () => {
+    await assert.rejects(() => detectTrack(UUID), (e) => e instanceof DetectError && e.reason === 'timeout');
+  });
+});

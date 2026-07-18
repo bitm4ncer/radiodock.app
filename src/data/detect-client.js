@@ -18,9 +18,11 @@ export async function detectTrack(uuid) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ uuid }),
+      signal: AbortSignal.timeout(25000),
     });
   } catch (e) {
-    throw new DetectError(0, 'network', e.message);
+    const reason = e?.name === 'TimeoutError' ? 'timeout' : 'network';
+    throw new DetectError(0, reason, e?.message);
   }
   const data = await res.json().catch(() => ({}));
   if (res.status === 200) return data;
