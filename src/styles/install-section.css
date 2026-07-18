@@ -145,8 +145,13 @@
 .install-section__btn-text {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 1px;
   min-width: 0;
+  /* Fixed two-line height with the content centered: only the label shows at
+     rest, the sub-label grows in on hover (below), and the block never changes
+     height — so the button stays put and the grid can't reflow on hover. */
+  height: 30px;
 }
 
 .install-section__btn-label {
@@ -161,6 +166,27 @@
   color: var(--text-muted);
   line-height: 1.2;
   letter-spacing: 0.01em;
+}
+
+/* Hover-capable devices only: hide the sub-label at rest and grow it in on
+   hover. On touch (hover: none) the sub stays visible — there is no hover to
+   reveal it, and the fixed text-block height above keeps the height identical
+   either way. */
+@media (hover: hover) {
+  .install-section__btn-sub {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 180ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms ease;
+  }
+
+  .install-section__btn:hover .install-section__btn-sub,
+  .install-section__btn:focus-visible .install-section__btn-sub,
+  .install-section__sync:hover .install-section__btn-sub,
+  .install-section__sync:focus-visible .install-section__btn-sub {
+    max-height: 16px;
+    opacity: 1;
+  }
 }
 
 /* Sync CTA — a full-width call-to-action below the platform tiles. */
