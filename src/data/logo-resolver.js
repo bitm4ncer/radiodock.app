@@ -24,6 +24,10 @@ const ORPHANED_PREF_PREFIX = 'logo:';
  * @param {number} [size=64] pixel size the CDN re-encodes to (64 list chip, 512 artwork)
  */
 export function getLogoUrl(station, size = 64) {
+  // Local custom streams carry their thumbnail inline as a data: URL — serve it
+  // directly; there is no UUID the CDN could resolve.
+  const favicon = station?.favicon ?? '';
+  if (favicon.startsWith('data:')) return favicon;
   const id = station?.id ?? station?.stationuuid ?? '';
   if (!id) return '';
   return `${STATIONS_BASE}/logos/${encodeURIComponent(id)}?size=${size}`;

@@ -1,0 +1,254 @@
+/* ===== Add panel — draggable card (desktop) / fullscreen page (mobile),
+   cloned from the sync panel surface + drag. Holds two tabbed forms. ===== */
+.add-panel {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  background: #4141415c;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  z-index: 90;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 200ms ease;
+}
+:root.theme-light .add-panel { background: #9393935c; }
+body.container-solid .add-panel { background: #141414; backdrop-filter: none; -webkit-backdrop-filter: none; }
+:root.theme-light body.container-solid .add-panel { background: #d5d5d5; }
+
+.add-panel.is-open { opacity: 1; pointer-events: auto; }
+
+/* Desktop: docked right, vertically centered; draggable anywhere. */
+.add-panel--desktop {
+  top: 50%;
+  right: 24px;
+  transform: translate(40px, -50%);
+  width: 380px;
+  max-height: min(80vh, calc(100vh - 60px));
+}
+.add-panel--desktop.is-open { transform: translate(0, -50%); }
+.add-panel--desktop.is-positioned {
+  top: var(--add-y, 80px);
+  left: var(--add-x, auto);
+  right: auto;
+  transform: none !important;
+}
+.add-panel--desktop.is-dragging { transition: none; user-select: none; }
+
+/* Mobile: fullscreen page, slides in from the right. */
+.add-panel--mobile {
+  inset: 0 !important;
+  width: 100%;
+  height: 100dvh;
+  border-radius: 0;
+  border: none;
+  transform: translateX(100%);
+}
+.add-panel--mobile.is-open { transform: translateX(0); }
+body.add-overlay-open { overflow: hidden; }
+
+.add-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 8px 8px 6px;
+  border-bottom: 1px solid var(--overlay-soft);
+  flex-shrink: 0;
+}
+.add-panel__drag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: var(--text-muted);
+  cursor: grab;
+  touch-action: none;
+}
+.add-panel.is-dragging .add-panel__drag { cursor: grabbing; }
+.add-panel__drag svg { width: 16px; height: 16px; }
+.add-panel--mobile .add-panel__drag { display: none; }
+.add-panel__title { margin: 0; font-size: 14px; font-weight: 600; color: var(--text); }
+.add-panel__spacer { flex: 1; }
+.add-panel__close {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  background: none;
+  color: var(--text-muted);
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 120ms ease, color 120ms ease;
+}
+.add-panel__close:hover { background: var(--overlay-med); color: var(--text); }
+
+/* Segmented tab strip. */
+.add-panel__tabs {
+  display: flex;
+  gap: 4px;
+  padding: 8px 12px 0;
+  flex-shrink: 0;
+}
+.add-panel__tab {
+  flex: 1;
+  border: 0;
+  background: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 4px 10px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+.add-panel__tab:hover { color: var(--text); }
+.add-panel__tab.is-active {
+  color: var(--text);
+  border-bottom-color: var(--red);
+}
+
+.add-panel__body {
+  padding: 12px 18px 18px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Forms */
+.add-form { display: flex; flex-direction: column; gap: 12px; }
+/* `display: flex` outranks the UA [hidden] rule, so the inactive tab would stay
+   visible — restore hiding explicitly. */
+.add-form[hidden] { display: none; }
+.add-form__intro {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.45;
+  margin: 4px 0 4px;
+}
+.add-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.add-field > span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.add-field--row {
+  flex-direction: row;
+  gap: 12px;
+  align-items: flex-end;
+}
+.add-field--row > .add-field { flex: 1; }
+.add-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+  flex: 1;
+  padding-bottom: 10px;
+}
+.add-check input { flex-shrink: 0; }
+
+/* Inputs match the app surface (theme-aware), red focus ring — same as sync. */
+.add-panel .form-input {
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 10px 12px;
+  font-size: 13px;
+  box-sizing: border-box;
+  outline: none;
+  width: 100%;
+  transition: border-color 160ms ease;
+}
+.add-panel .form-input::placeholder { color: var(--text-muted); }
+.add-panel .form-input:focus { border-color: var(--red); }
+.add-panel textarea.form-input { resize: vertical; min-height: 60px; }
+
+/* Collapsible sections (metadata, socials). */
+.add-section {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 10px;
+}
+.add-section > summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  padding: 6px 2px;
+  list-style: none;
+}
+.add-section > summary::-webkit-details-marker { display: none; }
+.add-section > summary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 6px;
+  color: var(--text-muted);
+  transition: transform 120ms ease;
+}
+.add-section[open] > summary::before { transform: rotate(90deg); }
+.add-section[open] { padding-bottom: 10px; }
+.add-section > .add-field,
+.add-section > .add-field--row { margin-top: 8px; }
+
+/* Logo / thumbnail picker. */
+.add-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.add-logo__preview {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+.add-logo .btn-secondary { font-size: 12px; padding: 8px 12px; }
+
+/* "About you" — submitter identity, visually grouped + a privacy note. */
+.add-subgroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.add-subgroup__title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+.add-form__privacy {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+.add-form__privacy a { color: var(--text); }
+
+.add-form__submit { width: 100%; margin-top: 4px; }
+
+/* Honeypot: off-screen, never focusable by keyboard tab. */
+.add-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}

@@ -220,6 +220,10 @@
             <span>Sync</span>
             <span class="off-canvas__chev">→</span>
           </button>
+          <button type="button" class="off-canvas__item" id="offCanvasAdd">
+            <span>Database</span>
+            <span class="off-canvas__chev">→</span>
+          </button>
           <button type="button" class="off-canvas__item" id="offCanvasNotes">
             <span>Notes</span>
             <span class="off-canvas__chev">→</span>
@@ -515,6 +519,7 @@
         </button>
         <button type="button" class="footer-pill footer-pill--sm" id="footerAboutBtn">About</button>
         <button type="button" class="footer-pill footer-pill--sm" id="footerSyncBtn">Sync</button>
+        <button type="button" class="footer-pill footer-pill--sm" id="footerAddBtn">Database</button>
         <button type="button" class="footer-pill footer-pill--sm" id="footerChangelogBtn">Log<span class="nav-dot" data-changelog-dot></span></button>
         <a class="footer-pill footer-pill--sm" href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener">GitHub</a>
         <a class="footer-pill footer-pill--sm" href="https://github.com/bitm4ncer/radiodock.app/issues" target="_blank" rel="noopener">Issues</a>
@@ -759,6 +764,130 @@
             <p class="sync-error" id="syncErrorMsg"></p>
             <button class="btn-secondary" id="syncRetryBtn">Try Again</button>
           </div>
+      </div>
+    </aside>
+
+    <!-- Add panel: submit a station to the public DB, or add a private local stream -->
+    <aside id="addPanel" class="add-panel" aria-hidden="true" role="dialog" aria-label="Add a station">
+      <header class="add-panel__header">
+        <span class="add-panel__drag" data-role="drag" title="Drag" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>
+        </span>
+        <h3 class="add-panel__title">Add a Station</h3>
+        <span class="add-panel__spacer"></span>
+        <button type="button" class="add-panel__close" data-action="close" aria-label="Close">×</button>
+      </header>
+
+      <div class="add-panel__tabs" role="tablist">
+        <button type="button" class="add-panel__tab is-active" data-tab="submit" role="tab">Submit station</button>
+        <button type="button" class="add-panel__tab" data-tab="custom" role="tab">Custom stream</button>
+      </div>
+
+      <div class="add-panel__body">
+        <!-- ===== SUBMIT TAB ===== -->
+        <form id="addSubmitForm" class="add-form" data-tabpanel="submit" novalidate>
+          <p class="add-form__intro">Propose a station for the RadioDock community database. A moderator reviews every submission.</p>
+
+          <label class="add-field"><span>Name *</span>
+            <input type="text" class="form-input" name="name" maxlength="120" required autocomplete="off"></label>
+          <label class="add-field"><span>Stream URL *</span>
+            <input type="url" class="form-input" name="streamUrl" maxlength="500" required autocomplete="off" placeholder="https://…"></label>
+          <label class="add-field"><span>Info</span>
+            <textarea class="form-input" name="info" maxlength="1000" rows="3"></textarea></label>
+          <label class="add-field"><span>Tags</span>
+            <input type="text" class="form-input" name="genres" maxlength="200" placeholder="pop, top 40" autocomplete="off"></label>
+          <label class="add-field"><span>Homepage</span>
+            <input type="url" class="form-input" name="homepage" maxlength="500" placeholder="https://…" autocomplete="off"></label>
+
+          <div class="add-field">
+            <span>Logo</span>
+            <div class="add-logo" id="addSubmitLogo">
+              <img class="add-logo__preview" alt="" hidden>
+              <button type="button" class="add-logo__pick btn-secondary">Choose image…</button>
+              <button type="button" class="add-logo__clear btn-secondary" hidden>Remove</button>
+              <input type="file" accept="image/*" class="add-logo__input" hidden>
+            </div>
+          </div>
+
+          <details class="add-section">
+            <summary>Now-playing metadata</summary>
+            <label class="add-field"><span>Strategy</span>
+              <select class="form-input" name="mdStrategy">
+                <option value="">— none —</option>
+                <option value="json-generic">JSON (generic)</option>
+                <option value="azuracast">AzuraCast</option>
+                <option value="icecast-json">Icecast JSON</option>
+                <option value="shoutcast">SHOUTcast</option>
+                <option value="radioco">Radio.co</option>
+                <option value="lautfm">laut.fm</option>
+                <option value="radioking">RadioKing</option>
+              </select></label>
+            <label class="add-field"><span>Endpoint URL</span>
+              <input type="url" class="form-input" name="mdEndpoint" maxlength="500" placeholder="https://…/nowplaying.json" autocomplete="off"></label>
+            <label class="add-field"><span>Artist path</span>
+              <input type="text" class="form-input" name="mdArtist" maxlength="200" placeholder="now_playing.song.artist" autocomplete="off"></label>
+            <label class="add-field"><span>Title path</span>
+              <input type="text" class="form-input" name="mdTitle" maxlength="200" autocomplete="off"></label>
+            <label class="add-field"><span>Show path</span>
+              <input type="text" class="form-input" name="mdShow" maxlength="200" autocomplete="off"></label>
+            <div class="add-field add-field--row">
+              <label class="add-field"><span>Cache TTL (s)</span>
+                <input type="number" class="form-input" name="mdTtl" min="0" max="86400" placeholder="30"></label>
+              <label class="add-check"><input type="checkbox" name="mdExclusive"><span>exclusive (no probe-chain fallback)</span></label>
+            </div>
+          </details>
+
+          <details class="add-section">
+            <summary>Socials &amp; location</summary>
+            <label class="add-field"><span>City</span>
+              <input type="text" class="form-input" name="city" maxlength="120" placeholder="Berlin" autocomplete="off"></label>
+            <label class="add-field"><span>Contact email</span>
+              <input type="email" class="form-input" name="contactEmail" maxlength="160" placeholder="hello@station.fm" autocomplete="off"></label>
+            <label class="add-field"><span>Instagram</span><input type="url" class="form-input" name="s_instagram" maxlength="500" autocomplete="off"></label>
+            <label class="add-field"><span>SoundCloud</span><input type="url" class="form-input" name="s_soundcloud" maxlength="500" autocomplete="off"></label>
+            <label class="add-field"><span>Mixcloud</span><input type="url" class="form-input" name="s_mixcloud" maxlength="500" autocomplete="off"></label>
+            <label class="add-field"><span>Bandcamp</span><input type="url" class="form-input" name="s_bandcamp" maxlength="500" autocomplete="off"></label>
+            <label class="add-field"><span>YouTube</span><input type="url" class="form-input" name="s_youtube" maxlength="500" autocomplete="off"></label>
+            <label class="add-field"><span>Facebook</span><input type="url" class="form-input" name="s_facebook" maxlength="500" autocomplete="off"></label>
+            <label class="add-field"><span>X</span><input type="url" class="form-input" name="s_x" maxlength="500" autocomplete="off"></label>
+            <label class="add-field"><span>TikTok</span><input type="url" class="form-input" name="s_tiktok" maxlength="500" autocomplete="off"></label>
+          </details>
+
+          <div class="add-subgroup">
+            <div class="add-subgroup__title">About you</div>
+            <label class="add-field"><span>Username *</span>
+              <input type="text" class="form-input" name="submitterUsername" maxlength="60" required autocomplete="off" placeholder="How you'd like to be credited"></label>
+            <label class="add-field"><span>Contact email (optional)</span>
+              <input type="email" class="form-input" name="submitterEmail" maxlength="160" autocomplete="off" placeholder="Only if a moderator may follow up"></label>
+            <p class="add-form__privacy">Your username and email are sent to our moderation server and used only to review this submission and, if needed, to contact you. They are not published with the station. See the <a href="/legal.html" target="_blank" rel="noopener">privacy policy</a>.</p>
+          </div>
+
+          <!-- Honeypot: real users never see or fill this; server treats it as spam. -->
+          <input type="text" name="website" class="add-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+          <button type="submit" class="btn-primary add-form__submit" id="addSubmitBtn">Submit to database</button>
+        </form>
+
+        <!-- ===== CUSTOM TAB ===== -->
+        <form id="addCustomForm" class="add-form" data-tabpanel="custom" hidden novalidate>
+          <p class="add-form__intro">Add a private stream to one of your lists. It stays on your devices and syncs only with your own sync link.</p>
+          <label class="add-field"><span>Name *</span>
+            <input type="text" class="form-input" name="name" maxlength="120" required autocomplete="off"></label>
+          <label class="add-field"><span>Stream URL *</span>
+            <input type="url" class="form-input" name="url" maxlength="500" required autocomplete="off" placeholder="https://…"></label>
+          <div class="add-field">
+            <span>Thumbnail</span>
+            <div class="add-logo" id="addCustomLogo">
+              <img class="add-logo__preview" alt="" hidden>
+              <button type="button" class="add-logo__pick btn-secondary">Choose image…</button>
+              <button type="button" class="add-logo__clear btn-secondary" hidden>Remove</button>
+              <input type="file" accept="image/*" class="add-logo__input" hidden>
+            </div>
+          </div>
+          <label class="add-field"><span>Add to list</span>
+            <select class="form-input" name="listId" id="addCustomListSelect"></select></label>
+          <button type="submit" class="btn-primary add-form__submit" id="addCustomBtn">Add to list</button>
+        </form>
       </div>
     </aside>
 
