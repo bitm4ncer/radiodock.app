@@ -299,6 +299,7 @@ body.sync-overlay-open { overflow: hidden; }
   background: transparent;
   color: var(--red);
   border: 1px solid var(--red);
+  border-radius: var(--radius-pill);
 }
 .sync-unlink-btn:hover {
   background: rgba(205, 0, 37, 0.13);
