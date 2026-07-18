@@ -607,7 +607,16 @@ const PAGE_CLOSERS = {
   changelogModal: () => closeModal('changelogModal'),
   search: () => searchOverlay?.close(),
 };
+// Exclusivity applies only in the app regime — mobile, or an installed / Electron
+// desktop app — where the pages open full-screen and the off-canvas menu is the
+// navigation. In a regular desktop browser the panels are draggable workspace
+// surfaces, so several may stay open at once (evaluated live, so resizing across
+// the breakpoint flips it).
+function pagesAreExclusive() {
+  return matchMedia('(max-width: 699px)').matches || detectStandalone() || isElectron();
+}
 window.addEventListener('rd:page-open', (evt) => {
+  if (!pagesAreExclusive()) return;
   const keep = evt.detail?.id;
   for (const [id, close] of Object.entries(PAGE_CLOSERS)) {
     if (id !== keep) { try { close(); } catch { /* closers are idempotent */ } }
