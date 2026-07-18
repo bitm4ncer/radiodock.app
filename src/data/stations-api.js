@@ -6,7 +6,11 @@
 // rotation — availability is covered by the Radio Browser fallback one layer up
 // (see stations-source.js).
 
-export const STATIONS_BASE = 'https://stations.radiodock.app';
+// Production always uses the hosted origin. In dev, VITE_STATIONS_BASE can point
+// the client at a locally-running Stations server for end-to-end testing.
+export const STATIONS_BASE = import.meta.env?.DEV
+  ? (import.meta.env.VITE_STATIONS_BASE || 'https://stations.radiodock.app')
+  : 'https://stations.radiodock.app';
 
 const USER_AGENT_HEADER = 'RadioDock/1.0';
 const DEFAULT_LIMIT = 30;
