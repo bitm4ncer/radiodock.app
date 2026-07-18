@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-07-17T13:02:12.499Z",
+  "exportDate": "2026-07-18T02:19:24.738Z",
   "listName": "Community Radios",
   "stations": [
     {
@@ -442,6 +442,38 @@
       "id": "6329a6ad-02e4-49ae-b870-8e0e189fb8c0",
       "name": "NARR Radio",
       "url": "https://narr-f63a1220.radiocult.fm/stream"
+    },
+    {
+      "countrycode": "",
+      "favicon": "https://internetradioprotocol.org/logos/rukh.jpg",
+      "homepage": "https://rukh.live",
+      "id": "fd8d7a0c-7820-4f0d-b428-61bfcac13f20",
+      "name": "Rukh Radio",
+      "url": "https://a1.asurahosting.com/listen/rukh/radio.mp3"
+    },
+    {
+      "countrycode": "BE",
+      "favicon": "https://internetradioprotocol.org/logos/various.png",
+      "homepage": "https://www.wearevarious.com/",
+      "id": "1d734b4e-3282-4b57-8cc0-6d01b75bcea9",
+      "name": "We Are Various",
+      "url": "https://azuracast.wearevarious.com/listen/we_are_various/live.mp3"
+    },
+    {
+      "countrycode": "FR",
+      "favicon": "https://www.radiogrenouille.com/wp-content/uploads/2023/05/cropped-FAVICON_GRENOUILLE_512x512-192x192.png",
+      "homepage": "http://www.radiogrenouille.com/",
+      "id": "e6639188-dc36-4441-ba83-4b6832a58c83",
+      "name": "Radio grenouille",
+      "url": "https://live.radiogrenouille.com:8443/live"
+    },
+    {
+      "countrycode": "DK",
+      "favicon": "https://www.radiopanini.com/icon.png?icon.0l75m8dt-js2..png",
+      "homepage": "https://www.radiopanini.com/",
+      "id": "cd6cac01-31ef-4ea0-ade2-9189d68ed443",
+      "name": "Radio Panini",
+      "url": "https://radi-panini.radiocult.fm/stream"
     }
   ]
 }
