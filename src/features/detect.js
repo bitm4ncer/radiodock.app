@@ -51,6 +51,7 @@ function resultHtml(track, logoUrl) {
 // present in the DOM at init time.
 export function mountDetect({ player }) {
   let overlay = null;
+  let gen = 0;
 
   function onKeydown(evt) {
     if (evt.key === 'Escape') closeOverlay();
@@ -60,6 +61,7 @@ export function mountDetect({ player }) {
     if (!overlay) return;
     overlay.remove();
     overlay = null;
+    gen++;
     document.removeEventListener('keydown', onKeydown);
   }
 
@@ -106,15 +108,18 @@ export function mountDetect({ player }) {
     if (!station?.id) { toast('Erst eine Station abspielen'); return; }
     if ((await remainingToday()) <= 0) { toast('Tageslimit für Detect erreicht'); return; }
 
+    const myGen = ++gen;
     render('<div class="detect-loading"><span class="spinner"></span> Erkenne Titel…</div>');
     try {
       const out = await detectTrack(station.id);
-      await bump();
+      if (myGen !== gen) return;
       if (out.ok) {
+        await bump();
         // Single-origin policy: cover fallback is our logo CDN, never the
         // station's third-party favicon URL.
         render(resultHtml(out.track, `${STATIONS_BASE}/logos/${station.id}`));
       } else if (out.reason === 'no-match') {
+        await bump();
         // ONLY a real no-match renders as "Kein Treffer" — anything else is an
         // operational failure and must not masquerade as one (honest-result rule).
         render(`<div class="empty-state">Kein Treffer.<br><span class="muted">Bei DJ-Sets & Underground normal.</span><br>${RETRY_BTN}</div>`);
@@ -123,6 +128,7 @@ export function mountDetect({ player }) {
         toast('Erkennung fehlgeschlagen');
       }
     } catch (e) {
+      if (myGen !== gen) return;
       const msg = e instanceof DetectError && e.reason === 'device-limit' ? 'Tageslimit erreicht'
         : e instanceof DetectError && (e.reason === 'disabled' || e.reason === 'budget' || e.reason === 'busy' || e.reason === 'not-configured') ? 'Detect gerade nicht verfügbar'
         : 'Erkennung fehlgeschlagen';
