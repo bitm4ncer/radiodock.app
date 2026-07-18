@@ -602,6 +602,7 @@ const searchOverlay = mountSearchOverlay({
 const PAGE_CLOSERS = {
   notes: () => notesApi?.close(),
   sync: () => syncModal?.close?.(),
+  add: () => addPanel?.close?.(),
   infoModal: () => closeModal('infoModal'),
   changelogModal: () => closeModal('changelogModal'),
   search: () => searchOverlay?.close(),

@@ -56,6 +56,9 @@ export function mountAddPanel({ getUserLists, getActiveListId, addStationToList,
     panel.classList.add('is-open');
     panel.setAttribute('aria-hidden', 'false');
     document.body.classList.toggle('add-overlay-open', mob);
+    // Full-page surfaces are mutually exclusive — announce the open so the
+    // coordinator in main.js closes Notes / Sync / About / Log / Search.
+    window.dispatchEvent(new CustomEvent('rd:page-open', { detail: { id: 'add' } }));
   }
   function closePanel() {
     panelOpen = false;
