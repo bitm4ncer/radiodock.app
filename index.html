@@ -853,6 +853,15 @@
             <label class="add-field"><span>TikTok</span><input type="url" class="form-input" name="s_tiktok" maxlength="500" autocomplete="off"></label>
           </details>
 
+          <div class="add-subgroup">
+            <div class="add-subgroup__title">About you</div>
+            <label class="add-field"><span>Username *</span>
+              <input type="text" class="form-input" name="submitterUsername" maxlength="60" required autocomplete="off" placeholder="How you'd like to be credited"></label>
+            <label class="add-field"><span>Contact email (optional)</span>
+              <input type="email" class="form-input" name="submitterEmail" maxlength="160" autocomplete="off" placeholder="Only if a moderator may follow up"></label>
+            <p class="add-form__privacy">Your username and email are sent to our moderation server and used only to review this submission and, if needed, to contact you. They are not published with the station. See the <a href="/legal.html" target="_blank" rel="noopener">privacy policy</a>.</p>
+          </div>
+
           <!-- Honeypot: real users never see or fill this; server treats it as spam. -->
           <input type="text" name="website" class="add-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
 

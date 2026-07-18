@@ -208,7 +208,7 @@
 
       <h2>Privacy Policy</h2>
       <p>
-        RadioDock (<a href="https://radiodock.app">radiodock.app</a>) is operated by the person named above and hosted on GitHub Pages. The application itself does not collect personal data. Your favourites and custom station lists are stored locally in your browser via IndexedDB and never leave your device.
+        RadioDock (<a href="https://radiodock.app">radiodock.app</a>) is operated by the person named above and hosted on GitHub Pages. During normal use the application does not collect personal data: your favourites and custom station lists are stored locally in your browser via IndexedDB and never leave your device. The one exception is the optional <strong>“Add → Submit station”</strong> form, where you deliberately send us the data you type — see <a href="#submissions">Station submissions</a> below.
       </p>
 
       <h2>Third-party services accessed when you use the app</h2>
@@ -248,6 +248,29 @@
         </li>
       </ul>
 
+      <h2 id="submissions">Station submissions (the “Add” form)</h2>
+      <p>
+        RadioDock lets you propose a station for the community database via <strong>Add → Submit station</strong>. This is voluntary. When you submit, the data you enter is sent to and stored on our own <strong>Stations server</strong> (<code>stations.radiodock.app</code>), which runs on a Hetzner server located in <strong>Germany</strong> — the data stays within the EU. (The separate <strong>Add → Custom stream</strong> feature is purely local: it only writes to your device via IndexedDB and sends nothing to us.)
+      </p>
+      <p><strong>What a submission contains:</strong></p>
+      <ul>
+        <li><strong>Personal data you provide about yourself:</strong> a <em>username</em> (required, for attribution) and an <em>optional email address</em> (only if you want a moderator to be able to contact you). If you leave the email blank, none is collected.</li>
+        <li><strong>Station data you provide:</strong> name, stream URL, info, tags, homepage, an optional logo image, now-playing-metadata settings, and optional station socials, city, and a public station contact email. Please only enter a third party's contact details if you are entitled to share them.</li>
+        <li><strong>Automatically added:</strong> a one-way <em>hash</em> of your IP address (used purely for spam rate-limiting; the raw IP is never stored) and a timestamp.</li>
+      </ul>
+      <p>
+        <strong>Purpose &amp; legal basis:</strong> the data is processed to review, moderate, and (if suitable) publish the proposed station, to credit the contributor, to optionally follow up with you, and to prevent spam and abuse. Legal basis is Art. 6(1)(f) GDPR (legitimate interest in curating a community station database and keeping it spam-free); the optional email is provided on the basis of your consent, Art. 6(1)(a) GDPR, which you can withdraw at any time.
+      </p>
+      <p>
+        <strong>What becomes public:</strong> if a submission is approved, the <em>station</em> details become part of the public station database. Your <em>username and email are never published</em> — they remain visible only to the site operator for moderation.
+      </p>
+      <p>
+        <strong>Retention:</strong> submissions are kept while they await review and, once decided, are retained only as long as needed to run the database and prevent the same entry being re-submitted (rejected stream URLs are remembered to stop re-queuing). You can ask us to delete your submitter data at any time using the contact address above.
+      </p>
+      <p>
+        <strong>Recipients:</strong> the data is handled only by the site operator on the self-hosted Stations server. It is not sold or shared with third-party advertisers or analytics providers.
+      </p>
+
       <h2>Cookies</h2>
       <p>None. RadioDock sets no HTTP cookies. IndexedDB is used only to store your favourites and custom station lists locally on your device.</p>
 
@@ -284,7 +307,7 @@
 
       <h2>Your rights under GDPR / DSGVO</h2>
       <p>
-        You have the right to access, correct, delete, restrict processing of, and obtain a copy of any personal data held about you, as well as to object to processing and to lodge a complaint with a supervisory authority. Because the RadioDock app itself holds no personal data, these requests apply to the third-party services listed above; please contact them directly.
+        You have the right to access, correct, delete, restrict processing of, and obtain a copy of any personal data held about you, as well as to object to processing, to withdraw any consent you have given, and to lodge a complaint with a supervisory authority. For any submitter data you sent us via the <a href="#submissions">Station submissions</a> form, contact the operator using the address in the Impressum above and we will action your request. For the third-party services listed above, please contact them directly.
       </p>
 
       <h2>Disclaimer</h2>

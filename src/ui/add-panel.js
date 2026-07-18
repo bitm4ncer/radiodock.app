@@ -123,7 +123,9 @@ export function mountAddPanel({ getUserLists, getActiveListId, addStationToList,
     const fd = new FormData(submitForm);
     const name = String(fd.get('name') || '').trim();
     const streamUrl = String(fd.get('streamUrl') || '').trim();
+    const submitterUsername = String(fd.get('submitterUsername') || '').trim();
     if (!name || !streamUrl) { toast('Name and stream URL are required.'); return; }
+    if (!submitterUsername) { toast('Please add a username so we can credit your submission.'); return; }
 
     const socials = {};
     for (const k of SOCIAL_KEYS) {
@@ -151,6 +153,8 @@ export function mountAddPanel({ getUserLists, getActiveListId, addStationToList,
       socials: Object.keys(socials).length ? socials : undefined,
       metadata: metadata || undefined,
       logoData: submitLogo.get() || undefined,
+      submitterUsername,
+      submitterEmail: String(fd.get('submitterEmail') || '').trim() || undefined,
       website: String(fd.get('website') || ''), // honeypot
     };
 

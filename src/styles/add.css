@@ -220,6 +220,27 @@ body.add-overlay-open { overflow: hidden; }
 }
 .add-logo .btn-secondary { font-size: 12px; padding: 8px 12px; }
 
+/* "About you" — submitter identity, visually grouped + a privacy note. */
+.add-subgroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.add-subgroup__title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+.add-form__privacy {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+.add-form__privacy a { color: var(--text); }
+
 .add-form__submit { width: 100%; margin-top: 4px; }
 
 /* Honeypot: off-screen, never focusable by keyboard tab. */
