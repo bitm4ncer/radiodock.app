@@ -26,3 +26,13 @@ test('logoSizePx maps the slot size names', () => {
   assert.equal(logoSizePx('lg'), 512);
   assert.equal(logoSizePx('whatever'), 64);
 });
+
+test('getLogoUrl returns a data: favicon verbatim (local custom stream)', () => {
+  const dataUrl = 'data:image/png;base64,AAAA';
+  assert.equal(getLogoUrl({ id: 'custom-abc', favicon: dataUrl }), dataUrl);
+  assert.equal(getLogoUrl({ id: 'custom-abc', favicon: dataUrl }, 512), dataUrl);
+});
+
+test('getLogoUrl still uses the CDN when favicon is not a data URL', () => {
+  assert.equal(getLogoUrl({ id: 'abc', favicon: 'http://x/y.png' }), `${STATIONS_BASE}/logos/abc?size=64`);
+});

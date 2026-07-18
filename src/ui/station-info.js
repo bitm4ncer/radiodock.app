@@ -153,7 +153,12 @@ export function mountStationInfo() {
     // Fire both lookups in parallel. Re-render on each resolve so the
     // user sees Radio-Browser metadata land first (faster) and the
     // Wikipedia block fill in (or quietly disappear) shortly after.
-    const fullPromise = getStationByUuid(station.id).catch(() => null);
+    // Local custom streams have no database record — skip the by-uuid lookup
+    // (it would 404 → fall back to Radio Browser → also miss → wasted request).
+    const isCustom = String(station.id ?? '').startsWith('custom-');
+    const fullPromise = isCustom
+      ? Promise.resolve(null)
+      : getStationByUuid(station.id).catch(() => null);
     const wikiPromise = fetchStationInfo(station.name).catch(() => null);
 
     fullPromise.then((full) => {
