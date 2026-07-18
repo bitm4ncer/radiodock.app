@@ -158,6 +158,10 @@
   font-size: 12.5px;
   font-weight: 600;
   line-height: 1.2;
+  /* One line, ever — the fixed text-block height assumes a single-line label. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .install-section__btn-sub {
@@ -166,6 +170,11 @@
   color: var(--text-muted);
   line-height: 1.2;
   letter-spacing: 0.01em;
+  /* Keep the sub-label on a single line; ellipsize rather than wrap so the
+     grown-in height stays exactly one line and never clips a second row. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Hover-capable devices only: hide the sub-label at rest and grow it in on
@@ -490,7 +499,7 @@
     right: 20px;
     top: 20px;
     bottom: auto;
-    width: 320px;
+    width: 380px;
     max-width: calc(100vw - 40px);
     padding: 16px 16px 18px;
     background: var(--install-card-bg);
