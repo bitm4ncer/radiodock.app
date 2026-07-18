@@ -159,12 +159,16 @@ function pause() {
 }
 
 function resume() {
-  const audio = getElement();
-  if (!audio.src && !hls && currentStation) {
-    // Lost source (e.g. after an error reset). Re-load.
+  // Live radio has no meaningful "paused position". While paused, the <audio>
+  // element keeps the buffer captured at pause time, so audio.play() would
+  // replay that stale audio and then glitch as the browser scrambles back to
+  // the live edge. Always reconnect so play rejoins the live stream — a fresh
+  // load() drops the old buffer and refetches from now. Covers both the plain
+  // HTTP branch and HLS (playStation tears down and recreates hls.js).
+  if (currentStation) {
     return playStation(currentStation);
   }
-  return audio.play().catch((err) => emit('error', { message: err.message, name: err.name }));
+  return getElement().play().catch((err) => emit('error', { message: err.message, name: err.name }));
 }
 
 function stop() {
