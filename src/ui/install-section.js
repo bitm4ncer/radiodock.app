@@ -99,7 +99,8 @@ function supportTile() {
   return `<a class="install-section__btn install-section__btn--support" href="${SUPPORT_URL}" target="_blank" rel="noopener" data-support>
     ${ICONS.support}
     <span class="install-section__btn-text">
-      <span class="install-section__btn-label">Support Project</span>
+      <span class="install-section__btn-label">Support</span>
+      <span class="install-section__btn-sub">this project</span>
     </span>
     <svg class="install-section__btn-dl-icon" viewBox="0 0 24 24" aria-hidden="true" width="14" height="14">
       <path d="M14 5h5m0 0v5m0-5-7 7M17 14v3a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
