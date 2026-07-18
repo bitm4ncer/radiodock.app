@@ -124,6 +124,9 @@ body.add-overlay-open { overflow: hidden; }
 
 /* Forms */
 .add-form { display: flex; flex-direction: column; gap: 12px; }
+/* `display: flex` outranks the UA [hidden] rule, so the inactive tab would stay
+   visible — restore hiding explicitly. */
+.add-form[hidden] { display: none; }
 .add-form__intro {
   color: var(--text-muted);
   font-size: 0.85rem;
