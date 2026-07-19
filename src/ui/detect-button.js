@@ -3,9 +3,10 @@
 // for DOM insertion — a permanent, always-enabled member of the action bar
 // (see the no-disabled-state note below).
 //
-// Detect's own lifecycle (loading overlay, result/no-match rendering, daily
-// quota) is fully owned by features/detect.js (mountDetect) — this module
-// only renders the button and forwards clicks.
+// Detect's own lifecycle (request, quota, save-as-note) is fully owned by
+// features/detect.js (mountDetect) — this module only renders the button,
+// forwards clicks, and exposes setBusy() so the caller can toggle the
+// in-button spinner while a detect request is in flight.
 
 export function mountDetectButton({ onDetect }) {
   const bar = document.getElementById('playerActionBar');
@@ -33,5 +34,9 @@ export function mountDetectButton({ onDetect }) {
   // dead after every app relaunch until first play. mountDetect().run()
   // already toasts "Play a station first" when nothing is playing.
 
-  return btn;
+  function setBusy(busy) {
+    btn.classList.toggle('is-detecting', !!busy);
+  }
+
+  return { el: btn, setBusy };
 }

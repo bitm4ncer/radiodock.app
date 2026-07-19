@@ -32,7 +32,7 @@ const MAX_RECORDING_BYTES = 500 * 1024 * 1024; // 500 MB total budget
 let getStation = () => null;
 let getMetadata = () => null;
 
-// Mount entrypoint. Returns API: { open, close, captureNow }.
+// Mount entrypoint. Returns API: { open, close, captureNow, captureDetected }.
 export async function mountNotesPanel({ player, getLatestMetadata, recorder = null, showPanelRecordButton = true, fullPage }) {
   getStation = () => player.getCurrentStation?.() ?? null;
   getMetadata = () => getLatestMetadata?.() ?? null;
@@ -135,6 +135,7 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     open: openPanel,
     close: closePanel,
     captureNow,
+    captureDetected,
     toggleRecord,
     isOpen: () => state.open,
   };
@@ -643,29 +644,57 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
       station,
       track,
     });
-    state.notesByPage.set(state.currentPageId, [created, ...(state.notesByPage.get(state.currentPageId) ?? [])]);
+    addCreatedNote(created);
     trackCaptureEvent(source, station, created.track);
     // A capture from the player-card opens the panel (mobile: fullscreen
     // overlay) so the result is visible and immediately editable — a
     // silent capture behind a closed panel reads as "nothing happened".
     if (source === 'player-card' && !state.open) openPanel();
+    focusCreatedNote(created, state.open ? 'Captured · Undo' : 'Captured · Tap to edit · Undo');
+    return created;
+  }
+
+  // Detect ID hit (features/detect.js) — station + track come from the
+  // detect response, not from the player's live metadata, so this bypasses
+  // getMetadata() entirely. Always opens the panel (unlike captureNow,
+  // which only does so for the player-card source) because a tap-triggered
+  // detect has no other visible result surface now that the modal is gone.
+  async function captureDetected({ station, track }) {
+    if (!station) {
+      toast('No station playing.');
+      return null;
+    }
+    const created = await notes.createCapture({
+      pageId: state.currentPageId,
+      station,
+      track,
+    });
+    addCreatedNote(created);
+    trackCaptureEvent('detect', station, created.track);
+    if (!state.open) openPanel();
+    focusCreatedNote(created, 'Identified · Undo');
+    return created;
+  }
+
+  function addCreatedNote(created) {
+    state.notesByPage.set(state.currentPageId, [created, ...(state.notesByPage.get(state.currentPageId) ?? [])]);
+  }
+
+  // Shared tail for captureNow/captureDetected: focus the new card for
+  // inline edit when the panel is open, scroll it into view, and toast
+  // with an Undo action.
+  function focusCreatedNote(created, toastText) {
     if (state.open) {
-      // Focus body for inline edit.
       state.editingNoteId = created.id;
       render();
-      // Scroll list to top so the new card is visible.
       const listEl = panel.querySelector('[data-role="list"]');
       listEl.scrollTop = 0;
-      toast('Captured · Undo', {
-        action: { label: 'Undo', callback: () => undoCreate(created.id) },
-      });
     } else {
       render();
-      toast('Captured · Tap to edit · Undo', {
-        action: { label: 'Undo', callback: () => undoCreate(created.id) },
-      });
     }
-    return created;
+    toast(toastText, {
+      action: { label: 'Undo', callback: () => undoCreate(created.id) },
+    });
   }
 
   function trackCaptureEvent(source, station, trackData) {

@@ -436,8 +436,18 @@ if (recorder) {
   mountRecordButton({ recorder, player, getNotesApi: () => notesApi });
 }
 
-const detect = mountDetect({ player });
-mountDetectButton({ onDetect: () => detect.run() });
+// mountDetectButton's onDetect closes over `detect` (assigned right below);
+// by the time a click can fire, the assignment has already run.
+let detect;
+const detectBtn = mountDetectButton({ onDetect: () => detect.run() });
+detect = mountDetect({
+  player,
+  getLatestMetadata: () => latestMetadata,
+  // notesApi resolves async (mountNotesPanel touches IndexedDB) — go
+  // through the same closure variable the hamburger entry point uses.
+  notes: { captureDetected: (args) => notesApi?.captureDetected(args) },
+  setBusy: detectBtn?.setBusy ?? (() => {}),
+});
 
 // Mobile: if a background recording is still in flight after (re)launch, nudge
 // the user that it's running and tappable to save.

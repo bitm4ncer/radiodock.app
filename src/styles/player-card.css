@@ -395,8 +395,30 @@
 
 /* Detect segment (.pab-detect-btn) — plain pab-btn icon, fully covered by
    the shared .pab-btn rules above (sizing, hover, active states). Unlike
-   record, it never grows a pill or gains a disabled/recording state; it's
-   a uniform, always-active action-bar member (see ui/detect-button.js). */
+   record, it never grows a pill or gains a disabled state; it's a uniform,
+   always-active action-bar member (see ui/detect-button.js). While a
+   request is in flight (.is-detecting, toggled by setBusy) the sound-bars
+   icon hides and a small red spinner ring takes its place — red for
+   visibility, matching the record button's in-progress red. */
+.player-action-bar .pab-detect-btn.is-detecting {
+  position: relative;
+}
+.player-action-bar .pab-detect-btn.is-detecting svg {
+  visibility: hidden;
+}
+.player-action-bar .pab-detect-btn.is-detecting::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border: 2px solid var(--overlay-hard);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: detect-spin 0.8s linear infinite;
+}
 
 /* Mobile dock is a fixed column-reverse stack (volume, then card bottom-up),
    which would place the action bar ABOVE the pill. order:-1 makes it the
@@ -608,113 +630,9 @@ html.volume-dragging * {
   color: var(--text);
 }
 
-/* Detect ID overlay (features/detect.js) — self-contained dynamic modal
-   reusing .modal/.modal-content/.show from styles/modals.css. Only the
-   detect-specific inner content is styled here, kept in this file so the
-   Detect button + overlay ship as one unit (single stylesheet). */
-.detect-modal-content {
-  width: 340px;
-}
-
-.detect-body {
-  padding: 20px;
-}
-
-.detect-loading {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 0;
-  color: var(--text-muted);
-  font-size: 13px;
-}
-
-/* detect.js renders a single childless <span class="spinner">; the
-   dot-flashing .spinner rule above needs child <span>s to animate, so a
-   self-contained ring spinner is defined locally instead of reusing it. */
-.detect-loading .spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid var(--overlay-hard);
-  border-top-color: var(--text-muted);
-  border-radius: 50%;
-  animation: detect-spin 0.8s linear infinite;
-  flex-shrink: 0;
-}
-
+/* Detect ID (features/detect.js) — no modal anymore; a hit is saved
+   straight to a notes-panel card. This file keeps only the shared
+   detect-spin keyframes, used by the in-button spinner above. */
 @keyframes detect-spin {
   to { transform: rotate(360deg); }
 }
-
-.detect-result {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.detect-head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.detect-cover {
-  width: 56px;
-  height: 56px;
-  border-radius: 8px;
-  object-fit: cover;
-  flex-shrink: 0;
-  background: var(--overlay-soft);
-}
-
-.detect-title {
-  color: var(--text);
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.35;
-}
-
-.detect-artist {
-  color: var(--text-muted);
-  font-size: 13px;
-  margin-top: 2px;
-}
-
-.detect-album {
-  color: var(--text-muted);
-  font-size: 12px;
-  margin-top: 2px;
-}
-
-.detect-embed {
-  display: block;
-  width: 100%;
-  border-radius: 12px;
-}
-
-.detect-retry,
-.detect-yt-link {
-  display: block;
-  width: 100%;
-  padding: 10px 16px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: transparent;
-  color: var(--text-muted);
-  font-size: 12px;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-  box-sizing: border-box;
-  transition: all 0.2s ease;
-}
-
-.detect-retry:hover,
-.detect-yt-link:hover {
-  background: var(--overlay-med);
-  color: var(--text);
-}
-
-/* .empty-state (station-list.css) is reused verbatim for the "Kein
-   Treffer" state; only the retry button underneath needs the block
-   layout above, which .detect-retry already supplies. */
