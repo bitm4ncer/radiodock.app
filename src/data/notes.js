@@ -195,10 +195,15 @@ function sanitizeStationSnapshot(station) {
   };
 }
 
-function sanitizeTrackSnapshot(track) {
+export function sanitizeTrackSnapshot(track) {
   return {
     artist: track.artist ?? null,
     title: track.title ?? null,
     nowPlaying: track.nowPlaying ?? null,
+    // Additive: carries external ids so a detected-track note can render an
+    // expandable embed later. Same null-when-absent style as the fields above.
+    album: track.album ?? null,
+    spotify: track.spotify ?? null,
+    youtube: track.youtube ?? null,
   };
 }
