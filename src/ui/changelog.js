@@ -11,7 +11,7 @@ const ISSUES_URL = 'https://github.com/bitm4ncer/radiodock.app/issues';
 // numbered — the app's real version comes from the git commit count, so any label
 // here would only ever be a second, wrong one.
 // main.js compares this to the on-device `changelogSeenRevision` pref.
-export const CHANGELOG_REVISION = 8;
+export const CHANGELOG_REVISION = 9;
 
 // Stroke line icons, no emoji. Inner markup only; wrapped by iconTile() so they
 // share one viewBox + stroke treatment and inherit `currentColor`.
@@ -28,10 +28,17 @@ const ICONS = {
   music: '<path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/>',
   lock: '<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.2"/>',
   install: '<path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>',
+  detect: '<path d="M12 3v18M8 6v12M16 6v12M4 10v4M20 10v4"/>',
 };
 
 // Newest release first. Each feature: { icon, title, body }.
 export const CHANGELOG = [
+  {
+    name: 'Identify the track',
+    features: [
+      { icon: 'detect', title: 'What song is this?', body: 'Tap the Identify button in the player and RadioDock recognises the track playing right now — the song and artist, with links to hear it on Spotify or YouTube. Listens for a few seconds; works best on music stations.' },
+    ],
+  },
   {
     name: 'Faster & more private',
     features: [

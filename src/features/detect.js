@@ -14,7 +14,7 @@ const safeUrl = (u) => (/^https?:\/\//i.test(String(u ?? '')) ? esc(u) : '');
 // Embed ids get a strict charset filter before landing in an iframe src.
 const safeId = (s) => String(s ?? '').replace(/[^A-Za-z0-9_-]/g, '');
 
-const RETRY_BTN = '<button class="btn detect-retry" type="button">Nochmal</button>';
+const RETRY_BTN = '<button class="btn detect-retry" type="button">Again</button>';
 
 function spotifyEmbed(id) {
   const v = safeId(id);
@@ -105,11 +105,11 @@ export function mountDetect({ player }) {
 
   async function run() {
     const station = player.getCurrentStation?.();
-    if (!station?.id) { toast('Erst eine Station abspielen'); return; }
-    if ((await remainingToday()) <= 0) { toast('Tageslimit für Detect erreicht'); return; }
+    if (!station?.id) { toast('Play a station first'); return; }
+    if ((await remainingToday()) <= 0) { toast('Daily limit reached'); return; }
 
     const myGen = ++gen;
-    render('<div class="detect-loading"><span class="spinner"></span> Erkenne Titel…</div>');
+    render('<div class="detect-loading"><span class="spinner"></span> Identifying…</div>');
     try {
       const out = await detectTrack(station.id);
       if (myGen !== gen) return;
@@ -120,18 +120,18 @@ export function mountDetect({ player }) {
         render(resultHtml(out.track, `${STATIONS_BASE}/logos/${station.id}`));
       } else if (out.reason === 'no-match') {
         await bump();
-        // ONLY a real no-match renders as "Kein Treffer" — anything else is an
+        // ONLY a real no-match renders as "No match" — anything else is an
         // operational failure and must not masquerade as one (honest-result rule).
-        render(`<div class="empty-state">Kein Treffer.<br><span class="muted">Bei DJ-Sets & Underground normal.</span><br>${RETRY_BTN}</div>`);
+        render(`<div class="empty-state">No match.<br><span class="muted">Common with DJ sets &amp; underground music.</span><br>${RETRY_BTN}</div>`);
       } else {
         closeOverlay();
-        toast('Erkennung fehlgeschlagen');
+        toast('Detection failed');
       }
     } catch (e) {
       if (myGen !== gen) return;
-      const msg = e instanceof DetectError && e.reason === 'device-limit' ? 'Tageslimit erreicht'
-        : e instanceof DetectError && (e.reason === 'disabled' || e.reason === 'budget' || e.reason === 'busy' || e.reason === 'not-configured') ? 'Detect gerade nicht verfügbar'
-        : 'Erkennung fehlgeschlagen';
+      const msg = e instanceof DetectError && e.reason === 'device-limit' ? 'Daily limit reached'
+        : e instanceof DetectError && (e.reason === 'disabled' || e.reason === 'budget' || e.reason === 'busy' || e.reason === 'not-configured') ? 'Detection unavailable right now'
+        : 'Detection failed';
       closeOverlay();
       toast(msg);
     }
