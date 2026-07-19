@@ -14,11 +14,13 @@ test('embedsHtml returns a YouTube iframe for a valid youtube id', () => {
   assert.match(html, /src="https:\/\/www\.youtube\.com\/embed\/dQw4w9WgXcQ"/);
 });
 
-test('embedsHtml returns a YouTube search link (not iframe) when no youtube id but a query is given', () => {
-  const html = embedsHtml({ query: 'Some Artist Some Title' });
+test('embedsHtml never falls back to a YouTube search — only an exact video id embeds', () => {
+  // No youtube id → nothing, even with a query (a name search surfaces the wrong track).
+  const html = embedsHtml({ youtube: '', query: 'Some Artist Some Title' });
   assert.doesNotMatch(html, /youtube\.com\/embed/);
-  assert.match(html, /<a class="btn embed-yt-link"/);
-  assert.match(html, /href="https:\/\/www\.youtube\.com\/results\?search_query=Some%20Artist%20Some%20Title"/);
+  assert.doesNotMatch(html, /youtube\.com\/results/);
+  assert.doesNotMatch(html, /embed-yt-link/);
+  assert.equal(html, '');
 });
 
 test('embedsHtml escapes/strips a malicious id so the script never appears raw', () => {

@@ -39,18 +39,16 @@ function spotifyEmbed(id) {
   return v ? `<iframe class="embed-frame" style="border-radius:12px" src="https://open.spotify.com/embed/track/${v}" width="100%" height="152" frameborder="0" allow="encrypted-media" loading="lazy"></iframe>` : '';
 }
 
-function youtubeEmbed(vid, query) {
+// Only ever embed an EXACT provider-supplied video id (ACRCloud maps the matched
+// track to its official YouTube video). Never a name-based YouTube search — that
+// surfaces the wrong track / a similarly-named upload.
+function youtubeEmbed(vid) {
   const v = safeId(vid);
-  if (v) return `<iframe class="embed-frame" width="100%" height="180" src="https://www.youtube.com/embed/${v}" frameborder="0" allow="encrypted-media" loading="lazy"></iframe>`;
-  if (!query) return '';
-  const url = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
-  return `<a class="btn embed-yt-link" href="${url}" target="_blank" rel="noopener">Search on YouTube</a>`;
+  return v ? `<iframe class="embed-frame" width="100%" height="180" src="https://www.youtube.com/embed/${v}" frameborder="0" allow="encrypted-media" loading="lazy"></iframe>` : '';
 }
 
-export function embedsHtml({ spotify, youtube, query } = {}) {
-  const spotifyHtml = spotifyEmbed(spotify);
-  const youtubeHtml = youtubeEmbed(youtube, query);
-  return `${spotifyHtml}${youtubeHtml}`;
+export function embedsHtml({ spotify, youtube } = {}) {
+  return `${spotifyEmbed(spotify)}${youtubeEmbed(youtube)}`;
 }
 
 export function consentGateHtml() {

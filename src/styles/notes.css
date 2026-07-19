@@ -516,6 +516,12 @@ body.container-solid .notes-panel {
   margin: 4px 0 8px;
 }
 
+/* A class selector's `display:flex` above outranks the UA `[hidden]{display:none}`,
+   so the region must re-assert none when hidden — otherwise it never collapses. */
+.notes-card__embeds[hidden] {
+  display: none;
+}
+
 .embed-frame {
   display: block;
   width: 100%;

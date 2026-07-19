@@ -780,10 +780,9 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     const note = findNoteById(noteId);
     const t = note?.track;
     if (!t) return;
-    const query = `${t.artist ?? ''} ${t.title ?? ''}`.trim();
     const consent = await hasEmbedConsent();
     region.innerHTML = consent
-      ? embedsHtml({ spotify: t.spotify, youtube: t.youtube, query }) + revokeLinkHtml()
+      ? embedsHtml({ spotify: t.spotify, youtube: t.youtube }) + revokeLinkHtml()
       : consentGateHtml();
   }
 
@@ -795,8 +794,7 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     if (!t) return;
     const remember = region.querySelector('[data-role="embed-remember"]');
     if (remember?.checked) await setEmbedConsent(true);
-    const query = `${t.artist ?? ''} ${t.title ?? ''}`.trim();
-    region.innerHTML = embedsHtml({ spotify: t.spotify, youtube: t.youtube, query }) + revokeLinkHtml();
+    region.innerHTML = embedsHtml({ spotify: t.spotify, youtube: t.youtube }) + revokeLinkHtml();
   }
 
   async function revokeEmbedsForCard(card) {
