@@ -183,3 +183,29 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Socials row — icon chips linking out to the station's platforms. */
+.station-info__socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 18px;
+}
+.station-info__social {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--bg-dark);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  transition: color 140ms ease, background 140ms ease, border-color 140ms ease;
+}
+.station-info__social:hover {
+  color: var(--text);
+  background: var(--bg-list-hover);
+  border-color: var(--red);
+}
+.station-info__social svg { display: block; }

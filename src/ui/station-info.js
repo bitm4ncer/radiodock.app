@@ -16,8 +16,9 @@
 
 import { openModal } from './modals.js';
 import { fetchStationInfo } from '../data/wikipedia.js';
-import { getStationByUuid } from '../data/stations-source.js';
+import { getStationByUuid, getStationInfo } from '../data/stations-source.js';
 import { getLogoUrl } from '../data/logo-resolver.js';
+import { SOCIAL_ICONS, SOCIAL_ORDER, SOCIAL_LABELS } from './social-icons.js';
 
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({
@@ -83,6 +84,18 @@ export function mountStationInfo() {
       ? `<div class="station-info__tags">${tags.map((t) => `<span class="station-info__tag">${escapeHtml(t)}</span>`).join('')}</div>`
       : '';
 
+    // Socials come only from our consolidated endpoint (RB fallback lacks them).
+    const socials = Array.isArray(data.socials) ? data.socials : [];
+    const socialsHtml = socials.length
+      ? `<div class="station-info__socials">
+           ${SOCIAL_ORDER
+             .map((p) => socials.find((s) => s.platform === p))
+             .filter(Boolean)
+             .map((s) => `<a class="station-info__social" href="${escapeHtml(s.url)}" target="_blank" rel="noopener" title="${escapeHtml(SOCIAL_LABELS[s.platform] ?? s.platform)}" aria-label="${escapeHtml(SOCIAL_LABELS[s.platform] ?? s.platform)}">${SOCIAL_ICONS[s.platform] ?? ''}</a>`)
+             .join('')}
+         </div>`
+      : '';
+
     const aboutBlock = wikiLoading
       ? `<section class="station-info__section">
            <h4>About</h4>
@@ -103,6 +116,7 @@ export function mountStationInfo() {
     if (data.codec) streamRows.push(['Codec', data.codec.toUpperCase()]);
     if (data.bitrate) streamRows.push(['Bitrate', `${data.bitrate} kbps`]);
     if (data.countrycode) streamRows.push(['Country', data.countrycode.toUpperCase()]);
+    if (data.city) streamRows.push(['City', data.city]);
     // Note: votes + clickcount come from Radio Browser too, but those
     // counters only reflect activity inside other RB-aware apps — they
     // misrepresent real-world listenership (NTS has 43 RB-plays vs
@@ -125,6 +139,9 @@ export function mountStationInfo() {
           ? `<a class="btn-secondary station-info__action" href="${escapeHtml(data.homepage)}" target="_blank" rel="noopener">Visit homepage</a>`
           : ''}
         <button type="button" class="btn-secondary station-info__action" data-action="copy-url" data-url="${escapeHtml(data.url ?? '')}">Copy stream URL</button>
+        ${data.contactEmail
+          ? `<a class="btn-secondary station-info__action" href="mailto:${escapeHtml(data.contactEmail)}">Contact</a>`
+          : ''}
       </div>`;
 
     return `
@@ -135,6 +152,7 @@ export function mountStationInfo() {
           ${tagsHtml}
         </div>
       </header>
+      ${socialsHtml}
       ${aboutBlock}
       ${streamHtml}
       ${actions}
@@ -155,10 +173,15 @@ export function mountStationInfo() {
     // Wikipedia block fill in (or quietly disappear) shortly after.
     // Local custom streams have no database record — skip the by-uuid lookup
     // (it would 404 → fall back to Radio Browser → also miss → wasted request).
+    // Primary: our consolidated endpoint (tags + city + country + socials +
+    // contact). Fallback: the Radio Browser by-uuid path (tags/codec only, no
+    // socials) for stations not in our DB. Custom streams have no DB record.
     const isCustom = String(station.id ?? '').startsWith('custom-');
     const fullPromise = isCustom
       ? Promise.resolve(null)
-      : getStationByUuid(station.id).catch(() => null);
+      : getStationInfo(station.id)
+          .then((info) => info ?? getStationByUuid(station.id).catch(() => null))
+          .catch(() => getStationByUuid(station.id).catch(() => null));
     const wikiPromise = fetchStationInfo(station.name).catch(() => null);
 
     fullPromise.then((full) => {
