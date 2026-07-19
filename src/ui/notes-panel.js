@@ -19,6 +19,7 @@ import { toast } from './toast.js';
 import { promptDialog, confirmDialog } from './modal-helpers.js';
 import { exportNotesPayload } from '../data/notes-export.js';
 import { track } from '../analytics/umami.js';
+import { hasEmbedConsent, setEmbedConsent, embedsHtml, consentGateHtml, revokeLinkHtml } from './embeds.js';
 
 const PREF_POS = 'notesPanelPos';
 const PREF_OPEN = 'notesPanelOpen';
@@ -386,12 +387,24 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     }
 
     let track = '';
+    let embedRegion = '';
     if (note.type === 'capture' && note.track) {
       const t = note.track;
-      const display = (t.artist && t.title)
+      const hasArtistTitle = !!(t.artist && t.title);
+      const display = hasArtistTitle
         ? `${escapeHtml(t.artist)} — ${escapeHtml(t.title)}`
         : (t.nowPlaying ? escapeHtml(t.nowPlaying) : '—');
-      track = `<div class="notes-card__track">♫ ${display}</div>`;
+      const hasEmbed = !!(t.spotify || t.youtube);
+      if (hasEmbed) {
+        track = `<div class="notes-card__track notes-card__track--toggle" data-action="toggle-embed" role="button" tabindex="0" aria-expanded="false">♫ ${display}<span class="notes-card__chevron" aria-hidden="true">▾</span></div>`;
+        embedRegion = `<div class="notes-card__embeds" data-embed-region hidden></div>`;
+      } else {
+        track = `<div class="notes-card__track">♫ ${display}</div>`;
+      }
+      if (hasArtistTitle && t.nowPlaying
+        && t.nowPlaying.trim().toLowerCase() !== `${t.artist} — ${t.title}`.trim().toLowerCase()) {
+        track += `<div class="notes-card__show">On air: ${escapeHtml(t.nowPlaying)}</div>`;
+      }
     }
 
     const bodyHtml = isEditing
@@ -408,6 +421,7 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
         </button>
       </div>
       ${track}
+      ${embedRegion}
       ${bodyHtml}
     `;
     if (isEditing) {
@@ -736,7 +750,61 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
       case 'toggle-search':   return toggleSearch();
       case 'card-menu':       return openNoteMenu(actionEl, noteId);
       case 'edit':            return startEditing(noteId);
+      case 'toggle-embed':    return toggleEmbedRegion(card, noteId);
+      case 'load-embeds':     return loadEmbedsForCard(card, noteId);
+      case 'revoke-embeds':   return revokeEmbedsForCard(card);
     }
+  }
+
+  // ============================================================== Embed previews (Spotify/YouTube)
+
+  function findNoteById(noteId) {
+    const list = state.notesByPage.get(state.currentPageId) ?? [];
+    return list.find((n) => n.id === noteId);
+  }
+
+  function toggleEmbedRegion(card, noteId) {
+    const region = card?.querySelector('[data-embed-region]');
+    const toggle = card?.querySelector('[data-action="toggle-embed"]');
+    if (!region) return;
+    const willOpen = region.hidden;
+    region.hidden = !willOpen;
+    card.classList.toggle('is-open', willOpen);
+    toggle?.setAttribute('aria-expanded', String(willOpen));
+    if (willOpen && !region.innerHTML.trim()) {
+      populateEmbedRegion(region, noteId);
+    }
+  }
+
+  async function populateEmbedRegion(region, noteId) {
+    const note = findNoteById(noteId);
+    const t = note?.track;
+    if (!t) return;
+    const query = `${t.artist ?? ''} ${t.title ?? ''}`.trim();
+    const consent = await hasEmbedConsent();
+    region.innerHTML = consent
+      ? embedsHtml({ spotify: t.spotify, youtube: t.youtube, query }) + revokeLinkHtml()
+      : consentGateHtml();
+  }
+
+  async function loadEmbedsForCard(card, noteId) {
+    const region = card?.querySelector('[data-embed-region]');
+    if (!region) return;
+    const note = findNoteById(noteId);
+    const t = note?.track;
+    if (!t) return;
+    const remember = region.querySelector('[data-role="embed-remember"]');
+    if (remember?.checked) await setEmbedConsent(true);
+    const query = `${t.artist ?? ''} ${t.title ?? ''}`.trim();
+    region.innerHTML = embedsHtml({ spotify: t.spotify, youtube: t.youtube, query }) + revokeLinkHtml();
+  }
+
+  async function revokeEmbedsForCard(card) {
+    const region = card?.querySelector('[data-embed-region]');
+    if (!region) return;
+    await setEmbedConsent(false);
+    region.innerHTML = consentGateHtml();
+    toast('External previews disabled');
   }
 
   function openPagePicker(anchor) {
@@ -784,6 +852,10 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     }
     if (evt.target.matches('[data-role="search-input"]') && evt.key === 'Escape') {
       toggleSearch(false);
+    }
+    if (evt.target.matches('[data-action="toggle-embed"]') && (evt.key === 'Enter' || evt.key === ' ')) {
+      evt.preventDefault();
+      evt.target.click();
     }
   }
 

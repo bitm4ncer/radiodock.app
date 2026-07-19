@@ -476,6 +476,137 @@ body.container-solid .notes-panel {
   line-height: 1.35;
 }
 
+.notes-card__track--toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.notes-card__track--toggle:hover {
+  color: var(--red);
+}
+
+.notes-card__chevron {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: var(--text-muted);
+  transition: transform 200ms ease;
+}
+
+.notes-card.is-open .notes-card__chevron {
+  transform: rotate(180deg);
+}
+
+.notes-card__show {
+  margin: -2px 0 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.notes-card__embeds {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin: 4px 0 8px;
+}
+
+.embed-frame {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.embed-consent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--overlay-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.embed-consent__text {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.embed-consent__remember {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.embed-consent__remember input {
+  accent-color: var(--red);
+}
+
+.embed-consent__load {
+  align-self: flex-start;
+  padding: 7px 14px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--red);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 160ms ease;
+}
+
+.embed-consent__load:hover {
+  opacity: 0.85;
+}
+
+.embed-yt-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  padding: 7px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font-size: 12px;
+  text-decoration: none;
+  transition: background-color 160ms ease;
+}
+
+.embed-yt-link:hover {
+  background: var(--overlay-med);
+}
+
+.embed-revoke {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-muted);
+  font-size: 11px;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 160ms ease;
+}
+
+.embed-revoke:hover {
+  color: var(--text);
+}
+
 .notes-card__body {
   font-size: 13px;
   line-height: 1.45;
