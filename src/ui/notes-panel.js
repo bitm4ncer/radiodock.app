@@ -214,6 +214,12 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
 
   function openPanel({ animate = true } = {}) {
     if (state.open) return;
+    // If notes is opened while in tiny-player mode (from the pill's note or
+    // detect button, e.g. a detect hit), expand out of tiny first so the panel
+    // fills the window instead of being cramped behind the 384px pill.
+    if (document.body.classList.contains('is-tiny-player')) {
+      window.dispatchEvent(new CustomEvent('rd:set-tiny', { detail: { on: false } }));
+    }
     // Only one full-page surface open at a time — main.js closes the others.
     window.dispatchEvent(new CustomEvent('rd:page-open', { detail: { id: 'notes' } }));
     state.open = true;

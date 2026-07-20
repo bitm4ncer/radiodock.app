@@ -82,6 +82,7 @@ export function mountElectronWindowControls({ electronBridge } = {}) {
     const actionBar = document.getElementById('playerActionBar');
     const exitBtn = document.getElementById('tinyMaxBtn');
     const details = document.querySelector('.station-details');
+    const pill = document.getElementById('playerCard');
     let abHome = null, exitHome = null;
 
     const relocatePill = (on) => {
@@ -89,16 +90,15 @@ export function mountElectronWindowControls({ electronBridge } = {}) {
       if (on) {
         abHome = { parent: actionBar.parentNode, next: actionBar.nextSibling };
         details.appendChild(actionBar);
-        if (exitBtn) {
+        // The exit button lives in the pill's top-right corner (CSS-positioned),
+        // NOT in the action bar — the bar is already full with the six controls
+        // plus the injected record/detect/note buttons.
+        if (exitBtn && pill) {
           exitHome = { parent: exitBtn.parentNode, next: exitBtn.nextSibling };
-          exitBtn.classList.add('pab-btn');
-          actionBar.appendChild(exitBtn);
+          pill.appendChild(exitBtn);
         }
       } else {
-        if (exitBtn && exitHome?.parent) {
-          exitBtn.classList.remove('pab-btn');
-          exitHome.parent.insertBefore(exitBtn, exitHome.next);
-        }
+        if (exitBtn && exitHome?.parent) exitHome.parent.insertBefore(exitBtn, exitHome.next);
         if (abHome?.parent) abHome.parent.insertBefore(actionBar, abHome.next);
       }
     };
