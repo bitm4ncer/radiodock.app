@@ -105,6 +105,12 @@ export function mountElectronWindowControls({ electronBridge } = {}) {
 
     const applyTiny = async (on) => {
       if (document.body.classList.contains('is-tiny-player') === on) return;
+      // Collapsing to the pill makes it the sole surface. Any open full-page
+      // surface (Notes / Sync / About / Log / Search) must close first, or it
+      // stays mounted and bleeds out around the small pill. Rides main.js's
+      // page-exclusivity engine: announcing the pill as the active surface
+      // closes every real page (no page id matches, so they all close).
+      if (on) window.dispatchEvent(new CustomEvent('rd:page-open', { detail: { id: 'tinyPlayer' } }));
       relocatePill(on);
       document.body.classList.toggle('is-tiny-player', on);
       tinyBtn.classList.toggle('is-active', on);
