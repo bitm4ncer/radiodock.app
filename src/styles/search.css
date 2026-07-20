@@ -413,38 +413,40 @@ body.is-tiny-player .player-card {
   gap: 14px;
 }
 
-/* Expand-to-full button: a small round chip perched just outside the pill's
-   rounded top-right corner (reparented onto the card by
-   electron-window-controls.js). Kept out of the action bar so it never gets
-   lost among the six controls, and its own floating spot reads clearly as
-   "grow me back". */
+/* Expand-to-full control: a slim pill "tab" straddling the pill's top edge —
+   top-right, on the flat run just before the corner curve, centred on the edge
+   so half of it overlaps the card. A small up-chevron reads "grow me back"; on
+   hover it slides up a touch. Reparented onto the card by
+   electron-window-controls.js. It sits directly on the card (the drag surface,
+   outside the no-drag content groups), so it MUST opt out of drag itself — else
+   a click would move the window instead of expanding. */
 body.is-tiny-player #tinyMaxBtn {
   position: absolute;
-  top: -7px;
-  right: 3px;
-  width: 22px;
+  top: -11px;
+  right: 44px;
+  width: 46px;
   height: 22px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
+  padding: 0 0 3px;
   background: var(--bg-dark);
-  border: 1px solid var(--overlay-med);
-  border-radius: 50%;
+  border: 0;
+  border-radius: 999px;
   color: var(--text-muted);
   cursor: pointer;
   z-index: 3;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-  transition: color 140ms ease, background-color 140ms ease, transform 140ms ease;
+  -webkit-app-region: no-drag;
+  box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.3);
+  transition: transform 160ms ease, color 140ms ease;
 }
 body.is-tiny-player #tinyMaxBtn:hover {
   color: var(--text);
-  background: var(--overlay-med);
-  transform: scale(1.1);
+  transform: translateY(-3px);
 }
 body.is-tiny-player #tinyMaxBtn svg {
-  width: 12px;
-  height: 12px;
+  width: 15px;
+  height: 15px;
 }
 
 /* Give the text column room and keep both lines on one line each. */
