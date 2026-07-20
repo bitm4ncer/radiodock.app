@@ -63,6 +63,18 @@ function buildMenu(state = { playing: false, station: null }) {
         mainWindow?.focus();
       },
     },
+    {
+      label: 'Run on Startup',
+      type: 'checkbox',
+      // Read live from the OS each time the menu is built, so the tick always
+      // reflects the real login-item state even if it changed elsewhere.
+      checked: app.getLoginItemSettings().openAtLogin,
+      click: (item) => {
+        // Electron flips item.checked before firing click, so it already holds
+        // the desired new state.
+        app.setLoginItemSettings({ openAtLogin: item.checked });
+      },
+    },
     { type: 'separator' },
     {
       label: 'Quit RadioDock',
