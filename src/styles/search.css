@@ -402,40 +402,49 @@ body.is-tiny-player .player-card {
   box-sizing: border-box;
   background: var(--bg-dark);
   border-radius: 100px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  /* The tight 0-offset ambient shadow is not just depth: on a transparent
+     Electron window Chromium rasterises the fully-rounded corners with a 1px
+     light AA overshoot (a stray "white pixel" just outside the arc). The 1px
+     spread of this ambient layer paints over that overshoot on all four
+     corners; without it the specks return. */
+  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.6), 0 8px 24px rgba(0, 0, 0, 0.5);
   -webkit-app-region: drag;
   padding: 12px 18px 12px 12px;
   gap: 14px;
 }
 
-/* Exit-tiny button, docked top-right of the pill (reparented onto the card by
-   electron-window-controls.js). Kept out of the action bar so the six controls
-   there aren't squeezed, and always reachable in the corner. */
+/* Expand-to-full button: a small round chip perched just outside the pill's
+   rounded top-right corner (reparented onto the card by
+   electron-window-controls.js). Kept out of the action bar so it never gets
+   lost among the six controls, and its own floating spot reads clearly as
+   "grow me back". */
 body.is-tiny-player #tinyMaxBtn {
   position: absolute;
-  top: 7px;
-  right: 12px;
+  top: -7px;
+  right: 3px;
   width: 22px;
   height: 22px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  background: transparent;
-  border: 0;
-  border-radius: 6px;
+  background: var(--bg-dark);
+  border: 1px solid var(--overlay-med);
+  border-radius: 50%;
   color: var(--text-muted);
   cursor: pointer;
-  z-index: 2;
-  transition: color 140ms ease, background-color 140ms ease;
+  z-index: 3;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  transition: color 140ms ease, background-color 140ms ease, transform 140ms ease;
 }
 body.is-tiny-player #tinyMaxBtn:hover {
   color: var(--text);
   background: var(--overlay-med);
+  transform: scale(1.1);
 }
 body.is-tiny-player #tinyMaxBtn svg {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
 }
 
 /* Give the text column room and keep both lines on one line each. */
