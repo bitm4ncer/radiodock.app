@@ -487,10 +487,17 @@ body.is-tiny-player .tiny-player-controls { gap: 6px; margin-top: 1px; }
 body.is-tiny-player .tiny-player-controls .btn-icon { width: 22px; height: 22px; }
 body.is-tiny-player .tiny-player-controls .btn-icon svg { width: 14px; height: 14px; }
 
-/* Buttons and the logo stay clickable (not part of the drag surface). */
-body.is-tiny-player .player-card button,
-body.is-tiny-player .player-card a,
-body.is-tiny-player .station-logo-container {
+/* The whole pill CONTENT opts out of the window-drag surface. Two reasons:
+   (1) buttons/logo must stay clickable, and (2) Electron routes drag regions
+   as OS non-client area, so the renderer never receives real hover over them —
+   which is why the now-playing marquee (gated on `.player-card:hover`) used to
+   wake only when the pointer was over a button. With the content no-drag, hover
+   fires anywhere over it and the marquee reveals on hover across the whole pill.
+   `-webkit-app-region` is hierarchical, so no-drag on the two content groups
+   also covers the name/now-playing text and the gaps beneath them. Window-drag
+   falls to the card's padding ring (the card itself stays the drag surface). */
+body.is-tiny-player .player-info,
+body.is-tiny-player .player-controls {
   -webkit-app-region: no-drag;
 }
 
