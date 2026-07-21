@@ -580,10 +580,6 @@
     min-height: 0;
   }
 
-  #stationInfoModal .modal-content {
-    width: 420px;
-  }
-
   #infoModal .modal-content {
     width: 520px;
   }

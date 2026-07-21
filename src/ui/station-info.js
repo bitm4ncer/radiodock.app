@@ -1,32 +1,34 @@
-// Station info bottom-sheet. Composed of three data sources, all
-// gracefully degrading:
-//   1. The station object the caller passed in (always available — at
-//      minimum: id, name, url, countrycode, favicon, homepage).
-//   2. A live Radio Browser by-uuid lookup that adds tags / bitrate /
-//      codec / votes / clickcount for Community stations (where the
-//      seed JSON only carries the minimal shape).
-//   3. A Wikipedia summary lookup that adds a description paragraph
-//      and (when available) a thumbnail image — works for famous
-//      stations (NTS, FIP, BBC, KEXP, dublab…), silently returns null
-//      for niche ones.
+// Station info panel. Two presentations of one shared instance:
+//   - Desktop browser: a floating, drag-positioned panel (like the notes
+//     panel). Re-triggering the ⓘ on another station just swaps its content.
+//   - Mobile / PWA / desktop app: a sheet that slides up from the bottom to
+//     sit under the action bar while the player rises to pin under the header.
+//     Opens via the ⓘ button or a swipe-up on the player; closes via the
+//     arrow-down button or a swipe-down on the sheet.
 //
-// Both network calls are fired in parallel and the sheet re-renders
-// when either resolves. The skeleton is populated synchronously from
-// the seed object so the modal never opens blank.
+// Data (unchanged): the seed station object + our consolidated endpoint
+// (getStationInfo — curated info/tags/city/socials/contact) with a Radio
+// Browser by-uuid fallback, plus a Wikipedia summary. A station's own curated
+// `info` always wins over the Wikipedia fallback.
 
-import { openModal } from './modals.js';
 import { fetchStationInfo } from '../data/wikipedia.js';
 import { getStationByUuid, getStationInfo } from '../data/stations-source.js';
 import { getLogoUrl } from '../data/logo-resolver.js';
 import { SOCIAL_ICONS, SOCIAL_ORDER, SOCIAL_LABELS } from './social-icons.js';
+import { detectStandalone } from '../platform.js';
+import { isElectron } from './electron-bridge.js';
+
+const ICON_HOME = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M19 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4"/></svg>';
+const ICON_COPY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>';
+const ICON_MAIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>';
+const ICON_DRAG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
+const ICON_CLOSE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+const ICON_ARROW_DOWN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
 
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;',
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
   }[c]));
 }
 
@@ -43,36 +45,40 @@ function streamKind(url) {
 }
 
 export function mountStationInfo() {
-  const modal = document.getElementById('stationInfoModal');
-  const body = document.getElementById('stationInfoBody');
-  const titleEl = document.getElementById('stationInfoTitle');
-  if (!modal || !body || !titleEl) {
-    return { open() {} };
-  }
+  // Structural mode follows the layout regime (matches pagesAreExclusive in
+  // main.js): narrow viewport, installed PWA, or Electron → the slide-up sheet;
+  // a regular desktop browser → the floating draggable panel.
+  const appMode = matchMedia('(max-width: 699px)').matches || detectStandalone() || isElectron();
 
-  // Delegated click handler for action buttons inside the body (added
-  // once; the body's innerHTML is replaced on every open + on data
-  // resolve, but the listener on the parent body element survives).
-  body.addEventListener('click', async (evt) => {
-    const action = evt.target.closest('[data-action]');
-    if (!action) return;
-    if (action.dataset.action === 'copy-url') {
-      const url = action.dataset.url;
-      if (!url) return;
-      try { await navigator.clipboard.writeText(url); } catch {}
-      action.textContent = 'Copied!';
-      setTimeout(() => { action.textContent = 'Copy stream URL'; }, 1400);
-    }
-  });
+  const panel = document.createElement('aside');
+  panel.className = 'info-panel ' + (appMode ? 'info-panel--sheet' : 'info-panel--desktop');
+  panel.setAttribute('role', 'dialog');
+  panel.setAttribute('aria-label', 'Station info');
+  panel.setAttribute('aria-hidden', 'true');
+  panel.innerHTML = `
+    <header class="info-panel__header" data-role="header">
+      ${appMode ? '' : `<span class="info-panel__drag" data-role="drag" title="Drag" aria-hidden="true">${ICON_DRAG}</span>`}
+      <span class="info-panel__title" data-role="title">Station</span>
+      <span class="info-panel__spacer"></span>
+      <button type="button" class="info-panel__icon-btn" data-action="close" aria-label="Close">${appMode ? ICON_ARROW_DOWN : ICON_CLOSE}</button>
+    </header>
+    <div class="info-panel__body station-info-body" data-role="body"></div>
+  `;
+  document.body.appendChild(panel);
 
-  function render(station, { full, wiki, wikiLoading }) {
+  const bodyEl = panel.querySelector('[data-role="body"]');
+  const titleEl = panel.querySelector('[data-role="title"]');
+  let isOpen = false;
+  let openToken = 0;
+  // Desktop drag position kept in-memory for the session (survives content
+  // swaps and re-opens); resets on reload.
+  let deskPos = null;
+
+  function render(station, { full, wiki, wikiLoading, fullLoading }) {
     const data = { ...station, ...(full ?? {}) };
     const initials = getInitials(data.name);
     const tags = Array.isArray(data.tags) ? data.tags.filter(Boolean).slice(0, 8) : [];
 
-    // Single-origin: the station logo comes from our own CDN (by UUID), never
-    // the station's third-party favicon. The Wikipedia hero thumbnail is a
-    // separate, documented enrichment source and stays.
     const logoUrl = getLogoUrl(data, 512);
     const heroImage = wiki?.thumbnail
       ? `<img class="station-info__hero" src="${escapeHtml(wiki.thumbnail)}" alt="">`
@@ -84,7 +90,6 @@ export function mountStationInfo() {
       ? `<div class="station-info__tags">${tags.map((t) => `<span class="station-info__tag">${escapeHtml(t)}</span>`).join('')}</div>`
       : '';
 
-    // Socials come only from our consolidated endpoint (RB fallback lacks them).
     const socials = Array.isArray(data.socials) ? data.socials : [];
     const socialsHtml = socials.length
       ? `<div class="station-info__socials">
@@ -96,20 +101,21 @@ export function mountStationInfo() {
          </div>`
       : '';
 
-    const aboutBlock = wikiLoading
-      ? `<section class="station-info__section">
-           <h4>About</h4>
-           <p class="station-info__loading">Looking up on Wikipedia…</p>
-         </section>`
+    // A station's own curated description wins over the Wikipedia fallback.
+    const curatedInfo = typeof data.info === 'string' ? data.info.trim() : '';
+    const aboutInner = curatedInfo
+      ? `<p class="station-info__about">${escapeHtml(curatedInfo)}</p>`
       : wiki
-        ? `<section class="station-info__section">
-             <h4>About</h4>
-             <p class="station-info__about">${escapeHtml(wiki.extract)}</p>
-             <p class="station-info__source">
-               via <a href="${escapeHtml(wiki.url)}" target="_blank" rel="noopener">Wikipedia: ${escapeHtml(wiki.title)} →</a>
-             </p>
-           </section>`
-        : '';
+        ? `<p class="station-info__about">${escapeHtml(wiki.extract)}</p>
+           <p class="station-info__source">
+             via <a href="${escapeHtml(wiki.url)}" target="_blank" rel="noopener">Wikipedia: ${escapeHtml(wiki.title)} →</a>
+           </p>`
+        : (fullLoading || wikiLoading)
+          ? `<p class="station-info__loading">Loading…</p>`
+          : '';
+    const aboutBlock = aboutInner
+      ? `<section class="station-info__section"><h4>About</h4>${aboutInner}</section>`
+      : '';
 
     const streamRows = [];
     streamRows.push(['Format', streamKind(data.url)]);
@@ -117,30 +123,23 @@ export function mountStationInfo() {
     if (data.bitrate) streamRows.push(['Bitrate', `${data.bitrate} kbps`]);
     if (data.countrycode) streamRows.push(['Country', data.countrycode.toUpperCase()]);
     if (data.city) streamRows.push(['City', data.city]);
-    // Note: votes + clickcount come from Radio Browser too, but those
-    // counters only reflect activity inside other RB-aware apps — they
-    // misrepresent real-world listenership (NTS has 43 RB-plays vs
-    // millions of actual listeners). Intentionally not shown so the
-    // sheet doesn't lie about popularity.
 
     const streamHtml = `
       <section class="station-info__section">
         <h4>Stream</h4>
         <dl class="station-info__stream">
-          ${streamRows
-            .map(([k, v]) => `<div><dt>${escapeHtml(k)}</dt><dd>${escapeHtml(v)}</dd></div>`)
-            .join('')}
+          ${streamRows.map(([k, v]) => `<div><dt>${escapeHtml(k)}</dt><dd>${escapeHtml(v)}</dd></div>`).join('')}
         </dl>
       </section>`;
 
     const actions = `
       <div class="station-info__actions">
         ${data.homepage
-          ? `<a class="btn-secondary station-info__action" href="${escapeHtml(data.homepage)}" target="_blank" rel="noopener">Visit homepage</a>`
+          ? `<a class="station-info__action-icon" href="${escapeHtml(data.homepage)}" target="_blank" rel="noopener" title="Visit homepage" aria-label="Visit homepage">${ICON_HOME}</a>`
           : ''}
-        <button type="button" class="btn-secondary station-info__action" data-action="copy-url" data-url="${escapeHtml(data.url ?? '')}">Copy stream URL</button>
+        <button type="button" class="station-info__action-icon" data-action="copy-url" data-url="${escapeHtml(data.url ?? '')}" title="Copy stream URL" aria-label="Copy stream URL">${ICON_COPY}</button>
         ${data.contactEmail
-          ? `<a class="btn-secondary station-info__action" href="mailto:${escapeHtml(data.contactEmail)}">Contact</a>`
+          ? `<a class="station-info__action-icon" href="mailto:${escapeHtml(data.contactEmail)}" title="Contact" aria-label="Contact">${ICON_MAIL}</a>`
           : ''}
       </div>`;
 
@@ -159,23 +158,30 @@ export function mountStationInfo() {
     `;
   }
 
-  let openToken = 0;
+  // Delegated action clicks inside the body.
+  bodyEl.addEventListener('click', async (evt) => {
+    const action = evt.target.closest('[data-action="copy-url"]');
+    if (!action) return;
+    const url = action.dataset.url;
+    if (!url) return;
+    try { await navigator.clipboard.writeText(url); } catch {}
+    const prev = action.innerHTML;
+    action.innerHTML = ICON_CHECK;
+    action.classList.add('is-copied');
+    setTimeout(() => { action.innerHTML = prev; action.classList.remove('is-copied'); }, 1400);
+  });
 
-  async function open(station) {
+  panel.querySelector('[data-action="close"]').addEventListener('click', () => close());
+
+  // ---- Open / close ----------------------------------------------------
+
+  function open(station) {
     if (!station) return;
     const token = ++openToken;
     titleEl.textContent = station.name ?? 'Station';
-    body.innerHTML = render(station, { full: null, wiki: null, wikiLoading: true });
-    openModal(modal);
+    bodyEl.innerHTML = render(station, { full: null, wiki: null, wikiLoading: true, fullLoading: true });
+    if (!isOpen) showPanel();
 
-    // Fire both lookups in parallel. Re-render on each resolve so the
-    // user sees Radio-Browser metadata land first (faster) and the
-    // Wikipedia block fill in (or quietly disappear) shortly after.
-    // Local custom streams have no database record — skip the by-uuid lookup
-    // (it would 404 → fall back to Radio Browser → also miss → wasted request).
-    // Primary: our consolidated endpoint (tags + city + country + socials +
-    // contact). Fallback: the Radio Browser by-uuid path (tags/codec only, no
-    // socials) for stations not in our DB. Custom streams have no DB record.
     const isCustom = String(station.id ?? '').startsWith('custom-');
     const fullPromise = isCustom
       ? Promise.resolve(null)
@@ -186,13 +192,129 @@ export function mountStationInfo() {
 
     fullPromise.then((full) => {
       if (token !== openToken) return;
-      body.innerHTML = render(station, { full, wiki: null, wikiLoading: true });
+      bodyEl.innerHTML = render(station, { full, wiki: null, wikiLoading: true, fullLoading: false });
     });
 
-    const [full, wiki] = await Promise.all([fullPromise, wikiPromise]);
-    if (token !== openToken) return;
-    body.innerHTML = render(station, { full, wiki, wikiLoading: false });
+    Promise.all([fullPromise, wikiPromise]).then(([full, wiki]) => {
+      if (token !== openToken) return;
+      bodyEl.innerHTML = render(station, { full, wiki, wikiLoading: false, fullLoading: false });
+    });
   }
 
-  return { open };
+  function showPanel() {
+    isOpen = true;
+    panel.setAttribute('aria-hidden', 'false');
+    // Transient dialog — coexists with the notes/desktop panels, so it does
+    // NOT fire rd:page-open. (Matches the previous modal behaviour.)
+    if (appMode) enterSheet();
+    else { positionDesktop(); panel.classList.add('is-open'); }
+  }
+
+  function close() {
+    if (!isOpen) return;
+    isOpen = false;
+    panel.setAttribute('aria-hidden', 'true');
+    if (appMode) exitSheet();
+    else panel.classList.remove('is-open');
+  }
+
+  // ---- Mobile sheet ----------------------------------------------------
+
+  function measureSheet() {
+    const topbar = document.querySelector('.mobile-topbar');
+    const ps = document.querySelector('.player-section');
+    if (!ps) return;
+    // The top bar is never transformed, so its rect is stable.
+    const tbBottom = topbar ? Math.round(topbar.getBoundingClientRect().bottom) : 0;
+    // Use the player's LAYOUT height + its fixed bottom:0 resting position
+    // instead of its live rect — a shift computed while the player is still
+    // mid-animation (e.g. re-opening right after a close) would otherwise be
+    // wrong. Resting top = viewport height − layout height.
+    const h = ps.offsetHeight;
+    const restingTop = window.innerHeight - h;
+    // Rise the player so its top edge meets the header bottom.
+    ps.style.setProperty('--info-player-shift', `${Math.round(tbBottom - restingTop)}px`);
+    // The sheet rests directly under the risen player.
+    document.body.style.setProperty('--info-sheet-top', `${Math.round(tbBottom + h)}px`);
+  }
+
+  function enterSheet() {
+    measureSheet();
+    document.body.classList.add('info-open');
+    panel.classList.add('is-open');
+  }
+
+  function exitSheet() {
+    document.body.classList.remove('info-open');
+    panel.classList.remove('is-open');
+  }
+
+  // Keep the geometry correct across rotation / resize while open.
+  window.addEventListener('resize', () => { if (isOpen && appMode) measureSheet(); });
+
+  // Swipe-down anywhere on the sheet closes it.
+  if (appMode) {
+    let sy = 0, sx = 0, tracking = false;
+    panel.addEventListener('pointerdown', (e) => {
+      // Don't start a close-drag from a link/button inside the body.
+      if (e.target.closest('a, button')) { tracking = false; return; }
+      sy = e.clientY; sx = e.clientX; tracking = true;
+    });
+    panel.addEventListener('pointerup', (e) => {
+      if (!tracking) return;
+      tracking = false;
+      const dy = e.clientY - sy, dx = e.clientX - sx;
+      if (dy > 60 && Math.abs(dy) > Math.abs(dx)) close();
+    });
+  }
+
+  // ---- Desktop drag ----------------------------------------------------
+
+  function positionDesktop() {
+    const w = 360, margin = 24;
+    if (!deskPos) {
+      deskPos = { x: Math.max(margin, window.innerWidth - w - margin), y: 84 };
+    }
+    applyDesktopPos(deskPos.x, deskPos.y);
+  }
+
+  function applyDesktopPos(x, y) {
+    const rect = panel.getBoundingClientRect();
+    const w = rect.width || 360;
+    const h = rect.height || 420;
+    const cx = Math.max(8, Math.min(window.innerWidth - w - 8, x));
+    const cy = Math.max(8, Math.min(window.innerHeight - h - 8, y));
+    deskPos = { x: cx, y: cy };
+    panel.style.setProperty('--info-x', cx + 'px');
+    panel.style.setProperty('--info-y', cy + 'px');
+    panel.classList.add('is-positioned');
+  }
+
+  if (!appMode) {
+    const handle = panel.querySelector('[data-role="drag"]');
+    let dragging = false, pointerId = null, offX = 0, offY = 0;
+    handle.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      const rect = panel.getBoundingClientRect();
+      dragging = true; pointerId = e.pointerId;
+      handle.setPointerCapture(pointerId);
+      offX = e.clientX - rect.left; offY = e.clientY - rect.top;
+      panel.classList.add('is-dragging');
+      e.preventDefault();
+    });
+    handle.addEventListener('pointermove', (e) => {
+      if (!dragging || e.pointerId !== pointerId) return;
+      applyDesktopPos(e.clientX - offX, e.clientY - offY);
+    });
+    const end = (e) => {
+      if (!dragging || (e && e.pointerId !== pointerId)) return;
+      dragging = false; panel.classList.remove('is-dragging');
+      try { handle.releasePointerCapture(pointerId); } catch {}
+      pointerId = null;
+    };
+    handle.addEventListener('pointerup', end);
+    handle.addEventListener('pointercancel', end);
+  }
+
+  return { open, close, isOpen: () => isOpen };
 }
