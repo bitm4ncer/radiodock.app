@@ -40,20 +40,16 @@
 .station-info__hero {
   width: 60px;
   height: 60px;
-  border-radius: 12px;
+  border-radius: 50%;
   object-fit: cover;
   background: var(--logo-chip-bg);
   flex-shrink: 0;
 }
 
-.station-info__hero {
-  border-radius: 12px;
-}
-
 .station-info__initials {
   width: 60px;
   height: 60px;
-  border-radius: 12px;
+  border-radius: 50%;
   background: var(--bg-list-hover);
   color: var(--text);
   display: flex;
@@ -71,10 +67,34 @@
 
 .station-info__name {
   color: var(--text);
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
   margin-bottom: 6px;
   word-break: break-word;
+  line-height: 1.15;
+}
+
+/* Top group — location line sits directly above the socials/links row. */
+.station-info__top {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Location line — flag + country code + city. */
+.station-info__location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+.station-info__flag {
+  width: 18px;
+  height: auto;
+  border-radius: 2px;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px var(--border);
 }
 
 .station-info__tags {
@@ -164,35 +184,6 @@
   text-align: right;
 }
 
-.station-info__actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 6px;
-}
-
-/* Homepage / copy-URL / contact as round icon buttons (matches the socials
-   row treatment). */
-.station-info__action-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--bg-dark);
-  color: var(--text-muted);
-  border: 1px solid var(--border);
-  cursor: pointer;
-  text-decoration: none;
-  transition: color 140ms ease, background 140ms ease, border-color 140ms ease;
-}
-.station-info__action-icon:hover {
-  color: var(--text);
-  background: var(--bg-list-hover);
-  border-color: var(--red);
-}
-.station-info__action-icon svg { width: 18px; height: 18px; display: block; }
-.station-info__action-icon.is-copied { color: var(--red); border-color: var(--red); }
 
 /* On phones, stack the stream grid into one column for readability. */
 @media (max-width: 699px), not (display-mode: browser) {
@@ -206,7 +197,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 0 0 18px;
+  margin: 0;
 }
 .station-info__social {
   display: inline-flex;
@@ -214,10 +205,15 @@
   justify-content: center;
   width: 34px;
   height: 34px;
+  padding: 0;
+  margin: 0;
   border-radius: 50%;
   background: var(--bg-dark);
   color: var(--text-muted);
   border: 1px solid var(--border);
+  cursor: pointer;
+  font: inherit;
+  text-decoration: none;
   transition: color 140ms ease, background 140ms ease, border-color 140ms ease;
 }
 .station-info__social:hover {
@@ -226,6 +222,7 @@
   border-color: var(--red);
 }
 .station-info__social svg { display: block; }
+.station-info__social.is-copied { color: var(--red); border-color: var(--red); }
 
 /* ============================================================ Info panel shell
    One instance, two presentations. Desktop browser: a floating drag-positioned
@@ -311,15 +308,21 @@
   display: flex;
   flex-direction: column;
   background: var(--bg);
-  border-top-left-radius: 18px;
-  border-top-right-radius: 18px;
-  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.4);
   transform: translateY(100%);
   transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
 .info-panel--sheet .info-panel__body { padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
 body.info-open .info-panel--sheet { transform: translateY(0); }
+
+/* Sheet close: no header bar — the arrow-down floats into the content's
+   top-right, indented to the content padding, to reclaim vertical space. */
+.info-panel__close-float {
+  position: absolute;
+  top: 8px;
+  right: 14px;
+  z-index: 3;
+}
 
 /* app-mode choreography: the fixed player rises to meet the header while the
    list content fades out, then the sheet slides up into the space below. */
@@ -329,6 +332,9 @@ body.info-open .info-panel--sheet { transform: translateY(0); }
   }
   body.info-open .player-section {
     transform: translateY(var(--info-player-shift, 0));
+    /* Risen to the top, the safe-area bottom padding is just a gap between the
+       action bar and the sheet — trim it so the sheet rides higher. */
+    padding-bottom: 4px;
   }
   /* Fade only the list surface — NOT .page, which contains the fixed
      player-section as a descendant (opacity would hide the risen player too). */
