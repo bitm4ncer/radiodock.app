@@ -7,6 +7,8 @@
 
 import { renderLogoSlot, mountLogoBehavior } from './station-logo.js';
 import { mountNowPlayingHover } from './nowplaying-hover.js';
+import { detectStandalone } from '../platform.js';
+import { isElectron } from './electron-bridge.js';
 
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({
@@ -45,8 +47,11 @@ const MOVE_THRESHOLD_PX = 10;
 const EDGE_ZONE_PX = 60;
 const MAX_SCROLL_PX_PER_FRAME = 12;
 
-export function mountStationList({ container }) {
+export function mountStationList({ container, listId = null }) {
   const listEl = typeof container === 'string' ? document.getElementById(container) : container;
+  // Tab layout (mobile / installed PWA / Electron) drives the filter from the
+  // active list tab's funnel; the desktop browser keeps its own inline button.
+  const tabbedFilter = matchMedia('(max-width: 699px)').matches || detectStandalone() || isElectron();
   // Look up the empty-state placeholder as a child of this list's
   // container, not via a global #emptyState ID. Lets the component be
   // instantiated multiple times (one per page) inside the mobile
@@ -61,6 +66,14 @@ export function mountStationList({ container }) {
   let removeCb = null;
   let reorderCb = null;
   let rowsHost = null;
+
+  // List quick-filter (client-side, current list only — distinct from the
+  // global search). Collapsed to a tiny funnel pill; expands to an input with
+  // small dot-toggles picking which fields to match.
+  let filterBar = null;
+  let filterInput = null;
+  let filterQuery = '';
+  const filterScopes = { name: true, genre: false, country: false };
 
   // Reorder state
   let pressTimer = null;
@@ -288,14 +301,107 @@ export function mountStationList({ container }) {
       if (emptyEl) emptyEl.style.display = '';
       if (rowsHost) rowsHost.remove();
       rowsHost = null;
+      if (filterBar) filterBar.style.display = 'none';
       return;
     }
     if (emptyEl) emptyEl.style.display = 'none';
+    if (filterBar) filterBar.style.display = '';
     const host = ensureRowsHost();
     host.innerHTML = stations
       .map((s) => stationRow(s, { activeId, removable, reorderable }))
       .join('');
+    applyFilter();
   }
+
+  // ---- List quick-filter ----
+  const FILTER_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>';
+
+  function buildFilterBar() {
+    if (!listEl) return;
+    filterBar = document.createElement('div');
+    filterBar.className = 'list-filter' + (tabbedFilter ? ' list-filter--tabbed' : '');
+    filterBar.style.display = 'none';
+    filterBar.innerHTML = `
+      <div class="list-filter__pill">
+        <button type="button" class="list-filter__toggle" data-role="toggle" aria-label="Filter this list" title="Filter this list">${FILTER_ICON}</button>
+        <input type="text" class="list-filter__input" data-role="input" placeholder="Filter this list…" aria-label="Filter this list" />
+        <div class="list-filter__scopes" data-role="scopes">
+          <button type="button" class="list-filter__scope is-active" data-scope="name">name</button>
+          <button type="button" class="list-filter__scope" data-scope="genre">genre</button>
+          <button type="button" class="list-filter__scope" data-scope="country">country</button>
+        </div>
+      </div>`;
+    // Sit OUTSIDE the list box (as a sibling above it) so the collapsed round
+    // button floats clear of the rows; still sticky within the scroll parent.
+    if (listEl.parentNode) listEl.parentNode.insertBefore(filterBar, listEl);
+    else listEl.prepend(filterBar);
+    filterInput = filterBar.querySelector('[data-role="input"]');
+    const toggle = filterBar.querySelector('[data-role="toggle"]');
+
+    const collapse = () => {
+      filterBar.classList.remove('is-expanded');
+      if (filterQuery) { filterQuery = ''; filterInput.value = ''; applyFilter(); }
+    };
+    const expand = () => { filterBar.classList.add('is-expanded'); filterInput.focus(); };
+    const toggleOpen = () => { filterBar.classList.contains('is-expanded') ? collapse() : expand(); };
+    toggle.addEventListener('click', toggleOpen);
+    // Tab layout: the active list tab's funnel drives this list's filter.
+    if (tabbedFilter) {
+      window.addEventListener('rd:list-filter-toggle', (e) => {
+        if (e.detail?.id === listId) toggleOpen();
+      });
+    }
+    filterInput.addEventListener('input', () => { filterQuery = filterInput.value; applyFilter(); });
+    filterInput.addEventListener('keydown', (e) => { if (e.key === 'Escape') { collapse(); toggle.focus(); } });
+    // Desktop: blur collapses the empty pill. Tab layout keeps it open (the
+    // tab funnel toggles it) so a tap on the funnel to close doesn't race the
+    // blur-then-reopen.
+    filterInput.addEventListener('blur', () => { if (!tabbedFilter && !filterQuery.trim()) filterBar.classList.remove('is-expanded'); });
+    for (const btn of filterBar.querySelectorAll('[data-scope]')) {
+      btn.addEventListener('click', () => {
+        const s = btn.dataset.scope;
+        // Keep at least one scope active so the filter never matches nothing.
+        if (filterScopes[s] && Object.values(filterScopes).filter(Boolean).length === 1) return;
+        filterScopes[s] = !filterScopes[s];
+        btn.classList.toggle('is-active', filterScopes[s]);
+        applyFilter();
+        filterInput.focus();
+      });
+    }
+  }
+
+  function stationMatches(st, q) {
+    if (filterScopes.name && String(st?.name ?? '').toLowerCase().includes(q)) return true;
+    if (filterScopes.genre && (Array.isArray(st?.tags) ? st.tags.join(' ') : '').toLowerCase().includes(q)) return true;
+    if (filterScopes.country && String(st?.countrycode ?? '').toLowerCase().includes(q)) return true;
+    return false;
+  }
+
+  function applyFilter() {
+    if (!rowsHost) return;
+    const q = filterQuery.trim().toLowerCase();
+    const byId = new Map(stations.map((s) => [String(s.id), s]));
+    let visible = 0;
+    for (const row of rowsHost.children) {
+      if (row.classList.contains('list-filter__empty')) continue;
+      const match = !q || stationMatches(byId.get(row.dataset.id), q);
+      row.classList.toggle('is-filtered-out', !match);
+      if (match) visible++;
+    }
+    let hint = rowsHost.querySelector('.list-filter__empty');
+    if (q && visible === 0) {
+      if (!hint) {
+        hint = document.createElement('div');
+        hint.className = 'list-filter__empty';
+        hint.textContent = 'No matches in this list';
+        rowsHost.appendChild(hint);
+      }
+    } else if (hint) {
+      hint.remove();
+    }
+  }
+
+  buildFilterBar();
 
   return {
     setStations(next, opts = {}) {

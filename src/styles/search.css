@@ -333,6 +333,15 @@ body.is-electron:not(.is-tiny-player) .player-section {
   border-bottom-right-radius: var(--rd-window-radius);
 }
 
+/* The station-info sheet slides up to the bottom edge too — round its bottom
+   corners to the same radius so it fits the frame instead of poking a square
+   corner (and its shadow) past the rounded window. */
+body.is-electron:not(.is-tiny-player) .info-panel--sheet {
+  border-bottom-left-radius: var(--rd-window-radius);
+  border-bottom-right-radius: var(--rd-window-radius);
+  overflow: hidden;
+}
+
 /* ---- Tiny-player mode (Electron) ---- */
 /* The window becomes a transparent rectangle; only the player pill is opaque,
    so it reads as a floating pill. The main process shrinks it, docks it

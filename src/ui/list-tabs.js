@@ -26,6 +26,10 @@ const ICON_MENU = `<svg viewBox="0 0 24 24" aria-hidden="true">
   <circle cx="19" cy="12" r="1.8" fill="currentColor"/>
 </svg>`;
 
+// Quick-filter funnel shown at the left of the ACTIVE tab. Tapping it toggles
+// that list's filter input (which lives above the rows) via a broadcast event.
+const ICON_FILTER = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>`;
+
 export function mountListTabs({ root }) {
   if (!root) return { setLists() {}, setCurrent() {}, onSelect() {}, onLongPress() {}, onMenuClick() {}, onNewListClick() {} };
 
@@ -54,6 +58,7 @@ export function mountListTabs({ root }) {
         <button type="button"
                 class="list-tab${l.id === currentId ? ' is-active' : ''}"
                 data-id="${escapeHtml(l.id)}">
+          ${l.id === currentId ? `<span class="list-tab__filter" data-role="tab-filter" role="button" tabindex="0" aria-label="Filter this list" title="Filter this list">${ICON_FILTER}</span>` : ''}
           <span class="list-tab__name">${escapeHtml(l.name)}</span>
         </button>`,
       )
@@ -75,7 +80,15 @@ export function mountListTabs({ root }) {
     longPressFired = false;
   }
 
+  // The active tab's funnel toggles that list's filter — never a tab press.
+  tabsEl.addEventListener('click', (evt) => {
+    if (!evt.target.closest('[data-role="tab-filter"]')) return;
+    evt.stopPropagation();
+    window.dispatchEvent(new CustomEvent('rd:list-filter-toggle', { detail: { id: currentId } }));
+  });
+
   tabsEl.addEventListener('pointerdown', (evt) => {
+    if (evt.target.closest('[data-role="tab-filter"]')) return;
     const tab = evt.target.closest('.list-tab');
     if (!tab) return;
     pressedTab = tab;

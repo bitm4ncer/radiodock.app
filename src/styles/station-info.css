@@ -310,7 +310,6 @@
   background: var(--bg);
   transform: translateY(100%);
   transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
 }
 .info-panel--sheet .info-panel__body { padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
 body.info-open .info-panel--sheet { transform: translateY(0); }
