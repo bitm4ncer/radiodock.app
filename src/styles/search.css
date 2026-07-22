@@ -340,6 +340,17 @@ body.is-electron:not(.is-tiny-player) .info-panel--sheet {
   border-bottom-left-radius: var(--rd-window-radius);
   border-bottom-right-radius: var(--rd-window-radius);
   overflow: hidden;
+  /* A sliding opaque sheet covers the window's rounded bottom corners with a
+     square edge mid-transform. Fade it in at its final (rounded, aligned)
+     position instead of sliding — the player still rises, so there's motion. */
+  transform: none;
+  opacity: 0;
+  transition: opacity 0.26s ease;
+  pointer-events: none;
+}
+body.is-electron:not(.is-tiny-player).info-open .info-panel--sheet {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* ---- Tiny-player mode (Electron) ---- */

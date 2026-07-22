@@ -319,11 +319,13 @@ export function mountStationList({ container, listId = null }) {
   function buildFilterBar() {
     if (!listEl) return;
     filterBar = document.createElement('div');
-    filterBar.className = 'list-filter' + (tabbedFilter ? ' list-filter--tabbed' : '');
+    filterBar.className = 'list-filter';
     filterBar.style.display = 'none';
+    // No internal trigger — the funnel lives in the active list tab (tab
+    // layout) or next to the "Community Radios" title (desktop). Collapsed the
+    // bar takes no space; it reveals the input pill in place when toggled.
     filterBar.innerHTML = `
       <div class="list-filter__pill">
-        <button type="button" class="list-filter__toggle" data-role="toggle" aria-label="Filter this list" title="Filter this list">${FILTER_ICON}</button>
         <input type="text" class="list-filter__input" data-role="input" placeholder="Filter this list…" aria-label="Filter this list" />
         <div class="list-filter__scopes" data-role="scopes">
           <button type="button" class="list-filter__scope is-active" data-scope="name">name</button>
@@ -331,12 +333,9 @@ export function mountStationList({ container, listId = null }) {
           <button type="button" class="list-filter__scope" data-scope="country">country</button>
         </div>
       </div>`;
-    // Sit OUTSIDE the list box (as a sibling above it) so the collapsed round
-    // button floats clear of the rows; still sticky within the scroll parent.
     if (listEl.parentNode) listEl.parentNode.insertBefore(filterBar, listEl);
     else listEl.prepend(filterBar);
     filterInput = filterBar.querySelector('[data-role="input"]');
-    const toggle = filterBar.querySelector('[data-role="toggle"]');
 
     const collapse = () => {
       filterBar.classList.remove('is-expanded');
@@ -344,19 +343,31 @@ export function mountStationList({ container, listId = null }) {
     };
     const expand = () => { filterBar.classList.add('is-expanded'); filterInput.focus(); };
     const toggleOpen = () => { filterBar.classList.contains('is-expanded') ? collapse() : expand(); };
-    toggle.addEventListener('click', toggleOpen);
-    // Tab layout: the active list tab's funnel drives this list's filter.
+
     if (tabbedFilter) {
+      // Tab layout: the active list tab's funnel drives this list's filter.
       window.addEventListener('rd:list-filter-toggle', (e) => {
         if (e.detail?.id === listId) toggleOpen();
       });
+    } else if (listId === null) {
+      // Desktop: the single #favoritesList instance (listId null) owns the
+      // shared list-header, so only it injects the funnel left of the dropdown.
+      // (The carousel's per-list instances have a listId and stay inert here —
+      // they're hidden in the desktop layout anyway.)
+      const dropdown = document.querySelector('.list-header .list-dropdown');
+      if (dropdown?.parentNode) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'list-header__filter';
+        btn.setAttribute('aria-label', 'Filter this list');
+        btn.title = 'Filter this list';
+        btn.innerHTML = FILTER_ICON;
+        dropdown.parentNode.insertBefore(btn, dropdown);
+        btn.addEventListener('click', toggleOpen);
+      }
     }
     filterInput.addEventListener('input', () => { filterQuery = filterInput.value; applyFilter(); });
-    filterInput.addEventListener('keydown', (e) => { if (e.key === 'Escape') { collapse(); toggle.focus(); } });
-    // Desktop: blur collapses the empty pill. Tab layout keeps it open (the
-    // tab funnel toggles it) so a tap on the funnel to close doesn't race the
-    // blur-then-reopen.
-    filterInput.addEventListener('blur', () => { if (!tabbedFilter && !filterQuery.trim()) filterBar.classList.remove('is-expanded'); });
+    filterInput.addEventListener('keydown', (e) => { if (e.key === 'Escape') collapse(); });
     for (const btn of filterBar.querySelectorAll('[data-scope]')) {
       btn.addEventListener('click', () => {
         const s = btn.dataset.scope;
