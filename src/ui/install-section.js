@@ -55,6 +55,9 @@ const ICONS = {
   // Filled red heart for the Buy-Me-a-Coffee support link — the same heart
   // path as the favorite/save button (#addToFavoritesBtn in index.html).
   support: `<svg class="install-section__btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 3C19.5376 3 22 5.5 22 9C22 16 14.5 20 12 21.5C9.5 20 2 16 2 9C2 5.5 4.5 3 7.5 3C9.35997 3 11 4 12 5C13 4 14.64 3 16.5 3Z" fill="currentColor"/></svg>`,
+  // Flathub — the store the GNOME/KDE software centres pull from. A simple
+  // package cube reads as "app store" without risking a wrong brand path.
+  flathub: `<svg class="install-section__btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 6.5v11L12 22l9-4.5v-11L12 2Zm0 2.24 6.4 3.2L12 10.66 5.6 7.44 12 4.24ZM5 9.24l6 3.02v7.2l-6-3V9.24Zm14 0v7.22l-6 3v-7.2l6-3.02Z" fill="currentColor"/></svg>`,
 };
 
 const SUPPORT_URL = 'https://buymeacoffee.com/bitmancer';
@@ -62,10 +65,15 @@ const SUPPORT_URL = 'https://buymeacoffee.com/bitmancer';
 // OS download URLs. The Electron wrapper is a thin client (loads the live
 // PWA), so builds are rare — only when Electron itself or preload.js changes.
 // Assets are published to GitHub Releases with stable, versionless names.
+// `flathub` currently points at the raw .flatpak bundle on the same release —
+// once the app is published on Flathub, swap this to the store page
+// (https://flathub.org/apps/app.radiodock.RadioDock), relabel the tile
+// "Flathub", and give it the external-link glyph instead of the download one.
 const DOWNLOAD_URLS = {
   windows: 'https://github.com/bitm4ncer/radiodock.app/releases/latest/download/RadioDock-win.exe',
   macos:   'https://github.com/bitm4ncer/radiodock.app/releases/latest/download/RadioDock-mac.dmg',
   linux:   'https://github.com/bitm4ncer/radiodock.app/releases/latest/download/RadioDock-linux.AppImage',
+  flathub: 'https://github.com/bitm4ncer/radiodock.app/releases/latest/download/RadioDock-linux.flatpak',
 };
 
 function tile(target, label, sub, currentClass) {
@@ -92,9 +100,8 @@ function downloadTile(target, label, sub) {
   </a>`;
 }
 
-// Fills the empty fourth cell of the desktop download grid — a low-key
-// outbound ask, tracked as a bmc-click by the delegated handler in main.js
-// (href match), so no per-element wiring here.
+// A low-key outbound ask, tracked as a bmc-click by the delegated handler in
+// main.js (href match), so no per-element wiring here.
 function supportTile() {
   return `<a class="install-section__btn install-section__btn--support" href="${SUPPORT_URL}" target="_blank" rel="noopener" data-support>
     ${ICONS.support}
@@ -165,19 +172,22 @@ export async function mountInstallSection({ container, installInfo, animateIn = 
           ${downloadTile('windows', 'Windows', '.exe installer')}
           ${downloadTile('macos', 'macOS', '.dmg disk image')}
           ${downloadTile('linux', 'Linux', '.AppImage')}
-          ${supportTile()}
+          ${downloadTile('flathub', 'Flatpak', '.flatpak package')}
         </div>
       </div>
-      <button type="button" class="install-section__sync" data-action="sync">
-        ${ICONS.sync}
-        <span class="install-section__btn-text">
-          <span class="install-section__btn-label">Sync devices</span>
-          <span class="install-section__btn-sub">QR code — no account needed</span>
-        </span>
-        <svg class="install-section__btn-dl-icon" viewBox="0 0 24 24" aria-hidden="true" width="14" height="14">
-          <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        </svg>
-      </button>
+      <div class="install-section__foot">
+        <button type="button" class="install-section__sync" data-action="sync">
+          ${ICONS.sync}
+          <span class="install-section__btn-text">
+            <span class="install-section__btn-label">Sync devices</span>
+            <span class="install-section__btn-sub">QR code — no account needed</span>
+          </span>
+          <svg class="install-section__btn-dl-icon" viewBox="0 0 24 24" aria-hidden="true" width="14" height="14">
+            <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+        </button>
+        ${supportTile()}
+      </div>
     </div>
   `;
   container.append(section);

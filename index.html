@@ -42,9 +42,20 @@
             if (/[?&]pwa=1/.test(location.search)) sessionStorage.setItem('radiodock-pwa', '1');
             pwaLaunch = sessionStorage.getItem('radiodock-pwa') === '1';
           } catch (e) {}
+          // Our Electron shell reports display-mode: browser (same as
+          // Vivaldi's PWA windows), so at >=700 px it would fall into the
+          // desktop regime. On tiling WMs (niri, sway) the window gets
+          // stretched past that width and the app wrongly jumps to the
+          // desktop card. Treat the shell as standalone so the mobile layout
+          // holds at any width — app-standalone.css mirrors the same layout
+          // the shell already renders at its narrow default width, so nothing
+          // else changes. Detect via the preload-exposed electronAPI (set
+          // only by OUR shell, before this script runs) — not the UA string,
+          // which any Electron-based browser would also match.
+          var isElectronShell = !!(window.electronAPI && window.electronAPI.isElectron);
           var standalone = window.navigator.standalone === true ||
             !matchMedia('(display-mode: browser)').matches ||
-            pwaLaunch;
+            pwaLaunch || isElectronShell;
           if (standalone) document.documentElement.classList.add('is-standalone');
           // Intro reveal failsafe. main.js normally sets `app-ready` as soon as
           // the wallpaper settles; this guarantees the page reveals even if that

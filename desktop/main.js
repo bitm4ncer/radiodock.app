@@ -37,7 +37,12 @@ function createWindow() {
     width: 380,
     height: 760,
     minWidth: 380,
-    maxWidth: 699,
+    // Linux tiling compositors (niri, sway) stretch windows to fill their
+    // column and ignore a max-width range, tripping the desktop breakpoint.
+    // Lock the width there (min === max) so the window stays a fixed mobile
+    // column; the app also forces the mobile layout via the is-standalone
+    // class, so a compositor that ignores this hint still renders correctly.
+    maxWidth: process.platform === 'linux' ? 380 : 699,
     minHeight: 480,
     icon: iconPath,
     alwaysOnTop,
