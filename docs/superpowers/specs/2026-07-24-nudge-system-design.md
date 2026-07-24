@@ -117,7 +117,7 @@ Firefox, unsupported): a **"Link copied!"** button (writes the URL to
 clipboard) plus 2–3 direct icons — WhatsApp · X · Mail.
 
 **Support card** — heart icon
-> **You're a power user!** · RadioDock is free & ad-free — help keep the server
+> **You're a power user!** · RadioDock is free & ad-free. Help keep the server
 > alive and support the project.
 
 Action: opens `SUPPORT_URL` in a new tab. **`SUPPORT_URL =
