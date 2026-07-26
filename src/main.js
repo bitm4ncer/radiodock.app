@@ -45,6 +45,7 @@ import { mountChangelog, CHANGELOG_REVISION } from './ui/changelog.js';
 import { startLiveSync, stopLiveSync, pushWithStatus as syncPushWithStatus, getSyncToken, extractTokenFromInput, pullFromServer, applyImportPayload, markSyncDirty } from './data/sync.js';
 import { track } from './analytics/umami.js';
 import { attachListenHeartbeat } from './analytics/listen-heartbeat.js';
+import { mountNudges } from './ui/nudges.js';
 import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
 import { detectPlatform, detectStandalone, canPromptInstall, promptInstall } from './platform.js';
 import { attachStreamProber } from './player/stream-prober.js';
@@ -69,6 +70,7 @@ attachRecovery(player);
 attachMetadataPoller(player);
 attachMediaSession(player);
 attachListenHeartbeat(player);
+mountNudges({ player });
 
 // --- Stream offline prober ---
 // Detects off-air stations in the active list and shows an OFF badge. The
@@ -190,8 +192,22 @@ const playerCard = mountPlayerCard({ player });
 // between the top bar and the player instead of covering them.
 mountAppPageBounds();
 const stationInfo = mountStationInfo();
-playerCard.onInfoClick((station) => {
+
+// Tiny-player ↔ station-info coordination (Electron):
+// - Switching to the tiny pill auto-closes an open info panel (it isn't a
+//   "page", so the tiny-mode page-exclusivity broadcast misses it).
+// - Opening info while tiny expands the app first so there's room to show it.
+window.addEventListener('rd:tiny-changed', (e) => { if (e.detail?.on) stationInfo.close(); });
+function openStationInfo(station) {
+  if (!station) return;
+  if (document.body.classList.contains('is-tiny-player')) {
+    window.dispatchEvent(new CustomEvent('rd:set-tiny', { detail: { on: false } }));
+  }
   stationInfo.open(station);
+}
+
+playerCard.onInfoClick((station) => {
+  openStationInfo(station);
   track('station-info-open', {
     station: station.name ?? '',
     country: station.countrycode ?? '',
@@ -215,7 +231,7 @@ if (matchMedia('(max-width: 699px)').matches || detectStandalone() || isElectron
       tracking = false;
       const dy = e.clientY - sy, dx = e.clientX - sx;
       if (dy <= -45 && Math.abs(dy) > Math.abs(dx) && performance.now() - st < 800 && state.currentStation) {
-        stationInfo.open(state.currentStation);
+        openStationInfo(state.currentStation);
         track('station-info-open', { station: state.currentStation.name ?? '', source: 'swipe' });
       }
     });
