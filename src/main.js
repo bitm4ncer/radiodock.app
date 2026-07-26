@@ -974,9 +974,14 @@ stationList.onClick((station) => {
   player.playStation(station);
 });
 
-stationList.onRemove(async (stationId) => {
-  const list = findList(state.currentListId);
+// Shared by the desktop list and the mobile carousel — both remove on a single
+// click with no confirm, so both need the same way back. Re-adding appends,
+// hence the reorder against the pre-removal id order to restore the exact slot.
+async function removeStationWithUndo(listId, stationId) {
+  const list = findList(listId);
   if (!list || list.readOnly) return;
+  const removed = list.stations.find((s) => s.id === stationId);
+  const previousOrder = list.stations.map((s) => s.id);
   try {
     await listsApi.removeStationFromList(list.id, stationId);
     list.stations = list.stations.filter((s) => s.id !== stationId);
@@ -984,8 +989,30 @@ stationList.onRemove(async (stationId) => {
     renderActiveList();
   } catch (err) {
     toast(err.message);
+    return;
   }
-});
+  if (!removed) return;
+  toast(`Removed "${removed.name}"`, {
+    action: {
+      label: 'Undo',
+      callback: async () => {
+        const target = findList(listId);
+        if (!target || target.readOnly) return;
+        try {
+          await listsApi.addStationToList(target.id, removed);
+          const updated = await listsApi.reorderStationsInList(target.id, previousOrder);
+          target.stations = updated.stations;
+          scheduleSyncPush();
+          renderActiveList();
+        } catch (err) {
+          toast(err.message);
+        }
+      },
+    },
+  });
+}
+
+stationList.onRemove((stationId) => removeStationWithUndo(state.currentListId, stationId));
 
 stationList.onReorder(async (orderedIds) => {
   const list = findList(state.currentListId);
@@ -1096,18 +1123,7 @@ listsCarousel.onClick((station) => {
   player.playStation(station);
 });
 
-listsCarousel.onRemove(async (stationId, listId) => {
-  const list = findList(listId);
-  if (!list || list.readOnly) return;
-  try {
-    await listsApi.removeStationFromList(list.id, stationId);
-    list.stations = list.stations.filter((s) => s.id !== stationId);
-    scheduleSyncPush();
-    renderActiveList();
-  } catch (err) {
-    toast(err.message);
-  }
-});
+listsCarousel.onRemove((stationId, listId) => removeStationWithUndo(listId, stationId));
 
 listsCarousel.onReorder(async (orderedIds, listId) => {
   const list = findList(listId);
