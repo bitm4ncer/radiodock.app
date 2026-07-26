@@ -370,9 +370,25 @@ body.is-tiny-player .search-section,
 body.is-tiny-player .list-filter,
 body.is-tiny-player .list-header__filter,
 body.is-tiny-player .info-panel,
-body.is-tiny-player .player-card-minimize-btn,
+/* .tool-btn covers every floating container tool — drag handle, solid toggle,
+   minimize, visualizer trigger. They act on the desktop container card and are
+   meaningless (and in the way) once it is a pill. */
+body.is-tiny-player .tool-btn,
 body.is-tiny-player .volume-controls {
   display: none !important;
+}
+
+/* A drag position carried over from desktop use would otherwise displace the
+   pill inside the tiny window: `.container.has-tools.is-dragged` pins the
+   container `position: fixed` at the stored --container-x/y. Neutralise it in
+   tiny so the pill stays centred (the stored position is untouched and applies
+   again on expand). */
+body.is-tiny-player .container.has-tools.is-dragged {
+  position: static;
+  left: auto;
+  top: auto;
+  margin: 0;
+  z-index: auto;
 }
 
 /* The Electron shell runs in standalone regime, and app-standalone.css
