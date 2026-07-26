@@ -389,6 +389,27 @@ html.is-standalone body.is-tiny-player .off-canvas {
   display: none !important;
 }
 
+/* Blank the document while the tiny/full switch is in flight (set by
+   electron-window-controls.js). The renderer relayouts instantly but the window
+   resize is an async IPC hop, so without this the new layout paints at the old
+   window size for a frame or more — the pill jumping as the window shrinks and
+   docks. No transition on purpose: this must be an instant cut, not a fade. */
+html.is-tiny-switching body {
+  opacity: 0 !important;
+}
+
+/* Snap, don't animate, across the switch. The card's own transitions (e.g.
+   .now-playing's 0.3s max-height, which retunes 50px -> 18px for the pill)
+   would otherwise still be running when the window is revealed, so the pill
+   kept visibly resizing for a third of a second after minimizing. Values jump
+   straight to their tiny/full targets while the document is blanked. */
+html.is-tiny-switching *,
+html.is-tiny-switching *::before,
+html.is-tiny-switching *::after {
+  transition: none !important;
+  animation-duration: 0s !important;
+}
+
 /* Make everything around the pill see-through so the window looks pill-shaped.
    The root <html> MUST be transparent too: layout.css paints
    html{background:var(--bg)} (opaque, for the iOS rubber-band overscroll), and
@@ -429,6 +450,42 @@ body.is-tiny-player .player-section {
   padding: 0 18px;
   background: transparent !important;
   border: 0 !important;
+}
+
+/* The Electron shell runs in standalone regime, whose layout rules tie the tiny
+   ones on specificity (both 0,2,1) and win on import order — so the pill kept
+   the mobile bottom-bar layout: `.page` stayed flex-start, `.player-section`
+   stayed `position: fixed; bottom: 0`, and `.player-card` kept `width: 100%`
+   (that one is 0,2,2, so it beat the tiny rule outright). Result: the pill sat
+   flush against the window's bottom edge with its drop shadow cut off, and on
+   entering tiny it rendered at the bottom of the still-full-size window before
+   the resize landed — the visible jump. Re-assert the tiny layout scoped to
+   html.is-standalone so it wins regardless of import order. */
+html.is-standalone body.is-tiny-player .page {
+  justify-content: center;
+  overflow: visible;
+}
+html.is-standalone body.is-tiny-player .container {
+  flex: 0 0 auto;
+  gap: 0;
+}
+html.is-standalone body.is-tiny-player .player-section {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  z-index: auto;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+  padding: 0 18px;
+  border-top: 0;
+}
+/* Width stays 100% (the standalone rule's value): the pill fills the section
+   minus its 18px side padding, so it is a stable size instead of resizing with
+   every station name. */
+html.is-standalone body.is-tiny-player .player-section .player-card {
+  margin: 0;
 }
 
 /* The player-card IS the pill: opaque, fully rounded, content-sized (so a bigger
