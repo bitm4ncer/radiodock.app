@@ -1,7 +1,7 @@
 {
   "name": "radiodock-desktop",
   "version": "1.0.0",
-  "description": "RadioDock native desktop app — thin Electron wrapper around the PWA",
+  "description": "RadioDock native desktop app",
   "main": "main.js",
   "author": "Jannes Becherer",
   "license": "MIT",
