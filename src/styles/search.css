@@ -370,7 +370,22 @@ body.is-tiny-player .search-section,
 body.is-tiny-player .list-filter,
 body.is-tiny-player .list-header__filter,
 body.is-tiny-player .info-panel,
+body.is-tiny-player .player-card-minimize-btn,
 body.is-tiny-player .volume-controls {
+  display: none !important;
+}
+
+/* The Electron shell runs in standalone regime, and app-standalone.css
+   force-shows the mobile chrome — top bar, lists, search overlay, off-canvas —
+   with `display: … !important` at the SAME specificity as the hide block above
+   (both 0,2,1). It's imported after this file, so on a plain tie it wins and the
+   header + lists leak in around the tiny pill. Re-assert the hide for just those
+   four with the html.is-standalone scope (0,3,2) so tiny always wins, whatever
+   the import order. */
+html.is-standalone body.is-tiny-player .mobile-topbar,
+html.is-standalone body.is-tiny-player .mobile-lists,
+html.is-standalone body.is-tiny-player .search-overlay,
+html.is-standalone body.is-tiny-player .off-canvas {
   display: none !important;
 }
 
