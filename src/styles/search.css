@@ -367,6 +367,9 @@ body.is-tiny-player .app-background,
 body.is-tiny-player .electron-titlebar,
 body.is-tiny-player .favorites-section,
 body.is-tiny-player .search-section,
+body.is-tiny-player .list-filter,
+body.is-tiny-player .list-header__filter,
+body.is-tiny-player .info-panel,
 body.is-tiny-player .volume-controls {
   display: none !important;
 }

@@ -1,5 +1,7 @@
 .list-dropdown {
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 /* When the dropdown menu is open, the enclosing .favorites-section

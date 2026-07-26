@@ -114,6 +114,9 @@ export function mountElectronWindowControls({ electronBridge } = {}) {
       relocatePill(on);
       document.body.classList.toggle('is-tiny-player', on);
       tinyBtn.classList.toggle('is-active', on);
+      // Let the app react (e.g. main.js closes the station-info panel, which
+      // isn't a "page" so the exclusivity broadcast above doesn't touch it).
+      window.dispatchEvent(new CustomEvent('rd:tiny-changed', { detail: { on } }));
       try { await api.setTinyPlayer(on); }
       catch (err) { console.warn('Tiny player toggle failed:', err); }
     };
