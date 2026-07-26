@@ -55,6 +55,11 @@ export function attachStreamProber({ getStations, getPlayingId, onStatusChange }
   let statuses = {};          // { stationId: 'online' | 'offline' | 'unknown' } — non-playing rows only
   let probing = false;
   let aborted = false;
+  // Attaching must not start probing. The visibilitychange listener below is
+  // registered once at attach time, so without this gate a caller that never
+  // called start() (or that called stop()) would still get a full probe pass —
+  // and a repeating timer — on the first tab hide/show.
+  let running = false;
 
   /**
    * Load a station URL into a throwaway muted <audio> and classify.
@@ -152,6 +157,7 @@ export function attachStreamProber({ getStations, getPlayingId, onStatusChange }
   }
 
   function onVisibilityChange() {
+    if (!running) return;
     if (document.visibilityState === 'visible') {
       if (!probing) runProbeCycle();
       startTimer();
@@ -161,6 +167,7 @@ export function attachStreamProber({ getStations, getPlayingId, onStatusChange }
   }
 
   function start() {
+    running = true;
     aborted = false;
     statuses = {};
     startTimer();
@@ -168,6 +175,7 @@ export function attachStreamProber({ getStations, getPlayingId, onStatusChange }
   }
 
   function stop() {
+    running = false;
     aborted = true;
     stopTimer();
     probing = false;
@@ -177,6 +185,7 @@ export function attachStreamProber({ getStations, getPlayingId, onStatusChange }
 
   // Active list changed: abort the in-flight pass and restart cleanly.
   function refresh() {
+    if (!running) return;
     aborted = true;
     probing = false;
     statuses = {};
