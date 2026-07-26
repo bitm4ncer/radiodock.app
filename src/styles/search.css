@@ -378,18 +378,9 @@ body.is-tiny-player .volume-controls {
   display: none !important;
 }
 
-/* A drag position carried over from desktop use would otherwise displace the
-   pill inside the tiny window: `.container.has-tools.is-dragged` pins the
-   container `position: fixed` at the stored --container-x/y. Neutralise it in
-   tiny so the pill stays centred (the stored position is untouched and applies
-   again on expand). */
-body.is-tiny-player .container.has-tools.is-dragged {
-  position: static;
-  left: auto;
-  top: auto;
-  margin: 0;
-  z-index: auto;
-}
+/* A drag/minimize state carried over from desktop use would also displace the
+   pill here — that is neutralised for the whole standalone regime (which the
+   Electron shell always runs in) in app-standalone.css, tiny included. */
 
 /* The Electron shell runs in standalone regime, and app-standalone.css
    force-shows the mobile chrome — top bar, lists, search overlay, off-canvas —

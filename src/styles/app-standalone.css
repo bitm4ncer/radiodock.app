@@ -135,8 +135,41 @@ html.is-standalone .bg-gallery,
 html.is-standalone .bg-create,
 html.is-standalone .bg-mesh-handles,
 html.is-standalone .notes-flag,
-html.is-standalone .container-solid-toggle {
+html.is-standalone .container-solid-toggle,
+html.is-standalone .player-card-drag-handle,
+html.is-standalone .player-card-minimize-btn {
   display: none !important;
+}
+
+/* The container-drag/minimize tools belong to the desktop-browser layout, where
+   .container is a card floating over the background. In standalone the
+   container IS the app surface, pinned between the header and the player bar —
+   so those states break it: `is-dragged` pins it `position: fixed` at the
+   stored --container-x/y (content then slides under the header instead of
+   aligning to it), and `is-minimized` collapses the lists behind a 44px strip.
+   The buttons are hidden above, but a position/minimized state persisted from
+   desktop use still applies, so neutralise the states themselves. Both prefs
+   are left untouched and take effect again in a desktop browser. */
+html.is-standalone .container.has-tools.is-dragged {
+  /* `relative`, not `static`: it restores exactly what `.container.has-tools`
+     sets normally, so the container keeps being the containing block for its
+     absolutely-positioned children. */
+  position: relative;
+  left: auto;
+  top: auto;
+  margin: 0;
+  z-index: auto;
+}
+html.is-standalone .container.is-minimized {
+  padding: 12px 0 0;
+  gap: 12px;
+}
+html.is-standalone .container.is-minimized .favorites-section,
+html.is-standalone .container.is-minimized .search-section {
+  max-height: none;
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
 }
 
 /* Restore the opaque dark body bg in standalone — background.css forces
