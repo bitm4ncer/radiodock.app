@@ -197,6 +197,30 @@ playerCard.onInfoClick((station) => {
     country: station.countrycode ?? '',
   });
 });
+
+// Mobile / app: a swipe-up on the player card opens the station-info sheet
+// (same entry point as the ⓘ button). Gated to the sheet regime so a desktop
+// mouse-drag never triggers it. Swipes starting on a control are ignored so
+// play / volume / action-bar taps keep working.
+if (matchMedia('(max-width: 699px)').matches || detectStandalone() || isElectron()) {
+  const card = document.getElementById('playerCard');
+  if (card) {
+    let sy = 0, sx = 0, st = 0, tracking = false;
+    card.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('button, a, .volume-controls')) { tracking = false; return; }
+      sy = e.clientY; sx = e.clientX; st = performance.now(); tracking = true;
+    });
+    card.addEventListener('pointerup', (e) => {
+      if (!tracking) return;
+      tracking = false;
+      const dy = e.clientY - sy, dx = e.clientX - sx;
+      if (dy <= -45 && Math.abs(dy) > Math.abs(dx) && performance.now() - st < 800 && state.currentStation) {
+        stationInfo.open(state.currentStation);
+        track('station-info-open', { station: state.currentStation.name ?? '', source: 'swipe' });
+      }
+    });
+  }
+}
 const stationList = mountStationList({ container: 'favoritesList' });
 const listDropdown = mountListDropdown();
 

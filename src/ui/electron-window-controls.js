@@ -82,6 +82,7 @@ export function mountElectronWindowControls({ electronBridge } = {}) {
     const actionBar = document.getElementById('playerActionBar');
     const exitBtn = document.getElementById('tinyMaxBtn');
     const details = document.querySelector('.station-details');
+    const pill = document.getElementById('playerCard');
     let abHome = null, exitHome = null;
 
     const relocatePill = (on) => {
@@ -89,27 +90,56 @@ export function mountElectronWindowControls({ electronBridge } = {}) {
       if (on) {
         abHome = { parent: actionBar.parentNode, next: actionBar.nextSibling };
         details.appendChild(actionBar);
-        if (exitBtn) {
+        // The exit button lives in the pill's top-right corner (CSS-positioned),
+        // NOT in the action bar — the bar is already full with the six controls
+        // plus the injected record/detect/note buttons.
+        if (exitBtn && pill) {
           exitHome = { parent: exitBtn.parentNode, next: exitBtn.nextSibling };
-          exitBtn.classList.add('pab-btn');
-          actionBar.appendChild(exitBtn);
+          pill.appendChild(exitBtn);
         }
       } else {
-        if (exitBtn && exitHome?.parent) {
-          exitBtn.classList.remove('pab-btn');
-          exitHome.parent.insertBefore(exitBtn, exitHome.next);
-        }
+        if (exitBtn && exitHome?.parent) exitHome.parent.insertBefore(exitBtn, exitHome.next);
         if (abHome?.parent) abHome.parent.insertBefore(actionBar, abHome.next);
       }
     };
 
+    // The layout switch is instant in the renderer, but the window resize is an
+    // async IPC round-trip. In between, the app would paint the new layout at
+    // the OLD window size — the pill centred in the full-size window for a
+    // frame or more, then jumping as the window shrinks and docks to the
+    // corner. The window is transparent, so blanking the document across the
+    // switch hides that entirely: nothing is painted until the new size is laid
+    // out. Revealed on the second frame after the resize resolves (first frame
+    // applies the new size, second paints it), with a timeout failsafe so a
+    // slow or failed IPC can never leave the app invisible.
+    let revealTimer = null;
+    const setSwitching = (state) => {
+      document.documentElement.classList.toggle('is-tiny-switching', state);
+    };
+    const reveal = () => {
+      clearTimeout(revealTimer);
+      requestAnimationFrame(() => requestAnimationFrame(() => setSwitching(false)));
+      revealTimer = setTimeout(() => setSwitching(false), 500);
+    };
+
     const applyTiny = async (on) => {
       if (document.body.classList.contains('is-tiny-player') === on) return;
+      setSwitching(true);
+      // Collapsing to the pill makes it the sole surface. Any open full-page
+      // surface (Notes / Sync / About / Log / Search) must close first, or it
+      // stays mounted and bleeds out around the small pill. Rides main.js's
+      // page-exclusivity engine: announcing the pill as the active surface
+      // closes every real page (no page id matches, so they all close).
+      if (on) window.dispatchEvent(new CustomEvent('rd:page-open', { detail: { id: 'tinyPlayer' } }));
       relocatePill(on);
       document.body.classList.toggle('is-tiny-player', on);
       tinyBtn.classList.toggle('is-active', on);
+      // Let the app react (e.g. main.js closes the station-info panel, which
+      // isn't a "page" so the exclusivity broadcast above doesn't touch it).
+      window.dispatchEvent(new CustomEvent('rd:tiny-changed', { detail: { on } }));
       try { await api.setTinyPlayer(on); }
       catch (err) { console.warn('Tiny player toggle failed:', err); }
+      finally { reveal(); }
     };
     tinyBtn.addEventListener('click', () => applyTiny(!document.body.classList.contains('is-tiny-player')));
     window.addEventListener('rd:set-tiny', (e) => applyTiny(!!e.detail?.on));

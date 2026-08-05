@@ -47,6 +47,9 @@
 
 .list-tab {
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   padding: 7px 14px;
   background: transparent;
   border: 0;
@@ -75,6 +78,22 @@
   color: var(--text);
   background: var(--bg-list-hover);
 }
+
+/* Tiny quick-filter funnel at the left of the active tab. Toggles the list's
+   filter input (which opens above the rows). */
+.list-tab__filter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-left: -3px;
+  flex-shrink: 0;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.list-tab__filter:hover { color: var(--text); }
+.list-tab__filter svg { width: 13px; height: 13px; display: block; }
 
 .list-tabs__menu-btn {
   flex-shrink: 0;

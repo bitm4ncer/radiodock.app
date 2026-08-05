@@ -6,6 +6,104 @@
   margin-top: 10px;;
 }
 
+/* List quick-filter — filters the CURRENT list client-side. Deliberately
+   distinct from the global search (funnel glyph, in-list, no network). The
+   trigger lives OUTSIDE this bar — in the active list tab (tab layout) or
+   next to the "Community Radios" title (desktop). This bar takes no space
+   collapsed and reveals the input pill in place when toggled. */
+.list-filter {
+  overflow: hidden;
+  max-height: 40px;
+  transition: max-height 0.28s cubic-bezier(0.22, 1, 0.36, 1), padding 0.28s ease;
+}
+.list-filter:not(.is-expanded) {
+  max-height: 0;
+  padding: 0;
+}
+.list-filter__pill {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  background: var(--bg-list-hover);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.list-filter__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+  padding: 4px 12px;
+  opacity: 0;
+  transition: opacity 0.2s ease 0.05s;
+}
+.list-filter.is-expanded .list-filter__input { opacity: 1; }
+.list-filter__input::placeholder { color: var(--text-muted); }
+.list-filter__scopes {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 2px;
+  padding-right: 6px;
+  opacity: 0;
+  transition: opacity 0.2s ease 0.05s;
+}
+.list-filter.is-expanded .list-filter__scopes { opacity: 1; }
+.list-filter__scope {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  padding: 3px 5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.list-filter__scope::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--text-muted);
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+.list-filter__scope.is-active { color: var(--text); }
+.list-filter__scope.is-active::before { background: var(--red); box-shadow: none; }
+
+/* Desktop trigger — a small funnel to the left of the "Community Radios"
+   dropdown title. */
+.list-header__filter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-right: 4px;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+}
+.list-header__filter:hover { color: var(--text); }
+.list-header__filter svg { width: 15px; height: 15px; }
+
+.station-item.is-filtered-out { display: none; }
+.list-filter__empty {
+  padding: 14px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12.5px;
+}
+
 .favorites-header {
   display: flex;
   align-items: center;

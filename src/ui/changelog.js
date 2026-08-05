@@ -36,7 +36,7 @@ export const CHANGELOG = [
   {
     name: 'Identify the track',
     features: [
-      { icon: 'detect', title: 'What song is this?', body: 'Tap the Identify button in the player and RadioDock recognises the track playing right now — the song and artist, with links to hear it on Spotify or YouTube. Listens for a few seconds; works best on music stations.' },
+      { icon: 'detect', title: 'What song is this?', body: 'Tap the Identify button in the player to recognise the currently playing track if it is available on Spotify or YouTube.' },
     ],
   },
   {
@@ -140,8 +140,8 @@ export function mountChangelog() {
   function render() {
     if (!body || rendered) return;
     body.innerHTML =
-      bannerHtml() +
       CHANGELOG.map((rel, i) => releaseHtml(rel, i === 0)).join('') +
+      bannerHtml() +
       footerHtml();
     rendered = true;
   }

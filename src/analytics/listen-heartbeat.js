@@ -9,12 +9,18 @@
 
 import { track, identifySession } from './umami.js';
 
-export function attachListenHeartbeat(player, { intervalMs = 60_000 } = {}) {
+// `capBackgroundMinutes`: a page left playing in a background tab pings forever
+// (unattended) and would dominate listening stats. Once continuous background
+// minutes (no foregrounding, no station change) exceed the cap, we stop
+// counting — playback keeps going. Foregrounding or switching station resets
+// the counter, so normal minimized-tab radio listening is unaffected.
+export function attachListenHeartbeat(player, { intervalMs = 60_000, capBackgroundMinutes = 480 } = {}) {
   let timer = null;
   let audible = false;
   let currentShow = null;
   let minutes = 0;
   let backgroundMinutes = 0;
+  let continuousBackground = 0;
   const stationsHeard = new Set();
 
   const tick = () => {
@@ -22,6 +28,9 @@ export function attachListenHeartbeat(player, { intervalMs = 60_000 } = {}) {
     const station = player.getCurrentStation();
     if (!station) return;
     const background = document.visibilityState === 'hidden';
+    continuousBackground = background ? continuousBackground + 1 : 0;
+    // Unattended background tab past the cap: stop counting (keep playing).
+    if (background && continuousBackground > capBackgroundMinutes) return;
     minutes += 1;
     if (background) backgroundMinutes += 1;
     stationsHeard.add(station.name ?? '');
@@ -43,6 +52,7 @@ export function attachListenHeartbeat(player, { intervalMs = 60_000 } = {}) {
 
   const start = () => {
     audible = true;
+    continuousBackground = 0; // fresh playback is attended
     if (!timer) timer = setInterval(tick, intervalMs);
   };
 
@@ -65,6 +75,7 @@ export function attachListenHeartbeat(player, { intervalMs = 60_000 } = {}) {
   // the new one while its first metadata response is still in flight.
   player.on('stationchange', () => {
     currentShow = null;
+    continuousBackground = 0; // switching station is an attended action
   });
   player.on('metadata', (evt) => {
     const d = evt.detail ?? {};

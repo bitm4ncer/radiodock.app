@@ -42,9 +42,20 @@
             if (/[?&]pwa=1/.test(location.search)) sessionStorage.setItem('radiodock-pwa', '1');
             pwaLaunch = sessionStorage.getItem('radiodock-pwa') === '1';
           } catch (e) {}
+          // Our Electron shell reports display-mode: browser (same as
+          // Vivaldi's PWA windows), so at >=700 px it would fall into the
+          // desktop regime. On tiling WMs (niri, sway) the window gets
+          // stretched past that width and the app wrongly jumps to the
+          // desktop card. Treat the shell as standalone so the mobile layout
+          // holds at any width — app-standalone.css mirrors the same layout
+          // the shell already renders at its narrow default width, so nothing
+          // else changes. Detect via the preload-exposed electronAPI (set
+          // only by OUR shell, before this script runs) — not the UA string,
+          // which any Electron-based browser would also match.
+          var isElectronShell = !!(window.electronAPI && window.electronAPI.isElectron);
           var standalone = window.navigator.standalone === true ||
             !matchMedia('(display-mode: browser)').matches ||
-            pwaLaunch;
+            pwaLaunch || isElectronShell;
           if (standalone) document.documentElement.classList.add('is-standalone');
           // Intro reveal failsafe. main.js normally sets `app-ready` as soon as
           // the wallpaper settles; this guarantees the page reveals even if that
@@ -67,7 +78,7 @@
       html.theme-light .intro-overlay { background: #e1e1e1; }
     </style>
 
-    <title>RadioDock — Free Internet Radio Player — 50,000+ Stations</title>
+    <title>RadioDock — Free Radio Player on all Devices</title>
     <meta name="description" content="Free internet radio player with 50,000+ stations worldwide — community radio, indie stations and live streams on any device. No ads, no sign-up." />
     <link rel="canonical" href="https://radiodock.app/" />
     <meta name="robots" content="index, follow" />
@@ -77,7 +88,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="RadioDock" />
     <meta property="og:url" content="https://radiodock.app/" />
-    <meta property="og:title" content="RadioDock — Free Internet Radio Player — 50,000+ Stations" />
+    <meta property="og:title" content="RadioDock — Free Radio Player on all Devices" />
     <meta property="og:description" content="RadioDock is a free all-in-one internet radio player with 50,000+ stations worldwide. Listen to community radio, indie stations, and live streams on any device. No ads, no sign-up." />
     <meta property="og:image" content="https://radiodock.app/icons/icon-512.png" />
     <meta property="og:image:width" content="512" />
@@ -87,7 +98,7 @@
 
     <!-- Twitter / X. -->
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="RadioDock — Free Internet Radio Player — 50,000+ Stations" />
+    <meta name="twitter:title" content="RadioDock — Free Radio Player on all Devices" />
     <meta name="twitter:description" content="RadioDock is a free all-in-one internet radio player with 50,000+ stations worldwide. Listen to community radio, indie stations, and live streams on any device. No ads, no sign-up." />
     <meta name="twitter:image" content="https://radiodock.app/icons/icon-512.png" />
     <meta name="twitter:image:alt" content="RadioDock — internet radio player logo" />
@@ -212,6 +223,10 @@
           <button type="button" class="off-canvas__close" data-action="close" aria-label="Close menu">×</button>
         </div>
         <nav class="off-canvas__nav">
+          <button type="button" class="off-canvas__item" id="offCanvasNotes">
+            <span>Notes</span>
+            <span class="off-canvas__chev">→</span>
+          </button>
           <button type="button" class="off-canvas__item off-canvas__item--cta" id="offCanvasInstall">
             <span>Install</span>
             <span class="off-canvas__chev">→</span>
@@ -224,16 +239,12 @@
             <span>Database</span>
             <span class="off-canvas__chev">→</span>
           </button>
-          <button type="button" class="off-canvas__item" id="offCanvasNotes">
-            <span>Notes</span>
-            <span class="off-canvas__chev">→</span>
-          </button>
           <button type="button" class="off-canvas__item" id="offCanvasAbout">
             <span>About</span>
             <span class="off-canvas__chev">→</span>
           </button>
           <button type="button" class="off-canvas__item" id="offCanvasChangelog">
-            <span>Log</span>
+            <span>Features</span>
             <span class="nav-dot" data-changelog-dot></span>
             <span class="off-canvas__chev">→</span>
           </button>
@@ -314,7 +325,7 @@
                       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17 6a1 1 0 0 1 2 0v12a1 1 0 0 1-2 0v-4.4l-8.5 4.9A1 1 0 0 1 5 17.6V6.4a1 1 0 0 1 1.5-.9L15 10.4V6Z"/></svg>
                     </button>
                     <button type="button" id="tinyMaxBtn" class="btn-icon" title="Exit tiny player" aria-label="Exit tiny player">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
                     </button>
                   </div>
                 </div>
@@ -520,7 +531,7 @@
         <button type="button" class="footer-pill footer-pill--sm" id="footerAboutBtn">About</button>
         <button type="button" class="footer-pill footer-pill--sm" id="footerSyncBtn">Sync</button>
         <button type="button" class="footer-pill footer-pill--sm" id="footerAddBtn">Database</button>
-        <button type="button" class="footer-pill footer-pill--sm" id="footerChangelogBtn">Log<span class="nav-dot" data-changelog-dot></span></button>
+        <button type="button" class="footer-pill footer-pill--sm" id="footerChangelogBtn">Features<span class="nav-dot" data-changelog-dot></span></button>
         <a class="footer-pill footer-pill--sm" href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener">GitHub</a>
         <a class="footer-pill footer-pill--sm" href="https://github.com/bitm4ncer/radiodock.app/issues" target="_blank" rel="noopener">Issues</a>
         <a class="footer-pill footer-pill--sm" href="https://buymeacoffee.com/bitmancer" target="_blank" rel="noopener">Support</a>
@@ -579,7 +590,7 @@
             <li><strong>Live now-playing</strong> info for stations that publish it</li>
             <li><strong>Install</strong> on phone, desktop, or as a browser extension</li>
             <li><strong>Background playback</strong> with lock-screen and Bluetooth-headphone controls</li>
-            <li><strong>Works offline</strong> after first load — app shell is cached</li>
+            <li><strong>Installs like a native app</strong> — opens instantly from your home screen or dock</li>
             <li><strong>No ads, no cookies, no tracking</strong> beyond opt-out-able anonymous usage counts</li>
           </ul>
 
@@ -612,7 +623,7 @@
               <li><strong>IndexedDB</strong> for favourites, custom lists, prefs (everything stays on your device)</li>
               <li><strong>hls.js</strong> for HLS streams, native <code>&lt;audio&gt;</code> for ICY/MP3/AAC</li>
               <li><strong>MediaSession API</strong> for lock-screen controls + Bluetooth headphone buttons</li>
-              <li><strong>Service Worker</strong> for offline shell + PWA install</li>
+              <li><strong>Service Worker</strong> for instant repeat loads + PWA install</li>
               <li><strong>RadioDock Stations API + logo CDN</strong> (self-hosted, Hetzner) — curated data source and single-origin station logos, with Radio Browser as an automatic fallback</li>
               <li><strong>Self-hosted Umami</strong> for anonymous, cookieless usage analytics — opt-out toggle on <a href="/legal.html" target="_blank" rel="noopener" class="text-link">legal page</a></li>
               <li>Hosted on <strong>GitHub Pages</strong> · Stations API on Hetzner · metadata proxy on Hetzner + Render (fallback)</li>
@@ -635,7 +646,7 @@
     <div id="changelogModal" class="modal" aria-hidden="true">
       <div class="modal-content">
         <div class="modal-header">
-          <h3>Log</h3>
+          <h3>Features</h3>
           <button class="modal-close-btn" aria-label="Close">×</button>
         </div>
         <div class="modal-body" id="changelogBody">
@@ -890,16 +901,6 @@
         </form>
       </div>
     </aside>
-
-    <div id="stationInfoModal" class="modal" aria-hidden="true">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3 id="stationInfoTitle">Station</h3>
-          <button id="closeStationInfoBtn" class="modal-close-btn" aria-label="Close">×</button>
-        </div>
-        <div class="modal-body station-info-body" id="stationInfoBody"></div>
-      </div>
-    </div>
 
     <div id="listActionsModal" class="modal" aria-hidden="true">
       <div class="modal-content">

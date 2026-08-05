@@ -96,3 +96,8 @@ const defaultSource = createStationsSource({ getOverride: () => backendOverride 
 
 export const searchStations = defaultSource.searchStations;
 export const getStationByUuid = defaultSource.getStationByUuid;
+
+// Consolidated curated info (socials/city/country/contact). Not wrapped in the
+// primary+fallback dance — it already returns null on miss, and the info panel
+// falls back to getStationByUuid (which HAS the Radio Browser fallback) itself.
+export { getStationInfo } from './stations-api.js';

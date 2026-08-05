@@ -40,20 +40,16 @@
 .station-info__hero {
   width: 60px;
   height: 60px;
-  border-radius: 12px;
+  border-radius: 50%;
   object-fit: cover;
   background: var(--logo-chip-bg);
   flex-shrink: 0;
 }
 
-.station-info__hero {
-  border-radius: 12px;
-}
-
 .station-info__initials {
   width: 60px;
   height: 60px;
-  border-radius: 12px;
+  border-radius: 50%;
   background: var(--bg-list-hover);
   color: var(--text);
   display: flex;
@@ -71,10 +67,34 @@
 
 .station-info__name {
   color: var(--text);
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
   margin-bottom: 6px;
   word-break: break-word;
+  line-height: 1.15;
+}
+
+/* Top group — location line sits directly above the socials/links row. */
+.station-info__top {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Location line — flag + country code + city. */
+.station-info__location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+.station-info__flag {
+  width: 18px;
+  height: auto;
+  border-radius: 2px;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px var(--border);
 }
 
 .station-info__tags {
@@ -164,22 +184,162 @@
   text-align: right;
 }
 
-.station-info__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 4px;
-}
-
-.station-info__action {
-  flex: 1;
-  text-align: center;
-  text-decoration: none;
-}
 
 /* On phones, stack the stream grid into one column for readability. */
 @media (max-width: 699px), not (display-mode: browser) {
   .station-info__stream {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Socials row — icon chips linking out to the station's platforms. */
+.station-info__socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+}
+.station-info__social {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  margin: 0;
+  border-radius: 50%;
+  background: var(--bg-dark);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font: inherit;
+  text-decoration: none;
+  transition: color 140ms ease, background 140ms ease, border-color 140ms ease;
+}
+.station-info__social:hover {
+  color: var(--text);
+  background: var(--bg-list-hover);
+  border-color: var(--red);
+}
+.station-info__social svg { display: block; }
+.station-info__social.is-copied { color: var(--red); border-color: var(--red); }
+
+/* ============================================================ Info panel shell
+   One instance, two presentations. Desktop browser: a floating drag-positioned
+   card. Mobile / PWA / app: a sheet that slides up under the action bar. */
+
+.info-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.info-panel__drag {
+  display: flex;
+  color: var(--text-muted);
+  cursor: grab;
+  touch-action: none;
+}
+.info-panel__drag svg { width: 18px; height: 18px; }
+.info-panel.is-dragging .info-panel__drag { cursor: grabbing; }
+.info-panel__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.info-panel__spacer { flex: 1; }
+.info-panel__icon-btn {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: color 140ms ease, background 140ms ease;
+}
+.info-panel__icon-btn:hover { color: var(--text); background: var(--overlay-med); }
+.info-panel__icon-btn svg { width: 20px; height: 20px; }
+.info-panel__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* --- Desktop: floating draggable card --- */
+.info-panel--desktop {
+  position: fixed;
+  top: var(--info-y, 84px);
+  left: var(--info-x, auto);
+  width: 360px;
+  max-width: calc(100vw - 16px);
+  max-height: calc(100vh - 32px);
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.45);
+  z-index: 1200;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+.info-panel--desktop.is-open { display: flex; }
+.info-panel--desktop.is-dragging { user-select: none; }
+
+/* --- Mobile / app: slide-up sheet --- */
+.info-panel--sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: var(--info-sheet-top, 55%);
+  bottom: 0;
+  z-index: 45; /* below the fixed player-section (50) + top bar */
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  transform: translateY(100%);
+  transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.info-panel--sheet .info-panel__body { padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+body.info-open .info-panel--sheet { transform: translateY(0); }
+
+/* Sheet close: no header bar — the arrow-down floats into the content's
+   top-right, indented to the content padding, to reclaim vertical space. */
+.info-panel__close-float {
+  position: absolute;
+  top: 8px;
+  right: 14px;
+  z-index: 3;
+}
+
+/* app-mode choreography: the fixed player rises to meet the header while the
+   list content fades out, then the sheet slides up into the space below. */
+@media (max-width: 699px), not (display-mode: browser) {
+  .player-section {
+    transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  body.info-open .player-section {
+    transform: translateY(var(--info-player-shift, 0));
+    /* Risen to the top, the safe-area bottom padding is just a gap between the
+       action bar and the sheet — trim it so the sheet rides higher. */
+    padding-bottom: 4px;
+  }
+  /* Fade only the list surface — NOT .page, which contains the fixed
+     player-section as a descendant (opacity would hide the risen player too). */
+  body.info-open .mobile-lists {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
   }
 }

@@ -125,3 +125,36 @@ export async function getStationByUuid(uuid, { signal } = {}) {
     signal?.removeEventListener('abort', onAbort);
   }
 }
+
+/**
+ * Our consolidated curated station info (tags, city, country, socials, contact,
+ * codec, bitrate). Returns null on 404 (uuid not in our DB) or any error, so the
+ * caller can fall back to the Radio Browser by-uuid path.
+ * @param {string} uuid
+ * @param {{signal?: AbortSignal}} [transport]
+ * @returns {Promise<object|null>}
+ */
+export async function getStationInfo(uuid, { signal } = {}) {
+  const id = String(uuid ?? '').trim();
+  if (!id) return null;
+
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
+  const onAbort = () => ctl.abort();
+  signal?.addEventListener('abort', onAbort);
+  try {
+    const res = await fetch(`${STATIONS_BASE}/api/stations/${encodeURIComponent(id)}`, {
+      method: 'GET',
+      signal: ctl.signal,
+      headers: { Accept: 'application/json', 'User-Agent': USER_AGENT_HEADER },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data && typeof data === 'object' ? data : null;
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+    signal?.removeEventListener('abort', onAbort);
+  }
+}

@@ -1,11 +1,11 @@
 {
   "version": "2.0",
-  "exportDate": "2026-07-18T23:54:46.780Z",
+  "exportDate": "2026-07-26T19:57:53.101Z",
   "listName": "Community Radios",
   "stations": [
     {
       "countrycode": "GB",
-      "favicon": "http://www.nts.live/favicon.ico",
+      "favicon": "http://www.nts.live/apple-touch-icon.png?v=47rE43RRzB",
       "homepage": "http://www.nts.live/",
       "id": "961e6cac-0601-11e8-ae97-52543be04c81",
       "name": "NTS Radio 1",
@@ -45,7 +45,7 @@
     },
     {
       "countrycode": "GB",
-      "favicon": "",
+      "favicon": "https://netilradio.com/icons/icon-192x192.png",
       "homepage": "http://netilradio.com/",
       "id": "2a85a1c6-0cec-428a-a7df-126e4d8a90d9",
       "name": "Netil Radio",
@@ -466,6 +466,94 @@
       "id": "e6639188-dc36-4441-ba83-4b6832a58c83",
       "name": "Radio grenouille",
       "url": "https://live.radiogrenouille.com:8443/live"
+    },
+    {
+      "countrycode": "ES",
+      "favicon": "https://www.elaltojalon.es/images/showid/6462335",
+      "homepage": "https://www.elaltojalon.es/radio.php",
+      "id": "80d471d0-b9b8-490f-b272-3b412c6423a1",
+      "name": "Alto Jalon Radio",
+      "url": "https://streaming2.elitecomunicacion.es:8012/stream"
+    },
+    {
+      "countrycode": "EE",
+      "favicon": "https://idaidaida.net/favicons/dark.ico",
+      "homepage": "https://idaidaida.net/",
+      "id": "73aee9c7-474d-4038-9b4a-ab259658eaf6",
+      "name": "IDA",
+      "url": "https://broadcast.idaidaida.net:8000/stream"
+    },
+    {
+      "countrycode": "",
+      "favicon": "https://internetradioprotocol.org/logos/mtr.jpg",
+      "homepage": "https://monotonicradio.com",
+      "id": "e3562595-52f7-4277-a5ce-51c858d21feb",
+      "name": "Monotonic Radio",
+      "url": "https://monotonicradio.com/stream"
+    },
+    {
+      "countrycode": "CA",
+      "favicon": "https://ckut.ca/wp-content/uploads/2023/02/cropped-ckut-favicon-180x180.png",
+      "homepage": "https://ckut.ca/",
+      "id": "f1bdfc08-fbc0-4b1d-b41b-8cb1b4c49373",
+      "name": "CKUT 90.3 FM",
+      "url": "https://delray.ckut.ca:8001/903fm-192-stereo"
+    },
+    {
+      "countrycode": "AU",
+      "favicon": "https://internetradioprotocol.org/logos/skylab.png",
+      "homepage": "http://skylab-radio.com/",
+      "id": "38c667f9-5091-11e9-a4d7-52543be04c81",
+      "name": "Skylab Radio",
+      "url": "http://stream.skylab-radio.com:8000/live"
+    },
+    {
+      "countrycode": "RO",
+      "favicon": "https://clubradio.ro/favicon.ico",
+      "homepage": "https://clubradio.ro/",
+      "id": "214f3da4-7795-491e-b5e7-91a18b18d089",
+      "name": "Club Radio",
+      "url": "https://live.clubradio.ro/listen/clubradio/live"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://www.reformradio.co.uk/favicon.ico",
+      "homepage": "https://www.reformradio.co.uk/",
+      "id": "cac4c694-99b2-40eb-8957-6361e7d3768e",
+      "name": "Reform Radio",
+      "url": "https://testform.out.airtime.pro/testform_a"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://aajamusic.com/_nuxt/icons/icon_64x64.fafdcd.png",
+      "homepage": "https://aajamusic.com/radio",
+      "id": "7811e960-53ef-4e2c-a739-e2dff567ae86",
+      "name": "Aaja Radio | Channel 1",
+      "url": "https://aaja.radiocult.fm/stream"
+    },
+    {
+      "countrycode": "FR",
+      "favicon": "https://www.tsugi.fr/favicon/favicon.svg",
+      "homepage": "https://www.tsugi.fr/",
+      "id": "9e4b8fb7-65d0-487c-afe2-8e5b52464d4f",
+      "name": "Tsugi",
+      "url": "https://listen.radioking.com/radio/1906/stream/6029"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://static.mytuner.mobi/media/tvos_radios/lbvlm87gg7bp.png",
+      "homepage": "https://www.ehfm.live/",
+      "id": "57c21dab-3c40-4ca6-b49b-8755bd7a3dcd",
+      "name": "EHFM",
+      "url": "https://ehfm.out.airtime.pro/ehfm_a"
+    },
+    {
+      "countrycode": "",
+      "favicon": "https://internetradioprotocol.org/logos/scr.png",
+      "homepage": "https://www.seydisfjordurcommunityradio.net/",
+      "id": "c64eec05-073c-474d-9c42-cd3b8e670ea1",
+      "name": "Seyðisfjörður Community Radio",
+      "url": "https://seyisfjorur-community-radio.radiocult.fm/stream"
     }
   ]
 }

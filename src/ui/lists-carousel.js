@@ -71,7 +71,7 @@ export function mountListsCarousel({ root }) {
     root.append(pageEl);
 
     const listEl = pageEl.querySelector('.favorites-list');
-    const sl = mountStationList({ container: listEl });
+    const sl = mountStationList({ container: listEl, listId: list.id });
     sl.onClick((station) => clickCb?.(station, list.id));
     sl.onRemove((stationId) => removeCb?.(stationId, list.id));
     sl.onReorder((orderedIds) => reorderCb?.(orderedIds, list.id));
