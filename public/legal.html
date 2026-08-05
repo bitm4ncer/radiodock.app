@@ -14,6 +14,9 @@
     <!-- Flash-free theme apply — same pattern as index.html. -->
     <script>
       (function () {
+        // Marks JS as available so the reveal button can be hidden entirely
+        // when it isn't — an inert control is worse than no control.
+        document.documentElement.classList.add('js');
         try {
           var t = localStorage.getItem('radiodock-theme');
           if (t !== 'light' && t !== 'dark') {
@@ -46,7 +49,9 @@
         --bg-list-hover: #C5C5C5;
         --bg-light: #888888;
         --text: #414141;
-        --text-muted: #6C6C6C;
+        /* #6C6C6C only reached 4.02:1 on this page's light background — under
+           the 4.5:1 WCAG 1.4.3 AA floor for the body copy, which is all muted. */
+        --text-muted: #5F5F5F;
         --accent: #cd0025;
         --border: rgba(0, 0, 0, 0.10);
         --overlay-med: rgba(0, 0, 0, 0.12);
@@ -85,6 +90,11 @@
         font-size: 22px;
         letter-spacing: -0.01em;
       }
+      .updated {
+        margin: -18px 0 24px;
+        font-size: 12px;
+        color: var(--text-muted);
+      }
       h2 {
         margin: 28px 0 10px;
         font-size: 16px;
@@ -100,17 +110,33 @@
         padding: 16px 18px;
         color: var(--text);
       }
+      /* WCAG 1.4.11: --overlay-med against the page background is ~1.3:1, so
+         the control's boundary was effectively invisible. --text-muted clears
+         3:1 in both themes. */
       .reveal-email {
         background: var(--bg-dark);
         color: var(--text);
-        border: 1px solid var(--overlay-med);
-        padding: 6px 12px;
+        border: 1px solid var(--text-muted);
+        padding: 7px 14px;
+        min-height: 32px;
         border-radius: 999px;
         font-size: 13px;
         cursor: pointer;
         font-family: inherit;
       }
       .reveal-email:hover { background: var(--bg-list-hover); }
+      html:not(.js) .reveal-email { display: none; }
+      a:focus-visible,
+      button:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+      .email-hint {
+        margin-top: 6px;
+        font-size: 12px;
+        color: var(--text-muted);
+      }
       code {
         background: var(--border);
         padding: 1px 5px;
@@ -187,9 +213,10 @@
       <a class="back-link" href="/">← Back to RadioDock</a>
 
       <h1>Legal Notice &amp; Privacy Policy</h1>
+      <p class="updated">Last updated: 4 August 2026</p>
 
       <h2>Impressum</h2>
-      <p>Information according to § 5 TMG (German Telemedia Act):</p>
+      <p>Information according to § 5 DDG (Digitale-Dienste-Gesetz — the German Digital Services Act, which replaced the Telemediengesetz/TMG on 14 May 2024):</p>
       <div class="addr">
         Jannes Becherer<br />
         Degerstraße 46<br />
@@ -199,12 +226,26 @@
       <p style="margin-top: 14px;">
         <strong>Contact:</strong>
         <button type="button" class="reveal-email" id="revealEmail"
+                aria-describedby="emailHint"
                 data-u="a29udGFrdA=="
                 data-d="amFubmVzYmVjaGVyZXIuZGU=">
-          Show email
+          Show email address
         </button>
       </p>
-      <p>Responsible for content under § 55 Abs. 2 RStV: as above.</p>
+      <p class="email-hint" id="emailHint">
+        The address is kept out of the page source as spam protection and is assembled in your browser when you activate the button. Focus then moves to the revealed mailto link.
+      </p>
+      <noscript>
+        <p class="email-hint">
+          JavaScript is switched off, so the address cannot be assembled here. You can reach the operator by post at the address above, or via
+          <a href="https://github.com/bitm4ncer" target="_blank" rel="noopener">github.com/bitm4ncer</a>.
+        </p>
+      </noscript>
+      <p>Responsible for content under § 18 Abs. 2 MStV (Medienstaatsvertrag — the German Interstate Media Treaty, which replaced the Rundfunkstaatsvertrag/RStV on 7 November 2020): as above.</p>
+      <p>Controller within the meaning of Art. 4(7) GDPR for all processing described below: as above.</p>
+      <p>
+        <strong>Consumer dispute resolution:</strong> we are neither obliged nor willing to take part in dispute resolution proceedings before a consumer arbitration board (§ 36 VSBG). The European Commission's Online Dispute Resolution platform was discontinued on 20 July 2025, so no link to it is provided.
+      </p>
 
       <h2>Privacy Policy</h2>
       <p>
@@ -214,7 +255,7 @@
       <h2>Third-party services accessed when you use the app</h2>
       <ul>
         <li>
-          <strong>RadioDock Stations API</strong> (<code>stations.radiodock.app</code>) — when you search for stations or open a station's info panel, your query is sent to our own curated station database. It is operated by the same person and logs only IP / timestamp / request path for operational diagnostics; logs are not retained long-term.
+          <strong>RadioDock Stations API</strong> (<code>stations.radiodock.app</code>) — when you search for stations or open a station's info panel, your query is sent to our own curated station database, operated by the same person. The application writes <strong>no request log</strong>: your IP address is held in memory only for the duration of a rate-limiting window (one minute) and is then discarded. Where an IP has to persist at all — spam limits on station submissions and on Detect — only a salted, one-way SHA-256 hash is stored, never the address itself.
         </li>
         <li>
           <strong>Radio Browser API</strong> (<code>*.api.radio-browser.info</code>) — the community-run directory our station data is built from. It is contacted directly from your browser only as an <em>automatic fallback</em>, if our Stations API is unavailable.
@@ -225,13 +266,13 @@
         </li>
         <li>
           <strong>RadioDock Metadata Proxy</strong> (<code>stations.radiodock.app</code>, with <code>radiodock-metadata-proxy-1.onrender.com</code> as a fallback) — when you play a station, the stream URL is sent to this proxy to fetch "now playing" metadata. The proxy is operated by the same person; source code is open at
-          <a href="https://github.com/bitm4ncer/RadioDock-metadata-proxy" target="_blank" rel="noopener">GitHub</a>. The proxy logs only IP / timestamp / request path for operational diagnostics; logs are not retained long-term.
+          <a href="https://github.com/bitm4ncer/RadioDock-metadata-proxy" target="_blank" rel="noopener">GitHub</a>. Unlike the Stations API, this proxy does write an operational log line per request, containing timestamp, request path, response status and your IP address; query values other than the stream URL are redacted before logging. On the Render fallback instance these logs are deleted automatically after <strong>7 days</strong> under Render's log-retention policy.
         </li>
         <li>
           <strong>Radio stream servers</strong> — your browser connects directly to each station's stream server when you press play. We are not the operator of those servers; refer to each station's own privacy notice.
         </li>
         <li>
-          <strong>RadioDock Stations relay</strong> (<code>stations.radiodock.app</code>) — only when you actively <em>record</em> a station, its audio stream is routed through our own server instead of connecting directly, so your browser can capture it. The server relays the bytes live and never stores them; the recording is saved only on your device (IndexedDB). The relay is operated by the same person and logs only IP / timestamp / request path for operational diagnostics.
+          <strong>RadioDock Stations relay</strong> (<code>stations.radiodock.app</code>) — only when you actively <em>record</em> a station, its audio stream is routed through our own server instead of connecting directly, so your browser can capture it. The server relays the bytes live and never stores them; the recording is saved only on your device (IndexedDB). The relay runs on the Stations server described above and therefore writes no request log either.
         </li>
         <li>
           <strong>RadioDock Stations recorder</strong> (<code>stations.radiodock.app</code>) — on mobile, recording is done on our server because your device's browser can't capture the audio directly. The stream is briefly buffered on the server and <strong>deleted immediately after it is transferred to your device</strong>; it is never stored long-term. The recording lives only on your device (IndexedDB).
@@ -250,6 +291,24 @@
           <a href="https://www.buymeacoffee.com/privacy-policy" target="_blank" rel="noopener">their privacy policy</a>.
         </li>
       </ul>
+
+      <h2>Storage periods</h2>
+      <ul>
+        <li><strong>Stations server</strong> (search, station info, logos, recording relay and recorder, Detect) — no request log is written. Your IP address exists only in server memory for a one-minute rate-limiting window; the salted SHA-256 hashes used for spam limits are kept only as long as the corresponding limit or submission record.</li>
+        <li><strong>Metadata proxy</strong> — request log lines including the IP address: <strong>7 days</strong> on the Render fallback instance.</li>
+        <li><strong>Umami analytics</strong> — the IP address and the session hash derived from it are discarded when the day rolls over; only the aggregated, non-identifying event counts remain.</li>
+        <li><strong>Station submissions</strong> — as described under <a href="#submissions">Station submissions</a>.</li>
+        <li><strong>Hosting providers</strong> — GitHub, Render and Hetzner keep their own standard server logs under their own retention policies, which we do not control.</li>
+      </ul>
+
+      <h2>Transfers outside the EU/EEA</h2>
+      <p>
+        Everything RadioDock operates itself — the Stations API, the metadata proxy, the recording relay and the Umami analytics instance — runs on servers in <strong>Germany</strong> (Hetzner). Two third parties in the list above are established in the <strong>United States</strong> and receive your IP address as part of ordinary server logs when your browser connects to them: <strong>GitHub</strong> (GitHub, Inc. / Microsoft — host of this website) and <strong>Render</strong> (Render Services, Inc. — host of the metadata-proxy fallback). Both are certified under the <strong>EU–US Data Privacy Framework</strong>, so these transfers rest on the European Commission's adequacy decision of 10 July 2023, Art. 45(1) GDPR: GitHub, Inc. maintains its own certification separate from Microsoft's, and Render states it has been certified under the EU–US DPF including the UK extension and the Swiss–US DPF since 6 January 2025. Render's data processing addendum additionally incorporates the EU Standard Contractual Clauses under Art. 46(2)(c) GDPR as a fallback safeguard. Certifications can lapse — the current status of any participant can be checked in the official
+        <a href="https://www.dataprivacyframework.gov/list" target="_blank" rel="noopener">Data Privacy Framework list</a>.
+      </p>
+      <p>
+        The music-recognition services used by <strong>Detect</strong> receive only the radio station's own audio, requested by our server — no IP address, device identifier or other personal data of yours is transmitted to them.
+      </p>
 
       <h2 id="submissions">Station submissions (the “Add” form)</h2>
       <p>
@@ -274,8 +333,17 @@
         <strong>Recipients:</strong> the data is handled only by the site operator on the self-hosted Stations server. It is not sold or shared with third-party advertisers or analytics providers.
       </p>
 
-      <h2>Cookies</h2>
-      <p>None. RadioDock sets no HTTP cookies. IndexedDB is used only to store your favourites and custom station lists locally on your device.</p>
+      <h2>Cookies &amp; local storage</h2>
+      <p>
+        RadioDock sets <strong>no HTTP cookies</strong> and no tracking identifiers. It does store data locally on your device, all of it purely functional and none of it transmitted to us:
+      </p>
+      <ul>
+        <li><strong>IndexedDB</strong> — your favourites, custom station lists, notes and recordings.</li>
+        <li><strong>localStorage</strong> — your light/dark theme choice (<code>radiodock-theme</code>), your analytics opt-out flag (<code>umami.disabled</code>) and, if you set one, your preference for loading external Spotify/YouTube previews.</li>
+      </ul>
+      <p>
+        All of these store or read information on your terminal equipment only to deliver a function you have expressly requested, so they are exempt from the consent requirement under § 25 Abs. 2 Nr. 2 TDDDG (the German implementation of the ePrivacy Directive, formerly the TTDSG). You can clear them at any time via your browser's site-data settings.
+      </p>
 
       <h2>Analytics (Umami)</h2>
       <p>
@@ -288,7 +356,7 @@
         <strong>What Umami briefly processes:</strong> your IP address is used on the Umami server to derive a country code and to generate a daily-rotating, hashed session identifier. Neither the IP nor the session hash is retained after the day rolls over, and neither is exposed to the site operator.
       </p>
       <p>
-        <strong>Legal basis:</strong> Art. 6(1)(f) GDPR — legitimate interest in understanding aggregate product usage to improve the app. Because no information is stored on or read from your terminal, § 25 TTDSG (German implementation of the ePrivacy Directive) does not apply.
+        <strong>Legal basis:</strong> Art. 6(1)(f) GDPR — legitimate interest in understanding aggregate product usage to improve the app. The analytics script itself neither stores information on nor reads information from your terminal equipment, so the consent requirement of § 25 Abs. 1 TDDDG is not triggered; the only value written locally is your own opt-out flag, which is strictly necessary to honour your choice and is exempt under § 25 Abs. 2 Nr. 2 TDDDG. You can object to this processing at any time under Art. 21 GDPR using the toggle below.
       </p>
       <p>
         <strong>How to opt out:</strong> use the toggle below, or enable "Do Not Track" in your browser, or use any content blocker. RadioDock works identically with analytics off.
@@ -309,12 +377,30 @@
       </label>
 
       <h2>Your rights under GDPR / DSGVO</h2>
+      <p>In respect of personal data concerning you, you have the right to:</p>
+      <ul>
+        <li>access (Art. 15 GDPR), rectification (Art. 16), erasure (Art. 17) and restriction of processing (Art. 18);</li>
+        <li>data portability — a copy in a structured, machine-readable format (Art. 20);</li>
+        <li><strong>object at any time</strong> to processing based on our legitimate interest, including the analytics described above (Art. 21);</li>
+        <li>withdraw any consent you have given, with effect for the future and without affecting the lawfulness of processing carried out before the withdrawal (Art. 7(3)).</li>
+      </ul>
       <p>
-        You have the right to access, correct, delete, restrict processing of, and obtain a copy of any personal data held about you, as well as to object to processing, to withdraw any consent you have given, and to lodge a complaint with a supervisory authority. For any submitter data you sent us via the <a href="#submissions">Station submissions</a> form, contact the operator using the address in the Impressum above and we will action your request. For the third-party services listed above, please contact them directly.
+        For any submitter data you sent us via the <a href="#submissions">Station submissions</a> form, contact the operator using the address in the Impressum above and we will action your request. For the third-party services listed above, please contact them directly.
+      </p>
+      <p>
+        You also have the right to lodge a complaint with a supervisory authority (Art. 77 GDPR). The authority competent for the operator is the
+        <a href="https://www.ldi.nrw.de" target="_blank" rel="noopener">Landesbeauftragte für Datenschutz und Informationsfreiheit Nordrhein-Westfalen</a>,
+        Kavalleriestraße 2–4, 40213 Düsseldorf, Germany.
+      </p>
+      <p>
+        Providing any of this data is entirely voluntary; there is no statutory or contractual obligation to do so, and RadioDock is fully usable without it. No automated decision-making or profiling within the meaning of Art. 22 GDPR takes place.
       </p>
 
       <h2>Disclaimer</h2>
       <p>RadioDock provides links to external radio streams and third-party services. We are not responsible for the content of those external sources.</p>
+      <p>
+        <strong>Recordings.</strong> The recording feature is provided as a technical tool only. Recordings are created at your own initiative and stored solely on your device. In Germany, recording a broadcast for your own private, non-commercial use is generally covered by the private-copy exception in § 53 UrhG; publishing, sharing or otherwise exploiting a recording is not, and remains your own responsibility. Do not use the feature to circumvent any technical protection measure.
+      </p>
     </main>
 
     <script>
@@ -327,17 +413,25 @@
         var btn = document.getElementById('revealEmail');
         if (!btn) return;
         btn.addEventListener('click', function () {
+          var node;
           try {
             var u = atob(btn.dataset.u);
             var d = atob(btn.dataset.d);
             var addr = u + '@' + d;
-            var a = document.createElement('a');
-            a.href = 'mailto:' + addr;
-            a.textContent = addr;
-            btn.replaceWith(a);
+            node = document.createElement('a');
+            node.href = 'mailto:' + addr;
+            node.textContent = addr;
           } catch (e) {
-            btn.textContent = 'Email reveal failed';
+            node = document.createElement('span');
+            node.setAttribute('role', 'alert');
+            node.textContent = 'The address could not be revealed — please use the postal address above.';
           }
+          // replaceWith() destroys the element that currently has focus, which
+          // would drop keyboard and screen-reader users back to <body> at the
+          // top of the document with nothing announced. Focus has to be moved
+          // onto the replacement so the revealed address is what gets read out.
+          btn.replaceWith(node);
+          if (node.focus) node.focus();
         });
       })();
 
