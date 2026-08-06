@@ -508,8 +508,14 @@ body.is-tiny-player .player-card {
      Electron window Chromium rasterises the fully-rounded corners with a 1px
      light AA overshoot (a stray "white pixel" just outside the arc). The 1px
      spread of this ambient layer paints over that overshoot on all four
-     corners; without it the specks return. */
-  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.6), 0 8px 24px rgba(0, 0, 0, 0.5);
+     corners; without it the specks return.
+     The cast layer is budgeted to the room the window actually has: the pill is
+     centred in a 132px window (desktop/main.js), leaving ~21px below it, so the
+     negative spread keeps the blur from reaching the window edge and being cut
+     off square. Anything larger clips — measured, not guessed. More room would
+     need a taller window, which would also enlarge the invisible click-blocking
+     margin around the pill. */
+  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.6), 0 4px 14px -2px rgba(0, 0, 0, 0.5);
   -webkit-app-region: drag;
   padding: 12px 18px 12px 12px;
   gap: 14px;
