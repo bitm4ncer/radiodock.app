@@ -367,8 +367,54 @@ body.is-tiny-player .app-background,
 body.is-tiny-player .electron-titlebar,
 body.is-tiny-player .favorites-section,
 body.is-tiny-player .search-section,
+body.is-tiny-player .list-filter,
+body.is-tiny-player .list-header__filter,
+body.is-tiny-player .info-panel,
+/* .tool-btn covers every floating container tool — drag handle, solid toggle,
+   minimize, visualizer trigger. They act on the desktop container card and are
+   meaningless (and in the way) once it is a pill. */
+body.is-tiny-player .tool-btn,
 body.is-tiny-player .volume-controls {
   display: none !important;
+}
+
+/* A drag/minimize state carried over from desktop use would also displace the
+   pill here — that is neutralised for the whole standalone regime (which the
+   Electron shell always runs in) in app-standalone.css, tiny included. */
+
+/* The Electron shell runs in standalone regime, and app-standalone.css
+   force-shows the mobile chrome — top bar, lists, search overlay, off-canvas —
+   with `display: … !important` at the SAME specificity as the hide block above
+   (both 0,2,1). It's imported after this file, so on a plain tie it wins and the
+   header + lists leak in around the tiny pill. Re-assert the hide for just those
+   four with the html.is-standalone scope (0,3,2) so tiny always wins, whatever
+   the import order. */
+html.is-standalone body.is-tiny-player .mobile-topbar,
+html.is-standalone body.is-tiny-player .mobile-lists,
+html.is-standalone body.is-tiny-player .search-overlay,
+html.is-standalone body.is-tiny-player .off-canvas {
+  display: none !important;
+}
+
+/* Blank the document while the tiny/full switch is in flight (set by
+   electron-window-controls.js). The renderer relayouts instantly but the window
+   resize is an async IPC hop, so without this the new layout paints at the old
+   window size for a frame or more — the pill jumping as the window shrinks and
+   docks. No transition on purpose: this must be an instant cut, not a fade. */
+html.is-tiny-switching body {
+  opacity: 0 !important;
+}
+
+/* Snap, don't animate, across the switch. The card's own transitions (e.g.
+   .now-playing's 0.3s max-height, which retunes 50px -> 18px for the pill)
+   would otherwise still be running when the window is revealed, so the pill
+   kept visibly resizing for a third of a second after minimizing. Values jump
+   straight to their tiny/full targets while the document is blanked. */
+html.is-tiny-switching *,
+html.is-tiny-switching *::before,
+html.is-tiny-switching *::after {
+  transition: none !important;
+  animation-duration: 0s !important;
 }
 
 /* Make everything around the pill see-through so the window looks pill-shaped.
@@ -413,6 +459,42 @@ body.is-tiny-player .player-section {
   border: 0 !important;
 }
 
+/* The Electron shell runs in standalone regime, whose layout rules tie the tiny
+   ones on specificity (both 0,2,1) and win on import order — so the pill kept
+   the mobile bottom-bar layout: `.page` stayed flex-start, `.player-section`
+   stayed `position: fixed; bottom: 0`, and `.player-card` kept `width: 100%`
+   (that one is 0,2,2, so it beat the tiny rule outright). Result: the pill sat
+   flush against the window's bottom edge with its drop shadow cut off, and on
+   entering tiny it rendered at the bottom of the still-full-size window before
+   the resize landed — the visible jump. Re-assert the tiny layout scoped to
+   html.is-standalone so it wins regardless of import order. */
+html.is-standalone body.is-tiny-player .page {
+  justify-content: center;
+  overflow: visible;
+}
+html.is-standalone body.is-tiny-player .container {
+  flex: 0 0 auto;
+  gap: 0;
+}
+html.is-standalone body.is-tiny-player .player-section {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  z-index: auto;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+  padding: 0 18px;
+  border-top: 0;
+}
+/* Width stays 100% (the standalone rule's value): the pill fills the section
+   minus its 18px side padding, so it is a stable size instead of resizing with
+   every station name. */
+html.is-standalone body.is-tiny-player .player-section .player-card {
+  margin: 0;
+}
+
 /* The player-card IS the pill: opaque, fully rounded, content-sized (so a bigger
    avatar simply makes the pill taller), with its own shadow, and it is the
    draggable surface of the frameless window. */
@@ -426,8 +508,14 @@ body.is-tiny-player .player-card {
      Electron window Chromium rasterises the fully-rounded corners with a 1px
      light AA overshoot (a stray "white pixel" just outside the arc). The 1px
      spread of this ambient layer paints over that overshoot on all four
-     corners; without it the specks return. */
-  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.6), 0 8px 24px rgba(0, 0, 0, 0.5);
+     corners; without it the specks return.
+     The cast layer is budgeted to the room the window actually has: the pill is
+     centred in a 132px window (desktop/main.js), leaving ~21px below it, so the
+     negative spread keeps the blur from reaching the window edge and being cut
+     off square. Anything larger clips — measured, not guessed. More room would
+     need a taller window, which would also enlarge the invisible click-blocking
+     margin around the pill. */
+  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.6), 0 4px 14px -2px rgba(0, 0, 0, 0.5);
   -webkit-app-region: drag;
   padding: 12px 18px 12px 12px;
   gap: 14px;

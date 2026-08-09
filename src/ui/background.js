@@ -262,25 +262,47 @@ function buildFileInput() {
 
 // ---------------------------------------------------------------- discovery + refresh ---
 
+async function probeBuiltin(i) {
+  const num = String(i).padStart(2, '0');
+  const url = `/backgrounds/background_${num}.webp`;
+  try {
+    const resp = await fetch(url, { method: 'HEAD', cache: 'no-cache' });
+    const ctype = resp.headers.get('content-type') ?? '';
+    if (resp.ok && ctype.startsWith('image/')) {
+      return { id: `builtin:${num}`, kind: 'builtin', url, name: `Background ${num}` };
+    }
+  } catch { /* unreachable counts as a miss */ }
+  return null;
+}
+
+// The shipped set only changes on deploy, but refresh() re-runs on every
+// upload, delete and reorder — so the probe result is worth holding onto.
+let builtinsCache = null;
+
+// Probed in parallel batches rather than one await per index: main.js gates the
+// intro reveal on this resolving, so the old serial loop put ~10 round-trips in
+// front of first paint. A batch may probe a few indices past the end, but those
+// are cheap HEADs and the resulting set is identical — the stop-after-N-
+// consecutive-misses semantics are preserved by scanning each batch in order.
+const PROBE_BATCH = 10;
+
 async function discoverBuiltins() {
+  if (builtinsCache) return builtinsCache;
   const out = [];
   let misses = 0;
-  for (let i = 0; i < MAX_PROBE && misses < MISS_RUN_LIMIT; i++) {
-    const num = String(i).padStart(2, '0');
-    const url = `/backgrounds/background_${num}.webp`;
-    let exists = false;
-    try {
-      const resp = await fetch(url, { method: 'HEAD', cache: 'no-cache' });
-      const ctype = resp.headers.get('content-type') ?? '';
-      exists = resp.ok && ctype.startsWith('image/');
-    } catch { exists = false; }
-    if (exists) {
-      misses = 0;
-      out.push({ id: `builtin:${num}`, kind: 'builtin', url, name: `Background ${num}` });
-    } else {
-      misses++;
+  for (let start = 0; start < MAX_PROBE && misses < MISS_RUN_LIMIT; start += PROBE_BATCH) {
+    const size = Math.min(PROBE_BATCH, MAX_PROBE - start);
+    const batch = await Promise.all(Array.from({ length: size }, (_, k) => probeBuiltin(start + k)));
+    for (const entry of batch) {
+      if (entry) {
+        misses = 0;
+        out.push(entry);
+      } else if (++misses >= MISS_RUN_LIMIT) {
+        break;
+      }
     }
   }
+  builtinsCache = out;
   return out;
 }
 

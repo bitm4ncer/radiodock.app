@@ -8,6 +8,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "test": "node --test test/*.test.js",
     "icons": "node scripts/generate-icons.mjs"
   },
   "devDependencies": {

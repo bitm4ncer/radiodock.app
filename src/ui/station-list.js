@@ -354,15 +354,18 @@ export function mountStationList({ container, listId = null }) {
       // shared list-header, so only it injects the funnel left of the dropdown.
       // (The carousel's per-list instances have a listId and stay inert here —
       // they're hidden in the desktop layout anyway.)
+      // Sit directly left of the list-name button (inside .list-dropdown), not
+      // as a separate item that the header's space-between pushes to the middle.
       const dropdown = document.querySelector('.list-header .list-dropdown');
-      if (dropdown?.parentNode) {
+      const dropBtn = dropdown?.querySelector('.list-dropdown-btn');
+      if (dropdown && dropBtn) {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'list-header__filter';
         btn.setAttribute('aria-label', 'Filter this list');
         btn.title = 'Filter this list';
         btn.innerHTML = FILTER_ICON;
-        dropdown.parentNode.insertBefore(btn, dropdown);
+        dropdown.insertBefore(btn, dropBtn);
         btn.addEventListener('click', toggleOpen);
       }
     }

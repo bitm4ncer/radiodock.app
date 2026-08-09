@@ -103,8 +103,28 @@ export function mountElectronWindowControls({ electronBridge } = {}) {
       }
     };
 
+    // The layout switch is instant in the renderer, but the window resize is an
+    // async IPC round-trip. In between, the app would paint the new layout at
+    // the OLD window size — the pill centred in the full-size window for a
+    // frame or more, then jumping as the window shrinks and docks to the
+    // corner. The window is transparent, so blanking the document across the
+    // switch hides that entirely: nothing is painted until the new size is laid
+    // out. Revealed on the second frame after the resize resolves (first frame
+    // applies the new size, second paints it), with a timeout failsafe so a
+    // slow or failed IPC can never leave the app invisible.
+    let revealTimer = null;
+    const setSwitching = (state) => {
+      document.documentElement.classList.toggle('is-tiny-switching', state);
+    };
+    const reveal = () => {
+      clearTimeout(revealTimer);
+      requestAnimationFrame(() => requestAnimationFrame(() => setSwitching(false)));
+      revealTimer = setTimeout(() => setSwitching(false), 500);
+    };
+
     const applyTiny = async (on) => {
       if (document.body.classList.contains('is-tiny-player') === on) return;
+      setSwitching(true);
       // Collapsing to the pill makes it the sole surface. Any open full-page
       // surface (Notes / Sync / About / Log / Search) must close first, or it
       // stays mounted and bleeds out around the small pill. Rides main.js's
@@ -114,8 +134,12 @@ export function mountElectronWindowControls({ electronBridge } = {}) {
       relocatePill(on);
       document.body.classList.toggle('is-tiny-player', on);
       tinyBtn.classList.toggle('is-active', on);
+      // Let the app react (e.g. main.js closes the station-info panel, which
+      // isn't a "page" so the exclusivity broadcast above doesn't touch it).
+      window.dispatchEvent(new CustomEvent('rd:tiny-changed', { detail: { on } }));
       try { await api.setTinyPlayer(on); }
       catch (err) { console.warn('Tiny player toggle failed:', err); }
+      finally { reveal(); }
     };
     tinyBtn.addEventListener('click', () => applyTiny(!document.body.classList.contains('is-tiny-player')));
     window.addEventListener('rd:set-tiny', (e) => applyTiny(!!e.detail?.on));

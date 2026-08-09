@@ -379,6 +379,16 @@
     box-shadow: none;
   }
 
+  /* Light mode: `:root.theme-light .{panel}` (0,3,0) out-specifies the opaque
+     rule above (0,1,0) and re-applies the translucent card tint, so the page
+     content shows through. Restore the opaque page surface at equal specificity
+     (this file is imported after the panel styles, so source order wins). */
+  :root.theme-light .notes-panel--mobile,
+  :root.theme-light .sync-panel--mobile,
+  :root.theme-light .add-panel--mobile {
+    background: var(--bg);
+  }
+
   /* The solid-container toggle repaints the two panels #141414 (they're normally
      translucent cards floating over the app). As pages they're the app surface
      itself, so they follow --bg like About/Log — otherwise the four pages come

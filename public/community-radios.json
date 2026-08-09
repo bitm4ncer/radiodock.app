@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-07-21T00:36:32.880Z",
+  "exportDate": "2026-07-26T19:57:53.101Z",
   "listName": "Community Radios",
   "stations": [
     {
@@ -522,6 +522,38 @@
       "id": "cac4c694-99b2-40eb-8957-6361e7d3768e",
       "name": "Reform Radio",
       "url": "https://testform.out.airtime.pro/testform_a"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://aajamusic.com/_nuxt/icons/icon_64x64.fafdcd.png",
+      "homepage": "https://aajamusic.com/radio",
+      "id": "7811e960-53ef-4e2c-a739-e2dff567ae86",
+      "name": "Aaja Radio | Channel 1",
+      "url": "https://aaja.radiocult.fm/stream"
+    },
+    {
+      "countrycode": "FR",
+      "favicon": "https://www.tsugi.fr/favicon/favicon.svg",
+      "homepage": "https://www.tsugi.fr/",
+      "id": "9e4b8fb7-65d0-487c-afe2-8e5b52464d4f",
+      "name": "Tsugi",
+      "url": "https://listen.radioking.com/radio/1906/stream/6029"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://static.mytuner.mobi/media/tvos_radios/lbvlm87gg7bp.png",
+      "homepage": "https://www.ehfm.live/",
+      "id": "57c21dab-3c40-4ca6-b49b-8755bd7a3dcd",
+      "name": "EHFM",
+      "url": "https://ehfm.out.airtime.pro/ehfm_a"
+    },
+    {
+      "countrycode": "",
+      "favicon": "https://internetradioprotocol.org/logos/scr.png",
+      "homepage": "https://www.seydisfjordurcommunityradio.net/",
+      "id": "c64eec05-073c-474d-9c42-cd3b8e670ea1",
+      "name": "Seyðisfjörður Community Radio",
+      "url": "https://seyisfjorur-community-radio.radiocult.fm/stream"
     }
   ]
 }

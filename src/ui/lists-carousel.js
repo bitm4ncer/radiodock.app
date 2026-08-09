@@ -75,12 +75,31 @@ export function mountListsCarousel({ root }) {
     sl.onClick((station) => clickCb?.(station, list.id));
     sl.onRemove((stationId) => removeCb?.(stationId, list.id));
     sl.onReorder((orderedIds) => reorderCb?.(orderedIds, list.id));
-    sl.setStations(list.stations ?? [], listOpts(list));
+
+    const stations = list.stations ?? [];
+    const opts = listOpts(list);
+    sl.setStations(stations, opts);
     sl.setActive(activeStationId);
 
-    const entry = { pageEl, stationList: sl };
+    const entry = { pageEl, stationList: sl, applied: { stations, ...opts } };
     pages.set(list.id, entry);
     return entry;
+  }
+
+  // setStations rebuilds a page's rows wholesale. main.js re-runs setLists() on
+  // nearly every interaction, so without this check a single favourite toggle
+  // re-rendered every row of every list — O(lists x stations) for an O(1)
+  // change, on the lowest-powered devices. Station arrays are always reassigned
+  // rather than mutated in place, so identity is a sound change signal.
+  function applyPageData(entry, list) {
+    const stations = list.stations ?? [];
+    const opts = listOpts(list);
+    const prev = entry.applied;
+    if (prev.stations === stations && prev.removable === opts.removable && prev.reorderable === opts.reorderable) {
+      return;
+    }
+    entry.stationList.setStations(stations, opts);
+    entry.applied = { stations, ...opts };
   }
 
   function reconcilePages() {
@@ -95,7 +114,7 @@ export function mountListsCarousel({ root }) {
     // Create / update existing pages, in order.
     for (const list of lists) {
       const entry = ensurePage(list);
-      entry.stationList.setStations(list.stations ?? [], listOpts(list));
+      applyPageData(entry, list);
       entry.stationList.setActive(activeStationId);
       // Reorder DOM to match `lists` order — append moves existing nodes.
       root.append(entry.pageEl);
