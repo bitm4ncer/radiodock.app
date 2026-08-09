@@ -93,7 +93,6 @@
               padding 300ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 :root.theme-light .nudge--banner { border-color: rgba(0, 0, 0, 0.08); }
-.nudge--banner .nudge__body { display: none; } /* slim bar: headline + action only */
 .nudge--banner .nudge__actions { margin-left: auto; }
 .nudge--banner.is-entering,
 .nudge--banner.is-dismissed {
