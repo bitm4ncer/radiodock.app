@@ -22,6 +22,10 @@ export function mountFooterReveal() {
   let revealed = false;
   let rafId = 0;
   let lastY = Infinity;
+  // A nudge card floats bottom-left, inside the reveal zone. Interacting with
+  // it (e.g. clicking "Copy link") shouldn't drag the footer up, so suppress
+  // the reveal while the cursor is over the card.
+  let overNudge = false;
 
   function setRevealed(next) {
     if (next === revealed) return;
@@ -36,7 +40,7 @@ export function mountFooterReveal() {
   function evaluate() {
     rafId = 0;
     const fromBottom = window.innerHeight - lastY;
-    if (!revealed && fromBottom < REVEAL_AT) {
+    if (!revealed && fromBottom < REVEAL_AT && !overNudge) {
       setRevealed(true);
     } else if (revealed && fromBottom > HIDE_AT) {
       setRevealed(false);
@@ -45,6 +49,7 @@ export function mountFooterReveal() {
 
   function onMove(evt) {
     lastY = evt.clientY;
+    overNudge = !!evt.target?.closest?.('.nudge');
     if (rafId) return;
     rafId = requestAnimationFrame(evaluate);
   }
