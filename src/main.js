@@ -628,19 +628,19 @@ document.body.addEventListener('click', (evt) => {
 // manual there, so iOS installs go uncounted at this layer.
 window.addEventListener('appinstalled', () => track('pwa-installed'));
 
-// Buy-Me-a-Coffee outbound link. Several link instances live in the DOM
+// Ko-fi support outbound link. Several link instances live in the DOM
 // (mobile drawer + desktop footer + install badge); delegating from body
 // covers them all without per-element wiring. The link's container
 // disambiguates which surface the click came from.
 document.body.addEventListener('click', (evt) => {
-  const link = evt.target.closest('a[href*="buymeacoffee.com"]');
+  const link = evt.target.closest('a[href*="ko-fi.com"]');
   if (!link) return;
   const source = link.closest('.off-canvas')
     ? 'drawer'
     : link.closest('.install-section')
       ? 'install'
       : 'footer';
-  track('bmc-click', { source });
+  track('support-click', { source });
 });
 
 // Mobile fullscreen search overlay

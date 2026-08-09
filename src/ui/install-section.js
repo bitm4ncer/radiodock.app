@@ -60,7 +60,7 @@ const ICONS = {
   flathub: `<svg class="install-section__btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 6.5v11L12 22l9-4.5v-11L12 2Zm0 2.24 6.4 3.2L12 10.66 5.6 7.44 12 4.24ZM5 9.24l6 3.02v7.2l-6-3V9.24Zm14 0v7.22l-6 3v-7.2l6-3.02Z" fill="currentColor"/></svg>`,
 };
 
-const SUPPORT_URL = 'https://buymeacoffee.com/bitmancer';
+const SUPPORT_URL = 'https://ko-fi.com/radiodock';
 
 // OS download URLs. The Electron wrapper is a thin client (loads the live
 // PWA), so builds are rare — only when Electron itself or preload.js changes.
@@ -100,8 +100,8 @@ function downloadTile(target, label, sub) {
   </a>`;
 }
 
-// A low-key outbound ask, tracked as a bmc-click by the delegated handler in
-// main.js (href match), so no per-element wiring here.
+// A low-key outbound ask, tracked as a support-click by the delegated handler
+// in main.js (href match), so no per-element wiring here.
 function supportTile() {
   return `<a class="install-section__btn install-section__btn--support" href="${SUPPORT_URL}" target="_blank" rel="noopener" data-support>
     ${ICONS.support}
