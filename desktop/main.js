@@ -25,6 +25,72 @@ let preTinyMinSize = null;
 let preTinyAlwaysOnTop = false;
 let tinyMode = false;
 
+// The pill window, and the full window's floor / default. FULL_MIN_* mirror the
+// minWidth/minHeight below and are the authority when restoring: a size recorded
+// while the relaxed tiny floor was active must never win.
+const TINY_W = 384, TINY_H = 132, TINY_MARGIN = 12;
+const FULL_MIN_W = 380, FULL_MIN_H = 480;
+const FULL_DEFAULT_W = 380, FULL_DEFAULT_H = 760;
+
+function enterTinyWindow() {
+  // Re-entering while already tiny would record the PILL as the full size, so
+  // every later expand would restore a 384x132 window and the app would render
+  // its full layout clipped inside it. Enter is idempotent instead.
+  if (!mainWindow || tinyMode) return;
+  preTinyBounds = mainWindow.getBounds();
+  preTinyMinSize = mainWindow.getMinimumSize();
+  preTinyAlwaysOnTop = mainWindow.isAlwaysOnTop();
+
+  // The window is taller than the pill itself: the CSS centers the pill and the
+  // extra vertical space is transparent margin, so the pill's drop shadow
+  // renders instead of being clipped by the window frame.
+  // workArea excludes the taskbar, so this docks just above/left of it.
+  const wa = screen.getPrimaryDisplay().workArea;
+  // Relax the min size (the full window's 380×480 floor would clamp us).
+  mainWindow.setMinimumSize(200, 72);
+  mainWindow.setResizable(false);
+  // Default to always-on-top in tiny mode (toggleable via context menu).
+  mainWindow.setAlwaysOnTop(true, 'floating');
+  alwaysOnTop = true;
+  mainWindow.setBounds({
+    width: TINY_W,
+    height: TINY_H,
+    x: wa.x + wa.width - TINY_W - TINY_MARGIN,
+    y: wa.y + wa.height - TINY_H - TINY_MARGIN,
+  });
+  tinyMode = true;
+}
+
+function exitTinyWindow() {
+  if (!mainWindow) return;
+  tinyMode = false;
+  mainWindow.setResizable(true);
+  // Clamp to the real floor: a min size captured while tiny (200×72) would
+  // otherwise let the window stay pill-sized.
+  const minW = Math.max(preTinyMinSize?.[0] ?? 0, FULL_MIN_W);
+  const minH = Math.max(preTinyMinSize?.[1] ?? 0, FULL_MIN_H);
+  mainWindow.setMinimumSize(minW, minH);
+  mainWindow.setAlwaysOnTop(!!preTinyAlwaysOnTop);
+  alwaysOnTop = !!preTinyAlwaysOnTop;
+  // Expanding must never leave the window at pill size: with no usable record
+  // the app would switch back to its full layout inside a 384x132 window —
+  // clipped, with no room for a page like station info.
+  const b = preTinyBounds;
+  if (b && b.width >= minW && b.height >= minH) {
+    mainWindow.setBounds(b);
+  } else {
+    const wa = screen.getPrimaryDisplay().workArea;
+    const width = Math.min(Math.max(FULL_DEFAULT_W, minW), wa.width);
+    const height = Math.min(Math.max(FULL_DEFAULT_H, minH), wa.height);
+    mainWindow.setBounds({
+      width,
+      height,
+      x: wa.x + Math.round((wa.width - width) / 2),
+      y: wa.y + Math.round((wa.height - height) / 2),
+    });
+  }
+}
+
 function createWindow() {
   const iconPath = path.join(__dirname, 'icons', 'icon.png');
 
@@ -74,6 +140,14 @@ function createWindow() {
   });
 
   mainWindow.loadURL(APP_URL);
+
+  // A reload restarts the renderer in full mode (nothing persists the tiny
+  // class), and a service-worker update after a deploy reloads on its own. If
+  // the window were left at pill size the app would paint its full layout
+  // clipped inside 384x132, so snap the window back to match the fresh page.
+  mainWindow.webContents.on('did-finish-load', () => {
+    if (tinyMode) exitTinyWindow();
+  });
 
   // Lock navigation to our own origin — remote content must not be able to
   // navigate the shell elsewhere or spawn windows with shell privileges.
@@ -198,39 +272,8 @@ function setupIPC() {
   // maximize button or the right-click context menu. ---
   ipcMain.handle('rd:window:tinyPlayer', (_, enabled) => {
     if (!mainWindow) return false;
-    if (enabled) {
-      // Remember the full-size state to restore later.
-      preTinyBounds = mainWindow.getBounds();
-      preTinyMinSize = mainWindow.getMinimumSize();
-      preTinyAlwaysOnTop = mainWindow.isAlwaysOnTop();
-
-      // H is taller than the pill itself: the CSS centers the pill in the
-      // window and the extra vertical space is transparent margin so the pill's
-      // drop shadow renders instead of being clipped by the window frame.
-      const W = 384, H = 132, MARGIN = 12;
-      // workArea excludes the taskbar, so this docks just above/left of it.
-      const wa = screen.getPrimaryDisplay().workArea;
-      // Relax the min size (the full window's 380×480 floor would clamp us).
-      mainWindow.setMinimumSize(200, 72);
-      mainWindow.setResizable(false);
-      // Default to always-on-top in tiny mode (toggleable via context menu).
-      mainWindow.setAlwaysOnTop(true, 'floating');
-      alwaysOnTop = true;
-      mainWindow.setBounds({
-        width: W,
-        height: H,
-        x: wa.x + wa.width - W - MARGIN,
-        y: wa.y + wa.height - H - MARGIN,
-      });
-      tinyMode = true;
-    } else {
-      tinyMode = false;
-      mainWindow.setResizable(true);
-      if (preTinyMinSize) mainWindow.setMinimumSize(preTinyMinSize[0], preTinyMinSize[1]);
-      mainWindow.setAlwaysOnTop(preTinyAlwaysOnTop);
-      alwaysOnTop = preTinyAlwaysOnTop;
-      if (preTinyBounds) mainWindow.setBounds(preTinyBounds);
-    }
+    if (enabled) enterTinyWindow();
+    else exitTinyWindow();
     return enabled;
   });
 
