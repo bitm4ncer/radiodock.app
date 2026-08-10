@@ -374,6 +374,10 @@ body.is-tiny-player .info-panel,
    minimize, visualizer trigger. They act on the desktop container card and are
    meaningless (and in the way) once it is a pill. */
 body.is-tiny-player .tool-btn,
+/* nudges.js already defers showing a nudge while tiny; this covers the other
+   direction — one already on screen when the user minimizes. It is a sibling of
+   the (hidden) station list, so it would otherwise paint around the pill. */
+body.is-tiny-player .nudge,
 body.is-tiny-player .volume-controls {
   display: none !important;
 }

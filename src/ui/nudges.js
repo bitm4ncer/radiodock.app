@@ -155,6 +155,11 @@ let shownThisSession = false;
 
 async function evaluateNudges() {
   if (shownThisSession) return;
+  // The tiny pill is the whole window — a nudge would paint around it instead
+  // of anywhere sensible. Defer rather than drop: returning before markSeen
+  // keeps the once-ever flag unspent, so the card is still owed and shows on
+  // the next evaluation (every audible minute, and immediately on expand).
+  if (document.body.classList.contains('is-tiny-player')) return;
   const state = await getNudgeState();
   const id = selectNudge(state);
   if (!id) return;
@@ -249,5 +254,8 @@ function installDebugHooks() {
 export function mountNudges({ player }) {
   trackUsageDay().then(evaluateNudges);
   attachAudibleAccumulator(player, () => { evaluateNudges(); });
+  // Expanding out of the pill is the first moment a deferred nudge has room, so
+  // show it there rather than making the user wait for the next audible minute.
+  window.addEventListener('rd:tiny-changed', (e) => { if (!e.detail?.on) evaluateNudges(); });
   installDebugHooks();
 }
