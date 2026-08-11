@@ -8,6 +8,9 @@ import { fetchNowPlaying } from '../data/metadata.js';
 
 const MIN_INTERVAL_MS = 10000;   // never poll faster than every 10 s
 const DEFAULT_INTERVAL_MS = 15000;
+// A single long TTL must not blind the rest of the session: NTS mixtapes ship
+// cacheTtl 3600, which used to buy exactly one poll per hour.
+const MAX_INTERVAL_MS = 300000;
 const LOADING_GRACE_MS = 3000;   // show "Loading metadata…" if first response is slow
 
 export function attachMetadataPoller(player) {
@@ -15,6 +18,7 @@ export function attachMetadataPoller(player) {
   let inFlightController = null;
   let timer = null;
   let intervalMs = DEFAULT_INTERVAL_MS;
+  let lastPollAt = 0;
 
   function clearTimer() {
     if (timer) {
@@ -40,6 +44,7 @@ export function attachMetadataPoller(player) {
     inFlightController?.abort();
     const ctl = new AbortController();
     inFlightController = ctl;
+    lastPollAt = Date.now();
     // Surface a placeholder if the first request after a station change
     // takes long enough that the user would otherwise see an empty line.
     let loadingTimer = null;
@@ -76,9 +81,9 @@ export function attachMetadataPoller(player) {
             },
           }),
         );
-        // Honour the cache TTL the proxy returns, but clamp to MIN_INTERVAL_MS.
+        // Honour the cache TTL the proxy returns, within our own bounds.
         if (typeof result.cacheTtl === 'number') {
-          intervalMs = Math.max(MIN_INTERVAL_MS, result.cacheTtl * 1000);
+          intervalMs = Math.min(MAX_INTERVAL_MS, Math.max(MIN_INTERVAL_MS, result.cacheTtl * 1000));
         }
       }
     } catch (err) {
@@ -114,10 +119,17 @@ export function attachMetadataPoller(player) {
   player.on('stopped', stop);
 
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible' && currentStation && !timer) {
-      // Resume immediately when the user comes back.
-      poll();
-    }
+    if (document.visibilityState !== 'visible' || !currentStation) return;
+    // The sleeping branch in poll() always leaves a timer pending, so waking up
+    // is never a case of "nothing scheduled" — the wake-up has to pre-empt what
+    // is scheduled. Without that, a listener coming back to the tab keeps
+    // seeing the show that was on air when they left, for up to a full
+    // interval. The MIN_INTERVAL_MS floor keeps rapid tab flapping off the
+    // proxy.
+    const since = Date.now() - lastPollAt;
+    clearTimer();
+    if (since >= MIN_INTERVAL_MS) poll();
+    else scheduleNext(MIN_INTERVAL_MS - since);
   });
 
   return { stop };
