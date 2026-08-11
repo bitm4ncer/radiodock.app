@@ -70,7 +70,11 @@ export function attachMetadataPoller(player) {
         { signal: ctl.signal },
       );
       if (ctl.signal.aborted) return;
-      if (result && !result.shouldUseLocal && (result.nowPlaying || result.artist || result.title)) {
+      // `empty` is a definitive answer and dispatches too, so an ended show
+      // clears instead of hanging on screen. A null result is an outage and
+      // leaves the last known line alone.
+      const hasText = !!(result?.nowPlaying || result?.artist || result?.title);
+      if (result && !result.shouldUseLocal && (hasText || result.empty)) {
         player.events?.dispatchEvent(
           new CustomEvent('metadata', {
             detail: {

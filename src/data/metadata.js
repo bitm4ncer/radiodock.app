@@ -29,9 +29,14 @@ export function isHlsUrl(url) {
 
 /**
  * Fetch the now-playing metadata for a station.
+ *
+ * `null` means we have no answer (outage, timeout, both deployments down) —
+ * callers should keep whatever they last showed. A result with `empty: true`
+ * is an answer: the proxy resolved the stream and there is nothing on air.
+ *
  * @param {{streamUrl, stationId?, homepage?, country?}} params
  * @param {{signal?: AbortSignal}} [transport]
- * @returns {Promise<null | {nowPlaying, artist?, title?, source?, cacheTtl?}>}
+ * @returns {Promise<null | {nowPlaying, artist?, title?, source?, cacheTtl?, empty?: boolean, shouldUseLocal?: boolean}>}
  */
 export async function fetchNowPlaying(params, { signal } = {}) {
   const { streamUrl, stationId, homepage, country } = params ?? {};
@@ -81,7 +86,19 @@ export async function fetchNowPlaying(params, { signal } = {}) {
         }
         // Graceful failure shapes from the proxy
         if (data?.reason === 'hls-client') return { source: 'hls-local', shouldUseLocal: true };
-        if (['invalid-url', 'no-metadata', 'blocked'].includes(data?.reason)) return null;
+        // A definitive "there is nothing on air" is an answer, not an outage:
+        // it has to clear a show that has ended rather than leave the previous
+        // title on screen for the rest of the session.
+        if (['invalid-url', 'no-metadata', 'blocked'].includes(data?.reason)) {
+          return {
+            nowPlaying: '',
+            artist: null,
+            title: null,
+            source: 'none',
+            empty: true,
+            cacheTtl: data.cacheTtl || 30,
+          };
+        }
         lastError = new Error(data?.message ?? 'proxy returned ok=false');
       } catch (err) {
         clearTimeout(timer);

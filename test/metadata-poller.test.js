@@ -138,6 +138,31 @@ test('a long proxy TTL does not blind the session (NTS mixtapes ship cacheTtl 36
   });
 });
 
+test('a definitive "nothing on air" clears the previous show', async () => {
+  await withPoller(async (h) => {
+    await advance(1000);
+    assert.equal(h.dispatched.at(-1).nowPlaying, 'Show A');
+
+    h.respond = () => ({ ok: false, reason: 'no-metadata', cacheTtl: 30 });
+    await advance(60_000);
+    assert.equal(
+      h.dispatched.at(-1).nowPlaying,
+      '',
+      'the proxy answered that there is nothing playing — the ended show must not stay on screen',
+    );
+  });
+});
+
+test('an HLS stream is left to its in-band ID3 tags', async () => {
+  await withPoller(async (h) => {
+    await advance(1000);
+    const before = h.dispatched.length;
+    h.respond = () => ({ ok: false, reason: 'hls-client' });
+    await advance(60_000);
+    assert.equal(h.dispatched.length, before, 'shouldUseLocal must not blank what hls.js reported');
+  });
+});
+
 test('a network blip keeps the last known show on screen', async () => {
   await withPoller(async (h) => {
     await advance(1000);
