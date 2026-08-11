@@ -19,7 +19,12 @@ import { toast } from './toast.js';
 import { promptDialog, confirmDialog } from './modal-helpers.js';
 import { exportNotesPayload } from '../data/notes-export.js';
 import { track } from '../analytics/umami.js';
-import { hasEmbedConsent, setEmbedConsent, embedsHtml, consentGateHtml, revokeLinkHtml } from './embeds.js';
+import {
+  hasEmbedConsent, setEmbedConsent, embedsHtml, consentGateHtml, revokeLinkHtml,
+  getPreviewProvider, setPreviewProvider, providerSwitcherHtml, pickProvider,
+  hasAnyEmbed, DEFAULT_PROVIDER,
+} from './embeds.js';
+import { resolveTrackIds, idsFromTrack } from '../data/track-links.js';
 
 const PREF_POS = 'notesPanelPos';
 const PREF_OPEN = 'notesPanelOpen';
@@ -50,6 +55,7 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     searchVisible: false,
     open: false,
     editingNoteId: null,
+    previewProvider: DEFAULT_PROVIDER,
   };
 
   // ---- DOM ----
@@ -67,6 +73,7 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     const pos = await getPref(PREF_POS, null);
     if (pos && Number.isFinite(pos.x) && Number.isFinite(pos.y)) applyPosition(pos.x, pos.y);
   }
+  state.previewProvider = await getPreviewProvider();
   state.currentPageId = await getPref(PREF_CURRENT_PAGE, notes.JOURNAL_PAGE_ID);
   await reloadPages();
   if (!state.pages.some((p) => p.id === state.currentPageId)) {
@@ -187,6 +194,7 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
       <div class="notes-panel__search" data-role="search-wrap" hidden>
         <input type="text" class="notes-panel__search-input" data-role="search-input" placeholder="Search notes…" />
       </div>
+      <div class="notes-panel__provider" data-role="provider-wrap" hidden></div>
       <div class="notes-panel__capture-row${showRecord ? '' : ' notes-panel__capture-row--norec'}">
         ${showRecord ? `<button type="button" class="notes-panel__record-btn" data-action="record" aria-label="Record stream" title="Record">
           <span class="notes-panel__record-dot" aria-hidden="true"></span>
@@ -332,7 +340,19 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     label.textContent = current?.name ?? 'Journal';
   }
 
+  // The switcher only shows where it applies — a page without a single
+  // playable track note would just be a control with nothing to control.
+  function renderProviderSwitcher() {
+    const wrap = panel.querySelector('[data-role="provider-wrap"]');
+    if (!wrap) return;
+    const allNotes = state.notesByPage.get(state.currentPageId) ?? [];
+    const relevant = allNotes.some((n) => n.type === 'capture' && n.track && trackIsEmbeddable(n.track));
+    wrap.hidden = !relevant;
+    wrap.innerHTML = relevant ? providerSwitcherHtml(state.previewProvider) : '';
+  }
+
   function renderList() {
+    renderProviderSwitcher();
     const listEl = panel.querySelector('[data-role="list"]');
     const allNotes = state.notesByPage.get(state.currentPageId) ?? [];
     const filtered = filterNotes(allNotes, state.searchQuery);
@@ -400,13 +420,19 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
       const display = hasArtistTitle
         ? `${escapeHtml(t.artist)} — ${escapeHtml(t.title)}`
         : (t.nowPlaying ? escapeHtml(t.nowPlaying) : '—');
-      const hasEmbed = !!(t.spotify || t.youtube);
-      if (hasEmbed) {
-        track = `<div class="notes-card__track notes-card__track--toggle" data-action="toggle-embed" role="button" tabindex="0" aria-expanded="false">♫ ${display}<span class="notes-card__chevron" aria-hidden="true">▾</span></div>`;
-        embedRegion = `<div class="notes-card__embeds" data-embed-region hidden></div>`;
-      } else {
-        track = `<div class="notes-card__track">♫ ${display}</div>`;
-      }
+      const hasEmbed = trackIsEmbeddable(t);
+      const label = hasEmbed
+        ? `<div class="notes-card__track notes-card__track--toggle" data-action="toggle-embed" role="button" tabindex="0" aria-expanded="false">♫ ${display}<span class="notes-card__chevron" aria-hidden="true">▾</span></div>`
+        : `<div class="notes-card__track">♫ ${display}</div>`;
+      // The copy button lives in the row but OUTSIDE the toggle, so tapping it
+      // never opens or closes the player.
+      const copyBtn = copyTextForTrack(t)
+        ? `<button type="button" class="notes-card__copy" data-action="copy-track" title="Copy artist and title" aria-label="Copy artist and title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+          </button>`
+        : '';
+      track = `<div class="notes-card__track-row">${label}${copyBtn}</div>`;
+      if (hasEmbed) embedRegion = `<div class="notes-card__embeds" data-embed-region hidden></div>`;
       if (hasArtistTitle && t.nowPlaying
         && t.nowPlaying.trim().toLowerCase() !== `${t.artist} — ${t.title}`.trim().toLowerCase()) {
         track += `<div class="notes-card__show">On air: ${escapeHtml(t.nowPlaying)}</div>`;
@@ -756,17 +782,58 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
       case 'toggle-search':   return toggleSearch();
       case 'card-menu':       return openNoteMenu(actionEl, noteId);
       case 'edit':            return startEditing(noteId);
+      case 'set-provider':    return changeProvider(actionEl.dataset.provider);
+      case 'copy-track':      return copyTrackTitle(noteId);
       case 'toggle-embed':    return toggleEmbedRegion(card, noteId);
       case 'load-embeds':     return loadEmbedsForCard(card, noteId);
       case 'revoke-embeds':   return revokeEmbedsForCard(card);
     }
   }
 
-  // ============================================================== Embed previews (Spotify/YouTube)
+  // ============================================================== Embed previews
 
   function findNoteById(noteId) {
     const list = state.notesByPage.get(state.currentPageId) ?? [];
     return list.find((n) => n.id === noteId);
+  }
+
+  // An ISRC or a Deezer id is not playable by itself, but it CAN resolve into
+  // one — so those notes keep their expand affordance.
+  function trackIsEmbeddable(t) {
+    return !!(hasAnyEmbed(idsFromTrack(t)) || t?.isrc || t?.deezer);
+  }
+
+  // Declaration, not a const — renderCard runs during the initial render()
+  // above, long before this line is reached.
+  function copyTextForTrack(t) {
+    return notes.trackCopyText(t);
+  }
+
+  async function copyTrackTitle(noteId) {
+    const text = copyTextForTrack(findNoteById(noteId)?.track);
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // Insecure context or a denied permission — say so instead of failing mute.
+      toast('Could not copy');
+      return;
+    }
+    toast('Copied');
+  }
+
+  async function changeProvider(id) {
+    if (!id || id === state.previewProvider) return;
+    state.previewProvider = id;
+    await setPreviewProvider(id);
+    renderProviderSwitcher();
+    // Re-render every open player in place — no collapse, no panel reload.
+    for (const region of panel.querySelectorAll('[data-embed-region]')) {
+      if (region.hidden || !region.innerHTML.trim()) continue;
+      const card = region.closest('[data-note-id]');
+      region.innerHTML = '';
+      await populateEmbedRegion(region, card?.dataset.noteId);
+    }
   }
 
   function toggleEmbedRegion(card, noteId) {
@@ -782,32 +849,39 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     }
   }
 
+  // Resolution is best-effort and bounded (5 s in data/track-links.js): on any
+  // failure this is exactly the ids the note itself carries.
+  async function idsForNote(noteId) {
+    const t = findNoteById(noteId)?.track;
+    return t ? resolveTrackIds(t) : null;
+  }
+
   async function populateEmbedRegion(region, noteId) {
-    const note = findNoteById(noteId);
-    const t = note?.track;
-    if (!t) return;
+    const ids = await idsForNote(noteId);
+    if (!ids) return;
     const consent = await hasEmbedConsent();
+    // The gate must name the provider that will actually connect.
     region.innerHTML = consent
-      ? embedsHtml({ spotify: t.spotify, youtube: t.youtube }) + revokeLinkHtml()
-      : consentGateHtml();
+      ? embedsHtml({ preferred: state.previewProvider, ids }) + revokeLinkHtml()
+      : consentGateHtml(pickProvider(state.previewProvider, ids) ?? state.previewProvider);
   }
 
   async function loadEmbedsForCard(card, noteId) {
     const region = card?.querySelector('[data-embed-region]');
     if (!region) return;
-    const note = findNoteById(noteId);
-    const t = note?.track;
-    if (!t) return;
+    const ids = await idsForNote(noteId);
+    if (!ids) return;
     const remember = region.querySelector('[data-role="embed-remember"]');
     if (remember?.checked) await setEmbedConsent(true);
-    region.innerHTML = embedsHtml({ spotify: t.spotify, youtube: t.youtube }) + revokeLinkHtml();
+    region.innerHTML = embedsHtml({ preferred: state.previewProvider, ids }) + revokeLinkHtml();
   }
 
   async function revokeEmbedsForCard(card) {
     const region = card?.querySelector('[data-embed-region]');
     if (!region) return;
     await setEmbedConsent(false);
-    region.innerHTML = consentGateHtml();
+    const ids = await idsForNote(card?.dataset.noteId);
+    region.innerHTML = consentGateHtml(pickProvider(state.previewProvider, ids) ?? state.previewProvider);
     toast('External previews disabled');
   }
 

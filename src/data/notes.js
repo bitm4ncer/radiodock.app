@@ -205,5 +205,20 @@ export function sanitizeTrackSnapshot(track) {
     album: track.album ?? null,
     spotify: track.spotify ?? null,
     youtube: track.youtube ?? null,
+    // Apple only embeds together with its storefront, so the pair is stored as
+    // a pair. deezer + isrc are not embeddable themselves — they are the keys
+    // the preview switcher resolves the other providers with
+    // (data/track-links.js).
+    apple: track.apple ?? null,
+    appleCountry: track.appleCountry ?? null,
+    deezer: track.deezer ?? null,
+    isrc: track.isrc ?? null,
   };
+}
+
+// The copy-button text: plain text, never a link. A plain hyphen, because the
+// em dash used in the display is only noise when pasted into a search field.
+export function trackCopyText(track) {
+  if (track?.artist && track?.title) return `${track.artist} - ${track.title}`;
+  return String(track?.nowPlaying ?? '').trim();
 }

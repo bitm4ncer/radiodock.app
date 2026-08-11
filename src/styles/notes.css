@@ -295,6 +295,57 @@ body.container-solid .notes-panel {
   border-color: var(--overlay-hard);
 }
 
+/* ====================================================== Preview provider
+   Only rendered when the current page actually holds a playable track note. */
+.notes-panel__provider {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--overlay-soft);
+  flex-shrink: 0;
+}
+
+.notes-provider {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.notes-provider__label {
+  margin-right: 2px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.notes-provider__opt {
+  flex: 1;
+  padding: 4px 2px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease;
+}
+
+.notes-provider__opt:hover {
+  color: var(--text);
+}
+
+.notes-provider__opt.is-active {
+  border-color: var(--border);
+  background: var(--bg-list-active);
+  color: var(--text);
+}
+
+/* Shown under the player only when the preferred provider had no id for this
+   track — the silent fallback stays visible without nagging. */
+.embed-via {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: right;
+}
+
 /* ============================================================ Capture button
    Subtle pill — same visual weight as the "New note" footer dashed
    pill, but solid and with the brand red only on the icon stroke so
@@ -476,6 +527,17 @@ body.container-solid .notes-panel {
   line-height: 1.35;
 }
 
+.notes-card__track-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.notes-card__track-row .notes-card__track {
+  flex: 1;
+  min-width: 0;
+}
+
 .notes-card__track--toggle {
   display: flex;
   align-items: center;
@@ -483,6 +545,46 @@ body.container-solid .notes-panel {
   gap: 6px;
   cursor: pointer;
   user-select: none;
+}
+
+/* Sits in the track row but outside the toggle, so copying never collapses
+   the player. */
+.notes-card__copy {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-top: -1px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 160ms ease, color 160ms ease, background-color 160ms ease;
+}
+
+.notes-card__copy svg {
+  width: 14px;
+  height: 14px;
+}
+
+.notes-card:hover .notes-card__copy,
+.notes-card__copy:focus-visible {
+  opacity: 1;
+}
+
+.notes-card__copy:hover {
+  color: var(--text);
+  background: var(--overlay-soft);
+}
+
+/* Touch has no hover to reveal it — keep it visible there. */
+@media (pointer: coarse) {
+  .notes-card__copy { opacity: 1; }
 }
 
 .notes-card__track--toggle:hover {

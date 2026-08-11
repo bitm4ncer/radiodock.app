@@ -45,6 +45,13 @@ export function mountDetect({ player, getLatestMetadata, notes, setBusy }) {
           album: out.track.album || '',
           spotify: out.track.external?.spotify || '',
           youtube: out.track.external?.youtube || '',
+          // Carried for the preview switcher: apple needs its storefront to be
+          // embeddable at all, deezer + isrc are resolution keys for the rest
+          // (see data/track-links.js).
+          apple: out.track.external?.apple || '',
+          appleCountry: out.track.external?.appleCountry || '',
+          deezer: out.track.external?.deezer || '',
+          isrc: out.track.isrc || '',
         };
         // captureDetected saves the note, opens the panel, and focuses the
         // new card — it also toasts, so don't double-toast here.
