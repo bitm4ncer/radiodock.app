@@ -18,7 +18,7 @@ import { getPref, setPref, sumRecordingBytes } from '../data/storage.js';
 import { toast } from './toast.js';
 import { promptDialog, confirmDialog } from './modal-helpers.js';
 import { exportNotesPayload } from '../data/notes-export.js';
-import { track } from '../analytics/umami.js';
+import { track, trackStationPlay } from '../analytics/umami.js';
 import {
   hasEmbedConsent, setEmbedConsent, embedsHtml, consentGateHtml, revokeLinkHtml,
   getPreviewProvider, setPreviewProvider, providerSwitcherHtml, pickProvider,
@@ -1292,6 +1292,7 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     if (!note.station?.url) return;
     try {
       // Try the player module directly — `player` was passed at mount.
+      trackStationPlay(note.station, 'notes');
       player.playStation(note.station);
       toast(`Playing ${note.station.name}`);
     } catch (err) {

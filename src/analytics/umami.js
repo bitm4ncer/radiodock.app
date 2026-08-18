@@ -43,3 +43,18 @@ export function track(name, data) {
     // Analytics failures must never break the app.
   }
 }
+
+// Every user-initiated station start goes through here, so the payload stays
+// identical across the many entry points: search, the station list, the mobile
+// carousel, the Electron tray, a note, and the player card starting a station
+// that was only restored into the UI from prefs. Automatic replays must NOT call
+// this: the recovery module retrying a stalled stream is not a play, and counting
+// it would inflate the number on exactly the flakiest streams.
+export function trackStationPlay(station, source) {
+  track('station-play', {
+    station: station?.name ?? '',
+    uuid: station?.id ?? '',
+    country: station?.countrycode ?? '',
+    source,
+  });
+}

@@ -2,6 +2,7 @@
 // favorite heart, visit-station link, play/pause button, volume dots.
 
 import { renderLogoSlot, mountLogoBehavior } from './station-logo.js';
+import { trackStationPlay } from '../analytics/umami.js';
 
 // Volume buckets — 11 steps in 10% increments (one per dot).
 const VOLUME_LEVELS = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
@@ -220,6 +221,10 @@ export function mountPlayerCard({ player }) {
     // card UI but never actually called playStation. Start it fresh.
     const audioStation = player.getCurrentStation();
     if (!audioStation || audioStation.id !== currentStation.id) {
+      // A real station start, not a resume: without this the most common case of
+      // all (reload, press play on the restored station) recorded listening
+      // minutes with zero plays.
+      trackStationPlay(currentStation, 'player-card');
       player.playStation(currentStation);
       return;
     }

@@ -43,7 +43,7 @@ import { mountSyncModal } from './ui/sync-modal.js';
 import { mountAddPanel } from './ui/add-panel.js';
 import { mountChangelog, CHANGELOG_REVISION } from './ui/changelog.js';
 import { startLiveSync, stopLiveSync, pushWithStatus as syncPushWithStatus, getSyncToken, extractTokenFromInput, pullFromServer, applyImportPayload, markSyncDirty } from './data/sync.js';
-import { track } from './analytics/umami.js';
+import { track, identifySession, trackStationPlay } from './analytics/umami.js';
 import { attachListenHeartbeat } from './analytics/listen-heartbeat.js';
 import { mountNudges } from './ui/nudges.js';
 import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
@@ -69,7 +69,7 @@ mountIdbBlockedBanner();
 attachRecovery(player);
 attachMetadataPoller(player);
 attachMediaSession(player);
-attachListenHeartbeat(player);
+attachListenHeartbeat(player, { track, identify: identifySession });
 mountNudges({ player });
 
 // --- Stream offline prober ---
@@ -272,12 +272,7 @@ const search = mountSearch({
     return results;
   },
   onPlay: (station) => {
-    track('station-play', {
-      station: station.name ?? '',
-      uuid: station.id ?? '',
-      country: station.countrycode ?? '',
-      source: 'search',
-    });
+    trackStationPlay(station, 'search');
     player.playStation(station);
   },
   onAdd: async (station) => {
@@ -737,7 +732,9 @@ window.addEventListener('electron:trayNext', () => {
   if (!list?.stations?.length) return;
   const idx = list.stations.findIndex((s) => s.id === state.currentStation?.id);
   const next = list.stations[(idx + 1) % list.stations.length];
-  if (next) player.playStation(next);
+  if (!next) return;
+  trackStationPlay(next, 'tray-next');
+  player.playStation(next);
 });
 
 // Electron tray "Previous Station" → go back one in active list.
@@ -746,7 +743,9 @@ window.addEventListener('electron:trayPrevious', () => {
   if (!list?.stations?.length) return;
   const idx = list.stations.findIndex((s) => s.id === state.currentStation?.id);
   const prev = list.stations[(idx - 1 + list.stations.length) % list.stations.length];
-  if (prev) player.playStation(prev);
+  if (!prev) return;
+  trackStationPlay(prev, 'tray-previous');
+  player.playStation(prev);
 });
 
 // Tiny-player controls (Electron mini mode): prev / homepage / next. They
@@ -1005,12 +1004,7 @@ player.on('volumechange', async (evt) => {
 
 // --- Station list interactions ---
 stationList.onClick((station) => {
-  track('station-play', {
-    station: station.name ?? '',
-    uuid: station.id ?? '',
-    country: station.countrycode ?? '',
-    source: state.currentListId === COMMUNITY_LIST_ID ? 'community' : 'user-list',
-  });
+  trackStationPlay(station, state.currentListId === COMMUNITY_LIST_ID ? 'community' : 'user-list');
   player.playStation(station);
 });
 
@@ -1154,12 +1148,7 @@ listsCarousel.onCurrentChange(async (listId) => {
 // list directly, no state.currentListId lookup needed (avoids races
 // with the swipe-driven state update).
 listsCarousel.onClick((station) => {
-  track('station-play', {
-    station: station.name ?? '',
-    uuid: station.id ?? '',
-    country: station.countrycode ?? '',
-    source: state.currentListId === COMMUNITY_LIST_ID ? 'community' : 'user-list',
-  });
+  trackStationPlay(station, state.currentListId === COMMUNITY_LIST_ID ? 'community' : 'user-list');
   player.playStation(station);
 });
 

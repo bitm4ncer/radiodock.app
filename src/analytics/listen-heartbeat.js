@@ -6,21 +6,33 @@
 // Each ping also refreshes anonymous session data (umami.identify) with
 // cumulative listening totals, so the Sessions view shows how long and
 // what a session listened to without opening its event log.
-
-import { track, identifySession } from './umami.js';
+//
+// `track` and `identify` are injected rather than imported so this module
+// stays loadable outside a Vite build (the analytics wrapper reads
+// import.meta.env at module scope), which is what makes it testable.
 
 // `capBackgroundMinutes`: a page left playing in a background tab pings forever
 // (unattended) and would dominate listening stats. Once continuous background
-// minutes (no foregrounding, no station change) exceed the cap, we stop
-// counting — playback keeps going. Foregrounding or switching station resets
-// the counter, so normal minimized-tab radio listening is unaffected.
-export function attachListenHeartbeat(player, { intervalMs = 60_000, capBackgroundMinutes = 480 } = {}) {
+// minutes exceed the cap, we stop counting; playback keeps going.
+//
+// What counts as attention is deliberately narrow: the page being foregrounded,
+// or the user switching to a different station. A rebuffer is not attention, and
+// neither is the recovery module re-playing the same station after a stall, even
+// though both look like a fresh 'playing' + 'stationchange' from here. Treating
+// them as attention is what previously kept the cap from ever tripping.
+export function attachListenHeartbeat(player, {
+  intervalMs = 60_000,
+  capBackgroundMinutes = 480,
+  track = () => {},
+  identify = () => {},
+} = {}) {
   let timer = null;
   let audible = false;
   let currentShow = null;
   let minutes = 0;
   let backgroundMinutes = 0;
   let continuousBackground = 0;
+  let lastStationId = null;
   const stationsHeard = new Set();
 
   const tick = () => {
@@ -28,6 +40,7 @@ export function attachListenHeartbeat(player, { intervalMs = 60_000, capBackgrou
     const station = player.getCurrentStation();
     if (!station) return;
     const background = document.visibilityState === 'hidden';
+    // Foregrounding is the one unambiguous sign someone is there.
     continuousBackground = background ? continuousBackground + 1 : 0;
     // Unattended background tab past the cap: stop counting (keep playing).
     if (background && continuousBackground > capBackgroundMinutes) return;
@@ -41,7 +54,7 @@ export function attachListenHeartbeat(player, { intervalMs = 60_000, capBackgrou
       background: background ? 'yes' : 'no',
       ...(currentShow ? { show: currentShow } : {}),
     });
-    identifySession({
+    identify({
       listenMinutes: minutes,
       backgroundMinutes,
       stationsPlayed: stationsHeard.size,
@@ -52,7 +65,10 @@ export function attachListenHeartbeat(player, { intervalMs = 60_000, capBackgrou
 
   const start = () => {
     audible = true;
-    continuousBackground = 0; // fresh playback is attended
+    // A rebuffer emits 'loading' then 'playing' again without ever clearing the
+    // timer, so only reach for the timer when there isn't one. Nothing here
+    // resets the background counter: starting playback is not evidence that
+    // anyone is watching, and recovery restarts look identical from here.
     if (!timer) timer = setInterval(tick, intervalMs);
   };
 
@@ -73,9 +89,14 @@ export function attachListenHeartbeat(player, { intervalMs = 60_000, capBackgrou
   // Show/track names arrive via the metadata poller (and HLS ID3). Reset on
   // station change so a ping never attributes the previous station's show to
   // the new one while its first metadata response is still in flight.
-  player.on('stationchange', () => {
+  player.on('stationchange', (evt) => {
     currentShow = null;
-    continuousBackground = 0; // switching station is an attended action
+    // playStation() emits stationchange on every call, including recovery's own
+    // retries of the SAME station after a stall. Only an actual switch is a user
+    // action (mirrors the same guard in player/recovery.js).
+    const id = evt?.detail?.station?.id ?? null;
+    if (lastStationId !== null && id !== lastStationId) continuousBackground = 0;
+    lastStationId = id;
   });
   player.on('metadata', (evt) => {
     const d = evt.detail ?? {};
