@@ -247,6 +247,16 @@ const listDropdown = mountListDropdown();
 // list state change; whichever is visible reads it.
 const listTabs = mountListTabs({ root: document.querySelector('.list-tabs') });
 const listsCarousel = mountListsCarousel({ root: document.getElementById('listsCarousel') });
+
+// The playing station is highlighted on two surfaces: the desktop list and the
+// carousel's per-page lists (narrow layout). Updating only one leaves the other
+// stale, which is how the active row lost its highlight and its pulse dot in the
+// narrow layout while the desktop list was correct. Every caller goes through here.
+function setActiveStationEverywhere(id) {
+  const next = id ?? null;
+  stationList.setActive(next);
+  listsCarousel.setActiveStation(next);
+}
 // Search tracking is debounced separately from the API-fire debounce: the
 // 300ms input-debounce in search.js is tuned for snappy results, but with
 // slow typing (>300ms between chars) it fires one API call — and therefore
@@ -832,13 +842,12 @@ function renderActiveList() {
     removable: !list.readOnly,
     reorderable: list.reorderable ?? !list.readOnly,
   });
-  stationList.setActive(state.currentStation?.id ?? null);
   // Mobile tabs + carousel
   listTabs.setLists(allLists);
   listTabs.setCurrent(list.id);
   listsCarousel.setLists(allLists);
   listsCarousel.setCurrent(list.id, { animate: false });
-  listsCarousel.setActiveStation(state.currentStation?.id ?? null);
+  setActiveStationEverywhere(state.currentStation?.id ?? null);
   updateFavoriteHeart();
   updateShareRowVisibility(list);
   // Re-apply offline status after DOM rebuild, and kick off a fresh
@@ -895,7 +904,7 @@ function updateFavoriteHeart() {
 // --- Player events ---
 player.on('stationchange', async (evt) => {
   state.currentStation = evt.detail.station;
-  stationList.setActive(state.currentStation.id);
+  setActiveStationEverywhere(state.currentStation.id);
   updateFavoriteHeart();
   await storage.setPref('currentStationId', state.currentStation.id);
 });
@@ -1137,7 +1146,7 @@ listsCarousel.onCurrentChange(async (listId) => {
     removable: !list.readOnly,
     reorderable: list.reorderable ?? !list.readOnly,
   });
-  stationList.setActive(state.currentStation?.id ?? null);
+  setActiveStationEverywhere(state.currentStation?.id ?? null);
   updateFavoriteHeart();
   await storage.setPref('currentListId', listId);
   if (OFF_INDICATOR_ENABLED) streamProber.refresh();
@@ -1376,7 +1385,7 @@ async function bootstrap() {
     if (station) {
       state.currentStation = station;
       playerCard.setStation(station);
-      stationList.setActive(station.id);
+      setActiveStationEverywhere(station.id);
       updateFavoriteHeart();
       // Browsers require a user gesture for the first play(), so the
       // restored station sits silent with the play icon showing. Without
