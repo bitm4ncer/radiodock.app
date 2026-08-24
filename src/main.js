@@ -1677,22 +1677,11 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
     navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).catch((err) => {
       console.warn('SW registration failed:', err);
     });
-    // Long-lived app windows (background radio) never relaunch, so they'd
-    // run the build they were opened with forever. The SW uses skipWaiting
-    // + clients.claim, so a controllerchange in a running window means a
-    // newer deploy just took over — offer a one-tap reload instead of
-    // silently staying stale.
-    let hadController = !!navigator.serviceWorker.controller;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!hadController) {
-        hadController = true;
-        return;
-      }
-      toast('RadioDock was updated', {
-        ms: 12000,
-        action: { label: 'Reload', callback: () => window.location.reload() },
-      });
-    });
+    // No update prompt on purpose. The SW uses skipWaiting + clients.claim, so a
+    // new deploy takes over the caches by itself and the next launch runs it; a
+    // window that is already open keeps its bundle until it is reloaded. The
+    // interruption was not worth it for a radio player that runs in the
+    // background for hours.
   });
 }
 
