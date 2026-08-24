@@ -94,8 +94,7 @@
     left: 0;
     right: 0;
     z-index: 50;
-    /* Reverse so the volume strip (.volume-controls is the second DOM
-       child) sits ABOVE the player card. */
+    /* Reverse so the action bar sits directly under the player pill. */
     flex-direction: column-reverse;
     align-items: stretch;
     gap: 0;

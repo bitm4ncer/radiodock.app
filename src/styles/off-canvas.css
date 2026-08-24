@@ -108,6 +108,22 @@ body.is-electron .off-canvas__panel {
   top: var(--titlebar-h);
 }
 
+/* The drawer reaches the window edges, and in the Electron shell those edges are
+   rounded by the ::after canvas layer (search.css). Both layers here are opaque
+   enough to paint square corners over that frame, so both take the same radii.
+   The panel starts below the title bar, past the window's top curve, so only its
+   bottom-left corner meets the frame. */
+body.is-electron:not(.is-tiny-player) .off-canvas__backdrop {
+  border-top-left-radius: var(--rd-window-radius-top);
+  border-top-right-radius: var(--rd-window-radius-top);
+  border-bottom-left-radius: var(--rd-window-radius);
+  border-bottom-right-radius: var(--rd-window-radius);
+}
+
+body.is-electron:not(.is-tiny-player) .off-canvas__panel {
+  border-bottom-left-radius: var(--rd-window-radius);
+}
+
 .off-canvas__header {
   position: relative;
   display: flex;

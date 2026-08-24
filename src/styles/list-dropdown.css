@@ -331,3 +331,29 @@
 .import-list-btn:hover .import-icon {
   color: var(--text);
 }
+
+/* Icon-only actions. Three labelled buttons made a cramped row where the text
+   did the crowding and the glyphs stayed tiny; the icons carry the meaning on
+   their own, so the labels go and the glyphs grow into the space. The accessible
+   name moves to aria-label/title on each button (index.html), so nothing is lost
+   for screen readers or tooltips. */
+.list-action-label {
+  display: none;
+}
+
+.add-list-btn,
+.import-list-btn {
+  justify-content: center;
+  gap: 0;
+  padding: 8px;
+}
+
+.plus-icon,
+.import-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.plus-icon {
+  font-size: 20px;
+}

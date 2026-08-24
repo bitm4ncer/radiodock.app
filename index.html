@@ -356,26 +356,26 @@
                 </span>
               </button>
             </div>
-          </article>
+            <!-- Volume slider: 11 dots tapering small to large, representing 0 to 100%. -->
+            <div class="volume-controls" id="volumeControls" role="slider" aria-label="Volume" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80" tabindex="0">
+              <button type="button" class="volume-mute-btn" id="volumeMuteBtn" aria-label="Mute" title="Mute (M)">
+                <svg class="icon-speaker" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z" fill="currentColor"/><path d="M16 8.5a4 4 0 0 1 0 7" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+                <svg class="icon-muted" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+              </button>
+              <button type="button" class="volume-dot" data-volume="0"   aria-label="Mute"          style="--vd-size: 4px;"></button>
+              <button type="button" class="volume-dot" data-volume="10"  aria-label="Volume 10%"    style="--vd-size: 5px;"></button>
+              <button type="button" class="volume-dot" data-volume="20"  aria-label="Volume 20%"    style="--vd-size: 6px;"></button>
+              <button type="button" class="volume-dot" data-volume="30"  aria-label="Volume 30%"    style="--vd-size: 7px;"></button>
+              <button type="button" class="volume-dot" data-volume="40"  aria-label="Volume 40%"    style="--vd-size: 8px;"></button>
+              <button type="button" class="volume-dot" data-volume="50"  aria-label="Volume 50%"    style="--vd-size: 9px;"></button>
+              <button type="button" class="volume-dot" data-volume="60"  aria-label="Volume 60%"    style="--vd-size: 10px;"></button>
+              <button type="button" class="volume-dot" data-volume="70"  aria-label="Volume 70%"    style="--vd-size: 11px;"></button>
+              <button type="button" class="volume-dot" data-volume="80"  aria-label="Volume 80%"    style="--vd-size: 12px;"></button>
+              <button type="button" class="volume-dot" data-volume="90"  aria-label="Volume 90%"    style="--vd-size: 13px;"></button>
+              <button type="button" class="volume-dot" data-volume="100" aria-label="Volume 100%"   style="--vd-size: 14px;"></button>
+            </div>
 
-          <!-- Volume slider — 11 dots tapering small→large representing 0→100%. -->
-          <div class="volume-controls" id="volumeControls" role="slider" aria-label="Volume" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80" tabindex="0">
-            <button type="button" class="volume-mute-btn" id="volumeMuteBtn" aria-label="Mute" title="Mute (M)">
-              <svg class="icon-speaker" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z" fill="currentColor"/><path d="M16 8.5a4 4 0 0 1 0 7" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
-              <svg class="icon-muted" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
-            </button>
-            <button type="button" class="volume-dot" data-volume="0"   aria-label="Mute"          style="--vd-size: 4px;"></button>
-            <button type="button" class="volume-dot" data-volume="10"  aria-label="Volume 10%"    style="--vd-size: 5px;"></button>
-            <button type="button" class="volume-dot" data-volume="20"  aria-label="Volume 20%"    style="--vd-size: 6px;"></button>
-            <button type="button" class="volume-dot" data-volume="30"  aria-label="Volume 30%"    style="--vd-size: 7px;"></button>
-            <button type="button" class="volume-dot" data-volume="40"  aria-label="Volume 40%"    style="--vd-size: 8px;"></button>
-            <button type="button" class="volume-dot" data-volume="50"  aria-label="Volume 50%"    style="--vd-size: 9px;"></button>
-            <button type="button" class="volume-dot" data-volume="60"  aria-label="Volume 60%"    style="--vd-size: 10px;"></button>
-            <button type="button" class="volume-dot" data-volume="70"  aria-label="Volume 70%"    style="--vd-size: 11px;"></button>
-            <button type="button" class="volume-dot" data-volume="80"  aria-label="Volume 80%"    style="--vd-size: 12px;"></button>
-            <button type="button" class="volume-dot" data-volume="90"  aria-label="Volume 90%"    style="--vd-size: 13px;"></button>
-            <button type="button" class="volume-dot" data-volume="100" aria-label="Volume 100%"   style="--vd-size: 14px;"></button>
-          </div>
+          </article>
 
           <!-- Player action bar — segmented pill of controls that docks with
                the player: on desktop it wraps to its own line below the pill,
@@ -453,22 +453,22 @@
                   <div id="listDropdownMenu" class="list-dropdown-menu" style="display: none;">
                     <div id="listItems" class="list-items"></div>
                     <div class="list-actions">
-                      <button id="addListBtn" class="add-list-btn">
+                      <button id="addListBtn" class="add-list-btn" title="New list" aria-label="New list">
                         <span class="plus-icon">+</span>
-                        <span>New List</span>
+                        <span class="list-action-label">New List</span>
                       </button>
-                      <button id="importListBtn" class="import-list-btn">
+                      <button id="importListBtn" class="import-list-btn" title="Import list" aria-label="Import list">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="import-icon" aria-hidden="true">
                           <path d="M3 19H21V21H3V19ZM13 5.82843V17H11V5.82843L4.92893 11.8995L3.51472 10.4853L12 2L20.4853 10.4853L19.0711 11.8995L13 5.82843Z" />
                         </svg>
-                        <span>Import List</span>
+                        <span class="list-action-label">Import List</span>
                       </button>
                       <input type="file" id="importListFile" accept=".json" style="display: none;" />
-                      <button id="syncListBtn" class="import-list-btn">
+                      <button id="syncListBtn" class="import-list-btn" title="Sync devices" aria-label="Sync devices">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="import-icon" aria-hidden="true">
                           <path d="M12 4V1L8 5L12 9V6C15.31 6 18 8.69 18 12C18 13.01 17.75 13.97 17.3 14.8L18.76 16.26C19.54 15.03 20 13.57 20 12C20 7.58 16.42 4 12 4ZM12 18C8.69 18 6 15.31 6 12C6 10.99 6.25 10.03 6.7 9.2L5.24 7.74C4.46 8.97 4 10.43 4 12C4 16.42 7.58 20 12 20V23L16 19L12 15V18Z"/>
                         </svg>
-                        <span>Sync Devices</span>
+                        <span class="list-action-label">Sync Devices</span>
                       </button>
                     </div>
                   </div>

@@ -10,6 +10,8 @@
 
 /* Player Card */
 .player-card {
+  /* Positioning context for the volume strip, which is centred on the pill. */
+  position: relative;
   background: var(--bg-dark);
   border-radius: 100px;
   padding: 12px 16px;
@@ -455,12 +457,12 @@
 .volume-controls {
   position: absolute;
   right: -35px;
-  /* Top-align the strip with the player pill. Without an explicit top it takes
-     a static position centred on the whole section, which the action bar made
-     taller — so the strip drifted below the pill. Anchor it so the topmost dot
-     sits at the pill's top edge (measured: +12px from the section top). Hidden
-     on mobile, so this only affects the desktop layout. */
-  top: 12px;
+  /* Centred on the player pill. The strip is a child of .player-card, so the
+     action bar below the pill cannot drag it down and there is no measured
+     offset to keep in sync when the pill changes height. Hidden on mobile, so
+     this only affects the desktop layout. */
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   flex-direction: column-reverse;   /* small at bottom, large at top */
   align-items: center;
@@ -476,7 +478,7 @@
   cursor: ns-resize;
 }
 
-.player-section .player-card.loaded + .volume-controls {
+.player-section .player-card.loaded .volume-controls {
   opacity: 1;
 }
 
