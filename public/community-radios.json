@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-09-01T17:49:35.116Z",
+  "exportDate": "2026-09-01T21:52:09.667Z",
   "listName": "Community Radios",
   "stations": [
     {
@@ -36,12 +36,12 @@
       "url": "https://icecast.callshopradio.com/callshopradio"
     },
     {
+      "countrycode": "DE",
+      "favicon": "https://pbs.twimg.com/profile_images/882223798275231745/rEbH-Yry_400x400.jpg",
+      "homepage": "https://dublab.de/",
       "id": "652e1061-5de4-442f-8b7e-cd0dfbd37048",
       "name": "dublab DE",
-      "url": "https://dublabde.out.airtime.pro/dublabde_a",
-      "homepage": "https://dublab.de/",
-      "favicon": "https://pbs.twimg.com/profile_images/882223798275231745/rEbH-Yry_400x400.jpg",
-      "countrycode": "DE"
+      "url": "https://dublabde.out.airtime.pro/dublabde_a"
     },
     {
       "countrycode": "GB",
@@ -85,7 +85,7 @@
     },
     {
       "countrycode": "GR",
-      "favicon": "",
+      "favicon": "https://stegi.radio/icons/apple-touch-icon-180x180.png",
       "homepage": "https://stegi.radio/",
       "id": "6e2a1c0a-4c87-498e-9371-86e571f21eb9",
       "name": "Stegi Radio",
@@ -129,7 +129,7 @@
       "homepage": "https://www.subtleradio.com/",
       "id": "1dbdc89f-f0d1-4bf7-8922-266edeb912dd",
       "name": "Subtle Radio",
-      "url": "https://subtle.out.airtime.pro/subtle_a"
+      "url": "https://subtle-radio-dd2656d9.radiocult.fm/stream"
     },
     {
       "countrycode": "GB",
@@ -177,7 +177,7 @@
       "homepage": "https://www.radio-sofa.com/",
       "id": "4a72fae3-8384-473c-8d1b-f17cdc60f387",
       "name": "Radio Sofa",
-      "url": "https://radio.radio-sofa.com/listen/radio_sofa/radio.mp3"
+      "url": "https://listen.radioking.com/radio/292531/stream/338878"
     },
     {
       "countrycode": "US",
@@ -221,7 +221,7 @@
     },
     {
       "countrycode": "DE",
-      "favicon": "",
+      "favicon": "https://thfradio.de/favicon.ico",
       "homepage": "https://thfradio.de/",
       "id": "105fbc46-ec2c-498d-8363-127c452ea8dc",
       "name": "THF Radio",
@@ -285,7 +285,7 @@
     },
     {
       "countrycode": "HU",
-      "favicon": "",
+      "favicon": "https://www.lahmacun.hu/favicon.ico",
       "homepage": "https://www.lahmacun.hu/",
       "id": "1af63c5f-4112-11ea-a9fa-52543be04c81",
       "name": "Lahmacun Radio",
@@ -313,7 +313,7 @@
       "homepage": "https://wfmu.org/",
       "id": "61d90ec1-615e-489b-a175-110076596a3b",
       "name": "WFMU",
-      "url": "http://stream2.wfmu.org/freeform-128k"
+      "url": "http://stream0.wfmu.org/freeform-128k"
     },
     {
       "countrycode": "GB",
@@ -340,12 +340,12 @@
       "url": "https://hydefmradio-archive.s3.us-west-1.amazonaws.com/recordings/2026/06/show-20260630-010000.mp3#t=4824"
     },
     {
+      "countrycode": "IE",
+      "favicon": "https://eist.radio/favicon.ico",
+      "homepage": "https://eist.radio/",
       "id": "70b5b316-8810-41eb-bfb1-8c76a7cd7df3",
       "name": "eist",
-      "url": "https://eist-radio.radiocult.fm/stream",
-      "homepage": "https://eist.radio/",
-      "favicon": "https://eist.radio/favicon.ico",
-      "countrycode": "IE"
+      "url": "https://eist-radio.radiocult.fm/stream"
     },
     {
       "countrycode": "",
