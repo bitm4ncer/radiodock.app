@@ -100,24 +100,44 @@ html.is-standalone .player-section .player-card {
 /* Volume strip in the installed app. Phones and tablets keep it hidden: the
    hardware buttons and the lock-screen card own the volume there. A desktop
    shell (Electron, installed desktop PWA) has a mouse and no per-app hardware
-   volume, so the desktop dot strip comes back, docked in a gutter to the
-   right of the player pill. The tiny player hides it again in search.css. */
+   volume, so the dot strip comes back as a horizontal row centred under the
+   action bar. The tiny player hides it again in search.css. */
 @media (hover: none), (pointer: coarse) {
   html.is-standalone .volume-controls { display: none !important; }
 }
 @media (hover: hover) and (pointer: fine) {
-  /* Only the pill gives way for the gutter; the action bar below it keeps
-     the full dock width. */
-  html.is-standalone body:not(.is-tiny-player) .player-section .player-card {
-    width: calc(100% - 26px);
+  /* Room for the row below the action bar. The strip is a child of the pill,
+     so the fixed section becomes its positioning context (nothing else inside
+     the pill is absolutely positioned outside tiny mode). */
+  html.is-standalone body:not(.is-tiny-player) .player-section {
+    padding-bottom: calc(40px + env(safe-area-inset-bottom));
   }
-  /* Tighter than the desktop strip so it fits the pill height (the dock
-     has no room for it to overhang into the action bar). */
+  html.is-standalone body:not(.is-tiny-player) .player-section .player-card {
+    position: static;
+  }
   html.is-standalone body:not(.is-tiny-player) .volume-controls {
     display: flex !important;
-    right: -36px;
-    gap: 2px;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    top: auto;
+    right: 0;
+    left: 0;
+    bottom: calc(9px + env(safe-area-inset-bottom));
+    transform: none;
     padding: 4px 14px;
+    cursor: ew-resize;
+  }
+  html.is-standalone body:not(.is-tiny-player) .volume-controls .volume-dot {
+    cursor: ew-resize;
+  }
+  html.is-standalone.volume-dragging,
+  html.is-standalone.volume-dragging * {
+    cursor: ew-resize !important;
+  }
+  /* The taller dock needs matching clearance on the scrolling list pages. */
+  html.is-standalone body:not(.is-tiny-player) .list-page {
+    padding-bottom: calc(208px + env(safe-area-inset-bottom));
   }
 }
 
