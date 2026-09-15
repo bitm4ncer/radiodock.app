@@ -68,7 +68,7 @@ const state = {
 mountIdbBlockedBanner();
 attachRecovery(player);
 attachMetadataPoller(player);
-attachMediaSession(player);
+const mediaSession = attachMediaSession(player);
 attachListenHeartbeat(player, { track, identify: identifySession });
 mountNudges({ player });
 
@@ -736,27 +736,31 @@ try {
   console.warn('Electron bridge mount failed (native features disabled):', err);
 }
 
-// Electron tray "Next Station" → advance to next station in active list.
-window.addEventListener('electron:trayNext', () => {
-  const list = findList(state.currentListId);
-  if (!list?.stations?.length) return;
-  const idx = list.stations.findIndex((s) => s.id === state.currentStation?.id);
-  const next = list.stations[(idx + 1) % list.stations.length];
-  if (!next) return;
-  trackStationPlay(next, 'tray-next');
-  player.playStation(next);
-});
+// Step through the active list, wrapping at both ends. Shared by the Electron
+// tray, the tiny-player buttons and the OS media controls.
+function playAdjacentStation(delta, source) {
+  const stations = findList(state.currentListId)?.stations;
+  if (!stations?.length) return;
+  const idx = stations.findIndex((s) => s.id === state.currentStation?.id);
+  // Nothing from this list is playing (a search result, say): step in from the
+  // edge instead of landing somewhere arbitrary in the middle.
+  const target =
+    idx < 0
+      ? stations[delta > 0 ? 0 : stations.length - 1]
+      : stations[(idx + delta + stations.length) % stations.length];
+  if (!target) return;
+  trackStationPlay(target, source);
+  player.playStation(target);
+}
 
-// Electron tray "Previous Station" → go back one in active list.
-window.addEventListener('electron:trayPrevious', () => {
-  const list = findList(state.currentListId);
-  if (!list?.stations?.length) return;
-  const idx = list.stations.findIndex((s) => s.id === state.currentStation?.id);
-  const prev = list.stations[(idx - 1 + list.stations.length) % list.stations.length];
-  if (!prev) return;
-  trackStationPlay(prev, 'tray-previous');
-  player.playStation(prev);
-});
+window.addEventListener('electron:trayNext', () => playAdjacentStation(1, 'tray-next'));
+window.addEventListener('electron:trayPrevious', () => playAdjacentStation(-1, 'tray-previous'));
+
+// Skip buttons on the OS media controls: lock screen, CarPlay / Android Auto
+// now-playing, headphones, steering wheel. iOS only renders them once a
+// handler is registered, so this is what makes them appear at all.
+mediaSession?.setNextTrack(() => playAdjacentStation(1, 'media-session-next'));
+mediaSession?.setPreviousTrack(() => playAdjacentStation(-1, 'media-session-previous'));
 
 // Tiny-player controls (Electron mini mode): prev / homepage / next. They
 // reuse the tray prev/next logic and the player-card's homepage-open on the
