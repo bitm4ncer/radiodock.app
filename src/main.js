@@ -45,6 +45,7 @@ import { mountChangelog, CHANGELOG_REVISION } from './ui/changelog.js';
 import { startLiveSync, stopLiveSync, pushWithStatus as syncPushWithStatus, getSyncToken, extractTokenFromInput, pullFromServer, applyImportPayload, markSyncDirty } from './data/sync.js';
 import { track, identifySession, trackStationPlay } from './analytics/umami.js';
 import { attachListenHeartbeat } from './analytics/listen-heartbeat.js';
+import { attachStreamOutcome } from './analytics/stream-outcome.js';
 import { mountNudges } from './ui/nudges.js';
 import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
 import { detectPlatform, detectStandalone, canPromptInstall, promptInstall } from './platform.js';
@@ -70,6 +71,7 @@ attachRecovery(player);
 attachMetadataPoller(player);
 const mediaSession = attachMediaSession(player);
 attachListenHeartbeat(player, { track, identify: identifySession });
+attachStreamOutcome(player, { track });
 mountNudges({ player });
 
 // --- Stream offline prober ---
@@ -920,6 +922,7 @@ player.on('error', (evt) => {
   const station = player.getCurrentStation();
   track('stream-error', {
     station: station?.name ?? '',
+    uuid: station?.id ?? '',
     errorName: evt.detail?.name ?? '',
     message: evt.detail?.message ?? '',
     phase: 'start',
@@ -933,6 +936,7 @@ player.on('error', (evt) => {
 player.on('mediaerror', (evt) => {
   track('stream-error', {
     station: player.getCurrentStation()?.name ?? '',
+    uuid: player.getCurrentStation()?.id ?? '',
     errorName: evt.detail?.name ?? '',
     message: evt.detail?.message ?? '',
     phase: 'playback',
@@ -1001,6 +1005,7 @@ player.on('recoveryfailed', () => {
   recomputeOffline();
   track('stream-dead', {
     station: player.getCurrentStation()?.name ?? '',
+    uuid: player.getCurrentStation()?.id ?? '',
   });
 });
 
