@@ -103,7 +103,12 @@
     <meta name="twitter:image" content="https://radiodock.app/icons/icon-512.png" />
     <meta name="twitter:image:alt" content="RadioDock — internet radio player logo" />
 
+    <!-- Search-engine icon services (DuckDuckGo's ip3 among them) fetch /favicon.ico
+         and ignore an SVG-only icon, which left our result rows without a logo. -->
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="preload" as="font" href="/fonts/InterVariable.woff2" type="font/woff2" crossorigin />
