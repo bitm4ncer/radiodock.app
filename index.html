@@ -485,6 +485,11 @@
             <div class="empty-state" id="emptyState">
               <p>Loading stations…</p>
             </div>
+            <!-- Build step replaces this with the published community list as
+                 plain rows, so crawlers that do not run JS still see the
+                 stations. station-list.js adopts the same container on its
+                 first render. See scripts/static-station-rows.mjs. -->
+            <!--PRERENDERED_COMMUNITY_ROWS-->
           </div>
           <!-- Subtle "share this list" affordance. Hidden when the active
                list is empty (no point sharing zero stations). -->

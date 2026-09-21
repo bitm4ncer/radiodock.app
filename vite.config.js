@@ -2,6 +2,9 @@ import { defineConfig } from 'vite';
 import { readFile, writeFile } from 'node:fs/promises';
 import { execSync } from 'node:child_process';
 import path from 'node:path';
+import { renderStaticStationRows } from './scripts/static-station-rows.mjs';
+
+const PRERENDER_MARKER = '<!--PRERENDERED_COMMUNITY_ROWS-->';
 
 function buildId() {
   let sha = '';
@@ -41,6 +44,28 @@ function appVersion() {
   }
 }
 
+// Replace the community-list placeholder in index.html with plain station rows.
+// Runs in dev and build so both serve the same DOM. Soft-fails: a missing or
+// malformed community-radios.json leaves the placeholder empty rather than
+// breaking the app.
+function prerenderCommunityListPlugin() {
+  return {
+    name: 'prerender-community-list',
+    async transformIndexHtml(html) {
+      if (!html.includes(PRERENDER_MARKER)) return html;
+      let rows = '';
+      try {
+        const raw = await readFile(path.resolve('public/community-radios.json'), 'utf8');
+        rows = renderStaticStationRows(JSON.parse(raw)?.stations);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn(`  community list not prerendered: ${err.message}`);
+      }
+      return html.replace(PRERENDER_MARKER, rows);
+    },
+  };
+}
+
 // Replace __BUILD_ID__ in the final dist/sw.js so the cache name changes on
 // every deploy. We do this in writeBundle (post-emit) because sw.js comes
 // from /public and Vite copies it verbatim.
@@ -66,7 +91,7 @@ function injectBuildIdPlugin() {
 
 export default defineConfig({
   base: '/',
-  plugins: [injectBuildIdPlugin()],
+  plugins: [prerenderCommunityListPlugin(), injectBuildIdPlugin()],
   define: {
     // Inlined as a string literal at build time. Code reads this as a
     // bare identifier (no import needed), Vite replaces it pre-bundle.

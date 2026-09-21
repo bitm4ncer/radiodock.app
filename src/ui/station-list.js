@@ -198,9 +198,17 @@ export function mountStationList({ container, listId = null }) {
 
   function ensureRowsHost() {
     if (rowsHost) return rowsHost;
-    rowsHost = document.createElement('div');
-    rowsHost.className = 'station-list-rows';
-    listEl.append(rowsHost);
+    // The build prerenders the community list into a `.station-list-rows`
+    // container (see scripts/static-station-rows.mjs). Adopt it instead of
+    // appending a second one, so the first render replaces those rows in place.
+    rowsHost = listEl.querySelector(':scope > .station-list-rows');
+    if (rowsHost) {
+      delete rowsHost.dataset.prerendered;
+    } else {
+      rowsHost = document.createElement('div');
+      rowsHost.className = 'station-list-rows';
+      listEl.append(rowsHost);
+    }
     mountLogoBehavior(rowsHost);
     // Desktop hover → live now-playing preview under the station name.
     mountNowPlayingHover(rowsHost, (row) => stations.find((s) => s.id === row.dataset.id) ?? null);
