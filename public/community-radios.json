@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-10-07T17:01:07.581Z",
+  "exportDate": "2026-10-07T19:00:35.993Z",
   "listName": "Community Radios",
   "stations": [
     {
@@ -690,6 +690,14 @@
       "id": "0f076052-d288-4a5c-9416-aa7e9e18a180",
       "name": "20ft Radio",
       "url": "https://20ft-radio.radiocult.fm/stream"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://buenavida.co.uk/wp-content/uploads/2022/08/Small-logo-for-Soundcloud.jpg",
+      "homepage": "https://buenavida.co.uk/",
+      "id": "3bee72bd-0de4-448e-ae23-2e962923643f",
+      "name": "Radio Buena Vida",
+      "url": "https://s4.radio.co/s69b281ac0/listen"
     }
   ]
 }
