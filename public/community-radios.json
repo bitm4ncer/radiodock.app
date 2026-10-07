@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-09-01T21:52:09.667Z",
+  "exportDate": "2026-10-07T17:01:07.581Z",
   "listName": "Community Radios",
   "stations": [
     {
@@ -189,7 +189,7 @@
     },
     {
       "countrycode": "ZA",
-      "favicon": "",
+      "favicon": "https://panafricanspacestation.org.za/wp-content/uploads/2020/09/cropped-PASS-LOGO-192x192.jpg",
       "homepage": "https://panafricanspacestation.org.za/",
       "id": "045f3748-7488-4249-bf43-6feb7bb8db3d",
       "name": "Pan African Space Station",
@@ -313,7 +313,7 @@
       "homepage": "https://wfmu.org/",
       "id": "61d90ec1-615e-489b-a175-110076596a3b",
       "name": "WFMU",
-      "url": "http://stream0.wfmu.org/freeform-128k"
+      "url": "http://stream0.wfmu.org/freeform-high.aac"
     },
     {
       "countrycode": "GB",
@@ -461,7 +461,7 @@
     },
     {
       "countrycode": "FR",
-      "favicon": "https://www.radiogrenouille.com/wp-content/uploads/2023/05/cropped-FAVICON_GRENOUILLE_512x512-192x192.png",
+      "favicon": "https://www.radiogrenouille.com/wp-content/uploads/2026/08/cropped-favicon-192x192.png",
       "homepage": "http://www.radiogrenouille.com/",
       "id": "e6639188-dc36-4441-ba83-4b6832a58c83",
       "name": "Radio grenouille",
@@ -554,6 +554,142 @@
       "id": "c64eec05-073c-474d-9c42-cd3b8e670ea1",
       "name": "Seyðisfjörður Community Radio",
       "url": "https://seyisfjorur-community-radio.radiocult.fm/stream"
+    },
+    {
+      "countrycode": "HU",
+      "favicon": "http://tilos.hu/favicon.ico",
+      "homepage": "http://tilos.hu/",
+      "id": "960bec79-0601-11e8-ae97-52543be04c81",
+      "name": "Tilos Rádió",
+      "url": "http://stream.tilos.hu/tilos"
+    },
+    {
+      "countrycode": "",
+      "favicon": "https://api.community-radio-index.com/media/logos/ed95c5ad-1080-4209-ab28-026033822975.png",
+      "homepage": "https://www.sharjahart.org/en/saf-radio/",
+      "id": "792d2bdb-4340-4458-8cd6-a24f2c0d5692",
+      "name": "SAF Radio",
+      "url": "https://s4.radio.co/s2c42e3ef5/listen"
+    },
+    {
+      "countrycode": "CH",
+      "favicon": "https://www.lora.ch/images/favicon/apple-touch-icon.png",
+      "homepage": "https://www.lora.ch/",
+      "id": "37d4ee78-88a9-4fbd-82f6-81d5eb0b3477",
+      "name": "Radio LoRa 97.5",
+      "url": "https://livestream.lora.ch/lora.mp3"
+    },
+    {
+      "countrycode": "BE",
+      "favicon": "http://www.radiocentraal.be/favicon.ico",
+      "homepage": "http://www.radiocentraal.be/Realescape/",
+      "id": "961b288f-0601-11e8-ae97-52543be04c81",
+      "name": "radio centraal",
+      "url": "http://streams.movemedia.eu/centraal"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://images.squarespace-cdn.com/content/v1/55dccc18e4b080417ce5fafa/feabd5e7-3324-4e8f-a2bd-150dd0e44291/favicon.ico?format=100w",
+      "homepage": "https://margateradio.co.uk/",
+      "id": "c23448e9-2bb5-48e1-9436-61fc13d79558",
+      "name": "Margate Radio",
+      "url": "https://margate-radio.radiocult.fm/stream"
+    },
+    {
+      "countrycode": "US",
+      "favicon": "https://lumpenradio.com/wp-content/uploads/2025/04/cropped-WhatsApp-Image-2025-04-30-at-5.03.43-PM-192x192.jpeg",
+      "homepage": "https://lumpenradio.com/",
+      "id": "2062e3ec-1643-4aea-9c59-f5c381a1f1f6",
+      "name": "Lumpen Radio",
+      "url": "https://radio.mensajito.mx/lumpenradio"
+    },
+    {
+      "countrycode": "US",
+      "favicon": "https://kuaafm.org/apple-touch-icon.png",
+      "homepage": "https://kuaafm.org/",
+      "id": "ed8bbb29-52a0-4dc8-9cbf-bc96ac208ca3",
+      "name": "KUAA",
+      "url": "https://stream.xmission.com/kuaa"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "http://infrared.fm/favicon.ico",
+      "homepage": "http://infrared.fm/",
+      "id": "6a79ad48-3c95-472d-bdf0-850c1172cf69",
+      "name": "Infrared.fm",
+      "url": "https://carol.epichosts.co.uk:8232/live.mp3"
+    },
+    {
+      "countrycode": "US",
+      "favicon": "https://eastvillageradio.com/logoevr.png",
+      "homepage": "https://eastvillageradio.com/indexevr/",
+      "id": "8758e35b-45ea-4a90-887e-65a52760952b",
+      "name": "East Village Radio",
+      "url": "https://east-village-radio.radiocult.fm/stream"
+    },
+    {
+      "countrycode": "CA",
+      "favicon": "https://n10.as/favicon.ico",
+      "homepage": "https://n10.as/",
+      "id": "96643f48-c85c-41d5-b9a0-6c6cd861e87b",
+      "name": "N10.AS",
+      "url": "https://n10as.radiocult.fm/stream"
+    },
+    {
+      "countrycode": "",
+      "favicon": "https://internetradioprotocol.org/logos/particle.jpg",
+      "homepage": "https://www.particle.fm",
+      "id": "71fd3641-4271-4f47-a2b9-acf91822fe02",
+      "name": "Particle FM",
+      "url": "https://azuracast.particle.fm/radio/8000/radio.mp3"
+    },
+    {
+      "countrycode": "US",
+      "favicon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdaCPy_EOxy-YJfNfN97wz8pk9CBRPH_V9ZAodjcsfAQ&s",
+      "homepage": "https://www.lowergrandradio.com/",
+      "id": "a90a066e-a7ce-4dda-a123-0a97b4d1a0f1",
+      "name": "Lower Grand Radio",
+      "url": "https://media.evenings.co/s/g1b9EBY39"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://pbs.twimg.com/profile_images/1638236080674578434/Hbww_nFm_400x400.jpg",
+      "homepage": "https://rinse.fm/channels/kool/",
+      "id": "973c30a5-a178-4daf-89c7-272ec6c47456",
+      "name": "Kool FM",
+      "url": "https://admin.stream.rinse.fm/proxy/kool/stream"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://f4.bcbits.com/img/a1309017338_10.jpg",
+      "homepage": "https://www.subcity.org/",
+      "id": "2a5af2b2-dc8a-4d1a-91b9-a491022b5f59",
+      "name": "Subcity Radio",
+      "url": "https://stream.subcity.org/listen"
+    },
+    {
+      "countrycode": "DE",
+      "favicon": "https://sphere-radio.net/favicon.ico",
+      "homepage": "https://sphere-radio.net/",
+      "id": "447e8667-583f-42a5-98a4-f0aa2fea246c",
+      "name": "Sphere Radio",
+      "url": "https://stream.sphere-radio.net/listen"
+    },
+    {
+      "countrycode": "DK",
+      "favicon": "https://www.radiopanini.com/icon.png?icon.0l75m8dt-js2..png",
+      "homepage": "https://www.radiopanini.com/",
+      "id": "cd6cac01-31ef-4ea0-ade2-9189d68ed443",
+      "name": "Radio Panini",
+      "url": "https://radi-panini.radiocult.fm/stream"
+    },
+    {
+      "countrycode": "UA",
+      "favicon": "https://api.community-radio-index.com/media/logos/f18b9270-f412-4a41-a44c-653b44f54377.png",
+      "homepage": "https://20ftradio.net/",
+      "id": "0f076052-d288-4a5c-9416-aa7e9e18a180",
+      "name": "20ft Radio",
+      "url": "https://20ft-radio.radiocult.fm/stream"
     }
   ]
 }
