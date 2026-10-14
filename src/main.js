@@ -1552,9 +1552,21 @@ async function switchToList(id) {
 
 // Inbound sync hash handler (#sync=...)
 async function handleInboundSyncHash() {
-  const hash = window.location.hash;
-  if (!hash || !hash.startsWith('#sync=')) return;
-  const raw = hash.slice('#sync='.length);
+  let raw = null;
+  if (window.__rdSyncToken) {
+    // Captured and stripped by the inline script in index.html before any
+    // third party (analytics) could read the URL.
+    raw = window.__rdSyncToken;
+    delete window.__rdSyncToken;
+  } else {
+    const hash = window.location.hash;
+    if (hash && hash.startsWith('#sync=')) {
+      raw = hash.slice('#sync='.length);
+      // Strip immediately — the token is key material and must not linger in
+      // the address bar or history while the pull round-trips.
+      clearSyncHash();
+    }
+  }
   if (!raw) return;
   const token = extractTokenFromInput(raw);
   if (!token) {
@@ -1604,7 +1616,11 @@ function clearSyncHash() {
 // the PWA receives it as query params (registered via share_target in manifest).
 // Check if the shared content contains a sync token and process it.
 async function handleSharedTokenFromQuery() {
-  const params = new URLSearchParams(window.location.search);
+  // The inline script strips the share params (they can carry a #sync token)
+  // before any third party reads the URL; prefer its stashed copy.
+  const search = window.__rdShareSearch ?? window.location.search;
+  delete window.__rdShareSearch;
+  const params = new URLSearchParams(search);
   const candidates = [params.get('url'), params.get('text'), params.get('title')].filter(Boolean);
 
   let token = null;

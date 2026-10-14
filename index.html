@@ -4,6 +4,33 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#1a1a1a" />
+    <!-- Privacy: strip secret sync material from the URL before ANY other
+         script runs. The #sync=<token> fragment — and the ?url=/text=/title=
+         Web Share Target params, which can carry the same token — contain the
+         root secret from which both the server record id and the AES key are
+         derived. Left in place, the token is read by the analytics tracker
+         (Umami records location.href), lands in browser history, and is
+         visible in screenshots. Capture it for main.js, then drop it from the
+         visible URL. -->
+    <script>
+      (function () {
+        try {
+          var h = location.hash;
+          if (h && h.indexOf('#sync=') === 0) {
+            window.__rdSyncToken = h.slice(6);
+            history.replaceState(null, '', location.pathname + location.search);
+          }
+          var params = new URLSearchParams(location.search);
+          if (params.has('url') || params.has('text') || params.has('title')) {
+            window.__rdShareSearch = location.search;
+            var keys = ['url', 'text', 'title', 'name', 'description'];
+            for (var i = 0; i < keys.length; i++) params.delete(keys[i]);
+            var q = params.toString();
+            history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + location.hash);
+          }
+        } catch (e) {}
+      })();
+    </script>
     <!-- Flash-free theme apply. Synchronously read the stored
          preference (localStorage, because IndexedDB can't be read
          sync before first paint), fall back to OS preference, set
@@ -178,7 +205,7 @@
          function checks `localStorage['umami.disabled']` internally, so
          this single mechanism mutes both auto-pageviews and the custom
          events emitted from src/analytics/umami.js. -->
-    <script defer src="https://stats.bitmancer.net/script.js" data-website-id="edaa7022-cf0f-4826-8279-b8eff071acf4" data-do-not-track="true" data-performance="true"></script>
+    <script defer src="https://stats.bitmancer.net/script.js" data-website-id="edaa7022-cf0f-4826-8279-b8eff071acf4" data-do-not-track="true" data-performance="true" data-exclude-hash="true"></script>
     <script type="module" src="/src/main.js"></script>
   </head>
   <body>
