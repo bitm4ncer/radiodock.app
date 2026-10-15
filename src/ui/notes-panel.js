@@ -718,7 +718,11 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     addCreatedNote(created);
     trackCaptureEvent('detect', station, created.track);
     if (!state.open) openPanel();
-    focusCreatedNote(created, 'Identified · Undo');
+    // No toast on a successful detect: the panel opens and the new card is
+    // focused, which is the visible result. An "Identified · Undo" toast was
+    // misleading (nobody wants to undo a correct identification) and wrapped
+    // awkwardly on mobile.
+    focusCreatedNote(created);
     return created;
   }
 
@@ -727,8 +731,8 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
   }
 
   // Shared tail for captureNow/captureDetected: focus the new card for
-  // inline edit when the panel is open, scroll it into view, and toast
-  // with an Undo action.
+  // inline edit when the panel is open, scroll it into view, and — only when
+  // toastText is given — toast with an Undo action.
   function focusCreatedNote(created, toastText) {
     if (state.open) {
       state.editingNoteId = created.id;
@@ -738,9 +742,11 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     } else {
       render();
     }
-    toast(toastText, {
-      action: { label: 'Undo', callback: () => undoCreate(created.id) },
-    });
+    if (toastText) {
+      toast(toastText, {
+        action: { label: 'Undo', callback: () => undoCreate(created.id) },
+      });
+    }
   }
 
   function trackCaptureEvent(source, station, trackData) {

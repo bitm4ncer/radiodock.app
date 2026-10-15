@@ -894,7 +894,7 @@ body.container-solid .notes-panel {
 /* ============================================================ Toast action button
    Added by toast.js when an undo callback is passed. */
 .toast__action {
-  margin-left: 12px;
+  margin-left: 0;
   padding: 4px 10px;
   background: transparent;
   border: 1px solid var(--overlay-hard);

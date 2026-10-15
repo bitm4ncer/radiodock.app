@@ -54,7 +54,8 @@ export function mountDetect({ player, getLatestMetadata, notes, setBusy }) {
           isrc: out.track.isrc || '',
         };
         // captureDetected saves the note, opens the panel, and focuses the
-        // new card — it also toasts, so don't double-toast here.
+        // new card — that focused card is the visible feedback, so there is
+        // no toast here to double up.
         await notes.captureDetected({ station, track });
       } else if (out.reason === 'no-match') {
         await bump();

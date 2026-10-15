@@ -3,6 +3,10 @@
   position: fixed;
   bottom: 20px;
   left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100vw - 32px);
   transform: translateX(-50%);
   background: var(--bg-list-hover);
   color: var(--text);
