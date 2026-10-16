@@ -119,9 +119,7 @@ export function mountStationInfo() {
     linkChips.push(`<button type="button" class="station-info__social" data-action="copy-url" data-url="${escapeHtml(data.url ?? '')}" title="Copy stream URL" aria-label="Copy stream URL">${ICON_COPY}</button>`);
     // Community edits are for database stations only — a custom stream lives
     // on the user's device and has nothing to propose.
-    if (!String(data.id ?? '').startsWith('custom-')) {
-      linkChips.push(`<button type="button" class="station-info__social" data-action="edit" title="Suggest an edit" aria-label="Suggest an edit">${ICON_EDIT}</button>`);
-    }
+    const canEdit = !String(data.id ?? '').startsWith('custom-');
     if (data.contactEmail) {
       linkChips.push(`<a class="station-info__social" href="mailto:${escapeHtml(data.contactEmail)}" title="Contact" aria-label="Contact">${ICON_MAIL}</a>`);
     }
@@ -163,11 +161,16 @@ export function mountStationInfo() {
       ? `<div class="station-info__top">${locationHtml}${linksHtml}</div>`
       : '';
 
+    const editHtml = canEdit
+      ? `<button type="button" class="station-info__edit" data-action="edit">${ICON_EDIT}<span>Suggest an edit</span></button>`
+      : '';
+
     return `
       ${topGroup}
       ${aboutBlock}
       ${streamHtml}
       ${tagsHtml}
+      ${editHtml}
     `;
   }
 
