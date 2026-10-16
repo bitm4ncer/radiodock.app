@@ -15,6 +15,7 @@ import { fetchStationInfo } from '../data/wikipedia.js';
 import { getStationByUuid, getStationInfo } from '../data/stations-source.js';
 import { getLogoUrl } from '../data/logo-resolver.js';
 import { SOCIAL_ICONS, SOCIAL_ORDER, SOCIAL_LABELS } from './social-icons.js';
+import { openStationEdit } from './station-edit.js';
 import { detectStandalone } from '../platform.js';
 import { isElectron } from './electron-bridge.js';
 
@@ -27,6 +28,7 @@ const ICON_MAIL = '<svg viewBox="0 0 24 24" width="18" height="18" fill="current
 const ICON_DRAG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
 const ICON_CLOSE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 const ICON_ARROW_DOWN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+const ICON_EDIT = '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z"/></svg>';
 
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({
@@ -115,6 +117,11 @@ export function mountStationInfo() {
       linkChips.push(`<a class="station-info__social" href="${escapeHtml(data.homepage)}" target="_blank" rel="noopener" title="Website" aria-label="Website">${ICON_GLOBE}</a>`);
     }
     linkChips.push(`<button type="button" class="station-info__social" data-action="copy-url" data-url="${escapeHtml(data.url ?? '')}" title="Copy stream URL" aria-label="Copy stream URL">${ICON_COPY}</button>`);
+    // Community edits are for database stations only — a custom stream lives
+    // on the user's device and has nothing to propose.
+    if (!String(data.id ?? '').startsWith('custom-')) {
+      linkChips.push(`<button type="button" class="station-info__social" data-action="edit" title="Suggest an edit" aria-label="Suggest an edit">${ICON_EDIT}</button>`);
+    }
     if (data.contactEmail) {
       linkChips.push(`<a class="station-info__social" href="mailto:${escapeHtml(data.contactEmail)}" title="Contact" aria-label="Contact">${ICON_MAIL}</a>`);
     }
@@ -164,8 +171,16 @@ export function mountStationInfo() {
     `;
   }
 
+  // Latest station + consolidated payload, so the edit form opens pre-filled.
+  let currentStation = null;
+  let currentFull = null;
+
   // Delegated action clicks inside the body.
   bodyEl.addEventListener('click', async (evt) => {
+    if (evt.target.closest('[data-action="edit"]')) {
+      openStationEdit(currentStation, currentFull);
+      return;
+    }
     const action = evt.target.closest('[data-action="copy-url"]');
     if (!action) return;
     const url = action.dataset.url;
@@ -184,6 +199,8 @@ export function mountStationInfo() {
   function open(station) {
     if (!station) return;
     const token = ++openToken;
+    currentStation = station;
+    currentFull = null;
     if (titleEl) titleEl.textContent = station.name ?? 'Station';
     bodyEl.innerHTML = render(station, { full: null, wiki: null, wikiLoading: true, fullLoading: true });
     if (!isOpen) showPanel();
@@ -198,11 +215,13 @@ export function mountStationInfo() {
 
     fullPromise.then((full) => {
       if (token !== openToken) return;
+      currentFull = full ?? currentFull;
       bodyEl.innerHTML = render(station, { full, wiki: null, wikiLoading: true, fullLoading: false });
     });
 
     Promise.all([fullPromise, wikiPromise]).then(([full, wiki]) => {
       if (token !== openToken) return;
+      currentFull = full ?? currentFull;
       bodyEl.innerHTML = render(station, { full, wiki, wikiLoading: false, fullLoading: false });
     });
   }

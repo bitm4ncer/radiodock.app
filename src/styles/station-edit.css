@@ -1,0 +1,97 @@
+/* ---- "Suggest an edit" dialog ---- */
+
+.se-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+@media (min-width: 700px) {
+  .se-overlay {
+    align-items: center;
+    padding: 24px;
+  }
+}
+
+.se-card {
+  width: 100%;
+  max-width: 560px;
+  max-height: 92vh;
+  overflow-y: auto;
+  background: var(--bg-panel, #1a1a1a);
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 16px 16px 0 0;
+  padding: 16px 16px 20px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+}
+
+@media (min-width: 700px) {
+  .se-card {
+    border-radius: 16px;
+  }
+}
+
+.se-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.se-title {
+  flex: 1;
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+}
+
+.se-close {
+  background: none;
+  border: 0;
+  color: inherit;
+  font-size: 1.6rem;
+  line-height: 1;
+  padding: 0 4px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.se-close:hover {
+  opacity: 1;
+}
+
+.se-form .add-field {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.se-socials {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0 10px;
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(128, 128, 128, 0.25);
+}
+
+.se-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.se-cap {
+  margin: 12px 0 4px;
+}
+
+.se-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
