@@ -1,4 +1,8 @@
-/* ---- Database panel: History tab ---- */
+/* ---- Database panel: History tab ----
+   Styled with the app's own design tokens (tokens.css) and the design
+   language of DESIGN.md: --bg-dark card surfaces, hairline --border,
+   --divider separators, 14px/500 titles, 11px uppercase meta, red reserved
+   for action. Nothing here hardcodes a colour that exists as a token. */
 
 .db-history {
   list-style: none;
@@ -6,37 +10,51 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
   max-height: 54vh;
   overflow-y: auto;
   overscroll-behavior: contain;
+  scrollbar-width: thin;
 }
 
+/* The list is a flex column with a max-height: without flex:0 0 auto the
+   cards shrink to fit instead of scrolling, and an expanded card would clip
+   its diff. */
 .db-history__item {
-  border: 1px solid rgba(128, 128, 128, 0.3);
-  border-radius: 12px;
-  background: rgba(128, 128, 128, 0.06);
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-dark);
   overflow: hidden;
-  transition: border-color 0.15s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
-.db-history__item:hover,
+.db-history__item:hover {
+  background: var(--bg-list-active);
+}
+
 .db-history__item.is-open {
-  border-color: rgba(128, 128, 128, 0.55);
+  border-color: var(--overlay-med);
 }
 
 .db-history__entry {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
   background: none;
   border: 0;
   color: inherit;
   font: inherit;
   text-align: left;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.db-history__entry:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.3);
+  outline-offset: -2px;
 }
 
 .db-history__main {
@@ -48,16 +66,17 @@
 }
 
 .db-history__title {
-  font-weight: 600;
-  font-size: 0.95em;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .db-history__meta {
-  font-size: 0.82em;
-  opacity: 0.62;
+  font-size: 13px;
+  color: var(--text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -65,8 +84,10 @@
 
 .db-history__when {
   flex: none;
-  font-size: 0.78em;
-  opacity: 0.5;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--text-muted);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
@@ -74,7 +95,7 @@
 .db-history__chevron {
   flex: none;
   display: inline-flex;
-  opacity: 0.45;
+  opacity: 0.5;
   transition: transform 0.15s ease;
 }
 
@@ -83,11 +104,11 @@
 }
 
 .db-history__diff {
-  border-top: 1px solid rgba(128, 128, 128, 0.22);
-  padding: 9px 12px 11px;
+  border-top: 1px solid var(--divider);
+  padding: var(--space-4);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-3);
 }
 
 .db-history__diff[hidden] {
@@ -96,32 +117,37 @@
 
 .db-history__diff-row {
   display: grid;
-  grid-template-columns: 88px 1fr;
-  gap: 10px;
-  font-size: 0.85em;
+  grid-template-columns: 104px 1fr;
+  gap: var(--space-3);
   align-items: baseline;
+  font-size: 13px;
 }
 
 .db-history__diff-field {
-  opacity: 0.55;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--text-muted);
 }
 
 .db-history__diff-value {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 5px;
+  gap: var(--space-1);
   min-width: 0;
   word-break: break-word;
+  color: var(--text);
 }
 
 .db-history__from {
-  opacity: 0.5;
+  color: var(--text-muted);
   text-decoration: line-through;
 }
 
 .db-history__arrow {
-  opacity: 0.4;
+  color: var(--text-muted);
+  opacity: 0.7;
 }
 
 .db-history__to {
@@ -130,10 +156,4 @@
 
 .db-history__status {
   margin: 0;
-}
-
-/* The list is a flex column with a max-height, so without this the cards are
-   shrunk to fit instead of scrolling — an expanded card would clip its diff. */
-.db-history__item {
-  flex: 0 0 auto;
 }
