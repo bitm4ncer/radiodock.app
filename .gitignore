@@ -7,3 +7,13 @@ dist
 .env.local
 .idea
 .vscode
+
+# Internal notes — kept locally, not part of the public repo
+CLAUDE.md
+ROADMAP.md
+IDEA.md
+AUDIT-AGENT-PROMPT.md
+docs/
+.hermes/
+.claude/
+.overhaul/
