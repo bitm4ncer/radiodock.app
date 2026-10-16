@@ -1,10 +1,31 @@
-# RadioDock
+<p align="center">
+  <img src="Assets/logo-text.svg" alt="RadioDock" width="340">
+</p>
 
-Internet radio player for the web. Installable as a PWA on desktop and mobile, and shipped as a native desktop app for Windows, macOS and Linux.
+<p align="center">
+  <strong>Free Radio Player on all Devices</strong> — a PWA on desktop and mobile, a native app for Windows, macOS and Linux, and a Chrome extension for the basics.
+</p>
 
-**Live: <https://radiodock.app>**
+<p align="center">
+  <a href="https://radiodock.app"><img alt="Live: radiodock.app" src="https://img.shields.io/badge/live-radiodock.app-1f6feb?logo=googlechrome&logoColor=white"></a>
+  <a href="https://github.com/bitm4ncer/radiodock.app/releases/latest"><img alt="Downloads" src="https://img.shields.io/github/downloads/bitm4ncer/radiodock.app/total?label=downloads&color=2ea44f"></a>
+  <a href="https://github.com/bitm4ncer/radiodock.app/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/bitm4ncer/radiodock.app?style=social"></a>
+</p>
 
-RadioDock is the standalone web rebuild of the [RadioDock Chrome extension](https://github.com/bitm4ncer/RadioDock). It streams 50,000+ stations from RadioDock's own curated [Stations API](https://stations.radiodock.app), built on the community-run [Radio Browser](https://www.radio-browser.info/) directory, which stays the upstream source and an automatic runtime fallback. It ships with a curated community station list, serves station logos from a single origin, and keeps all user data on-device.
+<p align="center">
+  <img alt="No account, no ads, no tracking" src="https://img.shields.io/badge/no%20account%20%C2%B7%20no%20ads%20%C2%B7%20no%20tracking-2ea44f">
+  <img alt="50,000+ stations" src="https://img.shields.io/badge/stations-50%2C000%2B-6f42c1">
+  <img alt="Runs on PWA, Windows, macOS, Linux" src="https://img.shields.io/badge/PWA%20%7C%20Windows%20%7C%20macOS%20%7C%20Linux-555">
+  <a href="https://github.com/bitm4ncer/radiodock.app/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue"></a>
+</p>
+
+<p align="center">
+  <a href="https://ko-fi.com/radiodock"><img alt="Support me on Ko-fi" src="https://ko-fi.com/img/githubbutton_sm.svg"></a>
+</p>
+
+---
+
+RadioDock is the standalone web rebuild of the [RadioDock Chrome extension](https://github.com/bitm4ncer/RadioDock). It streams 50,000+ stations from RadioDock's own curated Stations API, built on the community-run [Radio Browser](https://www.radio-browser.info/) directory, which stays the upstream source and an automatic runtime fallback. It ships with a curated community station list, serves station logos from a single origin, and keeps all user data on-device.
 
 ## Features
 
