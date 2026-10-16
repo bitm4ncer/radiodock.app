@@ -131,3 +131,9 @@
 .db-history__status {
   margin: 0;
 }
+
+/* The list is a flex column with a max-height, so without this the cards are
+   shrunk to fit instead of scrolling — an expanded card would clip its diff. */
+.db-history__item {
+  flex: 0 0 auto;
+}
