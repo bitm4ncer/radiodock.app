@@ -160,8 +160,11 @@ body.add-overlay-open { overflow: hidden; }
 }
 .add-check input { flex-shrink: 0; }
 
-/* Inputs match the app surface (theme-aware), red focus ring — same as sync. */
-.add-panel .form-input {
+/* Inputs match the app surface (theme-aware), red focus ring — same as sync.
+   `.se-card` is the "Suggest an edit" dialog: it reuses the same input classes
+   but lives outside `.add-panel`, so it needs the same rules. */
+.add-panel .form-input,
+.se-card .form-input {
   background: var(--bg-dark);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -173,9 +176,12 @@ body.add-overlay-open { overflow: hidden; }
   width: 100%;
   transition: border-color 160ms ease;
 }
-.add-panel .form-input::placeholder { color: var(--text-muted); }
-.add-panel .form-input:focus { border-color: var(--red); }
-.add-panel textarea.form-input { resize: vertical; min-height: 60px; }
+.add-panel .form-input::placeholder,
+.se-card .form-input::placeholder { color: var(--text-muted); }
+.add-panel .form-input:focus,
+.se-card .form-input:focus { border-color: var(--red); }
+.add-panel textarea.form-input,
+.se-card textarea.form-input { resize: vertical; min-height: 60px; }
 
 /* Collapsible sections (metadata, socials). */
 .add-section {

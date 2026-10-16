@@ -63,10 +63,8 @@
   opacity: 1;
 }
 
-.se-form .add-field {
-  display: block;
-  margin-bottom: 10px;
-}
+/* The form reuses the app's .add-form / .add-field / .form-input classes, so
+   the field layout (label above input, flex column) comes from add.css. */
 
 .se-socials {
   display: grid;
