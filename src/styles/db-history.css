@@ -14,14 +14,14 @@
 .db-history__item {
   border: 1px solid rgba(128, 128, 128, 0.35);
   border-radius: 10px;
-  overflow: hidden;
 }
 
 .db-history__entry {
   width: 100%;
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 8px;
   padding: 9px 10px;
   background: none;
   border: 0;
@@ -37,15 +37,12 @@
 }
 
 .db-history__what {
-  flex: 1;
+  flex: 1 1 60%;
   min-width: 0;
-  opacity: 0.8;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .db-history__when {
+  margin-left: auto;
   opacity: 0.6;
   font-size: 0.85em;
   white-space: nowrap;
@@ -60,18 +57,25 @@
   font-size: 0.9em;
 }
 
+/* `hidden` must win over the flex display above, or the diff never collapses. */
+.db-history__diff[hidden] {
+  display: none;
+}
+
 .db-history__diff-row {
   display: flex;
   gap: 8px;
 }
 
 .db-history__diff-field {
-  min-width: 96px;
+  flex: 0 0 auto;
+  min-width: 84px;
   opacity: 0.7;
 }
 
 .db-history__diff-value {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
   word-break: break-word;
 }
 
