@@ -268,7 +268,7 @@ export function mountAddPanel({ getUserLists, getActiveListId, addStationToList,
   });
 
   return {
-    open: async () => { openPanel(); selectTab('submit'); await refreshLists(); },
+    open: async () => { openPanel(); selectTab('history'); dbHistory.refresh(); await refreshLists(); },
     close: closePanel,
   };
 }

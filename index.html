@@ -827,14 +827,20 @@
       </header>
 
       <div class="add-panel__tabs" role="tablist">
-        <button type="button" class="add-panel__tab is-active" data-tab="submit" role="tab">Submit station</button>
+        <button type="button" class="add-panel__tab is-active" data-tab="history" role="tab">History</button>
+        <button type="button" class="add-panel__tab" data-tab="submit" role="tab">Submit station</button>
         <button type="button" class="add-panel__tab" data-tab="custom" role="tab">Custom stream</button>
-        <button type="button" class="add-panel__tab" data-tab="history" role="tab">History</button>
       </div>
 
       <div class="add-panel__body">
+        <!-- ===== HISTORY TAB ===== -->
+        <section class="add-form" data-tabpanel="history">
+          <p class="add-form__intro">Recent changes to the database. Every entry shows who changed what.</p>
+          <div id="dbHistory"></div>
+        </section>
+
         <!-- ===== SUBMIT TAB ===== -->
-        <form id="addSubmitForm" class="add-form" data-tabpanel="submit" novalidate>
+        <form id="addSubmitForm" class="add-form" data-tabpanel="submit" hidden novalidate>
           <p class="add-form__intro">Propose a station for the RadioDock community database. A moderator reviews every submission.</p>
 
           <label class="add-field"><span>Name *</span>
@@ -941,12 +947,6 @@
             <select class="form-input" name="listId" id="addCustomListSelect"></select></label>
           <button type="submit" class="btn-primary add-form__submit" id="addCustomBtn">Add to list</button>
         </form>
-
-        <!-- ===== HISTORY TAB ===== -->
-        <section class="add-form" data-tabpanel="history" hidden>
-          <p class="add-form__intro">Recent changes to the database. Every entry shows who changed what.</p>
-          <div id="dbHistory"></div>
-        </section>
       </div>
     </aside>
 
