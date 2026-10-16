@@ -829,6 +829,7 @@
       <div class="add-panel__tabs" role="tablist">
         <button type="button" class="add-panel__tab is-active" data-tab="submit" role="tab">Submit station</button>
         <button type="button" class="add-panel__tab" data-tab="custom" role="tab">Custom stream</button>
+        <button type="button" class="add-panel__tab" data-tab="history" role="tab">History</button>
       </div>
 
       <div class="add-panel__body">
@@ -940,6 +941,12 @@
             <select class="form-input" name="listId" id="addCustomListSelect"></select></label>
           <button type="submit" class="btn-primary add-form__submit" id="addCustomBtn">Add to list</button>
         </form>
+
+        <!-- ===== HISTORY TAB ===== -->
+        <section class="add-form" data-tabpanel="history" hidden>
+          <p class="add-form__intro">Recent changes to the database. Every entry shows who changed what.</p>
+          <div id="dbHistory"></div>
+        </section>
       </div>
     </aside>
 

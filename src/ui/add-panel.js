@@ -2,6 +2,7 @@ import { toast } from './toast.js';
 import * as storage from '../data/storage.js';
 import { resizeToDataUrl } from '../data/image-resize.js';
 import { submitStation, SubmitError } from '../data/submit.js';
+import { createDbHistory } from './db-history.js';
 import { STATIONS_BASE } from '../data/stations-api.js';
 
 const SOCIAL_KEYS = ['instagram', 'soundcloud', 'mixcloud', 'bandcamp', 'youtube', 'facebook', 'x', 'tiktok'];
@@ -150,7 +151,11 @@ export function mountAddPanel({ getUserLists, getActiveListId, addStationToList,
     tabs.forEach((t) => t.classList.toggle('is-active', t.dataset.tab === name));
     panels.forEach((p) => { p.hidden = p.dataset.tabpanel !== name; });
   }
-  tabs.forEach((t) => t.addEventListener('click', () => selectTab(t.dataset.tab)));
+  const dbHistory = createDbHistory(panel.querySelector('#dbHistory'));
+  tabs.forEach((t) => t.addEventListener('click', () => {
+    selectTab(t.dataset.tab);
+    if (t.dataset.tab === 'history') dbHistory.refresh();
+  }));
 
   // ---- SUBMIT tab ----
   const submitForm = panel.querySelector('#addSubmitForm');
