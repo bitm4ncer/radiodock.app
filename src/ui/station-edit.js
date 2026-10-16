@@ -223,7 +223,12 @@ export function openStationEdit(station, full) {
     const capToken = String(new FormData(form).get('cap-token') || '').trim();
     if (!capToken) { toast('Please complete the captcha first.'); return; }
 
+    // The API reads the proposed values off the TOP level of the body (it
+    // iterates its own EDITABLE_FIELDS list), so the changed fields go flat
+    // into the payload — nesting them under `fields` makes the server see no
+    // change at all.
     const payload = {
+      ...fields,
       stationuuid: uuid,
       username,
       email: emailInput.value.trim() || undefined,
@@ -231,7 +236,6 @@ export function openStationEdit(station, full) {
       website: honeypot.value,
       'cap-token': capToken,
     };
-    if (Object.keys(fields).length) payload.fields = fields;
     if (Object.keys(socials).length) payload.socials = socials;
 
     saveBtn.disabled = true;
