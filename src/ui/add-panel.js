@@ -2,9 +2,44 @@ import { toast } from './toast.js';
 import * as storage from '../data/storage.js';
 import { resizeToDataUrl } from '../data/image-resize.js';
 import { submitStation, SubmitError } from '../data/submit.js';
+import { STATIONS_BASE } from '../data/stations-api.js';
 
 const SOCIAL_KEYS = ['instagram', 'soundcloud', 'mixcloud', 'bandcamp', 'youtube', 'facebook', 'x', 'tiktok'];
 const PREF_POS = 'addPanelPos';
+
+// Cap CAPTCHA, self-hosted on the Stations API origin. The widget injects a
+// hidden `cap-token` input into its surrounding <form>; the submit handler
+// reads it and posts it as `cap-token`.
+let capWidgetLoad = null;
+function loadCapWidget() {
+  if (!capWidgetLoad) {
+    capWidgetLoad = new Promise((resolve, reject) => {
+      const el = document.createElement('script');
+      el.src = `${STATIONS_BASE}/cap/assets/widget.js`;
+      el.async = true;
+      el.onload = () => resolve();
+      el.onerror = () => reject(new Error('Could not load the captcha.'));
+      document.head.appendChild(el);
+    });
+  }
+  return capWidgetLoad;
+}
+
+// Mount the Cap widget into a container; returns a handle with reset().
+function mountCapWidget(container) {
+  let widget = null;
+  if (container) {
+    loadCapWidget()
+      .then(() => {
+        if (widget) return;
+        widget = document.createElement('cap-widget');
+        widget.setAttribute('data-cap-api-endpoint', `${STATIONS_BASE}/cap/`);
+        container.appendChild(widget);
+      })
+      .catch(() => { /* captcha unavailable — the submit handler reports it */ });
+  }
+  return { reset: () => widget?.reset?.() };
+}
 
 function randId() {
   return 'custom-' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
@@ -121,6 +156,7 @@ export function mountAddPanel({ getUserLists, getActiveListId, addStationToList,
   const submitForm = panel.querySelector('#addSubmitForm');
   const submitLogo = wireLogoPicker(panel.querySelector('#addSubmitLogo'), 512);
   const submitBtn = panel.querySelector('#addSubmitBtn');
+  const submitCap = mountCapWidget(panel.querySelector('#addSubmitCap'));
   submitForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const fd = new FormData(submitForm);
@@ -129,6 +165,8 @@ export function mountAddPanel({ getUserLists, getActiveListId, addStationToList,
     const submitterUsername = String(fd.get('submitterUsername') || '').trim();
     if (!name || !streamUrl) { toast('Name and stream URL are required.'); return; }
     if (!submitterUsername) { toast('Please add a username so we can credit your submission.'); return; }
+    const capToken = String(fd.get('cap-token') || '').trim();
+    if (!capToken) { toast('Please complete the captcha first.'); return; }
 
     const socials = {};
     for (const k of SOCIAL_KEYS) {
@@ -159,6 +197,7 @@ export function mountAddPanel({ getUserLists, getActiveListId, addStationToList,
       submitterUsername,
       submitterEmail: String(fd.get('submitterEmail') || '').trim() || undefined,
       website: String(fd.get('website') || ''), // honeypot
+      'cap-token': capToken,
     };
 
     submitBtn.disabled = true;
@@ -168,12 +207,14 @@ export function mountAddPanel({ getUserLists, getActiveListId, addStationToList,
       toast('Thanks! Your station was submitted for review.');
       submitForm.reset();
       submitLogo.reset();
+      submitCap.reset();
       track?.('submit-station');
     } catch (err) {
       const msg = err instanceof SubmitError && err.status === 409
         ? 'That station is already in the database.'
         : (err?.message || 'Submission failed.');
       toast(msg);
+      submitCap.reset();
     } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Submit to database';

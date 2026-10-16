@@ -913,6 +913,10 @@
           <!-- Honeypot: real users never see or fill this; server treats it as spam. -->
           <input type="text" name="website" class="add-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
 
+          <!-- Cap CAPTCHA (self-hosted, loaded from the Stations API origin). The
+               widget injects its hidden `cap-token` field into this form. -->
+          <div class="add-cap" id="addSubmitCap" style="margin: 12px 0 4px"></div>
+
           <button type="submit" class="btn-primary add-form__submit" id="addSubmitBtn">Submit to database</button>
         </form>
 
