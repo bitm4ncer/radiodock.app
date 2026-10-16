@@ -6,23 +6,31 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  max-height: 52vh;
+  gap: 8px;
+  max-height: 54vh;
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .db-history__item {
-  border: 1px solid rgba(128, 128, 128, 0.35);
-  border-radius: 10px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 12px;
+  background: rgba(128, 128, 128, 0.06);
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+
+.db-history__item:hover,
+.db-history__item.is-open {
+  border-color: rgba(128, 128, 128, 0.55);
 }
 
 .db-history__entry {
   width: 100%;
   display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 4px 8px;
-  padding: 9px 10px;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
   background: none;
   border: 0;
   color: inherit;
@@ -31,52 +39,93 @@
   cursor: pointer;
 }
 
-.db-history__user {
+.db-history__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.db-history__title {
   font-weight: 600;
+  font-size: 0.95em;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.db-history__what {
-  flex: 1 1 60%;
-  min-width: 0;
+.db-history__meta {
+  font-size: 0.82em;
+  opacity: 0.62;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .db-history__when {
-  margin-left: auto;
-  opacity: 0.6;
-  font-size: 0.85em;
+  flex: none;
+  font-size: 0.78em;
+  opacity: 0.5;
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.db-history__chevron {
+  flex: none;
+  display: inline-flex;
+  opacity: 0.45;
+  transition: transform 0.15s ease;
+}
+
+.db-history__item.is-open .db-history__chevron {
+  transform: rotate(180deg);
 }
 
 .db-history__diff {
-  border-top: 1px solid rgba(128, 128, 128, 0.25);
-  padding: 8px 10px;
+  border-top: 1px solid rgba(128, 128, 128, 0.22);
+  padding: 9px 12px 11px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-size: 0.9em;
+  gap: 6px;
 }
 
-/* `hidden` must win over the flex display above, or the diff never collapses. */
 .db-history__diff[hidden] {
   display: none;
 }
 
 .db-history__diff-row {
-  display: flex;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 10px;
+  font-size: 0.85em;
+  align-items: baseline;
 }
 
 .db-history__diff-field {
-  flex: 0 0 auto;
-  min-width: 84px;
-  opacity: 0.7;
+  opacity: 0.55;
 }
 
 .db-history__diff-value {
-  flex: 1 1 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 5px;
   min-width: 0;
   word-break: break-word;
+}
+
+.db-history__from {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+.db-history__arrow {
+  opacity: 0.4;
+}
+
+.db-history__to {
+  font-weight: 500;
 }
 
 .db-history__status {

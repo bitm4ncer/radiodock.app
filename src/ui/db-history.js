@@ -11,15 +11,16 @@ import '../styles/db-history.css';
 const LIMIT = 50;
 const TIMEOUT_MS = 12000;
 
-const ACTION_LABELS = {
-  'station.added': 'added a station',
-  'station.updated': 'edited a station',
-  'station.field_changed': 'changed a station',
-  'station.field_reset': 'reset a station field',
-  'station.logo_changed': 'changed a station logo',
-  'wallpaper.added': 'submitted a wallpaper',
-  'wallpaper.activated': 'activated a wallpaper',
-  'wallpaper.hidden': 'hid a wallpaper',
+// Short verbs so the secondary line reads "Added by mike78".
+const VERBS = {
+  'station.added': 'Added',
+  'station.updated': 'Edited',
+  'station.field_changed': 'Edited',
+  'station.field_reset': 'Reset a field on',
+  'station.logo_changed': 'Changed the logo of',
+  'wallpaper.added': 'Wallpaper submitted by',
+  'wallpaper.activated': 'Wallpaper activated by',
+  'wallpaper.hidden': 'Wallpaper hidden by',
 };
 
 const FIELD_LABELS = {
@@ -43,6 +44,8 @@ const FIELD_LABELS = {
   contact_email: 'Contact email',
 };
 
+const ICON_CHEVRON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+
 function relativeTime(iso) {
   const t = Date.parse(iso);
   if (!Number.isFinite(t)) return '';
@@ -57,18 +60,27 @@ function relativeTime(iso) {
   return new Date(t).toLocaleDateString();
 }
 
-function describeAction(item) {
-  const base = ACTION_LABELS[item.action] || item.action || 'changed something';
-  const station = item.stationName || item.diff?.name?.to || '';
-  return station ? `${base} \u00b7 ${station}` : base;
+// Title = the thing that changed. Wallpaper events have no station, so they
+// fall back to the object noun.
+function titleFor(item) {
+  const name = item.stationName || item.diff?.name?.to;
+  if (name) return name;
+  return String(item.action ?? '').startsWith('wallpaper.') ? 'Wallpaper' : 'Station';
+}
+
+// Secondary line = what happened, and who did it.
+function metaFor(item) {
+  const who = item.username || 'Someone';
+  const verb = VERBS[item.action] || 'Changed';
+  return verb.endsWith('by') ? `${verb} ${who}` : `${verb} by ${who}`;
 }
 
 function diffRows(diff) {
   if (!diff || typeof diff !== 'object') return [];
   return Object.entries(diff).map(([field, change]) => ({
     label: FIELD_LABELS[field] || field,
-    from: change?.from ?? '\u2014',
-    to: change?.to ?? '\u2014',
+    from: change?.from ?? null,
+    to: change?.to ?? null,
   }));
 }
 
@@ -91,6 +103,7 @@ export function createDbHistory(root) {
     }
     const list = document.createElement('ul');
     list.className = 'db-history';
+
     for (const item of items) {
       const li = document.createElement('li');
       li.className = 'db-history__item';
@@ -99,44 +112,74 @@ export function createDbHistory(root) {
       entry.type = 'button';
       entry.className = 'db-history__entry';
 
-      const who = document.createElement('span');
-      who.className = 'db-history__user';
-      who.textContent = item.username || 'Someone';
-
-      const what = document.createElement('span');
-      what.className = 'db-history__what';
-      what.textContent = describeAction(item);
+      const main = document.createElement('span');
+      main.className = 'db-history__main';
+      const title = document.createElement('span');
+      title.className = 'db-history__title';
+      title.textContent = titleFor(item);
+      const meta = document.createElement('span');
+      meta.className = 'db-history__meta';
+      meta.textContent = metaFor(item);
+      main.append(title, meta);
 
       const when = document.createElement('span');
       when.className = 'db-history__when';
       when.textContent = relativeTime(item.createdAt);
 
-      entry.append(who, what, when);
-
       const rows = diffRows(item.diff);
-      if (!rows.length) {
-        li.append(entry);
-      } else {
+
+      entry.append(main, when);
+      li.append(entry);
+
+      if (rows.length) {
+        const chevron = document.createElement('span');
+        chevron.className = 'db-history__chevron';
+        chevron.innerHTML = ICON_CHEVRON;
+        entry.append(chevron);
+        entry.setAttribute('aria-expanded', 'false');
+
         const detail = document.createElement('div');
         detail.className = 'db-history__diff';
         detail.hidden = true;
         for (const row of rows) {
           const line = document.createElement('div');
           line.className = 'db-history__diff-row';
+
           const label = document.createElement('span');
           label.className = 'db-history__diff-field';
           label.textContent = row.label;
+
           const value = document.createElement('span');
           value.className = 'db-history__diff-value';
-          value.textContent = `${row.from} \u2192 ${row.to}`;
+          if (row.from != null) {
+            const from = document.createElement('span');
+            from.className = 'db-history__from';
+            from.textContent = String(row.from);
+            value.append(from);
+          }
+          const arrow = document.createElement('span');
+          arrow.className = 'db-history__arrow';
+          arrow.textContent = '\u2192';
+          const to = document.createElement('span');
+          to.className = 'db-history__to';
+          to.textContent = row.to == null ? 'cleared' : String(row.to);
+          value.append(arrow, to);
+
           line.append(label, value);
           detail.append(line);
         }
-        entry.addEventListener('click', () => { detail.hidden = !detail.hidden; });
-        li.append(entry, detail);
+
+        entry.addEventListener('click', () => {
+          detail.hidden = !detail.hidden;
+          li.classList.toggle('is-open', !detail.hidden);
+          entry.setAttribute('aria-expanded', String(!detail.hidden));
+        });
+        li.append(detail);
       }
+
       list.append(li);
     }
+
     root.append(list);
   }
 
