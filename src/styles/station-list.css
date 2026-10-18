@@ -20,6 +20,12 @@
   max-height: 0;
   padding: 0;
 }
+/* Collapsed the bar takes no space; expanded it needs breathing room before
+   the first station row, which otherwise starts flush against the pill. */
+.list-filter.is-expanded {
+  max-height: 50px;
+  padding-bottom: 10px;
+}
 .list-filter__pill {
   display: flex;
   align-items: center;
