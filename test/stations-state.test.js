@@ -24,6 +24,12 @@ test('mergeRows dedupes and caps at 500', () => {
   assert.equal(merged[499].id, '499');
 });
 
+test('mergeRows can run without a cap for Popular', () => {
+  const existing = Array.from({ length: 600 }, (_, i) => ({ id: String(i) }));
+  const merged = mergeRows(existing, [{ id: '600' }], null);
+  assert.equal(merged.length, 601);
+});
+
 import { popularParams, searchParams } from '../src/ui/stations-state.js';
 
 test('popular and search params keep filters', () => {

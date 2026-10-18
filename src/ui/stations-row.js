@@ -27,7 +27,7 @@ function thirdLine(station, query) {
 const INFO_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 10.5v6M12 7.3v.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
 const HEART_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-9.4A4.1 4.1 0 0 1 12 7.7a4.1 4.1 0 0 1 7 2.9c0 5-7 9.4-7 9.4Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>';
 
-export function stationsRow(station, { query = '', mode = 'az', canAdd = false, alreadyAdded = false } = {}) {
+export function stationsRow(station, { query = '', mode = 'az', canAdd = false, alreadyAdded = false, priority = false } = {}) {
   const id = escapeHtml(station.id);
   const rank = mode === 'popular' && station.rank
     ? `<span class="stations-row-rank">${escapeHtml(station.rank)}</span>`
@@ -41,7 +41,7 @@ export function stationsRow(station, { query = '', mode = 'az', canAdd = false, 
   return `<article class="stations-row${mode === 'popular' ? ' stations-row--popular' : ''}${alreadyAdded ? ' is-added' : ''}" data-id="${id}">
   <button class="stations-row-main" type="button" data-action="play" aria-pressed="false" aria-label="Play ${escapeHtml(station.name)}">
     ${rank}
-    ${renderLogoSlot(station, { imgClass: 'stations-row-logo', initialsClass: 'stations-row-initials' })}
+    ${renderLogoSlot(station, { imgClass: 'stations-row-logo', initialsClass: 'stations-row-initials', priority })}
     <span class="stations-row-info">
       <span class="stations-row-name">${highlightMatches(station.name, query)}</span>
       <span class="stations-row-meta">${meta}</span>

@@ -1,91 +1,67 @@
-// Renders a station logo from the single-origin CDN, with an initials fallback.
-//
-// The HTML is rendered as a string (so it can be embedded in the existing
-// innerHTML templates of station-list, search and the player card). After
-// rendering, call mountLogoBehavior(rootEl) once per host — it uses event
-// delegation via a MutationObserver, so newly rendered rows pick up the
-// behaviour without re-mounting.
-//
-// Chain: CDN logo (/logos/{uuid}) → initials. No third-party favicon hosts, no
-// DuckDuckGo, no manual cycle button — a wrong logo is fixed once in the
-// dashboard for everyone (see data/logo-resolver.js).
-
 import { getLogoUrl, logoSizePx } from '../data/logo-resolver.js';
 
-function escapeHtml(s) {
-  return String(s ?? '').replace(/[&<>"']/g, (c) => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;',
-  }[c]));
-}
-
 function getInitials(name) {
-  if (!name) return '?';
-  const parts = String(name).trim().split(/\s+/).slice(0, 2);
-  return parts.map((p) => p[0]?.toUpperCase() ?? '').join('') || name[0]?.toUpperCase() || '?';
+  const words = String(name ?? '').trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return '?';
+  return words.slice(0, 2).map((word) => word[0]).join('').toUpperCase();
 }
 
-// Render a logo slot suitable for embedding in a list/search/player row.
-// `imgClass` / `initialsClass` let callers reuse the existing CSS classnames
-// (`station-item-logo` / `station-item-initials`, or `station-logo` /
-// `station-initials` for the player card).
+const MOUNTED = new WeakSet();
+
 export function renderLogoSlot(station, {
   imgClass = 'station-item-logo',
   initialsClass = 'station-item-initials',
-  size = 'sm', // 'sm' for list rows, 'lg' for the player card
+  size = 'sm',
+  priority = false,
 } = {}) {
-  const initials = getInitials(station.name);
+  const initials = getInitials(station?.name);
   const hasFavicon = String(station?.favicon ?? '').trim().length > 0;
   const url = hasFavicon ? getLogoUrl(station, logoSizePx(size)) : '';
-  const inner = url
-    ? `<img class="${escapeHtml(imgClass)}" alt="" loading="lazy" data-logo-img="1" src="${escapeHtml(url)}">`
-    : `<span class="${escapeHtml(initialsClass)}">${escapeHtml(initials)}</span>`;
-  return `<span class="logo-slot logo-slot--${escapeHtml(size)}" data-logo-slot="1" data-initials="${escapeHtml(initials)}" data-initials-class="${escapeHtml(initialsClass)}">${inner}</span>`;
+  const fallback = `<span class="${initialsClass} logo-fallback" data-logo-fallback="1">${initials}</span>`;
+  const image = url
+    ? `<img class="${imgClass} logo-img" alt="" loading="${priority ? 'eager' : 'lazy'}" decoding="async"${priority ? ' fetchpriority="high"' : ''} data-logo-img="1" src="${url}">`
+    : '';
+  return `<span class="logo-slot logo-slot--${size}" data-logo-slot="1" data-initials="${initials}" data-initials-class="${initialsClass}">${fallback}${image}</span>`;
 }
-
-// ---- Mount behaviour (one-time per host) ----
-// Attaches an onerror→initials fallback to each slot's <img>, now and for any
-// slot added later (MutationObserver). The img's src is already set in the
-// markup, so it starts loading immediately; the error handler beats the network
-// round-trip, so a 404 (station with no cached logo) degrades to initials.
-
-const MOUNTED = new WeakSet();
 
 export function mountLogoBehavior(rootEl, { initialsClass = 'station-item-initials' } = {}) {
   if (!rootEl || MOUNTED.has(rootEl)) return;
   MOUNTED.add(rootEl);
 
-  const resolveSlot = (slot) => {
+  function resolveSlot(slot) {
     if (slot.dataset.logoResolved === '1') return;
     slot.dataset.logoResolved = '1';
     const img = slot.querySelector('img[data-logo-img="1"]');
     if (!img) return;
+    const fallback = slot.querySelector('[data-logo-fallback="1"]');
 
-    const toInitials = () => {
-      const init = document.createElement('span');
-      init.className = slot.dataset.initialsClass || initialsClass;
-      init.textContent = slot.dataset.initials || '?';
-      img.replaceWith(init);
+    const showFallback = () => {
+      img.remove();
+      fallback?.classList.remove('is-hidden');
+      slot.classList.remove('is-loaded');
+    };
+    const showImage = () => {
+      slot.classList.add('is-loaded');
+      fallback?.classList.add('is-hidden');
     };
 
-    // Already errored before we mounted (cached 404): swap immediately.
-    if (img.complete && img.naturalWidth === 0) { toInitials(); return; }
-    img.addEventListener('error', toInitials, { once: true });
-  };
+    if (img.complete) {
+      if (img.naturalWidth > 0) showImage();
+      else showFallback();
+      return;
+    }
+    img.addEventListener('load', showImage, { once: true });
+    img.addEventListener('error', showFallback, { once: true });
+  }
 
-  const findSlots = (root) => root.querySelectorAll?.('[data-logo-slot="1"]:not([data-logo-resolved="1"])') ?? [];
-
-  for (const slot of findSlots(rootEl)) resolveSlot(slot);
+  rootEl.querySelectorAll('[data-logo-slot="1"]').forEach(resolveSlot);
 
   const observer = new MutationObserver((mutations) => {
-    for (const m of mutations) {
-      for (const node of m.addedNodes) {
-        if (!(node instanceof Element)) continue;
+    for (const mutation of mutations) {
+      for (const node of mutation.addedNodes) {
+        if (node.nodeType !== 1) continue;
         if (node.matches?.('[data-logo-slot="1"]')) resolveSlot(node);
-        for (const slot of findSlots(node)) resolveSlot(slot);
+        node.querySelectorAll?.('[data-logo-slot="1"]').forEach(resolveSlot);
       }
     }
   });

@@ -31,7 +31,7 @@ export function searchParams(state = {}) {
   return buildBrowseParams({ ...state, mode: 'search', query: String(state.query ?? '').trim() });
 }
 
-export function mergeRows(existing = [], incoming = []) {
+export function mergeRows(existing = [], incoming = [], maxRows = MAX_ROWS) {
   const seen = new Set();
   const merged = [];
   for (const row of [...existing, ...incoming]) {
@@ -39,7 +39,7 @@ export function mergeRows(existing = [], incoming = []) {
     if (!id || seen.has(id)) continue;
     seen.add(id);
     merged.push(row);
-    if (merged.length >= MAX_ROWS) break;
+    if (maxRows != null && merged.length >= maxRows) break;
   }
   return merged;
 }

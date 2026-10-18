@@ -43,7 +43,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
 
   const state = {
     view: 'stations',
-    mode: 'az',
+    mode: 'popular',
     query: '',
     letter: 'all',
     country: '',
@@ -60,12 +60,14 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     error: null,
     tooShort: false,
     nowPlayingId: null,
+    restoreScroll: null,
+    animateRows: false,
     discover: null,
     collection: null,
   };
 
   let isOpen = false;
-  let previousMode = 'az';
+  let previousMode = 'popular';
   let previousFocus = null;
   let loadToken = 0;
   let controller = null;
@@ -94,8 +96,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
         </div>
         <div class="stations-controls">
           <div class="stations-mode" role="group" aria-label="Sort stations">
-            <button type="button" data-mode="az" aria-pressed="${state.mode === 'az'}">A-Z</button>
             <button type="button" data-mode="popular" aria-pressed="${state.mode === 'popular'}">Popular</button>
+            <button type="button" data-mode="az" aria-pressed="${state.mode === 'az'}">A-Z</button>
           </div>
           <div id="stationsFilters" class="stations-filters"></div>
         </div>
@@ -115,11 +117,13 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       if (button) setMode(button.dataset.mode);
     });
     body.querySelector('#stationsContent')?.addEventListener('click', onContentClick);
+    body.querySelector('#stationsContent')?.addEventListener('scroll', onContentScroll, { passive: true });
     body.querySelector('#stationsRail')?.addEventListener('click', (evt) => {
       const button = evt.target.closest('[data-letter]');
       if (!button || button.disabled) return;
       state.letter = button.dataset.letter;
       state.offset = 0;
+      body.querySelector('#stationsContent')?.scrollTo({ top: 0, behavior: 'smooth' });
       load({ reset: true });
     });
     filters?.close();
@@ -209,23 +213,33 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       return;
     }
     const canAdd = !!actions.canAddToActiveList?.();
-    const rows = state.rows.map((station) => stationsRow(station, {
+    const rows = state.rows.map((station, index) => stationsRow(station, {
       query: state.mode === 'search' ? state.query : '',
       mode: state.mode,
       canAdd,
       alreadyAdded: !!actions.isAlreadyInActiveList?.(station.id),
+      priority: index < 10,
     })).join('');
-    const atCap = state.rows.length >= MAX_ROWS;
-    const more = state.nextOffset != null && !atCap
-      ? '<button type="button" class="stations-load-more" data-action="more">Load more stations</button>'
-      : atCap
-        ? '<p class="stations-empty">Showing the first 500 stations. Narrow the filters to see more.</p>'
-        : '';
+    const atCap = state.mode !== 'popular' && state.rows.length >= MAX_ROWS;
+    const more = state.mode === 'popular'
+      ? (state.nextOffset != null ? '<div class="stations-endless" aria-hidden="true"></div>' : '')
+      : state.nextOffset != null && !atCap
+        ? '<button type="button" class="stations-load-more" data-action="more">Load more stations</button>'
+        : atCap
+          ? '<p class="stations-empty">Showing the first 500 stations. Narrow the filters to see more.</p>'
+          : '';
+    const restoreScroll = state.restoreScroll;
+    const animateRows = state.animateRows;
+    state.restoreScroll = null;
+    state.animateRows = false;
     content.innerHTML = `
       <div class="stations-section-head">${sectionHead()}</div>
-      <div class="stations-list${state.loading ? ' is-loading' : ''}">${rows}</div>
+      <div class="stations-list${state.loading ? ' is-loading' : ''}${animateRows ? ' is-entering' : ''}">${rows}</div>
       ${more}
     `;
+    if (restoreScroll != null) content.scrollTop = restoreScroll;
+    else if (animateRows) content.scrollTo({ top: 0, behavior: 'smooth' });
+    mountLogoBehavior(content);
     applyNowPlaying();
   }
 
@@ -291,12 +305,27 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       return;
     }
     if (button?.dataset.action === 'add') {
+      button.classList.remove('heart-pop');
+      void button.offsetWidth;
+      button.classList.add('heart-pop');
+      button.addEventListener('animationend', () => button.classList.remove('heart-pop'), { once: true });
       actions.onAdd?.(station);
       return;
     }
     if (button?.dataset.action === 'play' || !button) {
       if (state.nowPlayingId === station.id && actions.togglePlay) actions.togglePlay();
       else actions.onPlay?.(station);
+    }
+  }
+
+  function onContentScroll() {
+    if (state.view !== 'stations' || state.mode !== 'popular') return;
+    if (state.loading || state.nextOffset == null) return;
+    const content = body.querySelector('#stationsContent');
+    if (!content) return;
+    if (content.scrollHeight - content.scrollTop - content.clientHeight < 240) {
+      state.offset = state.nextOffset;
+      load({ reset: false });
     }
   }
 
@@ -422,7 +451,14 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       if (token !== loadToken) return;
       if (state.view !== 'stations') return;
       const incoming = result?.stations ?? [];
-      state.rows = reset ? mergeRows([], incoming) : mergeRows(state.rows, incoming);
+      const content = body.querySelector('#stationsContent');
+      if (!reset) state.restoreScroll = content?.scrollTop ?? null;
+      const maxRows = state.mode === 'popular' ? null : MAX_ROWS;
+      state.rows = reset ? mergeRows([], incoming, maxRows) : mergeRows(state.rows, incoming, maxRows);
+      if (reset) {
+        state.animateRows = true;
+        state.restoreScroll = null;
+      }
       state.total = result?.total ?? state.rows.length;
       state.nextOffset = result?.nextOffset ?? null;
       state.letterCounts = result?.letterCounts ?? state.letterCounts;
@@ -753,7 +789,14 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       applyNowPlaying();
     },
     refreshAddedFlags() {
-      if (state.view === 'stations') renderContent();
+      if (state.view !== 'stations') return;
+      body.querySelectorAll('[data-action="add"]').forEach((button) => {
+        const row = button.closest('[data-id]');
+        const added = !!actions.isAlreadyInActiveList?.(row?.dataset.id);
+        button.classList.toggle('is-added', added);
+        button.setAttribute('aria-pressed', String(added));
+        button.setAttribute('aria-label', added ? 'Already in list' : 'Add to list');
+      });
     },
   };
 }

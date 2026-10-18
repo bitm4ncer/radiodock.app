@@ -6,9 +6,40 @@
 
 .logo-slot {
   position: relative;
-  display: inline-flex;
+  display: inline-grid;
+  place-items: center;
   flex-shrink: 0;
+  overflow: hidden;
   line-height: 0; /* avoid baseline gap under the img */
+}
+
+.logo-slot > .logo-fallback,
+.logo-slot > .logo-img {
+  grid-area: 1 / 1;
+}
+
+.logo-img {
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.logo-slot.is-loaded .logo-img {
+  opacity: 1;
+}
+
+.logo-fallback {
+  transition: opacity 180ms ease;
+}
+
+.logo-fallback.is-hidden {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-img,
+  .logo-fallback {
+    transition: none;
+  }
 }
 
 .logo-slot--sm {
