@@ -16,6 +16,29 @@ const USER_AGENT_HEADER = 'RadioDock/1.0';
 const DEFAULT_LIMIT = 30;
 const TIMEOUT_MS = 12000;
 
+/**
+ * Fetch JSON with a linked timeout. Exported for the Discover loader, which
+ * uses the same transport rules against a same-origin file.
+ */
+export async function fetchJson(url, { signal, timeoutMs = TIMEOUT_MS } = {}) {
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), timeoutMs);
+  const onAbort = () => ctl.abort();
+  signal?.addEventListener('abort', onAbort);
+  try {
+    const res = await fetch(url, {
+      method: 'GET',
+      signal: ctl.signal,
+      headers: { Accept: 'application/json', 'User-Agent': USER_AGENT_HEADER },
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } finally {
+    clearTimeout(timer);
+    signal?.removeEventListener('abort', onAbort);
+  }
+}
+
 function buildSearchUrl({ query, filter }) {
   const params = new URLSearchParams({
     limit: String(DEFAULT_LIMIT),
@@ -157,4 +180,81 @@ export async function getStationInfo(uuid, { signal } = {}) {
     clearTimeout(timer);
     signal?.removeEventListener('abort', onAbort);
   }
+}
+
+/** Extend the common station shape with browse-specific fields. */
+function normaliseBrowseStation(rb) {
+  const base = normaliseStation({ ...rb, stationuuid: rb.stationuuid ?? rb.id });
+  const tags = Array.isArray(rb.tags)
+    ? rb.tags.map((tag) => String(tag).trim()).filter(Boolean)
+    : base.tags;
+  return {
+    ...base,
+    tags,
+    country: rb.country ?? '',
+    city: rb.city ?? '',
+    genre: rb.genre ?? '',
+    genreLabel: rb.genreLabel ?? '',
+    info: rb.info ?? '',
+    plays: rb.plays ?? 0,
+    rank: rb.rank ?? null,
+  };
+}
+
+function browseQuery(params = {}, keys = ['mode', 'q', 'letter', 'country', 'genre', 'limit', 'offset']) {
+  const search = new URLSearchParams({ hidebroken: 'true' });
+  for (const key of keys) {
+    const value = params[key];
+    if (value === undefined || value === null || value === '') continue;
+    search.set(key, String(value));
+  }
+  if (params.hasDescription) search.set('hasDescription', '1');
+  return search;
+}
+
+/**
+ * Browse the station database. Returns one page plus letter counts for A-Z.
+ * @param {object} params
+ * @param {{signal?: AbortSignal}} [transport]
+ */
+export async function browseStations(params = {}, { signal } = {}) {
+  const url = `${STATIONS_BASE}/json/stations/browse?${browseQuery(params).toString()}`;
+  const data = await fetchJson(url, { signal });
+  const rows = Array.isArray(data?.stations) ? data.stations : [];
+  const seen = new Set();
+  const stations = [];
+  for (const row of rows) {
+    const station = normaliseBrowseStation(row);
+    if (!station.id || seen.has(station.id)) continue;
+    seen.add(station.id);
+    stations.push(station);
+  }
+  return {
+    stations,
+    total: data?.total ?? 0,
+    offset: data?.offset ?? 0,
+    limit: data?.limit ?? stations.length,
+    nextOffset: data?.nextOffset ?? null,
+    letterCounts: data?.letterCounts ?? null,
+    statsUpdatedAt: data?.statsUpdatedAt ?? null,
+    popularMinPlays: data?.popularMinPlays ?? 5,
+  };
+}
+
+/** Fetch filter counts and labels for the Stations surface. */
+export async function getBrowseMeta({ signal } = {}) {
+  const data = await fetchJson(`${STATIONS_BASE}/json/stations/browse/meta`, { signal });
+  return {
+    ...data,
+    countries: Array.isArray(data?.countries) ? data.countries : [],
+    genres: Array.isArray(data?.genres) ? data.genres : [],
+  };
+}
+
+/** Fetch one random station for the current filters. */
+export async function getRandomStation(filters = {}, { signal } = {}) {
+  const keys = ['letter', 'country', 'genre'];
+  const url = `${STATIONS_BASE}/json/stations/browse/random?${browseQuery(filters, keys).toString()}`;
+  const data = await fetchJson(url, { signal });
+  return data?.station ? normaliseBrowseStation(data.station) : null;
 }
