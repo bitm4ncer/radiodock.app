@@ -197,6 +197,9 @@ function normaliseBrowseStation(rb) {
     genreLabel: rb.genreLabel ?? '',
     info: rb.info ?? '',
     plays: rb.plays ?? 0,
+    listenMinutes: rb.listenMinutes ?? 0,
+    avgMinutes: rb.avgMinutes ?? 0,
+    score: rb.score ?? 0,
     rank: rb.rank ?? null,
   };
 }

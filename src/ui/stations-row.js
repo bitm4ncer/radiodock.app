@@ -1,6 +1,12 @@
 import { renderLogoSlot } from './station-logo.js';
 import { escapeHtml, highlightMatches, countryLabel, formatCount } from './stations-format.js';
 
+function avgLabel(value) {
+  const avg = Number(value ?? 0);
+  if (!Number.isFinite(avg) || avg <= 0) return '';
+  return ` · ${avg >= 10 ? Math.round(avg) : avg.toFixed(1)} min avg`;
+}
+
 function metaLine(station) {
   const parts = [
     countryLabel(station.countrycode),
@@ -33,7 +39,7 @@ export function stationsRow(station, { query = '', mode = 'az', canAdd = false, 
     ? `<span class="stations-row-rank">${escapeHtml(station.rank)}</span>`
     : '';
   const plays = mode === 'popular'
-    ? `<span class="stations-row-plays">${formatCount(station.plays)} plays</span>`
+    ? `<span class="stations-row-plays">${formatCount(station.plays)} plays${avgLabel(station.avgMinutes)}</span>`
     : '';
   const meta = [metaLine(station), plays].filter(Boolean).join('<span class="stations-row-dot"> · </span>');
   const addClass = `stations-icon-btn stations-row-action${alreadyAdded ? ' is-added' : ''}`;

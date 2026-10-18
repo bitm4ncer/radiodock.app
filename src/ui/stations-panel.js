@@ -25,6 +25,10 @@ function shuffleIcon() {
   return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3c4 0 5 10 9 10h4m0 0-3-3m3 3-3 3M4 17h3c1.5 0 2.5-1.3 3.5-3M14 9c.8-1.2 1.5-2 2-2h4m0 0-3-3m3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 }
 
+function discoverIcon() {
+  return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m15.6 8.4-2.1 5.1-5.1 2.1 2.1-5.1 5.1-2.1Z" fill="currentColor"/></svg>';
+}
+
 export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = {}) {
   const panel = elements.panel ?? document.getElementById('stationsPanel');
   const backdrop = elements.backdrop ?? document.getElementById('stationsBackdrop');
@@ -86,7 +90,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
             <h2 class="stations-title" id="stationsTitle">Stations <span class="stations-count" id="stationsTotal"></span></h2>
           </div>
           <div class="stations-header-actions">
-            <button type="button" class="stations-pill" data-action="discover">Discover</button>
+            <button type="button" class="stations-pill stations-discover-btn" data-action="discover">${discoverIcon()}<span>Discover</span></button>
             <button type="button" class="stations-icon-btn" data-action="shuffle" aria-label="Play a random station" title="Play a random station">${shuffleIcon()}</button>
             <button type="button" class="stations-icon-btn" data-action="close" aria-label="Close Stations">${closeIcon()}</button>
           </div>
@@ -179,7 +183,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       return `<strong>${formatCount(state.total)} stations for "${escapeHtml(state.query)}"</strong><button type="button" data-action="clear-search">Clear</button>`;
     }
     if (state.mode === 'popular') {
-      return '<strong>Popular this month</strong><span>Last 30 days by plays <button type="button" class="stations-info-btn" data-action="popular-info" aria-label="About Popular">i</button></span>';
+      return '<strong>Popular this month</strong><span>Last 30 days · plays + listening <button type="button" class="stations-info-btn" data-action="popular-info" aria-label="About Popular">i</button></span>';
     }
     if (state.letter === 'all') {
       return `<strong>All stations</strong><span>${formatCount(state.total)} total</span>`;
@@ -291,7 +295,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
         return;
       }
       if (name === 'popular-info') {
-        actions.toast?.('Ranked by plays in the last 30 days. Minimum 5 plays. Background listening can influence this list.');
+        actions.toast?.('Ranked by a balance of plays and average listening time over the last 30 days. Minimum 5 plays. Background listening can still influence this list.');
         return;
       }
     }
