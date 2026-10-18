@@ -47,7 +47,9 @@ import { mountChangelog, CHANGELOG_REVISION } from './ui/changelog.js';
 import { startLiveSync, stopLiveSync, pushWithStatus as syncPushWithStatus, getSyncToken, extractTokenFromInput, pullFromServer, applyImportPayload, markSyncDirty } from './data/sync.js';
 import { track, identifySession, trackStationPlay } from './analytics/umami.js';
 import { attachListenHeartbeat } from './analytics/listen-heartbeat.js';
+import { attachListenSession } from './analytics/listen-session.js';
 import { attachStreamOutcome } from './analytics/stream-outcome.js';
+import { getAnalyticsOptOut, setAnalyticsOptOut } from './data/analytics-prefs.js';
 import { mountNudges } from './ui/nudges.js';
 import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
 import { detectPlatform, detectStandalone, canPromptInstall, promptInstall } from './platform.js';
@@ -73,7 +75,19 @@ attachRecovery(player);
 attachMetadataPoller(player);
 const mediaSession = attachMediaSession(player);
 attachListenHeartbeat(player, { track, identify: identifySession });
+attachListenSession(player);
 attachStreamOutcome(player, { track });
+
+const analyticsToggle = document.getElementById('aboutAnalyticsToggle');
+if (analyticsToggle) {
+  analyticsToggle.checked = !getAnalyticsOptOut();
+  analyticsToggle.addEventListener('change', () => {
+    const off = !analyticsToggle.checked;
+    setAnalyticsOptOut(off);
+    window.dispatchEvent(new CustomEvent('rd:analytics-opt-out', { detail: { off } }));
+  });
+}
+
 mountNudges({ player });
 
 // --- Stream offline prober ---

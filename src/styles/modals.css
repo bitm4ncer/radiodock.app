@@ -267,6 +267,21 @@
   font-size: 12px;
 }
 
+.about__toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 4px 0 14px;
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.about__toggle input {
+  margin-top: 2px;
+  accent-color: var(--red);
+}
+
 .about__list {
   margin: 0 0 10px;
   padding-left: 18px;

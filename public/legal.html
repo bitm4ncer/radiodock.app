@@ -296,7 +296,8 @@
       <ul>
         <li><strong>Stations server</strong> (search, station info, logos, recording relay and recorder, Detect) — no request log is written. Your IP address exists only in server memory for a one-minute rate-limiting window; the salted SHA-256 hashes used for spam limits are kept only as long as the corresponding limit or submission record.</li>
         <li><strong>Metadata proxy</strong> — request log lines including the IP address: <strong>7 days</strong> on the Render fallback instance.</li>
-        <li><strong>Umami analytics</strong> — the IP address and the session hash derived from it are discarded when the day rolls over; only the aggregated, non-identifying event counts remain.</li>
+        <li><strong>Umami analytics</strong> - the IP address and the session hash derived from it are discarded when the day rolls over; only the aggregated, non-identifying event counts remain.</li>
+        <li><strong>Anonymous listening sessions</strong> - raw session rows and daily listener rollups are deleted after <strong>90 days</strong>; only aggregate Popular scores remain.</li>
         <li><strong>Station submissions</strong> — as described under <a href="#submissions">Station submissions</a>.</li>
         <li><strong>Hosting providers</strong> — GitHub, Render and Hetzner keep their own standard server logs under their own retention policies, which we do not control.</li>
       </ul>
@@ -339,7 +340,7 @@
       </p>
       <ul>
         <li><strong>IndexedDB</strong> — your favourites, custom station lists, notes and recordings.</li>
-        <li><strong>localStorage</strong> — your light/dark theme choice (<code>radiodock-theme</code>), your analytics opt-out flag (<code>umami.disabled</code>) and, if you set one, your preference for loading external Spotify/YouTube previews.</li>
+        <li><strong>localStorage</strong> - your light/dark theme choice (<code>radiodock-theme</code>), your analytics opt-out flags (<code>umami.disabled</code>, <code>rd_analytics_opt_out</code>), the random listener ID used only for anonymous listening stats (<code>rd_listener_id</code>) and, if you set one, your preference for loading external Spotify/YouTube previews.</li>
       </ul>
       <p>
         All of these store or read information on your terminal equipment only to deliver a function you have expressly requested, so they are exempt from the consent requirement under § 25 Abs. 2 Nr. 2 TDDDG (the German implementation of the ePrivacy Directive, formerly the TTDSG). You can clear them at any time via your browser's site-data settings.
@@ -354,6 +355,9 @@
       </p>
       <p>
         <strong>What Umami briefly processes:</strong> your IP address is used on the Umami server to derive a country code and to generate a daily-rotating, hashed session identifier. Neither the IP nor the session hash is retained after the day rolls over, and neither is exposed to the site operator.
+      </p>
+      <p>
+        <strong>Anonymous listening sessions:</strong> to rank Popular, RadioDock also sends an anonymous listening session to its own Stations API. The app stores a random listener ID in local storage and sends only an HMAC of it; the server never stores the raw ID, IP address or user agent with a session. Session rows and daily rollups are kept for <strong>90 days</strong>, then deleted; only aggregate popularity scores remain. This ingest stops when the analytics opt-out is on, Do Not Track is enabled, or a content blocker prevents the request. No listener-level data is public.
       </p>
       <p>
         <strong>Legal basis:</strong> Art. 6(1)(f) GDPR — legitimate interest in understanding aggregate product usage to improve the app. The analytics script itself neither stores information on nor reads information from your terminal equipment, so the consent requirement of § 25 Abs. 1 TDDDG is not triggered; the only value written locally is your own opt-out flag, which is strictly necessary to honour your choice and is exempt under § 25 Abs. 2 Nr. 2 TDDDG. You can object to this processing at any time under Art. 21 GDPR using the toggle below.
@@ -435,11 +439,9 @@
         });
       })();
 
-      // Analytics opt-out toggle. Uses Umami's own opt-out mechanism:
-      // when localStorage['umami.disabled'] === '1', the umami.js script
-      // skips both the automatic pageview and any umami.track() calls
-      // (which means the events from src/analytics/umami.js are also
-      // suppressed — no extra plumbing needed on the app side).
+      // Analytics opt-out toggle. Writes both the Umami opt-out key and the
+      // RadioDock listening-session key so the pageview tracker and the
+      // anonymous Popular ingest stop together.
       //
       // localStorage is used here despite the project's IndexedDB-only
       // rule because (a) this page is a static HTML doc with no app
@@ -447,17 +449,17 @@
       // key. Storing a privacy preference at the user's explicit request
       // is "strictly necessary" under ePrivacy and exempt from consent.
       (function () {
-        var KEY = 'umami.disabled';
+        var KEYS = ['umami.disabled', 'rd_analytics_opt_out'];
         var input = document.getElementById('optoutSwitch');
         var status = document.getElementById('optoutStatus');
         if (!input || !status) return;
 
         function isDisabled() {
-          try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; }
+          try { return KEYS.some(function (key) { return localStorage.getItem(key) === '1'; }); } catch (e) { return false; }
         }
         function render() {
           var off = isDisabled();
-          // The switch reads "Allow analytics" — checked = analytics ON.
+          // The switch reads "Allow analytics", so checked means analytics ON.
           input.checked = !off;
           status.textContent = off
             ? 'Status: opted out. No data is being sent.'
@@ -466,8 +468,10 @@
 
         input.addEventListener('change', function () {
           try {
-            if (input.checked) localStorage.removeItem(KEY);
-            else localStorage.setItem(KEY, '1');
+            KEYS.forEach(function (key) {
+              if (input.checked) localStorage.removeItem(key);
+              else localStorage.setItem(key, '1');
+            });
           } catch (e) {
             // localStorage might be unavailable in private mode on some
             // browsers; in that case the toggle is purely cosmetic and

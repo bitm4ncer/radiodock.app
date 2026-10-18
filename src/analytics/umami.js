@@ -3,10 +3,10 @@
 // the live dashboard. All calls are best-effort: a missing or
 // late-loading umami global no-ops rather than throwing.
 
-const ENABLED = import.meta.env.PROD;
+const ENABLED = import.meta.env?.PROD === true;
 
 function devLog(name, data) {
-  if (import.meta.env.DEV && typeof window !== 'undefined') {
+  if (import.meta.env?.DEV && typeof window !== 'undefined') {
     const log = (window.__analyticsDebug ??= []);
     log.push({ name, data });
     if (log.length > 200) log.shift();
@@ -57,4 +57,9 @@ export function trackStationPlay(station, source) {
     country: station?.countrycode ?? '',
     source,
   });
+  // The listening-session client listens for this instead of player
+  // stationchange events, so recovery replays never create a session.
+  if (typeof window !== 'undefined' && typeof CustomEvent === 'function') {
+    window.dispatchEvent(new CustomEvent('rd:station-play', { detail: { station, source } }));
+  }
 }

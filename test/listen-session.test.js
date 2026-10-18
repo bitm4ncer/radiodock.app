@@ -153,6 +153,18 @@ test('ends the session on pause and pagehide', async () => {
   }
 });
 
+test('turning analytics off ends the active session', async () => {
+  const h = setup();
+  h.dispatchPlay();
+  await flush();
+  h.emit('playing');
+  h.win.dispatchEvent(new CustomEvent('rd:analytics-opt-out', { detail: { off: true } }));
+  await flush();
+  const last = h.sent.at(-1);
+  assert.equal(last.body.ended, true);
+  assert.equal(last.body.endReason, 'opt-out');
+});
+
 test('a new play ends the previous session and keeps the listener id', async () => {
   const h = setup();
   h.dispatchPlay(STATION_A);

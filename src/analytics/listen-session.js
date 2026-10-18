@@ -167,6 +167,10 @@ export function attachListenSession(player, {
     end('pagehide', { useBeacon: true });
   }
 
+  function onOptOut(event) {
+    if (event?.detail?.off) end('opt-out');
+  }
+
   const playerEvents = {
     playing: onPlaying,
     loading: onLoading,
@@ -178,6 +182,7 @@ export function attachListenSession(player, {
   for (const [name, fn] of Object.entries(playerEvents)) player.on?.(name, fn);
   windowImpl.addEventListener('rd:station-play', onPlay);
   windowImpl.addEventListener('pagehide', onPageHide);
+  windowImpl.addEventListener('rd:analytics-opt-out', onOptOut);
 
   return {
     stop() {
@@ -186,6 +191,7 @@ export function attachListenSession(player, {
       clearTimer();
       windowImpl.removeEventListener?.('rd:station-play', onPlay);
       windowImpl.removeEventListener?.('pagehide', onPageHide);
+      windowImpl.removeEventListener?.('rd:analytics-opt-out', onOptOut);
       for (const [name, fn] of Object.entries(playerEvents)) player.off?.(name, fn);
     },
   };
