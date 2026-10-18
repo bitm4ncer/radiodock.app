@@ -360,13 +360,13 @@
 .stations-row-logo {
   width: 32px;
   height: 32px;
-  border-radius: 8px;
+  border-radius: 50%;
 }
 
 .stations-row-initials {
   width: 32px;
   height: 32px;
-  border-radius: 8px;
+  border-radius: 50%;
   font-size: 10px;
 }
 
@@ -918,7 +918,7 @@
 .stations-stack-initials {
   width: 34px;
   height: 34px;
-  border-radius: 8px;
+  border-radius: 50%;
   font-size: 10px;
 }
 
