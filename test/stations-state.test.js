@@ -30,7 +30,7 @@ test('mergeRows can run without a cap for Popular', () => {
   assert.equal(merged.length, 601);
 });
 
-import { popularParams, searchParams } from '../src/ui/stations-state.js';
+import { communityParams, popularParams, searchParams } from '../src/ui/stations-state.js';
 
 test('popular and search params keep filters', () => {
   assert.deepEqual(popularParams({ country: 'DE', genre: 'jazz', hasDescription: true, offset: 0 }), {
@@ -38,5 +38,13 @@ test('popular and search params keep filters', () => {
   });
   assert.deepEqual(searchParams({ query: ' jazz ', country: 'DE', offset: 0 }), {
     mode: 'search', q: 'jazz', country: 'DE', limit: 100, offset: 0, hidebroken: true,
+  });
+});
+
+test('community params keep filters and ignore the A-Z letter', () => {
+  assert.deepEqual(communityParams({
+    mode: 'community', letter: 'D', country: 'DE', genre: 'jazz', hasDescription: true, offset: 0,
+  }), {
+    mode: 'community', country: 'DE', genre: 'jazz', hasDescription: true, limit: 100, offset: 0, hidebroken: true,
   });
 });

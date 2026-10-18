@@ -256,7 +256,7 @@ export async function getBrowseMeta({ signal } = {}) {
 
 /** Fetch one random station for the current filters. */
 export async function getRandomStation(filters = {}, { signal } = {}) {
-  const keys = ['letter', 'country', 'genre'];
+  const keys = ['mode', 'letter', 'country', 'genre'];
   const url = `${STATIONS_BASE}/json/stations/browse/random?${browseQuery(filters, keys).toString()}`;
   const data = await fetchJson(url, { signal });
   return data?.station ? normaliseBrowseStation(data.station) : null;

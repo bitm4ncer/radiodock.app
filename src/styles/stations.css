@@ -1102,6 +1102,11 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
     width: 40px;
     min-height: 44px;
   }
+
+  .stations-row-actions .stations-icon-btn svg {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 html.is-standalone .stations-backdrop {

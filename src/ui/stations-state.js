@@ -27,6 +27,10 @@ export function popularParams(state = {}) {
   return buildBrowseParams({ ...state, mode: 'popular', query: '' });
 }
 
+export function communityParams(state = {}) {
+  return buildBrowseParams({ ...state, mode: 'community', query: '', letter: 'all' });
+}
+
 export function searchParams(state = {}) {
   return buildBrowseParams({ ...state, mode: 'search', query: String(state.query ?? '').trim() });
 }

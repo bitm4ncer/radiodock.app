@@ -56,3 +56,15 @@ test('getRandomStation forwards the description filter', async () => {
     assert.ok(seen.includes('hasDescription=1'));
   } finally { restore(); }
 });
+
+test('getRandomStation forwards the community mode', async () => {
+  let seen = '';
+  const restore = stubFetch((url) => {
+    seen = url;
+    return new Response(JSON.stringify({ station: null }), { status: 200 });
+  });
+  try {
+    await getRandomStation({ mode: 'community', country: 'DE' });
+    assert.ok(seen.includes('mode=community'));
+  } finally { restore(); }
+});

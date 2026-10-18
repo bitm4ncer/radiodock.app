@@ -3,7 +3,7 @@
 
 import { stationsRow, updateRowNowPlaying } from './stations-row.js';
 import { mountStationsFilters } from './stations-filter.js';
-import { buildBrowseParams, mergeRows, searchModeFor, popularParams, searchParams, MAX_ROWS } from './stations-state.js';
+import { buildBrowseParams, communityParams, mergeRows, searchModeFor, popularParams, searchParams, MAX_ROWS } from './stations-state.js';
 import { escapeHtml, formatCount } from './stations-format.js';
 import { normaliseDiscover, renderDiscover, renderCollection } from './discover-child.js';
 import { mountLogoBehavior } from './station-logo.js';
@@ -112,6 +112,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
           <div class="stations-mode" role="group" aria-label="Sort stations">
             <button type="button" data-mode="popular" aria-pressed="${state.mode === 'popular'}">Popular</button>
             <button type="button" data-mode="az" aria-pressed="${state.mode === 'az'}">A-Z</button>
+            <button type="button" data-mode="community" aria-pressed="${state.mode === 'community'}">Community</button>
           </div>
           <div id="stationsFilters" class="stations-filters"></div>
         </div>
@@ -164,7 +165,10 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
 
   function renderHeader() {
     const total = body.querySelector('#stationsTotal');
-    if (total) total.textContent = state.meta?.totalStations ? formatCount(state.meta.totalStations) : '';
+    const count = state.mode === 'community'
+      ? (state.meta?.communityCount ?? state.total)
+      : state.meta?.totalStations;
+    if (total) total.textContent = count ? formatCount(count) : '';
     body.querySelectorAll('[data-mode]').forEach((button) => {
       button.setAttribute('aria-pressed', String(button.dataset.mode === state.mode));
     });
@@ -194,6 +198,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     }
     if (state.mode === 'popular') {
       return '<strong>Popular this month</strong><span>Last 30 days · plays + listening <button type="button" class="stations-info-btn" data-action="popular-info" aria-label="About Popular">i</button></span>';
+    }
+    if (state.mode === 'community') {
+      return `<strong>Community Radios</strong><span>Curated · ${formatCount(state.total)} stations</span>`;
     }
     if (state.letter === 'all') {
       return `<strong>All stations</strong><span>${formatCount(state.total)} total</span>`;
@@ -273,6 +280,12 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     const head = `<div class="stations-section-head">${sectionHead()}</div>`;
     if (state.mode === 'popular') {
       return `${head}<div class="stations-empty"><p>Popular is still warming up.</p><button type="button" class="stations-pill" data-action="browse-az">Browse A-Z</button></div>`;
+    }
+    if (state.mode === 'community') {
+      const filtered = state.country || state.genre || state.hasDescription;
+      return filtered
+        ? `${head}<div class="stations-empty"><p>No community stations match these filters.</p><button type="button" class="stations-pill" data-action="clear-filters">Clear filters</button></div>`
+        : `${head}<div class="stations-empty"><p>Community Radios is empty.</p><button type="button" class="stations-pill" data-action="browse-az">Browse A-Z</button></div>`;
     }
     if (state.hasDescription) {
       return `${head}<div class="stations-empty"><p>No descriptions here yet.</p><p>Open a station and choose Suggest an edit to add one.</p><button type="button" class="stations-pill" data-action="clear-filters">Browse all</button></div>`;
@@ -464,8 +477,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       await ensureMeta();
       const result = await data.browseStations(
         state.mode === 'popular' ? popularParams(state)
-          : state.mode === 'search' ? searchParams(state)
-            : buildBrowseParams(state),
+          : state.mode === 'community' ? communityParams(state)
+            : state.mode === 'search' ? searchParams(state)
+              : buildBrowseParams(state),
         { signal: controller.signal },
       );
       if (token !== loadToken) return;
@@ -502,6 +516,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     if (state.mode === 'search') return;
     try {
       const station = await data.getRandomStation?.({
+        mode: state.mode,
         letter: state.letter !== 'all' ? state.letter : '',
         country: state.country,
         genre: state.genre,
