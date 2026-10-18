@@ -118,9 +118,9 @@
 .stations-search-input {
   width: 100%;
   min-height: 40px;
-  padding: 0 12px;
+  padding: 0 16px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-pill);
   color: var(--text);
   background: var(--surface);
   font: inherit;
@@ -724,7 +724,9 @@
 .stations-filters {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 6px;
+  margin-left: auto;
   position: relative;
 }
 
