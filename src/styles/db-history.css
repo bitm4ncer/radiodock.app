@@ -115,12 +115,23 @@
   display: none;
 }
 
+/* Long values (descriptions, URLs) get the full width: the field label sits
+   above the value instead of being squeezed into a 104px column. */
 .db-history__diff-row {
-  display: grid;
-  grid-template-columns: 104px 1fr;
-  gap: var(--space-3);
-  align-items: baseline;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   font-size: 13px;
+}
+
+.db-history__diff-value {
+  min-width: 0;
+  word-break: break-word;
+}
+
+/* No old value (a field was filled for the first time): a lone arrow is noise. */
+.db-history__diff-value > .db-history__arrow:first-child {
+  display: none;
 }
 
 .db-history__diff-field {
