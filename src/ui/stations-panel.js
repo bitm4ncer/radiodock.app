@@ -264,6 +264,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     body.querySelectorAll('.stations-row').forEach((row) => {
       updateRowNowPlaying(row, row.dataset.id === id);
     });
+    body.querySelectorAll('.stations-collection-tile').forEach((tile) => {
+      tile.classList.toggle('is-playing', tile.dataset.uuid === id);
+    });
   }
 
   function emptyState() {
@@ -563,6 +566,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     if (!list) return;
     state.collection = list;
     discoverShell(list.title, 'back-discover', renderCollection({ list }));
+    applyNowPlaying();
   }
 
   async function resolveStation(uuid) {
