@@ -369,6 +369,8 @@ const stations = mountStationsPanel({
       return !!list?.stations.some((s) => s.id === stationId);
     },
     canAddToActiveList: () => true,
+    getNowPlayingId: () => player.getCurrentStation()?.id ?? null,
+    togglePlay: () => playerCard.togglePlayPause(),
     toast,
   },
 });

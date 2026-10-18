@@ -71,7 +71,7 @@ export function renderDiscover({ lists = [], genres = [] } = {}) {
   }
   const featured = featuredList(lists);
   const rest = lists.slice(1);
-  const topGenres = genres.slice(0, 10);
+  const topGenres = genres.slice(0, 8);
   return `
     <div class="stations-discover">
       <p class="stations-discover-sub">Curated by RadioDock · ${pluralCount(lists.length, 'collection')}</p>

@@ -19,6 +19,7 @@ export function buildBrowseParams(state = {}) {
 export function searchModeFor(value, previousMode = 'az') {
   const query = String(value ?? '').trim();
   if (query.length >= 2) return { mode: 'search', query };
+  if (query.length === 1) return { mode: 'too-short', query };
   return { mode: previousMode === 'search' ? 'az' : previousMode, query: '' };
 }
 

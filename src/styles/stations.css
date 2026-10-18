@@ -163,6 +163,21 @@
 .stations-mode button[aria-pressed="true"] {
   color: var(--text);
   background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--red);
+}
+
+.stations-mode button:focus-visible,
+.stations-chip:focus-visible,
+.stations-icon-btn:focus-visible,
+.stations-pill:focus-visible,
+.stations-rail button:focus-visible,
+.stations-row-main:focus-visible,
+.stations-row-action:focus-visible,
+.stations-load-more:focus-visible,
+.stations-filter-option:focus-visible,
+.stations-filter-search:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
 }
 
 .stations-chip {
@@ -400,6 +415,12 @@
   color: var(--red);
 }
 
+.stations-row mark {
+  color: var(--text);
+  background: color-mix(in srgb, var(--red) 30%, transparent);
+  border-radius: 2px;
+}
+
 .stations-mark {
   color: var(--text);
   background: color-mix(in srgb, var(--red) 30%, transparent);
@@ -597,6 +618,10 @@
 .stations-filter-option:hover,
 .stations-filter-option.is-selected {
   background: var(--surface);
+}
+
+.stations-filter-option.is-selected {
+  box-shadow: inset 0 0 0 1px var(--red);
 }
 
 .stations-filter-option-label {
@@ -926,6 +951,10 @@
 }
 
 @media (max-width: 699px) {
+  .stations-backdrop {
+    display: none;
+  }
+
   .stations-discover {
     padding: 4px 14px 20px;
   }
@@ -934,6 +963,15 @@
   .stations-collection-grid.is-tiles {
     grid-template-columns: 1fr;
   }
+
+  .stations-row-actions .stations-icon-btn {
+    width: 40px;
+    min-height: 44px;
+  }
+}
+
+html.is-standalone .stations-backdrop {
+  display: none;
 }
 
 html.is-standalone .stations-panel {

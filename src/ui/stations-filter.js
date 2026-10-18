@@ -54,10 +54,12 @@ export function mountStationsFilters({ root, getMeta, onChange } = {}) {
   }
 
   function close() {
+    const kind = openKind;
     openKind = null;
     popover?.remove();
     popover = null;
     root?.querySelectorAll('.stations-chip.is-open').forEach((el) => el.classList.remove('is-open'));
+    if (kind) root?.querySelector(`[data-filter="${kind}"]`)?.focus();
   }
 
   function renderChips() {
@@ -198,7 +200,6 @@ export function mountStationsFilters({ root, getMeta, onChange } = {}) {
       close();
     }
   });
-
   renderChips();
 
   return {

@@ -38,7 +38,8 @@ export function renderLogoSlot(station, {
   size = 'sm', // 'sm' for list rows, 'lg' for the player card
 } = {}) {
   const initials = getInitials(station.name);
-  const url = getLogoUrl(station, logoSizePx(size));
+  const hasFavicon = String(station?.favicon ?? '').trim().length > 0;
+  const url = hasFavicon ? getLogoUrl(station, logoSizePx(size)) : '';
   const inner = url
     ? `<img class="${escapeHtml(imgClass)}" alt="" loading="lazy" data-logo-img="1" src="${escapeHtml(url)}">`
     : `<span class="${escapeHtml(initialsClass)}">${escapeHtml(initials)}</span>`;

@@ -19,6 +19,14 @@ test('row renders three lines, actions, and rank', () => {
   assert.ok(html.includes('20 plays'));
 });
 
+test('row actions use the shared icon button style and always show the favorite heart', () => {
+  const enabled = stationsRow(base, { canAdd: true });
+  assert.match(enabled, /class="stations-icon-btn stations-row-action[^"]*"[^>]*data-action="add"/);
+  const disabled = stationsRow(base, { canAdd: false });
+  assert.match(disabled, /data-action="add"/);
+  assert.match(disabled, /disabled/);
+});
+
 test('row escapes untrusted text and highlights the name', () => {
   const html = stationsRow({ ...base, name: '<script>Jazz</script>' }, { query: 'jazz' });
   assert.ok(!html.includes('<script>'));

@@ -12,7 +12,7 @@ test('buildBrowseParams omits defaults and sends active filters', () => {
 });
 
 test('searchModeFor waits for two characters and restores the previous mode', () => {
-  assert.deepEqual(searchModeFor('j', 'az'), { mode: 'az', query: '' });
+  assert.deepEqual(searchModeFor('j', 'az'), { mode: 'too-short', query: 'j' });
   assert.deepEqual(searchModeFor('ja', 'az'), { mode: 'search', query: 'ja' });
   assert.deepEqual(searchModeFor('', 'search'), { mode: 'az', query: '' });
 });

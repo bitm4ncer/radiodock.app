@@ -58,6 +58,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     meta: null,
     loading: false,
     error: null,
+    tooShort: false,
+    nowPlayingId: null,
     discover: null,
     collection: null,
   };
@@ -132,6 +134,11 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
         load({ reset: true });
       },
     });
+    filters.setState({
+      country: state.country,
+      genre: state.genre,
+      hasDescription: state.hasDescription,
+    });
     renderHeader();
     renderRail();
     renderContent();
@@ -180,6 +187,10 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     const content = body.querySelector('#stationsContent');
     if (!content) return;
     content.setAttribute('aria-busy', String(state.loading));
+    if (state.tooShort) {
+      content.innerHTML = `<div class="stations-empty"><p>Type at least 2 characters.</p></div>`;
+      return;
+    }
     if (state.loading && !state.rows.length) {
       content.innerHTML = `${sectionHead()}<div class="stations-list">${Array.from({ length: 8 }, () => '<div class="stations-skeleton"></div>').join('')}</div>`;
       return;
@@ -215,6 +226,14 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       <div class="stations-list${state.loading ? ' is-loading' : ''}">${rows}</div>
       ${more}
     `;
+    applyNowPlaying();
+  }
+
+  function applyNowPlaying() {
+    const id = state.nowPlayingId ?? actions.getNowPlayingId?.() ?? null;
+    body.querySelectorAll('.stations-row').forEach((row) => {
+      updateRowNowPlaying(row, row.dataset.id === id);
+    });
   }
 
   function emptyState() {
@@ -276,7 +295,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       return;
     }
     if (button?.dataset.action === 'play' || !button) {
-      actions.onPlay?.(station);
+      if (state.nowPlayingId === station.id && actions.togglePlay) actions.togglePlay();
+      else actions.onPlay?.(station);
     }
   }
 
@@ -286,6 +306,25 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     clearTimeout(searchTimer);
     searchTimer = setTimeout(() => {
       const next = searchModeFor(input.value, previousMode);
+      if (next.mode === 'too-short') {
+        controller?.abort();
+        loadToken++;
+        state.tooShort = true;
+        state.mode = 'search';
+        state.query = next.query;
+        state.rows = [];
+        state.total = 0;
+        state.nextOffset = null;
+        state.letter = 'all';
+        state.offset = 0;
+        state.loading = false;
+        state.error = null;
+        renderHeader();
+        renderRail();
+        renderContent();
+        return;
+      }
+      state.tooShort = false;
       if (next.mode === 'search') {
         if (state.mode !== 'search') previousMode = state.mode;
         state.mode = 'search';
@@ -308,6 +347,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     clearTimeout(searchTimer);
     const input = body.querySelector('#stationsSearch');
     if (input) input.value = '';
+    state.tooShort = false;
     state.mode = previousMode === 'search' ? 'az' : previousMode;
     state.query = '';
     state.letter = 'all';
@@ -328,6 +368,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   function setMode(mode) {
     if (mode === state.mode && !state.query) return;
     previousMode = mode;
+    state.tooShort = false;
     state.mode = mode;
     state.query = '';
     state.letter = 'all';
@@ -358,6 +399,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   }
 
   async function load({ reset = false } = {}) {
+    if (state.tooShort) return;
     if (reset) {
       state.offset = 0;
       state.rows = [];
@@ -378,6 +420,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
         { signal: controller.signal },
       );
       if (token !== loadToken) return;
+      if (state.view !== 'stations') return;
       const incoming = result?.stations ?? [];
       state.rows = reset ? mergeRows([], incoming) : mergeRows(state.rows, incoming);
       state.total = result?.total ?? state.rows.length;
@@ -392,6 +435,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       body.querySelector('#stationsSearch')?.setAttribute('aria-label', 'Search stations or genres');
     } catch (err) {
       if (controller.signal.aborted || token !== loadToken) return;
+      if (state.view !== 'stations') return;
       state.loading = false;
       state.error = err?.message || 'Could not load stations.';
       renderContent();
@@ -435,6 +479,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     const content = body.querySelector('#stationsContent');
     content?.addEventListener('click', onDiscoverClick);
     mountLogoBehavior(content);
+    queueMicrotask(() => body.querySelector(`[data-action="${backAction}"]`)?.focus());
   }
 
   function renderDiscoverView() {
@@ -448,6 +493,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   }
 
   async function openDiscover() {
+    controller?.abort();
+    loadToken++;
+    state.loading = false;
     state.view = 'discover';
     state.collection = null;
     discoverShell('Discover', 'back', '<div class="stations-empty">Loading collections...</div>');
@@ -465,12 +513,17 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   }
 
   async function resolveStation(uuid) {
-    const station = await data.getStationByUuid?.(uuid);
-    if (!station) {
+    try {
+      const station = await data.getStationByUuid?.(uuid);
+      if (!station) {
+        actions.toast?.('Station not available right now.');
+        return null;
+      }
+      return station;
+    } catch {
       actions.toast?.('Station not available right now.');
       return null;
     }
-    return station;
   }
 
   async function onDiscoverClick(evt) {
@@ -534,6 +587,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.collection = null;
     shell();
     renderAll();
+    body.querySelector('[data-action="close"]')?.focus();
     load({ reset: false });
   }
 
@@ -589,6 +643,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
 
   function onKeydown(evt) {
     if (!isOpen) return;
+    if (evt.defaultPrevented) return;
     if (evt.key === 'Escape') {
       if (filters?.isOpen()) {
         filters.close();
@@ -601,6 +656,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
         evt.preventDefault();
         return;
       }
+      evt.preventDefault();
       close();
       return;
     }
@@ -619,9 +675,16 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     }
   }
 
+  function onDocumentKeydown(evt) {
+    if (!isOpen || evt.key !== 'Escape' || evt.defaultPrevented) return;
+    if (panel.contains(evt.target)) return;
+    onKeydown(evt);
+  }
+
   function open({ query = '' } = {}) {
     const firstOpen = !isOpen;
     previousFocus = document.activeElement;
+    state.tooShort = false;
     if (firstOpen || state.view !== 'stations') {
       state.view = 'stations';
       if (firstOpen) {
@@ -630,11 +693,13 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
         panel.setAttribute('aria-hidden', 'false');
         if (backdrop) backdrop.hidden = false;
         document.body.classList.add('stations-overlay-open');
+        document.addEventListener('keydown', onDocumentKeydown);
         window.dispatchEvent(new CustomEvent('rd:page-open', { detail: { id: 'stations' } }));
       }
       shell();
       applyPosition();
     }
+    state.nowPlayingId = actions.getNowPlayingId?.() ?? state.nowPlayingId;
     const trimmed = String(query ?? '').trim();
     if (trimmed) {
       previousMode = state.mode === 'search' ? previousMode : state.mode;
@@ -661,6 +726,10 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     isOpen = false;
     loadToken++;
     controller?.abort();
+    state.loading = false;
+    state.tooShort = false;
+    filters?.close();
+    document.removeEventListener('keydown', onDocumentKeydown);
     panel.classList.remove('is-open');
     panel.setAttribute('aria-hidden', 'true');
     if (backdrop) backdrop.hidden = true;
@@ -680,9 +749,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       body.querySelector('#stationsSearch')?.focus();
     },
     setNowPlaying(id) {
-      body.querySelectorAll('.stations-row').forEach((row) => {
-        updateRowNowPlaying(row, row.dataset.id === id);
-      });
+      state.nowPlayingId = id ?? null;
+      applyNowPlaying();
     },
     refreshAddedFlags() {
       if (state.view === 'stations') renderContent();
