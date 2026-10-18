@@ -349,7 +349,20 @@
 .stations-row-initials {
   width: 32px;
   height: 32px;
+  border-radius: 8px;
   font-size: 10px;
+}
+
+.stations-row-initials,
+.stations-stack-initials {
+  background: var(--bg-list-hover);
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .stations-row-info {
