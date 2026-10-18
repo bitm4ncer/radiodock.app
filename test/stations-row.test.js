@@ -41,6 +41,30 @@ test('row falls back to tags and then genre', () => {
   assert.ok(genre.includes('Electronic'));
 });
 
+test('row presents country, genre, stats, and tags as visual chips', () => {
+  const html = stationsRow({ ...base, info: '', avgMinutes: 24 }, { mode: 'popular' });
+  assert.match(html, /class="stations-row-country"[^>]*title="United States"[^>]*>US</);
+  assert.match(html, /class="stations-row-genre"[^>]*>Electronic</);
+  assert.match(html, /class="stations-row-stat"[^>]*>.*20/);
+  assert.match(html, /class="stations-row-stat"[^>]*>.*24m/);
+  assert.match(html, /class="stations-row-tag"/);
+  assert.match(html, /class="stations-row-hash">#</);
+});
+
+test('row escapes untrusted country, genre, and tag text', () => {
+  const html = stationsRow({
+    ...base,
+    countrycode: 'DE',
+    genreLabel: '<b>Jazz</b>',
+    tags: ['<img src=x>'],
+    info: '',
+  });
+  assert.ok(!html.includes('<b>Jazz</b>'));
+  assert.ok(!html.includes('<img src=x>'));
+  assert.ok(html.includes('&lt;b&gt;Jazz&lt;/b&gt;'));
+  assert.ok(html.includes('&lt;img src=x&gt;'));
+});
+
 test('updateRowNowPlaying toggles class and aria state', () => {
   const row = { classList: { toggle() {} }, setAttribute() {} };
   let toggled = false;

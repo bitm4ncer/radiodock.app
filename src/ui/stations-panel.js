@@ -81,6 +81,13 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   };
 
   let isOpen = false;
+  let lastAppRegime = isAppRegime();
+  window.addEventListener('resize', () => {
+    const next = isAppRegime();
+    if (next === lastAppRegime) return;
+    lastAppRegime = next;
+    if (isOpen) applyPosition();
+  });
   let previousMode = 'popular';
   let previousFocus = null;
   let loadToken = 0;
@@ -673,10 +680,16 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   }
 
   async function applyPosition() {
+    if (isAppRegime()) {
+      panel.style.left = '';
+      panel.style.top = '';
+      panel.style.transform = '';
+      return;
+    }
     if (!panelPosition) {
       panelPosition = await storage.getPref('stationsPanelPos', null).catch(() => null);
     }
-    if (!panelPosition || !isAppRegime()) return;
+    if (!panelPosition) return;
     const width = panel.offsetWidth;
     const height = panel.offsetHeight;
     const left = Math.min(Math.max(0, panelPosition.left), Math.max(0, window.innerWidth - width));
