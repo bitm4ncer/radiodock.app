@@ -37,7 +37,7 @@ function resultRow(station, { canAdd, alreadyAdded }) {
   `;
 }
 
-export function mountSearch({ onSearch, onPlay, onAdd, isAlreadyInActiveList, canAddToActiveList } = {}) {
+export function mountSearch({ onSearch, onPlay, onAdd, onSubmit, isAlreadyInActiveList, canAddToActiveList } = {}) {
   const input = document.getElementById('searchInput');
   const clearBtn = document.getElementById('clearSearchBtn');
   const filtersEl = document.getElementById('searchFilters');
@@ -45,6 +45,7 @@ export function mountSearch({ onSearch, onPlay, onAdd, isAlreadyInActiveList, ca
   const resultsList = document.getElementById('searchResultsList');
   const loadingEl = document.getElementById('searchLoading');
   const errorEl = document.getElementById('searchError');
+  const searchAllBtn = document.getElementById('searchAllBtn');
 
   mountLogoBehavior(resultsList);
 
@@ -61,6 +62,7 @@ export function mountSearch({ onSearch, onPlay, onAdd, isAlreadyInActiveList, ca
     resultsEl.style.display = results ? '' : 'none';
     loadingEl.style.display = loading ? '' : 'none';
     errorEl.style.display = error ? '' : 'none';
+    if (searchAllBtn) searchAllBtn.style.display = results ? '' : 'none';
     if (typeof list === 'string') resultsList.innerHTML = list;
   }
 
@@ -141,6 +143,19 @@ export function mountSearch({ onSearch, onPlay, onAdd, isAlreadyInActiveList, ca
     }
   });
 
+  input.addEventListener('keydown', (evt) => {
+    if (evt.key !== 'Enter') return;
+    const query = input.value.trim();
+    if (!query) return;
+    evt.preventDefault();
+    onSubmit?.(query);
+  });
+
+  searchAllBtn?.addEventListener('click', () => {
+    const query = input.value.trim();
+    if (query) onSubmit?.(query);
+  });
+
   clearBtn.addEventListener('click', () => {
     input.value = '';
     syncEmpty();
@@ -176,6 +191,7 @@ export function mountSearch({ onSearch, onPlay, onAdd, isAlreadyInActiveList, ca
 
   return {
     focus: () => input.focus(),
+    getQuery: () => input.value.trim(),
     clear: () => {
       input.value = '';
       syncEmpty();

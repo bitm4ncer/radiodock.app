@@ -6,13 +6,13 @@ import { attachMediaSession } from './player/media-session.js';
 import { mountInstallInfo } from './ui/install-info.js';
 import { mountInstallSection } from './ui/install-section.js';
 import { mountOffCanvas } from './ui/off-canvas.js';
-import { mountSearchOverlay } from './ui/search-overlay.js';
 import { mountPlayerCard } from './ui/player-card.js';
 import { mountStationList } from './ui/station-list.js';
 import { mountListDropdown } from './ui/list-dropdown.js';
 import { mountListTabs } from './ui/list-tabs.js';
 import { mountListsCarousel } from './ui/lists-carousel.js';
 import { mountSearch } from './ui/search.js';
+import { mountStationsPanel } from './ui/stations-panel.js';
 import { mountKeyboardShortcuts } from './ui/keyboard.js';
 import { mountStationInfo } from './ui/station-info.js';
 import { initModals, openModal, closeModal } from './ui/modals.js';
@@ -23,6 +23,8 @@ import * as storage from './data/storage.js';
 import { downloadList, parseExport, applyImport } from './data/import-export.js';
 import { buildShareUrl, tryDecodeShareHash } from './data/share.js';
 import { searchStations, setBackendOverride } from './data/stations-source.js';
+import { browseStations, getBrowseMeta, getRandomStation, getStationByUuid } from './data/stations-api.js';
+import { loadDiscover, clearDiscoverCache } from './data/discover.js';
 import { cleanupOrphanedLogoPrefs } from './data/logo-resolver.js';
 import { mountVisualizer } from './visualizer/bootstrap.js';
 import { mountPlayerCardDragMinimize } from './ui/player-card-drag.js';
@@ -273,6 +275,35 @@ function scheduleSearchTrack(payload) {
   }, 1500);
 }
 
+// Shared add/remove flow for the player heart and Stations rows. Keeping
+// this in one place makes both surfaces update the active list, the player
+// heart, sync and the row flags consistently.
+async function toggleStationInActiveList(station) {
+  if (!station) return;
+  const target = getActiveEditableList();
+  if (!target) return;
+  const has = target.stations.some((s) => s.id === station.id);
+  try {
+    if (has) {
+      await listsApi.removeStationFromList(target.id, station.id);
+      target.stations = target.stations.filter((s) => s.id !== station.id);
+      toast(`Removed from "${target.name}"`);
+      scheduleSyncPush();
+    } else {
+      await listsApi.addStationToList(target.id, station);
+      target.stations = [...target.stations, station];
+      toast(`Added to "${target.name}"`);
+      scheduleSyncPush();
+    }
+    updateFavoriteHeart();
+    if (state.currentListId === target.id) renderActiveList();
+    else listDropdown.setLists(allListsForDropdown());
+    stations?.refreshAddedFlags?.();
+  } catch (err) {
+    toast(err.message);
+  }
+}
+
 const search = mountSearch({
   onSearch: async ({ query, filter }, transport) => {
     let backend = null;
@@ -287,6 +318,7 @@ const search = mountSearch({
     trackStationPlay(station, 'search');
     player.playStation(station);
   },
+  onSubmit: (query) => stations.open({ query }),
   onAdd: async (station) => {
     const targetList = getActiveEditableList();
     if (!targetList) return;
@@ -310,16 +342,49 @@ const search = mountSearch({
   canAddToActiveList: () => true,
 });
 
+const stations = mountStationsPanel({
+  elements: {
+    panel: document.getElementById('stationsPanel'),
+    backdrop: document.getElementById('stationsBackdrop'),
+    body: document.getElementById('stationsBody'),
+  },
+  data: {
+    browseStations,
+    getBrowseMeta,
+    getRandomStation,
+    getStationByUuid,
+    loadDiscover,
+    clearDiscoverCache,
+  },
+  actions: {
+    onPlay: (station) => {
+      trackStationPlay(station, 'stations');
+      player.playStation(station);
+    },
+    onAdd: (station) => toggleStationInActiveList(station),
+    onInfo: (station) => openStationInfo(station),
+    isAlreadyInActiveList: (stationId) => {
+      const list = getActiveEditableList();
+      return !!list?.stations.some((s) => s.id === stationId);
+    },
+    canAddToActiveList: () => true,
+    toast,
+  },
+});
+
+document.getElementById('stationsTriggerBtn')?.addEventListener('click', () => stations.open());
+document.getElementById('stationsOpenBtn')?.addEventListener('click', () => stations.open());
+
 mountKeyboardShortcuts({
   player,
   playerCard,
   onFocusSearch: () => {
     // Mobile/standalone regime hides the inline search input; the visible
-    // trigger button opens the fullscreen overlay instead.
-    const trigger = document.getElementById('searchTriggerBtn');
+    // trigger button opens the Stations page instead.
+    const trigger = document.getElementById('stationsTriggerBtn');
     if (trigger && trigger.offsetParent !== null) {
-      trigger.click();
-      setTimeout(() => search.focus(), 50);
+      stations.open();
+      setTimeout(() => stations.focusSearch(), 50);
     } else {
       search.focus();
     }
@@ -650,13 +715,7 @@ document.body.addEventListener('click', (evt) => {
   track('support-click', { source });
 });
 
-// Mobile fullscreen search overlay
-const searchOverlay = mountSearchOverlay({
-  triggerBtn: document.getElementById('searchTriggerBtn'),
-  overlay: document.getElementById('searchOverlay'),
-});
-
-// Only one full-page surface (Notes / Sync / About / Log / Search) is open at a
+// Only one full-page surface (Notes / Sync / About / Log / Stations) is open at a
 // time: opening one closes the rest. Each page fires `rd:page-open` (detail.id)
 // as it opens; this listener closes every other page. The transient dialog
 // sheets (confirm / prompt / share / station info / list actions) are absent on
@@ -667,7 +726,7 @@ const PAGE_CLOSERS = {
   add: () => addPanel?.close?.(),
   infoModal: () => closeModal('infoModal'),
   changelogModal: () => closeModal('changelogModal'),
-  search: () => searchOverlay?.close(),
+  stations: () => stations?.close(),
 };
 // Exclusivity applies only in the app regime — mobile, or an installed / Electron
 // desktop app — where the pages open full-screen and the off-canvas menu is the
@@ -1081,28 +1140,7 @@ stationList.onReorder(async (orderedIds) => {
 
 // --- Save-to-current-list heart on player card ---
 playerCard.onFavoriteClick(async (station) => {
-  if (!station) return;
-  const target = getActiveEditableList();
-  if (!target) return;
-  const has = target.stations.some((s) => s.id === station.id);
-  try {
-    if (has) {
-      await listsApi.removeStationFromList(target.id, station.id);
-      target.stations = target.stations.filter((s) => s.id !== station.id);
-      toast(`Removed from "${target.name}"`);
-      scheduleSyncPush();
-    } else {
-      await listsApi.addStationToList(target.id, station);
-      target.stations = [...target.stations, station];
-      toast(`Added to "${target.name}"`);
-      scheduleSyncPush();
-    }
-    updateFavoriteHeart();
-    if (state.currentListId === target.id) renderActiveList();
-    else listDropdown.setLists(allListsForDropdown());
-  } catch (err) {
-    toast(err.message);
-  }
+  await toggleStationInActiveList(station);
 });
 
 // --- List dropdown ---
