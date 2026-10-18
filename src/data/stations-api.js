@@ -200,6 +200,11 @@ function normaliseBrowseStation(rb) {
     listenMinutes: rb.listenMinutes ?? 0,
     avgMinutes: rb.avgMinutes ?? 0,
     score: rb.score ?? 0,
+    reach: rb.reach ?? 0,
+    depth: rb.depth ?? 0,
+    repeat: rb.repeat ?? 0,
+    quality: rb.quality ?? 0,
+    confidence: rb.confidence ?? 0,
     rank: rb.rank ?? null,
   };
 }
@@ -241,6 +246,10 @@ export async function browseStations(params = {}, { signal } = {}) {
     letterCounts: data?.letterCounts ?? null,
     statsUpdatedAt: data?.statsUpdatedAt ?? null,
     popularMinPlays: data?.popularMinPlays ?? 5,
+    algorithm: data?.algorithm ?? null,
+    algorithmVersion: data?.algorithmVersion ?? null,
+    computedAt: data?.computedAt ?? null,
+    popularMinListeners: data?.popularMinListeners ?? null,
   };
 }
 

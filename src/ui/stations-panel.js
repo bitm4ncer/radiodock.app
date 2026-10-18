@@ -69,6 +69,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     nextOffset: null,
     letterCounts: null,
     statsUpdatedAt: null,
+    algorithm: null,
+    popularMinListeners: null,
+    computedAt: null,
     meta: null,
     loading: false,
     error: null,
@@ -204,7 +207,12 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       return `<strong>${formatCount(state.total)} stations for "${escapeHtml(state.query)}"</strong><button type="button" data-action="clear-search">Clear</button>`;
     }
     if (state.mode === 'popular') {
-      return '<strong>Popular this month</strong><span>Last 30 days · plays + listening <button type="button" class="stations-info-btn" data-action="popular-info" aria-label="About Popular">i</button></span>';
+      const sub = state.algorithm === 'v2'
+        ? 'Ranked by listeners, depth, and repeat listening'
+        : state.algorithm === 'bootstrap'
+          ? 'Early signal: listener data is still building'
+          : 'Last 30 days, plays plus listening';
+      return `<strong>Popular this month</strong><span>${sub} <button type="button" class="stations-info-btn" data-action="popular-info" aria-label="About Popular">i</button></span>`;
     }
     if (state.mode === 'community') {
       return `<strong>Community Radios</strong><span>Curated · ${formatCount(state.total)} stations</span>`;
@@ -244,6 +252,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     const rows = state.rows.map((station, index) => stationsRow(station, {
       query: state.mode === 'search' ? state.query : '',
       mode: state.mode,
+      algorithm: state.algorithm,
       canAdd,
       alreadyAdded: !!actions.isAlreadyInActiveList?.(station.id),
       priority: index < 10,
@@ -286,7 +295,10 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   function emptyState() {
     const head = `<div class="stations-section-head">${sectionHead()}</div>`;
     if (state.mode === 'popular') {
-      return `${head}<div class="stations-empty"><p>Popular is still warming up.</p><button type="button" class="stations-pill" data-action="browse-az">Browse A-Z</button></div>`;
+      const filtered = state.country || state.genre || state.hasDescription;
+      return filtered
+        ? `${head}<div class="stations-empty"><p>No popular stations match these filters.</p><button type="button" class="stations-pill" data-action="clear-filters">Clear filters</button></div>`
+        : `${head}<div class="stations-empty"><p>Popular is still warming up.</p><button type="button" class="stations-pill" data-action="browse-az">Browse A-Z</button></div>`;
     }
     if (state.mode === 'community') {
       const filtered = state.country || state.genre || state.hasDescription;
@@ -330,7 +342,10 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
         return;
       }
       if (name === 'popular-info') {
-        actions.toast?.('Ranked by a balance of plays and average listening time over the last 30 days. Minimum 5 plays. Background listening can still influence this list.');
+        const message = state.algorithm === 'v2'
+          ? 'Ranked by distinct listeners, typical listening time, repeat listening, and session quality over the last 30 days. Stations need at least 10 listeners to qualify. Background listening counts less.'
+          : 'Listener data is still building, so this list uses plays and average listening time over the last 30 days. Minimum 5 plays. Background listening can still influence this list.';
+        actions.toast?.(message);
         return;
       }
     }
@@ -442,6 +457,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.query = '';
     state.letter = 'all';
     state.offset = 0;
+    state.algorithm = null;
+    state.popularMinListeners = null;
+    state.computedAt = null;
     const input = body.querySelector('#stationsSearch');
     if (input) input.value = '';
     load({ reset: true });
@@ -504,6 +522,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       state.nextOffset = result?.nextOffset ?? null;
       state.letterCounts = result?.letterCounts ?? state.letterCounts;
       state.statsUpdatedAt = result?.statsUpdatedAt ?? state.statsUpdatedAt;
+      state.algorithm = result?.algorithm ?? null;
+      state.popularMinListeners = result?.popularMinListeners ?? null;
+      state.computedAt = result?.computedAt ?? null;
       state.loading = false;
       state.error = null;
       renderHeader();

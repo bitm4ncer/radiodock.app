@@ -33,6 +33,30 @@ test('browseStations sends filters and normalises the response', async () => {
   } finally { restore(); }
 });
 
+test('browseStations maps popularity algorithm fields', async () => {
+  const restore = stubFetch(() => new Response(JSON.stringify({
+    stations: [{
+      stationuuid: 's1', name: 'Test', url: 'http://s1', reach: 42, depth: 23.5,
+      repeat: 2, quality: 0.5, confidence: 0.8, rank: 1,
+    }],
+    total: 1, offset: 0, limit: 100, nextOffset: null, letterCounts: null,
+    algorithm: 'v2', algorithmVersion: 'v2', computedAt: '2026-10-18T05:00:00.000Z',
+    popularMinListeners: 10, popularMinPlays: 5,
+  }), { status: 200, headers: { 'content-type': 'application/json' } }));
+  try {
+    const out = await browseStations({ mode: 'popular' });
+    assert.equal(out.algorithm, 'v2');
+    assert.equal(out.algorithmVersion, 'v2');
+    assert.equal(out.computedAt, '2026-10-18T05:00:00.000Z');
+    assert.equal(out.popularMinListeners, 10);
+    assert.equal(out.stations[0].reach, 42);
+    assert.equal(out.stations[0].depth, 23.5);
+    assert.equal(out.stations[0].repeat, 2);
+    assert.equal(out.stations[0].quality, 0.5);
+    assert.equal(out.stations[0].confidence, 0.8);
+  } finally { restore(); }
+});
+
 test('meta, random, and discover handle missing data', async () => {
   let restore = stubFetch(() => new Response(JSON.stringify({ totalStations: 1, countries: [], genres: [] }), { status: 200 }));
   try { assert.equal((await getBrowseMeta()).totalStations, 1); } finally { restore(); }

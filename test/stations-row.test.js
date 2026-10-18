@@ -51,6 +51,24 @@ test('row presents country, genre, stats, and tags as visual chips', () => {
   assert.match(html, /class="stations-row-hash">#</);
 });
 
+test('popular row shows listeners and typical depth for v2', () => {
+  const html = stationsRow({ ...base, reach: 42, depth: 23.5, plays: 0, avgMinutes: 0 }, {
+    mode: 'popular', algorithm: 'v2',
+  });
+  assert.match(html, /42 listeners/);
+  assert.match(html, /24m typical/);
+  assert.doesNotMatch(html, /42 plays/);
+});
+
+test('popular row keeps plays and average for bootstrap', () => {
+  const html = stationsRow({ ...base, plays: 42, avgMinutes: 23.5 }, {
+    mode: 'popular', algorithm: 'bootstrap',
+  });
+  assert.match(html, /42 plays/);
+  assert.match(html, /24m avg/);
+  assert.doesNotMatch(html, /42 listeners/);
+});
+
 test('row escapes untrusted country, genre, and tag text', () => {
   const html = stationsRow({
     ...base,
