@@ -329,6 +329,22 @@
   background: color-mix(in srgb, var(--red) 9%, transparent);
 }
 
+@keyframes stations-click-flash {
+  0%, 100% { outline-color: rgba(205, 0, 37, 0); }
+  22% { outline-color: rgba(205, 0, 37, 0.95); }
+}
+
+.stations-row.is-flashing,
+.stations-collection-tile.is-flashing {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  animation: stations-click-flash 420ms ease-out;
+}
+
+.stations-collection-tile.is-flashing {
+  border-color: var(--red);
+}
+
 .stations-row-main {
   display: flex;
   min-width: 0;
@@ -486,6 +502,13 @@
   .stations-row-actions .heart-pop,
   .stations-list.is-entering .stations-row {
     animation: none;
+  }
+
+  .stations-row.is-flashing,
+  .stations-collection-tile.is-flashing {
+    animation: none;
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
   }
 }
 

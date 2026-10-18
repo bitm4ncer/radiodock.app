@@ -21,6 +21,16 @@ function closeIcon() {
   return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
 }
 
+function flashElement(el) {
+  if (!el) return;
+  el.classList.remove('is-flashing');
+  void el.offsetWidth;
+  el.classList.add('is-flashing');
+  const clear = () => el.classList.remove('is-flashing');
+  el.addEventListener('animationend', clear, { once: true });
+  setTimeout(clear, 500);
+}
+
 function shuffleIcon() {
   return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3c4 0 5 10 9 10h4m0 0-3-3m3 3-3 3M4 17h3c1.5 0 2.5-1.3 3.5-3M14 9c.8-1.2 1.5-2 2-2h4m0 0-3-3m3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 }
@@ -245,6 +255,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     else if (animateRows) content.scrollTo({ top: 0, behavior: 'smooth' });
     mountLogoBehavior(content);
     applyNowPlaying();
+    const entering = content.querySelector('.stations-list.is-entering');
+    if (entering) setTimeout(() => entering.classList.remove('is-entering'), 400);
   }
 
   function applyNowPlaying() {
@@ -317,6 +329,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       return;
     }
     if (button?.dataset.action === 'play' || !button) {
+      flashElement(row);
       if (state.nowPlayingId === station.id && actions.togglePlay) actions.togglePlay();
       else actions.onPlay?.(station);
     }
@@ -587,9 +600,12 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     if (!name.startsWith('collection-')) return;
     const uuid = action.dataset.uuid;
     if (!uuid) return;
+    if (name === 'collection-play') flashElement(action.closest('.stations-collection-tile') ?? action);
     const station = await resolveStation(uuid);
     if (!station) return;
-    if (name === 'collection-play') actions.onPlay?.(station);
+    if (name === 'collection-play') {
+      actions.onPlay?.(station);
+    }
     else if (name === 'collection-info') actions.onInfo?.(station);
     else if (name === 'collection-add') actions.onAdd?.(station);
   }
