@@ -191,6 +191,23 @@
   cursor: not-allowed;
 }
 
+.stations-clear-all {
+  min-height: 28px;
+  padding: 0 4px;
+  border: 0;
+  color: var(--text-muted);
+  background: transparent;
+  font: inherit;
+  font-size: 11px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.stations-clear-all:hover {
+  color: var(--text);
+}
+
 .stations-main {
   display: flex;
   min-height: 0;
@@ -469,7 +486,7 @@
   }
 }
 
-@media (max-width: 699px), (html.is-standalone) {
+@media (max-width: 699px) {
   .stations-panel {
     top: var(--app-page-top, 0px);
     right: 0;
@@ -600,17 +617,15 @@
   text-align: center;
 }
 
-@media (max-width: 699px), (html.is-standalone) {
-  .stations-filter-popover.is-sheet {
-    position: fixed;
-    top: auto;
-    right: 12px;
-    bottom: calc(var(--app-page-bottom, 0px) + 12px);
-    left: 12px;
-    width: auto;
-    max-height: 60vh;
-    border-radius: var(--radius-lg);
-  }
+.stations-filter-popover.is-sheet {
+  position: fixed;
+  top: auto;
+  right: 12px;
+  bottom: calc(var(--app-page-bottom, 0px) + 12px);
+  left: 12px;
+  width: auto;
+  max-height: 60vh;
+  border-radius: var(--radius-lg);
 }
 
 .stations-shell {
@@ -910,7 +925,7 @@
   color: var(--text-muted);
 }
 
-@media (max-width: 699px), (html.is-standalone) {
+@media (max-width: 699px) {
   .stations-discover {
     padding: 4px 14px 20px;
   }
@@ -919,4 +934,21 @@
   .stations-collection-grid.is-tiles {
     grid-template-columns: 1fr;
   }
+}
+
+html.is-standalone .stations-panel {
+  top: var(--app-page-top, 0px);
+  right: 0;
+  bottom: var(--app-page-bottom, 0px);
+  left: 0;
+  width: auto;
+  height: auto;
+  max-height: none;
+  border: 0;
+  border-radius: 0;
+  transform: none;
+}
+
+html.is-standalone .stations-panel-grip {
+  display: none;
 }

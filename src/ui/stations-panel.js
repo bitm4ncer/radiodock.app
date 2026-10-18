@@ -68,6 +68,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   let loadToken = 0;
   let controller = null;
   let metaPromise = null;
+  let metaApplied = false;
   let filters = null;
   let searchTimer = null;
   let panelPosition = null;
@@ -235,6 +236,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     if (action) {
       const name = action.dataset.action;
       if (name === 'more') {
+        if (state.nextOffset == null) return;
+        state.offset = state.nextOffset;
         load({ reset: false });
         return;
       }
@@ -340,6 +343,10 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       metaPromise = Promise.resolve(data.getBrowseMeta?.())
         .then((meta) => {
           state.meta = meta ?? {};
+          if (!metaApplied && filters) {
+            metaApplied = true;
+            filters.setState({});
+          }
           return state.meta;
         })
         .catch(() => {

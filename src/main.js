@@ -260,6 +260,7 @@ function setActiveStationEverywhere(id) {
   const next = id ?? null;
   stationList.setActive(next);
   listsCarousel.setActiveStation(next);
+  stations?.setNowPlaying(next);
 }
 // Search tracking is debounced separately from the API-fire debounce: the
 // 300ms input-debounce in search.js is tuned for snappy results, but with

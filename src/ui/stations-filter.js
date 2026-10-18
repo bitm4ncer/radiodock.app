@@ -31,6 +31,10 @@ function defaultState() {
   return { country: '', genre: '', hasDescription: false };
 }
 
+export function clearFilters(state = {}) {
+  return { ...state, country: '', genre: '', hasDescription: false };
+}
+
 function isSheetRegime() {
   return matchMedia('(max-width: 699px)').matches
     || document.documentElement.classList.contains('is-standalone');
@@ -62,17 +66,19 @@ export function mountStationsFilters({ root, getMeta, onChange } = {}) {
     const descriptionDisabled = (m.descriptionCount ?? 0) === 0;
     const countryText = state.country ? chipLabel('country', state.country, m) : 'Country';
     const genreText = state.genre ? chipLabel('genre', state.genre, m) : 'Genre';
+    const hasActive = !!(state.country || state.genre || state.hasDescription);
     root.innerHTML = `
       <button type="button" class="stations-chip${state.country ? ' is-active' : ''}" data-filter="country" aria-expanded="false">
-        <span>${escapeHtml(countryText)}</span>${state.country ? '<span aria-hidden="true">×</span>' : ''}
+        <span>${escapeHtml(countryText)}</span>${state.country ? '<span aria-hidden="true" data-clear="country">×</span>' : ''}
       </button>
       <button type="button" class="stations-chip${state.genre ? ' is-active' : ''}" data-filter="genre" aria-expanded="false">
-        <span>${escapeHtml(genreText)}</span>${state.genre ? '<span aria-hidden="true">×</span>' : ''}
+        <span>${escapeHtml(genreText)}</span>${state.genre ? '<span aria-hidden="true" data-clear="genre">×</span>' : ''}
       </button>
       <button type="button" class="stations-chip${state.hasDescription ? ' is-active' : ''}" data-filter="description"
         aria-pressed="${state.hasDescription}"${descriptionDisabled ? ' disabled title="No descriptions yet"' : ''}>
         <span>Description</span>
       </button>
+      ${hasActive ? '<button type="button" class="stations-clear-all" data-filter="clear-all">Clear all</button>' : ''}
     `;
   }
 
@@ -149,8 +155,22 @@ export function mountStationsFilters({ root, getMeta, onChange } = {}) {
   }
 
   root?.addEventListener('click', (evt) => {
+    const clear = evt.target.closest('[data-clear]');
+    if (clear) {
+      state[clear.dataset.clear] = '';
+      renderChips();
+      fire();
+      return;
+    }
     const chip = evt.target.closest('.stations-chip');
-    if (!chip) return;
+    if (!chip) {
+      if (evt.target.closest('[data-filter="clear-all"]')) {
+        state = clearFilters(state);
+        renderChips();
+        fire();
+      }
+      return;
+    }
     const kind = chip.dataset.filter;
     if (kind === 'description') {
       if (chip.disabled) return;

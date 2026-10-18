@@ -24,6 +24,10 @@ export function featuredList(lists) {
   return Array.isArray(lists) && lists.length ? lists[0] : null;
 }
 
+function pluralCount(count, singular) {
+  return `${formatCount(count)} ${singular}${count === 1 ? '' : 's'}`;
+}
+
 function logoStack(stations = []) {
   return `<span class="stations-logo-stack">${stations.slice(0, 3)
     .map((station) => renderLogoSlot(station, { imgClass: 'stations-stack-logo', initialsClass: 'stations-stack-initials', size: 'sm' }))
@@ -37,7 +41,7 @@ function featureCard(list) {
       <span class="stations-feature-copy">
         <span class="stations-kicker">Collection of the week</span>
         <strong>${escapeHtml(list.title)}</strong>
-        <span class="stations-feature-meta">${formatCount(list.stations.length)} stations</span>
+        <span class="stations-feature-meta">${pluralCount(list.stations.length, 'station')}</span>
       </span>
       <span class="stations-feature-arrow" aria-hidden="true">→</span>
     </button>
@@ -49,7 +53,7 @@ function collectionCard(list) {
     <button type="button" class="stations-collection-card" data-collection="${escapeHtml(list.slug)}">
       <span class="stations-collection-card-top">${logoStack(list.stations)}</span>
       <strong>${escapeHtml(list.title)}</strong>
-      <span>${formatCount(list.stations.length)} stations</span>
+      <span>${pluralCount(list.stations.length, 'station')}</span>
     </button>
   `;
 }
@@ -70,7 +74,7 @@ export function renderDiscover({ lists = [], genres = [] } = {}) {
   const topGenres = genres.slice(0, 10);
   return `
     <div class="stations-discover">
-      <p class="stations-discover-sub">Curated by RadioDock · ${formatCount(lists.length)} collections</p>
+      <p class="stations-discover-sub">Curated by RadioDock · ${pluralCount(lists.length, 'collection')}</p>
       ${featureCard(featured)}
       ${rest.length ? `
         <div class="stations-section-head"><strong>All collections</strong><span>${formatCount(rest.length)}</span></div>
