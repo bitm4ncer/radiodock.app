@@ -696,3 +696,29 @@
 .stations-filter-popover {
   left: 0;
 }
+
+.stations-mode[hidden] {
+  display: none !important;
+}
+
+.stations-info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  margin-left: 4px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text-muted);
+  background: transparent;
+  font: inherit;
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.stations-info-btn:hover {
+  color: var(--text);
+  border-color: var(--red);
+}

@@ -3,7 +3,7 @@
 
 import { stationsRow, updateRowNowPlaying } from './stations-row.js';
 import { mountStationsFilters } from './stations-filter.js';
-import { buildBrowseParams, mergeRows, searchModeFor, MAX_ROWS } from './stations-state.js';
+import { buildBrowseParams, mergeRows, searchModeFor, popularParams, searchParams, MAX_ROWS } from './stations-state.js';
 import { escapeHtml, formatCount } from './stations-format.js';
 import * as storage from '../data/storage.js';
 
@@ -138,6 +138,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     body.querySelectorAll('[data-mode]').forEach((button) => {
       button.setAttribute('aria-pressed', String(button.dataset.mode === state.mode));
     });
+    const mode = body.querySelector('.stations-mode');
+    if (mode) mode.hidden = state.mode === 'search';
   }
 
   function renderRail() {
@@ -161,7 +163,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       return `<strong>${formatCount(state.total)} stations for "${escapeHtml(state.query)}"</strong><button type="button" data-action="clear-search">Clear</button>`;
     }
     if (state.mode === 'popular') {
-      return '<strong>Popular this month</strong><span>Last 30 days by plays</span>';
+      return '<strong>Popular this month</strong><span>Last 30 days by plays <button type="button" class="stations-info-btn" data-action="popular-info" aria-label="About Popular">i</button></span>';
     }
     if (state.letter === 'all') {
       return `<strong>All stations</strong><span>${formatCount(state.total)} total</span>`;
@@ -246,6 +248,10 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       }
       if (name === 'clear-filters') {
         clearFilters();
+        return;
+      }
+      if (name === 'popular-info') {
+        actions.toast?.('Ranked by plays in the last 30 days. Minimum 5 plays. Background listening can influence this list.');
         return;
       }
     }
@@ -354,7 +360,12 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     renderContent();
     try {
       await ensureMeta();
-      const result = await data.browseStations(buildBrowseParams(state), { signal: controller.signal });
+      const result = await data.browseStations(
+        state.mode === 'popular' ? popularParams(state)
+          : state.mode === 'search' ? searchParams(state)
+            : buildBrowseParams(state),
+        { signal: controller.signal },
+      );
       if (token !== loadToken) return;
       const incoming = result?.stations ?? [];
       state.rows = reset ? mergeRows([], incoming) : mergeRows(state.rows, incoming);

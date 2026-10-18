@@ -22,6 +22,14 @@ export function searchModeFor(value, previousMode = 'az') {
   return { mode: previousMode === 'search' ? 'az' : previousMode, query: '' };
 }
 
+export function popularParams(state = {}) {
+  return buildBrowseParams({ ...state, mode: 'popular', query: '' });
+}
+
+export function searchParams(state = {}) {
+  return buildBrowseParams({ ...state, mode: 'search', query: String(state.query ?? '').trim() });
+}
+
 export function mergeRows(existing = [], incoming = []) {
   const seen = new Set();
   const merged = [];

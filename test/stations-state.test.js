@@ -23,3 +23,14 @@ test('mergeRows dedupes and caps at 500', () => {
   assert.equal(merged.length, 500);
   assert.equal(merged[499].id, '499');
 });
+
+import { popularParams, searchParams } from '../src/ui/stations-state.js';
+
+test('popular and search params keep filters', () => {
+  assert.deepEqual(popularParams({ country: 'DE', genre: 'jazz', hasDescription: true, offset: 0 }), {
+    mode: 'popular', country: 'DE', genre: 'jazz', hasDescription: true, limit: 100, offset: 0, hidebroken: true,
+  });
+  assert.deepEqual(searchParams({ query: ' jazz ', country: 'DE', offset: 0 }), {
+    mode: 'search', q: 'jazz', country: 'DE', limit: 100, offset: 0, hidebroken: true,
+  });
+});
