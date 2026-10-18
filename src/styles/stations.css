@@ -321,6 +321,10 @@
   border-radius: var(--radius-sm);
 }
 
+.stations-row + .stations-row {
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--text) 10%, transparent);
+}
+
 .stations-row:hover,
 .stations-row:focus-within {
   background: var(--surface);
