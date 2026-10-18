@@ -44,3 +44,15 @@ test('meta, random, and discover handle missing data', async () => {
   restore = stubFetch(() => new Response('missing', { status: 404 }));
   try { assert.equal(await loadDiscover(), null); } finally { restore(); }
 });
+
+test('getRandomStation forwards the description filter', async () => {
+  let seen = '';
+  const restore = stubFetch((url) => {
+    seen = url;
+    return new Response(JSON.stringify({ station: null }), { status: 200 });
+  });
+  try {
+    await getRandomStation({ country: 'DE', genre: 'jazz', hasDescription: true });
+    assert.ok(seen.includes('hasDescription=1'));
+  } finally { restore(); }
+});

@@ -1,0 +1,38 @@
+const MAX_ROWS = 500;
+
+export function buildBrowseParams(state = {}) {
+  const mode = state.query ? 'search' : (state.mode || 'az');
+  const params = {
+    mode,
+    limit: 100,
+    offset: state.offset ?? 0,
+    hidebroken: true,
+  };
+  if (mode === 'search' && state.query) params.q = state.query;
+  if (mode === 'az' && state.letter && state.letter !== 'all') params.letter = state.letter;
+  if (state.country) params.country = state.country;
+  if (state.genre) params.genre = state.genre;
+  if (state.hasDescription) params.hasDescription = true;
+  return params;
+}
+
+export function searchModeFor(value, previousMode = 'az') {
+  const query = String(value ?? '').trim();
+  if (query.length >= 2) return { mode: 'search', query };
+  return { mode: previousMode === 'search' ? 'az' : previousMode, query: '' };
+}
+
+export function mergeRows(existing = [], incoming = []) {
+  const seen = new Set();
+  const merged = [];
+  for (const row of [...existing, ...incoming]) {
+    const id = row?.id;
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    merged.push(row);
+    if (merged.length >= MAX_ROWS) break;
+  }
+  return merged;
+}
+
+export { MAX_ROWS };
