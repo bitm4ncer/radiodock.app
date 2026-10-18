@@ -732,9 +732,9 @@
   flex: 0 0 auto;
   min-height: 34px;
   margin-left: 6px;
-  padding: 0 11px;
+  padding: 0 16px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-pill);
   color: var(--text);
   background: var(--surface);
   font: inherit;
@@ -821,6 +821,10 @@
 }
 
 .stations-discover {
+  padding: 4px 20px 24px;
+}
+
+.stations-collection {
   padding: 4px 20px 24px;
 }
 
@@ -1013,6 +1017,10 @@
   }
 
   .stations-discover {
+    padding: 4px 14px 20px;
+  }
+
+  .stations-collection {
     padding: 4px 14px 20px;
   }
 
