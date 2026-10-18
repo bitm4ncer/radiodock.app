@@ -5,6 +5,8 @@ import { stationsRow, updateRowNowPlaying } from './stations-row.js';
 import { mountStationsFilters } from './stations-filter.js';
 import { buildBrowseParams, mergeRows, searchModeFor, popularParams, searchParams, MAX_ROWS } from './stations-state.js';
 import { escapeHtml, formatCount } from './stations-format.js';
+import { normaliseDiscover, renderDiscover, renderCollection } from './discover-child.js';
+import { mountLogoBehavior } from './station-logo.js';
 import * as storage from '../data/storage.js';
 
 const LETTERS = ['All', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''), '#'];
@@ -56,6 +58,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     meta: null,
     loading: false,
     error: null,
+    discover: null,
+    collection: null,
   };
 
   let isOpen = false;
@@ -403,28 +407,124 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     }
   }
 
-  function openDiscover() {
-    state.view = 'discover';
+  function discoverShell(title, backAction, contentHtml) {
     body.innerHTML = `
       <div class="stations-shell">
         <header class="stations-header">
-          <button type="button" class="stations-icon-btn" data-action="back" aria-label="Back to Stations">←</button>
+          <button type="button" class="stations-icon-btn" data-action="${backAction}" aria-label="Back">←</button>
           <div class="stations-header-copy">
             <p class="stations-kicker">Stations</p>
-            <h2 class="stations-title" id="stationsTitle">Discover</h2>
+            <h2 class="stations-title" id="stationsTitle">${escapeHtml(title)}</h2>
           </div>
           <button type="button" class="stations-icon-btn" data-action="close" aria-label="Close Stations">${closeIcon()}</button>
         </header>
-        <div id="stationsContent" class="stations-content">
-          <div class="stations-empty">Collections are being prepared.</div>
-        </div>
+        <div id="stationsContent" class="stations-content">${contentHtml}</div>
       </div>`;
-    body.querySelector('[data-action="back"]')?.addEventListener('click', backToStations);
     body.querySelector('[data-action="close"]')?.addEventListener('click', close);
+    body.querySelector(`[data-action="${backAction}"]`)?.addEventListener('click', () => {
+      if (backAction === 'back-discover') renderDiscoverView();
+      else backToStations();
+    });
+    const content = body.querySelector('#stationsContent');
+    content?.addEventListener('click', onDiscoverClick);
+    mountLogoBehavior(content);
+  }
+
+  function renderDiscoverView() {
+    state.view = 'discover';
+    state.collection = null;
+    const lists = normaliseDiscover(state.discover).lists;
+    discoverShell('Discover', 'back', renderDiscover({
+      lists,
+      genres: state.meta?.genres ?? [],
+    }));
+  }
+
+  async function openDiscover() {
+    state.view = 'discover';
+    state.collection = null;
+    discoverShell('Discover', 'back', '<div class="stations-empty">Loading collections...</div>');
+    await ensureMeta();
+    state.discover = await data.loadDiscover?.({}) ?? null;
+    if (state.view !== 'discover') return;
+    renderDiscoverView();
+  }
+
+  function openCollection(slug) {
+    const list = normaliseDiscover(state.discover).lists.find((item) => item.slug === slug);
+    if (!list) return;
+    state.collection = list;
+    discoverShell(list.title, 'back-discover', renderCollection({ list }));
+  }
+
+  async function resolveStation(uuid) {
+    const station = await data.getStationByUuid?.(uuid);
+    if (!station) {
+      actions.toast?.('Station not available right now.');
+      return null;
+    }
+    return station;
+  }
+
+  async function onDiscoverClick(evt) {
+    const collection = evt.target.closest('[data-collection]');
+    if (collection) {
+      openCollection(collection.dataset.collection);
+      return;
+    }
+    const genre = evt.target.closest('[data-genre]');
+    if (genre) {
+      applyGenre(genre.dataset.genre);
+      return;
+    }
+    if (evt.target.closest('[data-action="browse-all"]')) {
+      browseAll();
+      return;
+    }
+    const action = evt.target.closest('[data-action]');
+    if (!action) return;
+    const name = action.dataset.action;
+    if (!name.startsWith('collection-')) return;
+    const uuid = action.dataset.uuid;
+    if (!uuid) return;
+    const station = await resolveStation(uuid);
+    if (!station) return;
+    if (name === 'collection-play') actions.onPlay?.(station);
+    else if (name === 'collection-info') actions.onInfo?.(station);
+    else if (name === 'collection-add') actions.onAdd?.(station);
+  }
+
+  function applyGenre(genre) {
+    state.view = 'stations';
+    state.collection = null;
+    state.mode = 'az';
+    state.query = '';
+    state.letter = 'all';
+    state.genre = genre;
+    state.offset = 0;
+    shell();
+    filters?.setState({ genre });
+    load({ reset: true });
+  }
+
+  function browseAll() {
+    state.view = 'stations';
+    state.collection = null;
+    state.mode = 'az';
+    state.query = '';
+    state.letter = 'all';
+    state.country = '';
+    state.genre = '';
+    state.hasDescription = false;
+    state.offset = 0;
+    shell();
+    filters?.setState({ country: '', genre: '', hasDescription: false });
+    load({ reset: true });
   }
 
   function backToStations() {
     state.view = 'stations';
+    state.collection = null;
     shell();
     renderAll();
     load({ reset: false });
@@ -489,7 +589,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
         return;
       }
       if (state.view === 'discover') {
-        backToStations();
+        if (state.collection) renderDiscoverView();
+        else backToStations();
         evt.preventDefault();
         return;
       }
