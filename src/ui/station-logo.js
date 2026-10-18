@@ -13,10 +13,13 @@ export function renderLogoSlot(station, {
   initialsClass = 'station-item-initials',
   size = 'sm',
   priority = false,
+  resolveById = false,
 } = {}) {
   const initials = getInitials(station?.name);
   const hasFavicon = String(station?.favicon ?? '').trim().length > 0;
-  const url = hasFavicon ? getLogoUrl(station, logoSizePx(size)) : '';
+  const logoId = station?.id ?? station?.stationuuid;
+  const wantsLogo = hasFavicon || (resolveById && String(logoId ?? '').trim().length > 0);
+  const url = wantsLogo ? getLogoUrl(station, logoSizePx(size)) : '';
   const fallback = `<span class="${initialsClass} logo-fallback" data-logo-fallback="1">${initials}</span>`;
   const image = url
     ? `<img class="${imgClass} logo-img" alt="" loading="${priority ? 'eager' : 'lazy'}" decoding="async"${priority ? ' fetchpriority="high"' : ''} data-logo-img="1" src="${url}">`

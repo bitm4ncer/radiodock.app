@@ -27,3 +27,10 @@ test('priority logo slots load eagerly with high fetch priority', () => {
   assert.match(html, /loading="eager"/);
   assert.match(html, /fetchpriority="high"/);
 });
+
+test('resolveById requests the CDN for slim Discover stations', () => {
+  const html = renderLogoSlot({ stationuuid: 'abc', name: 'Alpha Radio' }, { resolveById: true });
+  assert.match(html, /<img/);
+  assert.match(html, /\/logos\/abc\?size=64/);
+  assert.match(html, /logo-fallback/);
+});

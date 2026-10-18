@@ -906,8 +906,8 @@
 
 .stations-logo-stack .logo-slot {
   margin-left: -8px;
-  border: 2px solid var(--bg-dark);
-  border-radius: 10px;
+  border: 0;
+  border-radius: 50%;
 }
 
 .stations-logo-stack .logo-slot:first-child {

@@ -30,7 +30,7 @@ function pluralCount(count, singular) {
 
 function logoStack(stations = []) {
   return `<span class="stations-logo-stack">${stations.slice(0, 3)
-    .map((station) => renderLogoSlot(station, { imgClass: 'stations-stack-logo', initialsClass: 'stations-stack-initials', size: 'sm' }))
+    .map((station) => renderLogoSlot(station, { imgClass: 'stations-stack-logo', initialsClass: 'stations-stack-initials', size: 'sm', resolveById: true, priority: true }))
     .join('')}</span>`;
 }
 
@@ -96,7 +96,7 @@ function collectionTile(station) {
   return `
     <article class="stations-collection-tile" data-uuid="${escapeHtml(uuid)}">
       <button type="button" class="stations-collection-tile-main" data-action="collection-play" data-uuid="${escapeHtml(uuid)}">
-        ${renderLogoSlot(station, { imgClass: 'stations-row-logo', initialsClass: 'stations-row-initials', size: 'sm' })}
+        ${renderLogoSlot(station, { imgClass: 'stations-row-logo', initialsClass: 'stations-row-initials', size: 'sm', resolveById: true, priority: true })}
         <span class="stations-collection-tile-info">
           <strong>${escapeHtml(station.name ?? '')}</strong>
           <span>${escapeHtml(place)}</span>
