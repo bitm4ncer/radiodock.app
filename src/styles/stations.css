@@ -110,6 +110,13 @@
   padding: 0;
 }
 
+.stations-icon-btn svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  color: var(--text);
+}
+
 .stations-pill:hover,
 .stations-icon-btn:hover {
   background: var(--surface);
@@ -742,7 +749,23 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
     max-height: none;
     border: 0;
     border-radius: 0;
-    transform: none;
+    display: flex;
+    transform: translateX(100%);
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 240ms cubic-bezier(0.22, 0.61, 0.36, 1), visibility 0s linear 240ms;
+  }
+
+  .stations-panel.is-open {
+    transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
+    transition: transform 240ms cubic-bezier(0.22, 0.61, 0.36, 1), visibility 0s;
+  }
+
+  .stations-icon-btn svg {
+    width: 18px;
+    height: 18px;
   }
 
   .stations-panel-grip {

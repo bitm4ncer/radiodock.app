@@ -966,7 +966,11 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     document.removeEventListener('keydown', onDocumentKeydown);
     panel.classList.remove('is-open');
     panel.setAttribute('aria-hidden', 'true');
-    if (backdrop) backdrop.hidden = true;
+    if (backdrop) {
+      window.setTimeout(() => {
+        if (!isOpen) backdrop.hidden = true;
+      }, 240);
+    }
     document.body.classList.remove('stations-overlay-open');
     if (previousFocus?.focus) previousFocus.focus();
   }
