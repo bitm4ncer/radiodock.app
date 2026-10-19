@@ -8,13 +8,15 @@ const base = {
   info: 'Dub and ambient from Los Angeles', plays: 20, rank: 1,
 };
 
-test('row renders three lines, actions, and rank', () => {
+test('row renders name, meta, tags, actions, and rank', () => {
   const html = stationsRow(base, { mode: 'popular', canAdd: true });
   assert.ok(html.includes('data-id="d1"'));
   assert.ok(html.includes('data-action="play"'));
   assert.ok(html.includes('data-action="info"'));
   assert.ok(html.includes('data-action="add"'));
-  assert.ok(html.includes('Dub and ambient'));
+  assert.ok(!html.includes('Dub and ambient'));
+  assert.ok(html.includes('ambient'));
+  assert.ok(html.includes('dub'));
   assert.ok(html.includes('1'));
   assert.ok(html.includes('20 plays'));
 });

@@ -1003,52 +1003,6 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
   font-size: 11px;
 }
 
-.stations-feature {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  color: var(--text);
-  background: var(--surface);
-  text-align: left;
-  font: inherit;
-  cursor: pointer;
-}
-
-.stations-feature:hover {
-  border-color: var(--red);
-}
-
-.stations-feature-art {
-  flex: 0 0 auto;
-}
-
-.stations-feature-copy {
-  display: flex;
-  min-width: 0;
-  flex: 1;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.stations-feature-copy strong {
-  font-size: 18px;
-  letter-spacing: -0.01em;
-}
-
-.stations-feature-meta {
-  color: var(--text-muted);
-  font-size: 10px;
-}
-
-.stations-feature-arrow {
-  color: var(--red);
-  font-size: 18px;
-}
-
 .stations-logo-stack {
   display: inline-flex;
   align-items: center;
@@ -1494,4 +1448,8 @@ html.is-standalone .stations-panel-grip {
   .stations-row-main {
     padding: 14px 10px 14px 12px;
   }
+}
+
+.stations-discover .stations-section-head {
+  padding-inline: 0;
 }

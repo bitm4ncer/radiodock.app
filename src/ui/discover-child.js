@@ -26,10 +26,6 @@ export function normaliseDiscover(data) {
   return { lists };
 }
 
-export function featuredList(lists) {
-  return Array.isArray(lists) && lists.length ? lists[0] : null;
-}
-
 function pluralCount(count, singular) {
   return `${formatCount(count)} ${singular}${count === 1 ? '' : 's'}`;
 }
@@ -40,19 +36,7 @@ function logoStack(stations = []) {
     .join('')}</span>`;
 }
 
-function featureCard(list) {
-  return `
-    <button type="button" class="stations-feature" data-collection="${escapeHtml(list.slug)}">
-      <span class="stations-feature-art">${logoStack(list.stations)}</span>
-      <span class="stations-feature-copy">
-        <span class="stations-kicker">Collection of the week</span>
-        <strong>${escapeHtml(list.title)}</strong>
-        <span class="stations-feature-meta">${pluralCount(list.stations.length, 'station')}</span>
-      </span>
-      <span class="stations-feature-arrow" aria-hidden="true">→</span>
-    </button>
-  `;
-}
+
 
 function collectionCard(list, { user = false } = {}) {
   return `
@@ -72,18 +56,12 @@ function submitLink() {
 export function renderDiscover({ lists = [], genres = [] } = {}) {
   const official = lists.filter((list) => list.source !== 'user');
   const user = lists.filter((list) => list.source === 'user');
-  const featured = featuredList(official);
-  const rest = official.slice(featured ? 1 : 0);
   const topGenres = genres.slice(0, 8);
 
   const officialSection = official.length
     ? `
       <p class="stations-discover-sub">Curated by RadioDock · ${pluralCount(official.length, 'collection')}</p>
-      ${featureCard(featured)}
-      ${rest.length ? `
-        <div class="stations-section-head"><strong>All collections</strong><span>${formatCount(rest.length)}</span></div>
-        <div class="stations-collection-grid">${rest.map((list) => collectionCard(list)).join('')}</div>
-      ` : ''}
+      <div class="stations-collection-grid">${official.map((list) => collectionCard(list)).join('')}</div>
     `
     : `
       <div class="stations-empty">

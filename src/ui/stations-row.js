@@ -44,9 +44,6 @@ function metaLine(station, mode, query, algorithm) {
 }
 
 function thirdLine(station, query) {
-  if (station.info) {
-    return `<span class="stations-row-desc">${escapeHtml(station.info)}</span>`;
-  }
   const tags = Array.isArray(station.tags) ? station.tags.filter(Boolean).slice(0, 3) : [];
   if (tags.length) {
     const chips = tags.map((tag) => `<span class="stations-row-tag"><span class="stations-row-hash">#</span>${highlightMatches(tag, query)}</span>`).join('');
