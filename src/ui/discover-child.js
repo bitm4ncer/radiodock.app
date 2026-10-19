@@ -15,7 +15,13 @@ export function normaliseDiscover(data) {
     const slug = list.slug.trim();
     if (seen.has(slug)) continue;
     seen.add(slug);
-    lists.push({ ...list, slug, title: list.title.trim(), stations: list.stations });
+    lists.push({
+      ...list,
+      slug,
+      title: list.title.trim(),
+      source: list.source === 'user' ? 'user' : 'radiodock',
+      stations: list.stations,
+    });
   }
   return { lists };
 }
@@ -48,38 +54,69 @@ function featureCard(list) {
   `;
 }
 
-function collectionCard(list) {
+function collectionCard(list, { user = false } = {}) {
   return `
-    <button type="button" class="stations-collection-card" data-collection="${escapeHtml(list.slug)}">
+    <button type="button" class="stations-collection-card${user ? ' is-user' : ''}" data-collection="${escapeHtml(list.slug)}">
       <span class="stations-collection-card-top">${logoStack(list.stations)}</span>
+      ${user ? '<span class="stations-collection-card-kicker">User playlist</span>' : ''}
       <strong>${escapeHtml(list.title)}</strong>
       <span>${pluralCount(list.stations.length, 'station')}</span>
     </button>
   `;
 }
 
-export function renderDiscover({ lists = [], genres = [] } = {}) {
-  if (!lists.length) {
-    return `
-      <div class="stations-discover">
-        <div class="stations-empty">
-          <p>Collections are being prepared.</p>
-          <button type="button" class="stations-pill" data-action="browse-all">Browse all stations</button>
-        </div>
-      </div>
-    `;
-  }
-  const featured = featuredList(lists);
-  const rest = lists.slice(1);
-  const topGenres = genres.slice(0, 8);
+function submitCard() {
   return `
-    <div class="stations-discover">
-      <p class="stations-discover-sub">Curated by RadioDock · ${pluralCount(lists.length, 'collection')}</p>
+    <button type="button" class="stations-submit-card" data-action="submit-playlist">
+      <span class="stations-submit-icon" aria-hidden="true">+</span>
+      <span class="stations-submit-copy">
+        <strong>Submit Playlist</strong>
+        <span>Your submission will be reviewed and published here.</span>
+      </span>
+    </button>
+  `;
+}
+
+export function renderDiscover({ lists = [], genres = [] } = {}) {
+  const official = lists.filter((list) => list.source !== 'user');
+  const user = lists.filter((list) => list.source === 'user');
+  const featured = featuredList(official);
+  const rest = official.slice(featured ? 1 : 0);
+  const topGenres = genres.slice(0, 8);
+
+  const officialSection = official.length
+    ? `
+      <p class="stations-discover-sub">Curated by RadioDock · ${pluralCount(official.length, 'collection')}</p>
       ${featureCard(featured)}
       ${rest.length ? `
         <div class="stations-section-head"><strong>All collections</strong><span>${formatCount(rest.length)}</span></div>
-        <div class="stations-collection-grid">${rest.map(collectionCard).join('')}</div>
+        <div class="stations-collection-grid">${rest.map((list) => collectionCard(list)).join('')}</div>
       ` : ''}
+    `
+    : `
+      <div class="stations-empty">
+        <p>Collections are being prepared.</p>
+        <button type="button" class="stations-pill" data-action="browse-all">Browse all stations</button>
+      </div>
+    `;
+
+  const userSection = `
+    <div class="stations-user-collections">
+      <div class="stations-section-head">
+        <strong>Curated by users</strong>
+        <span>${user.length ? formatCount(user.length) : 'Be the first'}</span>
+      </div>
+      ${user.length
+        ? `<div class="stations-collection-grid">${user.map((list) => collectionCard(list, { user: true })).join('')}</div>`
+        : '<p class="stations-user-empty">No user playlists yet. Be the first.</p>'}
+      ${submitCard()}
+    </div>
+  `;
+
+  return `
+    <div class="stations-discover">
+      ${officialSection}
+      ${userSection}
       ${topGenres.length ? `
         <div class="stations-section-head"><strong>Browse by genre</strong></div>
         <div class="stations-genre-chips">${topGenres.map((genre) => `
@@ -114,7 +151,7 @@ export function renderCollection({ list } = {}) {
   if (!list) return '<div class="stations-empty">Collection not found.</div>';
   return `
     <div class="stations-collection">
-      <p class="stations-discover-sub">${formatCount(list.stations.length)} stations · Curated list</p>
+      <p class="stations-discover-sub">${formatCount(list.stations.length)} stations · ${list.source === 'user' ? 'Curated by a listener' : 'Curated list'}</p>
       <div class="stations-collection-grid is-tiles">${list.stations.map(collectionTile).join('')}</div>
     </div>
   `;

@@ -6,6 +6,7 @@ import { mountStationsFilters } from './stations-filter.js';
 import { buildBrowseParams, communityParams, mergeRows, searchModeFor, popularParams, searchParams, MAX_ROWS } from './stations-state.js';
 import { escapeHtml, formatCount } from './stations-format.js';
 import { normaliseDiscover, renderDiscover, renderCollection } from './discover-child.js';
+import { eligibleLists, pickerHtml } from './playlist-picker.js';
 import { mountLogoBehavior } from './station-logo.js';
 import * as storage from '../data/storage.js';
 
@@ -81,6 +82,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     animateRows: false,
     discover: null,
     collection: null,
+    playlistPicker: null,
   };
 
   let isOpen = false;
@@ -612,6 +614,120 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     applyNowPlaying();
   }
 
+  function renderPlaylistPicker() {
+    body.querySelector('.stations-playlist-layer')?.remove();
+    const picker = state.playlistPicker;
+    if (!picker) return;
+    const layer = document.createElement('div');
+    layer.className = 'stations-playlist-layer';
+    layer.innerHTML = `<section class="stations-playlist-sheet" role="dialog" aria-modal="true" aria-labelledby="playlistPickerTitle">${pickerHtml(picker)}</section>`;
+    layer.addEventListener('click', onPlaylistPickerClick);
+    layer.addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      submitPlaylistForm();
+    });
+    body.appendChild(layer);
+    const target = picker.selected
+      ? layer.querySelector('#playlistTitle')
+      : layer.querySelector('[data-playlist-close]') ?? layer.querySelector('button');
+    target?.focus();
+  }
+
+  async function openPlaylistPicker() {
+    state.playlistPicker = {
+      lists: [],
+      selected: null,
+      title: '',
+      note: '',
+      error: '',
+      submitting: false,
+      success: false,
+      loading: true,
+    };
+    renderPlaylistPicker();
+    try {
+      const lists = await data.getUserLists?.() ?? [];
+      if (!state.playlistPicker) return;
+      state.playlistPicker.lists = eligibleLists(lists);
+      state.playlistPicker.loading = false;
+      renderPlaylistPicker();
+    } catch (err) {
+      if (!state.playlistPicker) return;
+      state.playlistPicker.loading = false;
+      state.playlistPicker.error = err?.message || 'Could not load your lists.';
+      renderPlaylistPicker();
+    }
+  }
+
+  function closePlaylistPicker() {
+    if (!state.playlistPicker) return;
+    state.playlistPicker = null;
+    body.querySelector('.stations-playlist-layer')?.remove();
+    body.querySelector('[data-action="submit-playlist"]')?.focus();
+  }
+
+  function onPlaylistPickerClick(evt) {
+    if (evt.target.closest('[data-playlist-close]')) {
+      closePlaylistPicker();
+      return;
+    }
+    const picker = state.playlistPicker;
+    if (!picker) return;
+    if (evt.target.closest('[data-playlist-back]')) {
+      picker.selected = null;
+      picker.title = '';
+      picker.note = '';
+      picker.error = '';
+      renderPlaylistPicker();
+      return;
+    }
+    const select = evt.target.closest('[data-playlist-select]');
+    if (select) {
+      const list = picker.lists.find((entry) => entry.id === select.dataset.playlistSelect);
+      if (!list) return;
+      picker.selected = list;
+      picker.title = list.name;
+      picker.note = '';
+      picker.error = '';
+      renderPlaylistPicker();
+    }
+  }
+
+  async function submitPlaylistForm() {
+    const picker = state.playlistPicker;
+    if (!picker?.selected || picker.submitting) return;
+    const title = body.querySelector('#playlistTitle')?.value.trim() ?? '';
+    const note = body.querySelector('#playlistNote')?.value.trim() ?? '';
+    if (title.length < 2 || title.length > 60) {
+      picker.title = title;
+      picker.note = note;
+      picker.error = 'Title must be 2 to 60 characters.';
+      renderPlaylistPicker();
+      return;
+    }
+    picker.title = title;
+    picker.note = note;
+    picker.submitting = true;
+    picker.error = '';
+    renderPlaylistPicker();
+    try {
+      await data.submitPlaylist?.({
+        title,
+        note,
+        stationUuids: picker.selected.stations.map((station) => station.id),
+      });
+      if (!state.playlistPicker) return;
+      state.playlistPicker.success = true;
+      state.playlistPicker.submitting = false;
+      renderPlaylistPicker();
+    } catch (err) {
+      if (!state.playlistPicker) return;
+      state.playlistPicker.submitting = false;
+      state.playlistPicker.error = err?.message || 'Could not submit the playlist.';
+      renderPlaylistPicker();
+    }
+  }
+
   async function resolveStation(uuid) {
     try {
       const station = await data.getStationByUuid?.(uuid);
@@ -639,6 +755,10 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     }
     if (evt.target.closest('[data-action="browse-all"]')) {
       browseAll();
+      return;
+    }
+    if (evt.target.closest('[data-action="submit-playlist"]')) {
+      openPlaylistPicker();
       return;
     }
     const action = evt.target.closest('[data-action]');
@@ -754,6 +874,11 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     if (!isOpen) return;
     if (evt.defaultPrevented) return;
     if (evt.key === 'Escape') {
+      if (state.playlistPicker) {
+        closePlaylistPicker();
+        evt.preventDefault();
+        return;
+      }
       if (filters?.isOpen()) {
         filters.close();
         evt.preventDefault();
@@ -837,6 +962,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     controller?.abort();
     state.loading = false;
     state.tooShort = false;
+    state.playlistPicker = null;
     filters?.close();
     document.removeEventListener('keydown', onDocumentKeydown);
     panel.classList.remove('is-open');

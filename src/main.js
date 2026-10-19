@@ -25,6 +25,7 @@ import { buildShareUrl, tryDecodeShareHash } from './data/share.js';
 import { searchStations, setBackendOverride } from './data/stations-source.js';
 import { browseStations, getBrowseMeta, getRandomStation, getStationByUuid } from './data/stations-api.js';
 import { loadDiscover, clearDiscoverCache } from './data/discover.js';
+import { submitPlaylist } from './data/playlists.js';
 import { cleanupOrphanedLogoPrefs } from './data/logo-resolver.js';
 import { mountVisualizer } from './visualizer/bootstrap.js';
 import { mountPlayerCardDragMinimize } from './ui/player-card-drag.js';
@@ -370,6 +371,8 @@ const stations = mountStationsPanel({
     getStationByUuid,
     loadDiscover,
     clearDiscoverCache,
+    getUserLists: () => listsApi.getUserLists(),
+    submitPlaylist,
   },
   actions: {
     onPlay: (station) => {

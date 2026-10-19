@@ -11,7 +11,7 @@ const ISSUES_URL = 'https://github.com/bitm4ncer/radiodock.app/issues';
 // numbered — the app's real version comes from the git commit count, so any label
 // here would only ever be a second, wrong one.
 // main.js compares this to the on-device `changelogSeenRevision` pref.
-export const CHANGELOG_REVISION = 9;
+export const CHANGELOG_REVISION = 10;
 
 // Stroke line icons, no emoji. Inner markup only; wrapped by iconTile() so they
 // share one viewBox + stroke treatment and inherit `currentColor`.
@@ -33,6 +33,14 @@ const ICONS = {
 
 // Newest release first. Each feature: { icon, title, body }.
 export const CHANGELOG = [
+  {
+    name: 'Stations & shared playlists',
+    features: [
+      { icon: 'search', title: 'One place for every station', body: 'Open Stations to browse more than 50,000 radio stations. Switch between Popular, A-Z and Community Radios, then filter by country, genre, or stations with a description.' },
+      { icon: 'music', title: 'Popular, not just clicked', body: 'Popular now looks at how many people listen and how long they stay, so a station cannot reach the top from repeated clicks alone.' },
+      { icon: 'share', title: 'Share a playlist with everyone', body: 'In Discover, choose Submit Playlist, pick one of your lists, and send it for review. Published playlists appear under Curated by users for everyone to explore.' },
+    ],
+  },
   {
     name: 'Identify the track',
     features: [
