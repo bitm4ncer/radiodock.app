@@ -286,6 +286,7 @@
   position: relative;
   min-width: 0;
   flex: 1;
+  overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
 }
@@ -317,7 +318,9 @@
   display: flex;
   align-items: stretch;
   gap: 2px;
+  min-width: 0;
   min-height: 52px;
+  overflow: hidden;
   border-radius: var(--radius-sm);
 }
 
@@ -432,11 +435,16 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
 }
 
 .stations-row-info {
+  display: flex;
   min-width: 0;
   flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
 }
 
 .stations-row-name {
+  display: block;
   overflow: hidden;
   color: var(--text);
   font-size: 12px;
