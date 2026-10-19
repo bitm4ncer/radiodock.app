@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-19T15:07:28.175Z",
+  "generatedAt": "2026-10-19T15:38:49.388Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -962,11 +962,6 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "510aeeac-e7a0-41c2-aea2-e572e811ffe7",
-            "name": "Fox News Radio",
-            "countrycode": "US"
-          },
-          {
             "stationuuid": "0b2c57db-885d-46d8-bbee-0651449759f1",
             "name": "MSNBC",
             "countrycode": "US"
@@ -1210,6 +1205,11 @@
             "stationuuid": "771964e5-3e72-11e8-b74d-52543be04c81",
             "name": "C-SPAN",
             "countrycode": "US"
+          },
+          {
+            "stationuuid": "510aeeac-e7a0-41c2-aea2-e572e811ffe7",
+            "name": "Fox News Radio",
+            "countrycode": "US"
           }
         ]
       },
@@ -1219,8 +1219,133 @@
         "source": "radiodock",
         "stations": [
           {
-            "stationuuid": "9ceb61e8-5101-11e9-a4d7-52543be04c81",
-            "name": "WWOZ - New Orleans Public Radio",
+            "stationuuid": "3487079b-91b1-4fb8-b315-c4150e705b7a",
+            "name": "WBGO Jazz 88.3 FM",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "edf4d3da-5827-4247-8e9d-68b67b2bcf3d",
+            "name": "KCSM Jazz 91.1 FM",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "960a4ad1-0601-11e8-ae97-52543be04c81",
+            "name": "WWOZ 90.7 New Orleans, LA",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96145775-0601-11e8-ae97-52543be04c81",
+            "name": "WDCB 90.9 \"Jazz & Blues\" Chicago, IL",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "2ff78623-db41-425d-bfeb-480f723433a3",
+            "name": "KJazz 88.1 KKJZ",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "85226b64-7515-4368-bd4a-91c4e9a3f9af",
+            "name": "WRTI 90.1 Jazz",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "5d64b66c-431c-4c93-ab29-b5690e674271",
+            "name": "KNKX",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "336527c2-5ead-4306-9748-6e8d51a1073c",
+            "name": "KMHD Adaptive AAC",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "4e2d17f6-4be7-4f0e-bdc9-fa53b5dc45ef",
+            "name": "Jazz 88 Minneapolis KBEM",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96257122-0601-11e8-ae97-52543be04c81",
+            "name": "WEMU 89.1 Ypsilanti, MI",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "489bbd2f-9743-4e3a-a75c-93109725b6d8",
+            "name": "KCCK Jazz 88.3",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "f34d2d0e-ee64-4698-a665-569abd2f8f00",
+            "name": "KJZZ HD2 Jazz PHX",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "0f6a62db-6b20-4a6d-945d-fc8d005978a3",
+            "name": "88.7 WICR - The Diamond",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "961ee267-0601-11e8-ae97-52543be04c81",
+            "name": "WCLK 91.9 Atlanta, GA",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "6a4c9261-0b61-11e9-a80b-52543be04c81",
+            "name": "KUVO Denver, CO (AAC, 128)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "ecea6a51-d6f4-4ee1-9000-e69f8c67850e",
+            "name": "88.1 KNTU The One",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96269ba0-0601-11e8-ae97-52543be04c81",
+            "name": "KSDS \"Jazz 88.3\" San Diego, CA",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "cacd1a66-67b8-11ea-be63-52543be04c81",
+            "name": "90.5 WICN Public Radio - Jazz+ for New England",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "e5f940e4-aa89-442e-9c9e-c376e6cd0e37",
+            "name": "WDNA m",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "60c21bdf-b0aa-11e9-acb2-52543be04c81",
+            "name": "WUCF 89.9 Jazz Orlando/ Florida AAC+",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "3f0a0ad0-fa37-11e9-bbf2-52543be04c81",
+            "name": "WNCU 90.7 Jazz",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96255cb5-0601-11e8-ae97-52543be04c81",
+            "name": "WMOT \"MTSU Jazz Network\" Murfreesboro, TN",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "cc0254c1-3fbf-4b57-8c67-1665af9a83a3",
+            "name": "WVIA-HD3 \"Chiaroscuro Channel\" Scranton, PA",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "42f1dea0-fbed-43ec-a584-1bfea4a787b4",
+            "name": "WAJH 91.1 Jazz Hall Radio Birmingham, AL",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "76f0d2d0-c20e-440d-9687-29be7bf2b748",
+            "name": "KWGS HD2 Stream Jazz",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "6164c9f1-43ac-472a-a331-ea36ff0449bf",
+            "name": "KEWU 89.5 FM",
             "countrycode": "US"
           },
           {
@@ -1234,19 +1359,19 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "3487079b-91b1-4fb8-b315-c4150e705b7a",
-            "name": "WBGO Jazz 88.3 FM",
+            "stationuuid": "d370be05-c270-4531-a997-2da2b8ea0ae2",
+            "name": "Jazz Con Class",
             "countrycode": "US"
           },
           {
-            "stationuuid": "d05bbbdd-beb2-478a-b795-99642ad17674",
-            "name": "Ella Radio Livestream",
-            "countrycode": "DE"
+            "stationuuid": "a214f12a-609e-491c-890a-7658235150d1",
+            "name": "WKCR",
+            "countrycode": "US"
           },
           {
-            "stationuuid": "2b2c8589-4116-40e3-9a2e-5a273d549fed",
-            "name": "Ella Radio - Jazz Ballads",
-            "countrycode": "DE"
+            "stationuuid": "961ac56b-0601-11e8-ae97-52543be04c81",
+            "name": "Radio Swiss Jazz",
+            "countrycode": "CH"
           },
           {
             "stationuuid": "5b9ceedf-eb85-11e9-a96c-52543be04c81",
@@ -1254,14 +1379,44 @@
             "countrycode": "FR"
           },
           {
-            "stationuuid": "edf4d3da-5827-4247-8e9d-68b67b2bcf3d",
-            "name": "KCSM Jazz 91.1 FM",
-            "countrycode": "US"
+            "stationuuid": "ce61ecb3-cf9f-4991-b860-32047def71ed",
+            "name": "TSF Jazz",
+            "countrycode": "FR"
           },
           {
-            "stationuuid": "9610c01b-0601-11e8-ae97-52543be04c81",
-            "name": "DR P8 JAZZ",
-            "countrycode": "DK"
+            "stationuuid": "616f1c1f-eb91-11e9-a96c-52543be04c81",
+            "name": "France Musique La Jazz",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "96136fe5-0601-11e8-ae97-52543be04c81",
+            "name": "Jazz Radio",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "96136071-0601-11e8-ae97-52543be04c81",
+            "name": "Jazz Radio Classic Jazz",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "96102c22-0601-11e8-ae97-52543be04c81",
+            "name": "Jazz Radio Blues",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9610a72f-0601-11e8-ae97-52543be04c81",
+            "name": "Jazz Radio Only Women",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "961f9f7f-0601-11e8-ae97-52543be04c81",
+            "name": "Jazz London Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "8310b37b-7358-4484-936e-bd1073217848",
+            "name": "Jazz FM CJRT",
+            "countrycode": "CA"
           },
           {
             "stationuuid": "44161d8e-73a9-42f9-b6e6-bf6a31da81c1",
@@ -1269,29 +1424,74 @@
             "countrycode": "AU"
           },
           {
+            "stationuuid": "a96c47e5-6c15-4a34-a2ee-49bc4d3a331f",
+            "name": "ArtSound FM",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "9610c01b-0601-11e8-ae97-52543be04c81",
+            "name": "DR P8 JAZZ",
+            "countrycode": "DK"
+          },
+          {
             "stationuuid": "6e24e63f-a100-4df7-bc25-bc9fa327ac07",
             "name": "Cesky Rozhlas Jazz",
             "countrycode": "CZ"
           },
           {
-            "stationuuid": "336527c2-5ead-4306-9748-6e8d51a1073c",
-            "name": "KMHD Adaptive AAC",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "7a6953ac-e6d1-11e9-a96c-52543be04c81",
-            "name": "Expansions | NTS",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "62227b60-4bac-4f52-9d71-2e78844a0294",
-            "name": "Ella Radio - Coffee Jazz",
+            "stationuuid": "96459d88-0601-11e8-ae97-52543be04c81",
+            "name": "FluxFM - Jazzradio Schwarzenstein",
             "countrycode": "DE"
           },
           {
-            "stationuuid": "590105d8-c5f5-11e9-8502-52543be04c81",
-            "name": "FLUX FM Jazzradio Schwarzenstein",
-            "countrycode": ""
+            "stationuuid": "cb37fde6-44dd-4bc3-a57a-3543ff6cc04b",
+            "name": "JazzW3",
+            "countrycode": "AT"
+          },
+          {
+            "stationuuid": "697cbf25-8cd5-49e6-bf3d-f4e20f797140",
+            "name": "RMC Jazz",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "961a702f-0601-11e8-ae97-52543be04c81",
+            "name": "Musica Jazz Radio",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "9c5b9610-805c-478f-ac5d-b6b561b78cab",
+            "name": "Kosmos Jazz GR",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "9f66a5b4-66c0-4389-88f3-f8285ad4239a",
+            "name": "Shonan Beach FM 78.9",
+            "countrycode": "JP"
+          },
+          {
+            "stationuuid": "9766d47a-68a3-4a30-8aec-c026f1ec6020",
+            "name": "Jazz Sakura (asia dream radio)",
+            "countrycode": "JP"
+          },
+          {
+            "stationuuid": "960613a3-312a-4e63-bcf2-f4a31d2bf00c",
+            "name": "Horizonte 107.9 FM \"Claridad informativa y todo el jazz\" (XHIMR) IMER",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "7ada8a81-5ae1-418c-8f18-51d2f38d86a4",
+            "name": "Bossa Jazz Brasil",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "5afe390d-6ad6-434a-816b-0a5c5052eaa9",
+            "name": "Radio Jazz FM Ukraine",
+            "countrycode": "UA"
+          },
+          {
+            "stationuuid": "6762db0c-f054-49ec-bc95-b3345423ab2d",
+            "name": "Jazz FM (Ciudad de México) - Online - Independiente - Ciudad de México",
+            "countrycode": "MX"
           }
         ]
       }
