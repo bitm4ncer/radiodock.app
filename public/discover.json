@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-19T14:02:10.154Z",
+  "generatedAt": "2026-10-19T15:07:28.175Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -937,49 +937,64 @@
             "countrycode": "GB"
           },
           {
-            "stationuuid": "1c3e8be2-5b14-4933-bad3-87cbc227cba4",
-            "name": "Deutschlandfunk | DLF | MP3 128k",
-            "countrycode": "DE"
+            "stationuuid": "98137c2d-ce68-4e33-8cb7-ddf3692ecc9d",
+            "name": "BBC Radio 4 (128k)",
+            "countrycode": "GB"
           },
           {
-            "stationuuid": "0b6cc5a0-f5a0-4a62-b128-e48153fd864c",
-            "name": "Deutschlandfunk Kultur | DLF | AAC 192k",
-            "countrycode": "DE"
+            "stationuuid": "cae35448-1285-4f12-b3e0-2f4fdde00002",
+            "name": "BBC Radio 5 Live (128k)",
+            "countrycode": "GB"
           },
           {
-            "stationuuid": "8d5e37f9-6304-41c3-94b4-f66882f01f77",
-            "name": "Radio SRF 4 News (AAC 192)",
-            "countrycode": "CH"
-          },
-          {
-            "stationuuid": "960f5a18-0601-11e8-ae97-52543be04c81",
-            "name": "DR P1",
-            "countrycode": "DK"
-          },
-          {
-            "stationuuid": "4bb85759-d22b-433b-b256-29ad8a6e9ecd",
-            "name": "CBC Radio One - Toronto, ON (MP3 stream)",
-            "countrycode": "CA"
-          },
-          {
-            "stationuuid": "d44c03de-5d38-48de-b59a-6968ffcdad63",
-            "name": "ABC Radio National HLS",
-            "countrycode": "AU"
-          },
-          {
-            "stationuuid": "662f715d-0b0c-4986-84e2-0cfb465caaf2",
-            "name": "KPFA",
+            "stationuuid": "7ba4c184-fc2b-11e9-bbf2-52543be04c81",
+            "name": "NPR 24 Hour Program Stream",
             "countrycode": "US"
           },
           {
-            "stationuuid": "0e9765da-71c6-41b5-b358-dddab24e302b",
-            "name": "franceinfo",
-            "countrycode": "FR"
+            "stationuuid": "7094b698-b1ac-4f08-a6cd-ac35f906765d",
+            "name": "CNN International Audio",
+            "countrycode": "US"
           },
           {
-            "stationuuid": "698ca170-093f-45aa-a7bb-4c809d04183d",
-            "name": "France Culture",
-            "countrycode": "FR"
+            "stationuuid": "33178054-56cd-449c-8cf7-412cc7be936a",
+            "name": "CNN",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "510aeeac-e7a0-41c2-aea2-e572e811ffe7",
+            "name": "Fox News Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "0b2c57db-885d-46d8-bbee-0651449759f1",
+            "name": "MSNBC",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "744d4afd-05c2-4c84-b8e9-a64f66bf08fc",
+            "name": "CBS News",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "963ad02f-0601-11e8-ae97-52543be04c81",
+            "name": "LBC London (National stream)",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "22eb42bb-ced7-4556-b902-e789d4411ff3",
+            "name": "GB News",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "a40fcfd1-f3c9-4a8d-b982-710da9bc593d",
+            "name": "SKY NEWS",
+            "countrycode": "UG"
+          },
+          {
+            "stationuuid": "1653b791-7005-4e95-be20-4e7b626a4a20",
+            "name": " Sky News Australia Radio",
+            "countrycode": "AU"
           },
           {
             "stationuuid": "a6bc8a3b-67bf-4042-9af8-f7bad29f0734",
@@ -987,13 +1002,213 @@
             "countrycode": "QA"
           },
           {
-            "stationuuid": "4cc9d5e8-a126-479d-9c36-e775baf6a2ff",
-            "name": "RFI",
-            "countrycode": "HT"
+            "stationuuid": "efd7c468-11a2-4bae-b7ae-3d93271e0e95",
+            "name": "DW English HD",
+            "countrycode": "DE"
           },
           {
-            "stationuuid": "744d4afd-05c2-4c84-b8e9-a64f66bf08fc",
-            "name": "CBS News",
+            "stationuuid": "96210edc-0601-11e8-ae97-52543be04c81",
+            "name": "RFI Anglais - English",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "bccbc87b-3ecf-489a-aacd-cd60249450c9",
+            "name": "RTE Radio 1> ",
+            "countrycode": "IE"
+          },
+          {
+            "stationuuid": "d037031b-f31e-4298-b36e-654eaad6416e",
+            "name": "Newstalk",
+            "countrycode": "IE"
+          },
+          {
+            "stationuuid": "4bb85759-d22b-433b-b256-29ad8a6e9ecd",
+            "name": "CBC Radio One - Toronto, ON (MP3 stream)",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "9616206e-0601-11e8-ae97-52543be04c81",
+            "name": "ABC Radio National AAC+",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "960b1670-0601-11e8-ae97-52543be04c81",
+            "name": "RNZ National MP3",
+            "countrycode": "NZ"
+          },
+          {
+            "stationuuid": "a0a57bb8-21fe-45db-a3a8-7f5ae8cc7e12",
+            "name": "NHK WORLD RADIO 8",
+            "countrycode": "JP"
+          },
+          {
+            "stationuuid": "49a3c31b-b635-4af2-94f0-e072d9eab328",
+            "name": "CGTN - English",
+            "countrycode": "CN"
+          },
+          {
+            "stationuuid": "c73b9eff-0ac5-4a43-b05a-346591c66675",
+            "name": "Monocle Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "b05943d7-7238-4b44-8a3a-917f7595b031",
+            "name": "Democracy Now!",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "662f715d-0b0c-4986-84e2-0cfb465caaf2",
+            "name": "KPFA",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "c45f70d7-3d98-4f34-8cb8-e91e54212787",
+            "name": "KPFK 90.7 FM Listener Sponsored Pacifica Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "961a0840-0601-11e8-ae97-52543be04c81",
+            "name": "WBAI 99.5 New York, NY",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "f34ae431-42cd-4ef1-8a24-f4eca8a70cc1",
+            "name": "WNYC 93.9 FM",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96147d8c-0601-11e8-ae97-52543be04c81",
+            "name": "WBUR 90.9 FM Boston [MP3]",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "325a61dc-fe34-48c6-ae82-1467b710f07b",
+            "name": "KCRW 88.9 FM - Live",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96186f9e-0601-11e8-ae97-52543be04c81",
+            "name": "WBEZ 91.5 Chicago Public Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "961dab15-0601-11e8-ae97-52543be04c81",
+            "name": "WHYY 90.9  Philadelphia, PA",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "11c28f97-0177-47d3-bf88-eb24b492c34f",
+            "name": "WAMU American University Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "961f78f1-0601-11e8-ae97-52543be04c81",
+            "name": "KQED 88.5 San Francisco, CA",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "42db06ea-367e-4342-a90e-f671d4bf0a61",
+            "name": "MPR News (MP3 128k)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96151623-0601-11e8-ae97-52543be04c81",
+            "name": "KOPB 91.5 Oregon Public Broadcasting - Portland, OR",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "160ad93c-7e74-11ea-8a3b-52543be04c81",
+            "name": "KUOW Seattle",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "d08485f3-a470-4455-8680-3cc34d352ca0",
+            "name": "WABE",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "1d63ddef-70cc-4370-917d-5fb31c3caa53",
+            "name": "WLRN 91.3 FM",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "728aa790-696d-4896-998e-c41ed0bd7514",
+            "name": "WUSF NPR",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96255788-0601-11e8-ae97-52543be04c81",
+            "name": "KERA 90.1 Dallas, TX (AAC)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96154188-0601-11e8-ae97-52543be04c81",
+            "name": "KCFR 90.1 Colorado Public Radio - News  - Denver, CO  MP3",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9625fff0-0601-11e8-ae97-52543be04c81",
+            "name": "WMEA 90.1Maine Public Public Broadcasting - Portland, ME",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "ce8a7864-3276-4205-a5b6-756e13b1dfbc",
+            "name": "New Hampshire Public Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9624f7b3-0601-11e8-ae97-52543be04c81",
+            "name": "WSHU 1260 Fairfield, CT",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "ee787b71-9a8f-11e8-a767-52543be04c81",
+            "name": "WNPR 90.5 Connecticut Public Radio - Meriden, CT",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "d4aa449b-880b-4d45-adde-ca09739a0153",
+            "name": "WGBH 89.7",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "960da3ae-0601-11e8-ae97-52543be04c81",
+            "name": "WORT 89.9 Madison, WI",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "960b5a80-0601-11e8-ae97-52543be04c81",
+            "name": "KBOO 90.7 Portland, OR",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "bc93bbd2-c582-4c05-a156-c5ab29f44034",
+            "name": "WRFG 89.3FM Atlanta, GA",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "62c46a39-ab2a-11e9-88f4-52543be04c81",
+            "name": "WERU Community Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "b9333c19-5658-42b4-a241-91752b798a3e",
+            "name": "WSCA",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "2d54841c-02ec-4ee4-8f05-fc0c2e7d0eb0",
+            "name": "WDEV 550 AM Waterbury, VT  ",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "b3ec293b-dbc4-4054-8268-991eb1256ffb",
+            "name": "1110 KFAB",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "771964e5-3e72-11e8-b74d-52543be04c81",
+            "name": "C-SPAN",
             "countrycode": "US"
           }
         ]
