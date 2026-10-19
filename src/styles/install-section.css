@@ -575,3 +575,11 @@
     width: 100%;
   }
 }
+
+/* Short landscape windows: the floating install card would cover the
+   primary navigation. Keep the app fully operable instead. */
+@media (min-width: 700px) and (display-mode: browser) and (max-height: 520px) {
+  .install-section {
+    display: none !important;
+  }
+}

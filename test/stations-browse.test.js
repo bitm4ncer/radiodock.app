@@ -20,7 +20,7 @@ test('browseStations sends filters and normalises the response', async () => {
     }), { status: 200, headers: { 'content-type': 'application/json' } });
   });
   try {
-    const out = await browseStations({ mode: 'az', letter: 'D', country: 'US', genre: 'jazz', hasDescription: true });
+    const out = await browseStations({ mode: 'az', letter: 'D', country: 'US', genre: 'jazz' });
     assert.ok(seen.includes('/json/stations/browse?'));
     assert.ok(seen.includes('mode=az'));
     assert.ok(seen.includes('letter=D'));
@@ -67,18 +67,6 @@ test('meta, random, and discover handle missing data', async () => {
   clearDiscoverCache();
   restore = stubFetch(() => new Response('missing', { status: 404 }));
   try { assert.equal(await loadDiscover(), null); } finally { restore(); }
-});
-
-test('getRandomStation forwards the description filter', async () => {
-  let seen = '';
-  const restore = stubFetch((url) => {
-    seen = url;
-    return new Response(JSON.stringify({ station: null }), { status: 200 });
-  });
-  try {
-    await getRandomStation({ country: 'DE', genre: 'jazz', hasDescription: true });
-    assert.ok(seen.includes('hasDescription=1'));
-  } finally { restore(); }
 });
 
 test('getRandomStation forwards the community mode', async () => {

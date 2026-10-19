@@ -11,12 +11,12 @@ test('filterOptions searches labels case-insensitively', () => {
 test('chipLabel shows the active value', () => {
   assert.equal(chipLabel('country', 'DE', { countries: [{ code: 'DE', name: 'Germany' }] }), 'Germany');
   assert.equal(chipLabel('genre', 'jazz', { genres: [{ genre: 'jazz', label: 'Jazz' }] }), 'Jazz');
-  assert.equal(chipLabel('description', true, {}), 'Description');
+
 });
 
 test('clearFilters resets every filter', () => {
   assert.deepEqual(
-    clearFilters({ country: 'DE', genre: 'jazz', hasDescription: true }),
-    { country: '', genre: '', hasDescription: false },
+    clearFilters({ country: 'DE', genre: 'jazz' }),
+    { country: '', genre: '' },
   );
 });

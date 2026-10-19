@@ -3,11 +3,11 @@ import assert from 'node:assert/strict';
 import { buildBrowseParams, mergeRows, searchModeFor } from '../src/ui/stations-state.js';
 
 test('buildBrowseParams omits defaults and sends active filters', () => {
-  assert.deepEqual(buildBrowseParams({ mode: 'az', letter: 'all', query: '', country: '', genre: '', hasDescription: false }), {
+  assert.deepEqual(buildBrowseParams({ mode: 'az', letter: 'all', query: '', country: '', genre: '' }), {
     mode: 'az', limit: 100, offset: 0, hidebroken: true,
   });
-  assert.deepEqual(buildBrowseParams({ mode: 'search', query: 'jazz', country: 'DE', hasDescription: true, offset: 100 }), {
-    mode: 'search', q: 'jazz', country: 'DE', hasDescription: true, limit: 100, offset: 100, hidebroken: true,
+  assert.deepEqual(buildBrowseParams({ mode: 'search', query: 'jazz', country: 'DE', offset: 100 }), {
+    mode: 'search', q: 'jazz', country: 'DE', limit: 100, offset: 100, hidebroken: true,
   });
 });
 
@@ -33,8 +33,8 @@ test('mergeRows can run without a cap for Popular', () => {
 import { communityParams, popularParams, searchParams } from '../src/ui/stations-state.js';
 
 test('popular and search params keep filters', () => {
-  assert.deepEqual(popularParams({ country: 'DE', genre: 'jazz', hasDescription: true, offset: 0 }), {
-    mode: 'popular', country: 'DE', genre: 'jazz', hasDescription: true, limit: 100, offset: 0, hidebroken: true,
+  assert.deepEqual(popularParams({ country: 'DE', genre: 'jazz', offset: 0 }), {
+    mode: 'popular', country: 'DE', genre: 'jazz', limit: 100, offset: 0, hidebroken: true,
   });
   assert.deepEqual(searchParams({ query: ' jazz ', country: 'DE', offset: 0 }), {
     mode: 'search', q: 'jazz', country: 'DE', limit: 100, offset: 0, hidebroken: true,
@@ -43,8 +43,8 @@ test('popular and search params keep filters', () => {
 
 test('community params keep filters and ignore the A-Z letter', () => {
   assert.deepEqual(communityParams({
-    mode: 'community', letter: 'D', country: 'DE', genre: 'jazz', hasDescription: true, offset: 0,
+    mode: 'community', letter: 'D', country: 'DE', genre: 'jazz', offset: 0,
   }), {
-    mode: 'community', country: 'DE', genre: 'jazz', hasDescription: true, limit: 100, offset: 0, hidebroken: true,
+    mode: 'community', country: 'DE', genre: 'jazz', limit: 100, offset: 0, hidebroken: true,
   });
 });

@@ -63,7 +63,6 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     letter: 'all',
     country: '',
     genre: '',
-    hasDescription: false,
     offset: 0,
     rows: [],
     total: 0,
@@ -160,7 +159,6 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       onChange: (next) => {
         state.country = next.country;
         state.genre = next.genre;
-        state.hasDescription = next.hasDescription;
         state.offset = 0;
         load({ reset: true });
       },
@@ -168,7 +166,6 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     filters.setState({
       country: state.country,
       genre: state.genre,
-      hasDescription: state.hasDescription,
     });
     renderHeader();
     renderRail();
@@ -212,7 +209,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       const sub = state.algorithm === 'v2'
         ? 'Ranked by listeners, depth, and repeat listening'
         : state.algorithm === 'bootstrap'
-          ? 'Early signal: listener data is still building'
+          ? 'Still learning: ranking improves as more people listen'
           : 'Last 30 days, plays plus listening';
       return `<strong>Popular this month</strong><span>${sub} <button type="button" class="stations-info-btn" data-action="popular-info" aria-label="About Popular">i</button></span>`;
     }
@@ -225,6 +222,14 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     return `<strong>${escapeHtml(state.letter)}</strong><span>${formatCount(state.total)} stations</span>`;
   }
 
+  function loadingHead() {
+    if (state.mode === 'search' && state.query) return '<strong>Searching stations…</strong>';
+    if (state.mode === 'popular') return '<strong>Popular this month</strong><span>Loading stations…</span>';
+    if (state.mode === 'community') return '<strong>Community Radios</strong><span>Loading stations…</span>';
+    if (state.letter === 'all') return '<strong>All stations</strong><span>Loading stations…</span>';
+    return `<strong>${escapeHtml(state.letter)}</strong><span>Loading stations…</span>`;
+  }
+
   function renderContent() {
     const content = body.querySelector('#stationsContent');
     if (!content) return;
@@ -234,7 +239,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       return;
     }
     if (state.loading && !state.rows.length) {
-      content.innerHTML = `${sectionHead()}<div class="stations-list">${Array.from({ length: 8 }, () => '<div class="stations-skeleton"></div>').join('')}</div>`;
+      content.innerHTML = `<div class="stations-section-head">${loadingHead()}</div><div class="stations-list">${Array.from({ length: 8 }, () => '<div class="stations-skeleton"></div>').join('')}</div>`;
       return;
     }
     if (state.error && !state.rows.length) {
@@ -297,19 +302,16 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   function emptyState() {
     const head = `<div class="stations-section-head">${sectionHead()}</div>`;
     if (state.mode === 'popular') {
-      const filtered = state.country || state.genre || state.hasDescription;
+      const filtered = state.country || state.genre;
       return filtered
         ? `${head}<div class="stations-empty"><p>No popular stations match these filters.</p><button type="button" class="stations-pill" data-action="clear-filters">Clear filters</button></div>`
         : `${head}<div class="stations-empty"><p>Popular is still warming up.</p><button type="button" class="stations-pill" data-action="browse-az">Browse A-Z</button></div>`;
     }
     if (state.mode === 'community') {
-      const filtered = state.country || state.genre || state.hasDescription;
+      const filtered = state.country || state.genre;
       return filtered
         ? `${head}<div class="stations-empty"><p>No community stations match these filters.</p><button type="button" class="stations-pill" data-action="clear-filters">Clear filters</button></div>`
         : `${head}<div class="stations-empty"><p>Community Radios is empty.</p><button type="button" class="stations-pill" data-action="browse-az">Browse A-Z</button></div>`;
-    }
-    if (state.hasDescription) {
-      return `${head}<div class="stations-empty"><p>No descriptions here yet.</p><p>Open a station and choose Suggest an edit to add one.</p><button type="button" class="stations-pill" data-action="clear-filters">Browse all</button></div>`;
     }
     if (state.mode === 'search') {
       return `${head}<div class="stations-empty"><p>No stations found for "${escapeHtml(state.query)}".</p><button type="button" class="stations-pill" data-action="clear-search">Clear search</button></div>`;
@@ -444,10 +446,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   function clearFilters() {
     state.country = '';
     state.genre = '';
-    state.hasDescription = false;
     state.letter = 'all';
     state.offset = 0;
-    filters?.setState({ country: '', genre: '', hasDescription: false });
+    filters?.setState({ country: '', genre: '' });
     load({ reset: true });
   }
 
@@ -550,7 +551,6 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
         letter: state.letter !== 'all' ? state.letter : '',
         country: state.country,
         genre: state.genre,
-        hasDescription: state.hasDescription,
       });
       if (station) actions.onPlay?.(station);
       else actions.toast?.('No station matches these filters.');
@@ -798,10 +798,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.letter = 'all';
     state.country = '';
     state.genre = '';
-    state.hasDescription = false;
     state.offset = 0;
     shell();
-    filters?.setState({ country: '', genre: '', hasDescription: false });
+    filters?.setState({ country: '', genre: '' });
     load({ reset: true });
   }
 

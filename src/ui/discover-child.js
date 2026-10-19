@@ -65,16 +65,8 @@ function collectionCard(list, { user = false } = {}) {
   `;
 }
 
-function submitCard() {
-  return `
-    <button type="button" class="stations-submit-card" data-action="submit-playlist">
-      <span class="stations-submit-icon" aria-hidden="true">+</span>
-      <span class="stations-submit-copy">
-        <strong>Submit Playlist</strong>
-        <span>Your submission will be reviewed and published here.</span>
-      </span>
-    </button>
-  `;
+function submitLink() {
+  return '<button type="button" class="stations-submit-link" data-action="submit-playlist">Submit Playlist</button>';
 }
 
 export function renderDiscover({ lists = [], genres = [] } = {}) {
@@ -104,12 +96,14 @@ export function renderDiscover({ lists = [], genres = [] } = {}) {
     <div class="stations-user-collections">
       <div class="stations-section-head">
         <strong>Curated by users</strong>
-        <span>${user.length ? formatCount(user.length) : 'Be the first'}</span>
+        <div class="stations-section-actions">
+          ${user.length ? `<span>${formatCount(user.length)}</span>` : ''}
+          ${submitLink()}
+        </div>
       </div>
       ${user.length
         ? `<div class="stations-collection-grid">${user.map((list) => collectionCard(list, { user: true })).join('')}</div>`
         : '<p class="stations-user-empty">No user playlists yet. Be the first.</p>'}
-      ${submitCard()}
     </div>
   `;
 

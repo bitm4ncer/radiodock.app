@@ -28,11 +28,11 @@ export function chipLabel(kind, value, meta = {}) {
 }
 
 function defaultState() {
-  return { country: '', genre: '', hasDescription: false };
+  return { country: '', genre: '' };
 }
 
 export function clearFilters(state = {}) {
-  return { ...state, country: '', genre: '', hasDescription: false };
+  return { ...state, country: '', genre: '' };
 }
 
 function isSheetRegime() {
@@ -65,10 +65,9 @@ export function mountStationsFilters({ root, getMeta, onChange } = {}) {
   function renderChips() {
     if (!root) return;
     const m = meta();
-    const descriptionDisabled = (m.descriptionCount ?? 0) === 0;
     const countryText = state.country ? chipLabel('country', state.country, m) : 'Country';
     const genreText = state.genre ? chipLabel('genre', state.genre, m) : 'Genre';
-    const hasActive = !!(state.country || state.genre || state.hasDescription);
+    const hasActive = !!(state.country || state.genre);
     root.innerHTML = `
       <button type="button" class="stations-chip${state.country ? ' is-active' : ''}" data-filter="country" aria-expanded="false">
         <span>${escapeHtml(countryText)}</span>${state.country ? '<span aria-hidden="true" data-clear="country">×</span>' : ''}
@@ -76,11 +75,7 @@ export function mountStationsFilters({ root, getMeta, onChange } = {}) {
       <button type="button" class="stations-chip${state.genre ? ' is-active' : ''}" data-filter="genre" aria-expanded="false">
         <span>${escapeHtml(genreText)}</span>${state.genre ? '<span aria-hidden="true" data-clear="genre">×</span>' : ''}
       </button>
-      <button type="button" class="stations-chip${state.hasDescription ? ' is-active' : ''}" data-filter="description"
-        aria-pressed="${state.hasDescription}"${descriptionDisabled ? ' disabled title="No descriptions yet"' : ''}>
-        <span>Description</span>
-      </button>
-      ${hasActive ? '<button type="button" class="stations-clear-all" data-filter="clear-all">Clear all</button>' : ''}
+            ${hasActive ? '<button type="button" class="stations-clear-all" data-filter="clear-all">Clear all</button>' : ''}
     `;
   }
 

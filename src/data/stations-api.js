@@ -216,7 +216,7 @@ function browseQuery(params = {}, keys = ['mode', 'q', 'letter', 'country', 'gen
     if (value === undefined || value === null || value === '') continue;
     search.set(key, String(value));
   }
-  if (params.hasDescription) search.set('hasDescription', '1');
+  
   return search;
 }
 

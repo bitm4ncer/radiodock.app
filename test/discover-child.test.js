@@ -49,7 +49,6 @@ test('renderDiscover splits official and user collections', () => {
   assert.match(html, /Curated by RadioDock/);
   assert.match(html, /Curated by users/);
   assert.match(html, /Submit Playlist/);
-  assert.match(html, /Your submission will be reviewed and published here\./);
   assert.match(html, /Collection of the week/);
   assert.match(html, /My Jazz/);
 });
@@ -60,8 +59,8 @@ test('renderDiscover shows the submit CTA even when no user playlists exist', ()
     genres: [],
   });
   assert.match(html, /No user playlists yet/);
+  assert.match(html, /stations-submit-link/);
   assert.match(html, /Submit Playlist/);
-  assert.match(html, /Your submission will be reviewed and published here\./);
 });
 
 test('renderDiscover keeps the user CTA when the database has no collections', () => {
@@ -71,7 +70,7 @@ test('renderDiscover keeps the user CTA when the database has no collections', (
   assert.match(html, /Submit Playlist/);
 });
 
-test('renderDiscover places the submit CTA after the published user playlists', () => {
+test('renderDiscover places the compact submit CTA in the user section heading', () => {
   const html = renderDiscover({
     lists: [
       { slug: 'jazz', title: 'Jazz', source: 'radiodock', stations: [{ stationuuid: 'a', name: 'A' }] },
@@ -79,5 +78,12 @@ test('renderDiscover places the submit CTA after the published user playlists', 
     ],
     genres: [],
   });
-  assert.ok(html.indexOf('stations-collection-card is-user') < html.indexOf('stations-submit-card'));
+  const sectionStart = html.indexOf('stations-user-collections');
+  const headStart = html.indexOf('stations-section-head', sectionStart);
+  const linkIndex = html.indexOf('stations-submit-link', sectionStart);
+  const gridIndex = html.indexOf('stations-collection-grid', sectionStart);
+  assert.ok(headStart >= 0);
+  assert.ok(linkIndex > headStart);
+  assert.ok(linkIndex < gridIndex);
+  assert.ok(!html.includes('stations-submit-card'));
 });

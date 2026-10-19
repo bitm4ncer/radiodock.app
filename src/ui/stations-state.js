@@ -12,7 +12,7 @@ export function buildBrowseParams(state = {}) {
   if (mode === 'az' && state.letter && state.letter !== 'all') params.letter = state.letter;
   if (state.country) params.country = state.country;
   if (state.genre) params.genre = state.genre;
-  if (state.hasDescription) params.hasDescription = true;
+  
   return params;
 }
 
