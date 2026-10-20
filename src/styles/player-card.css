@@ -150,6 +150,20 @@
 .station-logo-container {
   flex-shrink: 0;
   position: relative;
+  /* It is a <button>; the UA's 1px/6px padding would push the logo off-centre
+     (and, in tiny mode, make the logo slot wider than its 56px box). */
+  padding: 0;
+}
+
+/* The slot's auto grid track is sized by the image's intrinsic size, not the
+   65px box the CSS gives it - a large artwork then centres itself inside a
+   larger track and gets clipped by the slot's overflow:hidden. Pin the track
+   to the slot so the artwork always fills it exactly. Tiny mode overrides the
+   56px size on the slot (search.css). */
+.station-logo-container .logo-slot {
+  width: 65px;
+  height: 65px;
+  grid-template: 100% / 100%;
 }
 
 .station-logo {

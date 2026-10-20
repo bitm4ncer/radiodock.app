@@ -585,6 +585,7 @@ body.is-tiny-player .now-playing.show {
 /* Avatar + play button sized so the pill reads as a balanced mini-player. The
    avatar drives the pill height (content-sized card above). */
 body.is-tiny-player .station-logo-container,
+body.is-tiny-player .station-logo-container .logo-slot,
 body.is-tiny-player .station-logo-container img,
 body.is-tiny-player .station-logo-container .station-logo-fallback {
   width: 56px !important;
