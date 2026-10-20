@@ -38,9 +38,8 @@ const PRECACHE_URLS = [
 ];
 
 // Dashboard-published curation data served network-first — must reach users
-// promptly. (discover.json / metadata-overrides.json can join this list when
-// those milestones ship.)
-const NETWORK_FIRST_DATA = ['/community-radios.json'];
+// promptly. (metadata-overrides.json can join this list when it ships.)
+const NETWORK_FIRST_DATA = ['/community-radios.json', '/discover.json'];
 const NETWORK_FIRST_TIMEOUT_MS = 4000;
 
 function isNetworkFirstData(url) {
@@ -80,6 +79,9 @@ self.addEventListener('activate', (event) => {
 
 function isAppShellRequest(url) {
   if (url.origin !== self.location.origin) return false;
+  // Network-first data must reach the fetch handler below; without this it
+  // falls through to the browser's HTTP cache (GitHub Pages max-age=600).
+  if (isNetworkFirstData(url)) return true;
   if (url.pathname.startsWith('/assets/')) return true; // hashed Vite output
   if (PRECACHE_URLS.includes(url.pathname)) return true;
   if (url.pathname === '/' || url.pathname.endsWith('.html')) return true;

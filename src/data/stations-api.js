@@ -28,6 +28,7 @@ export async function fetchJson(url, { signal, timeoutMs = TIMEOUT_MS } = {}) {
   try {
     const res = await fetch(url, {
       method: 'GET',
+      cache: 'no-store',
       signal: ctl.signal,
       headers: { Accept: 'application/json', 'User-Agent': USER_AGENT_HEADER },
     });
