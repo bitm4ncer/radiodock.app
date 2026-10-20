@@ -569,28 +569,30 @@
          Hidden on mobile — the same links live in the off-canvas drawer. -->
     <footer class="site-footer-desktop desktop-only" id="siteFooter">
       <div class="site-footer-desktop__inner">
-        <button type="button" class="footer-pill footer-pill--sm footer-pill--cta" id="footerReinstallBtn">
-          Install on Devices
-        </button>
-        <button type="button" class="footer-pill footer-pill--sm" id="footerAboutBtn">About</button>
-        <button type="button" class="footer-pill footer-pill--sm" id="footerSyncBtn">Sync</button>
-        <button type="button" class="footer-pill footer-pill--sm" id="footerAddBtn">Database</button>
-        <button type="button" class="footer-pill footer-pill--sm" id="footerChangelogBtn">Features<span class="nav-dot" data-changelog-dot></span></button>
         <div id="sleepTimerFooter" class="sleep-timer-footer"></div>
-        <a class="footer-pill footer-pill--sm" href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener">GitHub</a>
-        <a class="footer-pill footer-pill--sm" href="https://github.com/bitm4ncer/radiodock.app/issues" target="_blank" rel="noopener">Issues</a>
-        <a class="footer-pill footer-pill--sm" href="https://ko-fi.com/radiodock" target="_blank" rel="noopener">Donate</a>
-        <a class="footer-pill footer-pill--sm" href="/legal.html" target="_blank" rel="noopener">Legal Notice</a>
-        <button type="button" class="theme-toggle--pill" data-action="theme-toggle" aria-pressed="false" aria-label="Switch theme" title="Switch theme">
-          <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="12" cy="12" r="4" fill="currentColor"/>
-            <path d="M12 2v3M12 19v3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M2 12h3M19 12h3M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
-          </svg>
-          <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" fill="currentColor"/>
-          </svg>
-        </button>
-        <span class="site-footer-desktop__version app-version" aria-hidden="true">v1.0.0</span>
+        <div class="site-footer-desktop__pills">
+          <button type="button" class="footer-pill footer-pill--sm footer-pill--cta" id="footerReinstallBtn">
+            Install on Devices
+          </button>
+          <button type="button" class="footer-pill footer-pill--sm" id="footerAboutBtn">About</button>
+          <button type="button" class="footer-pill footer-pill--sm" id="footerSyncBtn">Sync</button>
+          <button type="button" class="footer-pill footer-pill--sm" id="footerAddBtn">Database</button>
+          <button type="button" class="footer-pill footer-pill--sm" id="footerChangelogBtn">Features<span class="nav-dot" data-changelog-dot></span></button>
+          <a class="footer-pill footer-pill--sm" href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener">GitHub</a>
+          <a class="footer-pill footer-pill--sm" href="https://github.com/bitm4ncer/radiodock.app/issues" target="_blank" rel="noopener">Issues</a>
+          <a class="footer-pill footer-pill--sm" href="https://ko-fi.com/radiodock" target="_blank" rel="noopener">Donate</a>
+          <a class="footer-pill footer-pill--sm" href="/legal.html" target="_blank" rel="noopener">Legal Notice</a>
+          <button type="button" class="theme-toggle--pill" data-action="theme-toggle" aria-pressed="false" aria-label="Switch theme" title="Switch theme">
+            <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" fill="currentColor"/>
+              <path d="M12 2v3M12 19v3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M2 12h3M19 12h3M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+            </svg>
+            <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" fill="currentColor"/>
+            </svg>
+          </button>
+          <span class="site-footer-desktop__version app-version" aria-hidden="true">v1.0.0</span>
+        </div>
       </div>
     </footer>
 

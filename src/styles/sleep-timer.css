@@ -2,8 +2,11 @@
    is the final ten seconds, where the countdown becomes a real signal.
    No card chrome - it sits directly in the drawer and in the footer bar. */
 
+/* The drawer nav already pads 8px; the extra 14px matches the menu rows'
+   own 14px padding, so the moon/label and the value line up with the item
+   text on the left and the chevrons on the right. */
 .sleep-timer-slot {
-  padding: 6px 6px 2px;
+  padding: 6px 14px 2px;
 }
 
 .sleep-timer {
