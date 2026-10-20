@@ -107,7 +107,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       <div class="stations-shell">
         <header class="stations-header">
           <div class="stations-header-copy">
-            <p class="stations-kicker">RadioDock Database</p>
+            
             <h2 class="stations-title" id="stationsTitle">Stations <span class="stations-count" id="stationsTotal"></span></h2>
           </div>
           <div class="stations-header-actions">

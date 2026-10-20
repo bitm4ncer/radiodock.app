@@ -337,7 +337,7 @@
   right: 0;
   top: var(--info-sheet-top, 55%);
   bottom: 0;
-  z-index: 45; /* below the fixed player-section (50) + top bar */
+  z-index: 95; /* above the stations panel (90), below the fixed player (100) */
   display: flex;
   flex-direction: column;
   background: var(--bg);
