@@ -46,14 +46,14 @@ function metaLine(station, mode, query, algorithm) {
 function thirdLine(station, query) {
   const tags = Array.isArray(station.tags) ? station.tags.filter(Boolean).slice(0, 3) : [];
   if (tags.length) {
-    const chips = tags.map((tag) => `<span class="stations-row-tag"><span class="stations-row-hash">#</span>${highlightMatches(tag, query)}</span>`).join('');
+    const chips = tags.map((tag) => `<span class="stations-row-tag">${highlightMatches(tag, query)}</span>`).join('');
     return `<span class="stations-row-tags">${chips}</span>`;
   }
   return '';
 }
 
 const INFO_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 10.5v6M12 7.3v.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
-const HEART_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-9.4A4.1 4.1 0 0 1 12 7.7a4.1 4.1 0 0 1 7 2.9c0 5-7 9.4-7 9.4Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>';
+export const HEART_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-9.4A4.1 4.1 0 0 1 12 7.7a4.1 4.1 0 0 1 7 2.9c0 5-7 9.4-7 9.4Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>';
 
 export function stationsRow(station, { query = '', mode = 'az', algorithm = 'bootstrap', canAdd = false, alreadyAdded = false, priority = false } = {}) {
   const id = escapeHtml(station.id);

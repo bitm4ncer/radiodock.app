@@ -50,7 +50,13 @@ test('row presents country, genre, stats, and tags as visual chips', () => {
   assert.match(html, /class="stations-row-stat"[^>]*>.*20/);
   assert.match(html, /class="stations-row-stat"[^>]*>.*24m/);
   assert.match(html, /class="stations-row-tag"/);
-  assert.match(html, /class="stations-row-hash">#</);
+  assert.doesNotMatch(html, /stations-row-hash/);
+});
+
+test('row tags render as plain words without a hash sigil', () => {
+  const html = stationsRow(base, {});
+  assert.match(html, /class="stations-row-tag">ambient</);
+  assert.doesNotMatch(html, />#</);
 });
 
 test('popular row shows listeners and typical depth for v2', () => {

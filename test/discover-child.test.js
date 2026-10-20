@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normaliseDiscover, renderDiscover } from '../src/ui/discover-child.js';
+import { normaliseDiscover, renderDiscover, renderCollection } from '../src/ui/discover-child.js';
 
 test('normaliseDiscover keeps valid curated lists only', () => {
   const data = { curated: { lists: [
@@ -65,6 +65,33 @@ test('renderDiscover keeps the user CTA when the database has no collections', (
   assert.match(html, /Collections are being prepared/);
   assert.match(html, /Curated by users/);
   assert.match(html, /Submit Playlist/);
+});
+
+test('renderDiscover never renders the genre browser', () => {
+  const html = renderDiscover({
+    lists: [{ slug: 'jazz', title: 'Jazz', stations: [{ stationuuid: 'a', name: 'A' }] }],
+    genres: [{ genre: 'pop', label: 'Pop' }, { genre: 'news', label: 'News' }],
+  });
+  assert.doesNotMatch(html, /Browse by genre/);
+  assert.doesNotMatch(html, /data-genre/);
+  assert.doesNotMatch(html, /stations-genre-chips/);
+});
+
+test('collection cards keep the logo stack and the title/count copy on one row', () => {
+  const html = renderDiscover({
+    lists: [{ slug: 'news', title: 'News', source: 'radiodock', stations: [{ stationuuid: 'a', name: 'A' }] }],
+  });
+  const card = html.match(/<button[^>]*data-collection="news"[\s\S]*?<\/button>/)[0];
+  assert.match(card, /stations-collection-card-top[\s\S]*stations-collection-card-copy/);
+  assert.match(card, /stations-collection-card-copy[\s\S]*<strong>News<\/strong>[\s\S]*stations-collection-card-count[^>]*>1 station</);
+});
+
+test('collection tiles use the favorite heart instead of a plus', () => {
+  const html = renderCollection({
+    list: { title: 'News', source: 'radiodock', stations: [{ stationuuid: 'a', name: 'A' }] },
+  });
+  assert.match(html, /data-action="collection-add"[^>]*aria-label="Add to list"[^>]*>\s*<svg/);
+  assert.doesNotMatch(html, /aria-label="Add to list"[^>]*>\s*\+/);
 });
 
 test('renderDiscover places the compact submit CTA in the user section heading', () => {

@@ -108,7 +108,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
         <header class="stations-header">
           <div class="stations-header-copy">
             
-            <h2 class="stations-title" id="stationsTitle">Stations <span class="stations-count" id="stationsTotal"></span></h2>
+            <h2 class="stations-title" id="stationsTitle">Stations</h2>
           </div>
           <div class="stations-header-actions">
             <button type="button" class="stations-pill stations-discover-btn" data-action="discover">${discoverIcon()}<span>Discover</span></button>
@@ -173,11 +173,6 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   }
 
   function renderHeader() {
-    const total = body.querySelector('#stationsTotal');
-    const count = state.mode === 'community'
-      ? (state.meta?.communityCount ?? state.total)
-      : state.meta?.totalStations;
-    if (total) total.textContent = count ? formatCount(count) : '';
     body.querySelectorAll('[data-mode]').forEach((button) => {
       button.setAttribute('aria-pressed', String(button.dataset.mode === state.mode));
     });
@@ -587,10 +582,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.view = 'discover';
     state.collection = null;
     const lists = normaliseDiscover(state.discover).lists;
-    discoverShell('Discover', 'back', renderDiscover({
-      lists,
-      genres: state.meta?.genres ?? [],
-    }));
+    discoverShell('Discover', 'back', renderDiscover({ lists }));
   }
 
   async function openDiscover() {
@@ -748,11 +740,6 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       openCollection(collection.dataset.collection);
       return;
     }
-    const genre = evt.target.closest('[data-genre]');
-    if (genre) {
-      applyGenre(genre.dataset.genre);
-      return;
-    }
     if (evt.target.closest('[data-action="browse-all"]')) {
       browseAll();
       return;
@@ -775,19 +762,6 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     }
     else if (name === 'collection-info') actions.onInfo?.(station);
     else if (name === 'collection-add') actions.onAdd?.(station);
-  }
-
-  function applyGenre(genre) {
-    state.view = 'stations';
-    state.collection = null;
-    state.mode = 'az';
-    state.query = '';
-    state.letter = 'all';
-    state.genre = genre;
-    state.offset = 0;
-    shell();
-    filters?.setState({ genre });
-    load({ reset: true });
   }
 
   function browseAll() {

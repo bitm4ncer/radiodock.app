@@ -2,6 +2,7 @@
 // entries in discover.json are deliberately ignored.
 
 import { renderLogoSlot } from './station-logo.js';
+import { HEART_ICON } from './stations-row.js';
 import { escapeHtml, countryLabel, formatCount } from './stations-format.js';
 
 export function normaliseDiscover(data) {
@@ -42,9 +43,13 @@ function collectionCard(list, { user = false } = {}) {
   return `
     <button type="button" class="stations-collection-card${user ? ' is-user' : ''}" data-collection="${escapeHtml(list.slug)}">
       <span class="stations-collection-card-top">${logoStack(list.stations)}</span>
-      ${user ? '<span class="stations-collection-card-kicker">User playlist</span>' : ''}
-      <strong>${escapeHtml(list.title)}</strong>
-      <span>${pluralCount(list.stations.length, 'station')}</span>
+      <span class="stations-collection-card-copy">
+        ${user ? '<span class="stations-collection-card-kicker">User playlist</span>' : ''}
+        <span class="stations-collection-card-line">
+          <strong>${escapeHtml(list.title)}</strong>
+          <span class="stations-collection-card-count">${pluralCount(list.stations.length, 'station')}</span>
+        </span>
+      </span>
     </button>
   `;
 }
@@ -53,10 +58,9 @@ function submitLink() {
   return '<button type="button" class="stations-submit-link" data-action="submit-playlist">Submit Playlist</button>';
 }
 
-export function renderDiscover({ lists = [], genres = [] } = {}) {
+export function renderDiscover({ lists = [] } = {}) {
   const official = lists.filter((list) => list.source !== 'user');
   const user = lists.filter((list) => list.source === 'user');
-  const topGenres = genres.slice(0, 8);
 
   const officialSection = official.length
     ? `
@@ -89,12 +93,6 @@ export function renderDiscover({ lists = [], genres = [] } = {}) {
     <div class="stations-discover">
       ${officialSection}
       ${userSection}
-      ${topGenres.length ? `
-        <div class="stations-section-head"><strong>Browse by genre</strong></div>
-        <div class="stations-genre-chips">${topGenres.map((genre) => `
-          <button type="button" class="stations-chip" data-genre="${escapeHtml(genre.genre)}">${escapeHtml(genre.label)}</button>
-        `).join('')}</div>
-      ` : ''}
     </div>
   `;
 }
@@ -113,7 +111,7 @@ function collectionTile(station) {
       </button>
       <span class="stations-collection-tile-actions">
         <button type="button" class="stations-icon-btn" data-action="collection-info" data-uuid="${escapeHtml(uuid)}" aria-label="Station info">i</button>
-        <button type="button" class="stations-icon-btn" data-action="collection-add" data-uuid="${escapeHtml(uuid)}" aria-label="Add to list">+</button>
+        <button type="button" class="stations-icon-btn" data-action="collection-add" data-uuid="${escapeHtml(uuid)}" aria-label="Add to list">${HEART_ICON}</button>
       </span>
     </article>
   `;
