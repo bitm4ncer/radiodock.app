@@ -89,12 +89,13 @@ export function mountPlayerCard({ player }) {
       size: 'lg',
     });
 
-    if (station.homepage) {
-      visitBtn.href = station.homepage;
+    const link = stationLink(station);
+    if (link) {
+      visitBtn.href = link;
       // Show the bare hostname (stripped of www.) so the row reads like
-      // the Chrome extension's player card — looks intentional even
+      // the Chrome extension's player card - looks intentional even
       // before any now-playing metadata lands.
-      visitBtn.textContent = hostnameFor(station.homepage);
+      visitBtn.textContent = hostnameFor(link);
       visitBtn.style.display = '';
     } else {
       visitBtn.style.display = 'none';
@@ -110,6 +111,16 @@ export function mountPlayerCard({ player }) {
     } catch {
       return url;
     }
+  }
+
+  // Always offer a way back to the station: its curated homepage when we have
+  // one, otherwise the stream's own origin (where the station actually lives).
+  function stationLink(station) {
+    const home = String(station?.homepage ?? '').trim();
+    if (home) return home;
+    const stream = String(station?.url_resolved || station?.url || '').trim();
+    if (!stream) return '';
+    try { return new URL(stream).origin; } catch { return ''; }
   }
 
   function setNowPlaying(text) {
@@ -316,9 +327,8 @@ export function mountPlayerCard({ player }) {
   })();
 
   logoBtn.addEventListener('click', () => {
-    if (currentStation?.homepage) {
-      window.open(currentStation.homepage, '_blank', 'noopener');
-    }
+    const link = stationLink(currentStation);
+    if (link) window.open(link, '_blank', 'noopener');
   });
 
   favBtn.addEventListener('click', () => {

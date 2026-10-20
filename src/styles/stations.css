@@ -1515,3 +1515,66 @@ html.is-standalone .stations-panel-grip {
 .stations-discover .stations-section-head {
   padding-inline: 0;
 }
+
+/* ---- Inline station info (list rows + Discover tiles) ---- */
+.stations-inline-info {
+  position: relative;
+  margin: 0 0 10px;
+  padding: 16px 16px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.stations-inline-info .station-info-body {
+  gap: 14px;
+  padding-right: 24px;
+}
+
+.stations-inline-info-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  color: var(--text-muted);
+  background: transparent;
+  cursor: pointer;
+}
+
+.stations-inline-info-close:hover {
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.stations-inline-info-close:focus-visible {
+  outline: 2px solid var(--text-muted);
+  outline-offset: 2px;
+}
+
+.stations-inline-info-close svg {
+  width: 14px;
+  height: 14px;
+}
+
+.stations-collection-grid > .stations-inline-info {
+  grid-column: 1 / -1;
+  margin: 0 0 8px;
+}
+
+@media (max-width: 699px) {
+  .stations-inline-info {
+    padding: 14px 14px 12px;
+  }
+
+  .stations-inline-info .station-info-body {
+    padding-right: 22px;
+  }
+}

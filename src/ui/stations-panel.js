@@ -8,6 +8,7 @@ import { escapeHtml, formatCount } from './stations-format.js';
 import { normaliseDiscover, renderDiscover, renderCollection } from './discover-child.js';
 import { eligibleLists, pickerHtml } from './playlist-picker.js';
 import { mountLogoBehavior } from './station-logo.js';
+import { createInlineStationInfo } from './station-info-inline.js';
 import * as storage from '../data/storage.js';
 
 const LETTERS = ['All', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''), '#'];
@@ -101,6 +102,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   let filters = null;
   let searchTimer = null;
   let panelPosition = null;
+  let inlineInfoEl = null;
+  let inlineInfoId = null;
 
   function shell() {
     body.innerHTML = `
@@ -228,6 +231,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   function renderContent() {
     const content = body.querySelector('#stationsContent');
     if (!content) return;
+    // The list markup is replaced below, so any expanded info panel goes with it.
+    inlineInfoEl = null;
+    inlineInfoId = null;
     content.setAttribute('aria-busy', String(state.loading));
     if (state.tooShort) {
       content.innerHTML = `<div class="stations-empty"><p>Type at least 2 characters.</p></div>`;
@@ -314,6 +320,31 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     return `${head}<div class="stations-empty"><p>No stations match these filters.</p><button type="button" class="stations-pill" data-action="clear-filters">Clear filters</button></div>`;
   }
 
+  // Inline info: expanding a row (or a Discover tile) opens the station info
+  // underneath it instead of the player's bottom sheet. One panel at a time.
+  function closeInlineInfo() {
+    if (inlineInfoEl?.isConnected) inlineInfoEl.remove();
+    inlineInfoEl = null;
+    inlineInfoId = null;
+    body.querySelectorAll('[data-action="info"], [data-action="collection-info"]')
+      .forEach((btn) => btn.setAttribute('aria-expanded', 'false'));
+  }
+
+  function toggleInlineInfo(anchor, station) {
+    const id = String(station?.id ?? '');
+    if (!id) return;
+    if (inlineInfoId === id) {
+      closeInlineInfo();
+      return;
+    }
+    closeInlineInfo();
+    inlineInfoEl = createInlineStationInfo(station, { onClose: closeInlineInfo });
+    anchor.after(inlineInfoEl);
+    inlineInfoId = id;
+    anchor.querySelector('[data-action="info"], [data-action="collection-info"]')
+      ?.setAttribute('aria-expanded', 'true');
+  }
+
   function onContentClick(evt) {
     const action = evt.target.closest('[data-action]');
     if (action) {
@@ -354,7 +385,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     if (!station) return;
     const button = evt.target.closest('[data-action]');
     if (button?.dataset.action === 'info') {
-      actions.onInfo?.(station);
+      toggleInlineInfo(row, station);
       return;
     }
     if (button?.dataset.action === 'add') {
@@ -555,6 +586,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   }
 
   function discoverShell(title, backAction, contentHtml) {
+    inlineInfoEl = null;
+    inlineInfoId = null;
     body.innerHTML = `
       <div class="stations-shell">
         <header class="stations-header">
@@ -760,7 +793,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     if (name === 'collection-play') {
       actions.onPlay?.(station);
     }
-    else if (name === 'collection-info') actions.onInfo?.(station);
+    else if (name === 'collection-info') toggleInlineInfo(action.closest('.stations-collection-tile'), station);
     else if (name === 'collection-add') actions.onAdd?.(station);
   }
 

@@ -74,7 +74,7 @@ export function stationsRow(station, { query = '', mode = 'az', algorithm = 'boo
     </span>
   </button>
   <span class="stations-row-actions">
-    <button class="stations-icon-btn stations-row-action" type="button" data-action="info" aria-label="Station info">${INFO_ICON}</button>
+    <button class="stations-icon-btn stations-row-action" type="button" data-action="info" aria-label="Station info" aria-expanded="false">${INFO_ICON}</button>
     ${add}
   </span>
 </article>`;
