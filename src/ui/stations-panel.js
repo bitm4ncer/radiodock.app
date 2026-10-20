@@ -109,11 +109,11 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     body.innerHTML = `
       <div class="stations-shell">
         <header class="stations-header stations-header--browse">
+          <button type="button" class="stations-pill stations-discover-btn" data-action="discover">${discoverIcon()}<span>Discover Lists</span></button>
           <div class="stations-header-copy">
             
             <h2 class="stations-title" id="stationsTitle">Stations</h2>
           </div>
-          <button type="button" class="stations-pill stations-discover-btn" data-action="discover">${discoverIcon()}<span>Discover Lists</span></button>
           <div class="stations-header-actions">
             <button type="button" class="stations-icon-btn" data-action="shuffle" aria-label="Play a random station" title="Play a random station">${shuffleIcon()}</button>
             <button type="button" class="stations-icon-btn" data-action="close" aria-label="Close Stations">${closeIcon()}</button>
