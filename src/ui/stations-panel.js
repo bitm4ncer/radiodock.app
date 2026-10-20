@@ -5,7 +5,7 @@ import { stationsRow, updateRowNowPlaying, HEART_ICON, PLUS_ICON } from './stati
 import { mountStationsFilters } from './stations-filter.js';
 import { buildBrowseParams, communityParams, mergeRows, searchModeFor, popularParams, searchParams, MAX_ROWS } from './stations-state.js';
 import { escapeHtml, formatCount } from './stations-format.js';
-import { normaliseDiscover, renderDiscover, renderCollection } from './discover-child.js';
+import { normaliseDiscover, renderDiscover, renderCollection, collectionCard, featuredLists } from './discover-child.js';
 import { eligibleLists, pickerHtml } from './playlist-picker.js';
 import { mountLogoBehavior } from './station-logo.js';
 import { createInlineStationInfo } from './station-info-inline.js';
@@ -122,6 +122,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
             <button type="button" class="stations-icon-btn" data-action="close" aria-label="Close Stations">${closeIcon()}</button>
           </div>
         </header>
+        <div id="stationsFeatured" class="stations-featured" hidden></div>
         <div class="stations-search-wrap">
           <input type="search" id="stationsSearch" class="stations-search-input" placeholder="Search stations or genres" autocomplete="off" value="${escapeHtml(state.query)}" />
         </div>
@@ -173,9 +174,11 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       country: state.country,
       genre: state.genre,
     });
+    body.querySelector('#stationsFeatured')?.addEventListener('click', onFeaturedClick);
     renderHeader();
     renderRail();
     renderContent();
+    renderFeaturedSection();
   }
 
   function renderHeader() {
@@ -745,6 +748,48 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     queueMicrotask(() => body.querySelector(`[data-action="${backAction}"]`)?.focus());
   }
 
+  // Featured editorial lists above the search bar. Loaded once per panel
+  // session, capped at six and rendered with the same cards as Discover.
+  async function renderFeaturedSection() {
+    const host = body.querySelector('#stationsFeatured');
+    if (!host) return;
+    if (!state.discover) {
+      try { state.discover = (await data.loadDiscover?.({})) ?? null; } catch { state.discover = null; }
+    }
+    if (!host.isConnected || state.view !== 'stations') return;
+    const lists = featuredLists(normaliseDiscover(state.discover).lists, 6);
+    if (!lists.length) {
+      host.hidden = true;
+      host.innerHTML = '';
+      return;
+    }
+    host.hidden = false;
+    host.innerHTML = `
+      <div class="stations-collection-grid stations-featured-grid">${lists.map((list) => collectionCard(list)).join('')}</div>
+      <div class="stations-featured-actions">
+        <button type="button" class="stations-pill" data-action="discover-more">Discover more lists</button>
+        <button type="button" class="stations-submit-link" data-action="submit-list">Submit your list</button>
+      </div>
+    `;
+  }
+
+  function onFeaturedClick(evt) {
+    const collection = evt.target.closest('[data-collection]');
+    if (collection) {
+      // A featured card is a detour from the Stations page: its back button
+      // returns there, not to Discover.
+      openCollection(collection.dataset.collection, { backAction: 'back' });
+      return;
+    }
+    if (evt.target.closest('[data-action="discover-more"]')) {
+      openDiscover();
+      return;
+    }
+    if (evt.target.closest('[data-action="submit-list"]')) {
+      openPlaylistPicker();
+    }
+  }
+
   function renderDiscoverView() {
     state.view = 'discover';
     state.collection = null;
@@ -767,11 +812,11 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     renderDiscoverView();
   }
 
-  function openCollection(slug) {
+  function openCollection(slug, { backAction = 'back-discover' } = {}) {
     const list = normaliseDiscover(state.discover).lists.find((item) => item.slug === slug);
     if (!list) return;
     state.collection = list;
-    discoverShell(list.title, 'back-discover', renderCollection({ list }));
+    discoverShell(list.title, backAction, renderCollection({ list }));
     applyNowPlaying();
     refreshAddedFlags();
   }

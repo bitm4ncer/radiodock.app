@@ -21,6 +21,7 @@ export function normaliseDiscover(data) {
       slug,
       title: list.title.trim(),
       source: list.source === 'user' ? 'user' : 'radiodock',
+      featured: !!list.featured,
       stations: list.stations,
     });
   }
@@ -39,7 +40,7 @@ function logoStack(stations = []) {
 
 
 
-function collectionCard(list, { user = false } = {}) {
+export function collectionCard(list, { user = false } = {}) {
   return `
     <button type="button" class="stations-collection-card${user ? ' is-user' : ''}" data-collection="${escapeHtml(list.slug)}">
       <span class="stations-collection-card-top">${logoStack(list.stations)}</span>
@@ -56,6 +57,11 @@ function collectionCard(list, { user = false } = {}) {
 
 function submitLink() {
   return '<button type="button" class="stations-submit-link" data-action="submit-playlist">Submit Playlist</button>';
+}
+
+// The Stations page shows at most six editorial picks, in curated order.
+export function featuredLists(lists = [], limit = 6) {
+  return lists.filter((list) => list.featured).slice(0, limit);
 }
 
 export function renderDiscover({ lists = [] } = {}) {

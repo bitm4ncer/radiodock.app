@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normaliseDiscover, renderDiscover, renderCollection } from '../src/ui/discover-child.js';
+import { normaliseDiscover, renderDiscover, renderCollection, featuredLists } from '../src/ui/discover-child.js';
 
 test('normaliseDiscover keeps valid curated lists only', () => {
   const data = { curated: { lists: [
@@ -20,6 +20,21 @@ test('renderDiscover uses singular copy for one station', () => {
   assert.doesNotMatch(html, /Curated by RadioDock/);
   assert.match(html, /1 station/);
   assert.doesNotMatch(html, /1 stations/);
+});
+
+test('normaliseDiscover keeps the featured flag and the Stations picks cap at six', () => {
+  const lists = Array.from({ length: 8 }, (_, i) => ({
+    slug: `list-${i}`,
+    title: `List ${i}`,
+    featured: i < 7,
+    stations: [{ stationuuid: 'a', name: 'A' }],
+  }));
+  const normalised = normaliseDiscover({ curated: { lists } }).lists;
+  assert.equal(normalised[0].featured, true);
+  assert.equal(normalised[7].featured, false);
+  assert.equal(featuredLists(normalised).length, 6);
+  assert.equal(featuredLists(normalised, 2).length, 2);
+  assert.deepEqual(featuredLists(normalised).map((l) => l.slug), ['list-0', 'list-1', 'list-2', 'list-3', 'list-4', 'list-5']);
 });
 
 test('normaliseDiscover preserves user list provenance', () => {
