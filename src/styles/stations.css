@@ -922,7 +922,11 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
 }
 
 .stations-open-btn {
+  display: inline-flex;
   flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   min-height: 34px;
   margin-left: 6px;
   padding: 0 16px;
@@ -934,6 +938,12 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
+}
+
+.stations-open-btn svg {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
 }
 
 .stations-open-btn:hover {
