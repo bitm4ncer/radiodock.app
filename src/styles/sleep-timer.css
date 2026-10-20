@@ -1,15 +1,13 @@
 /* Sleep timer: a rubber-band slider. Resting chrome is muted; the only red
-   is the final ten seconds, where the countdown becomes a real signal. */
+   is the final ten seconds, where the countdown becomes a real signal.
+   No card chrome - it sits directly in the drawer and in the footer bar. */
 
 .sleep-timer-slot {
-  padding: 4px 2px 2px;
+  padding: 6px 6px 2px;
 }
 
 .sleep-timer {
-  padding: 10px 12px 9px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--bg-dark);
+  min-width: 0;
 }
 
 .sleep-timer__head {
@@ -17,7 +15,7 @@
   align-items: center;
   gap: 6px;
   min-height: 18px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .sleep-timer__label {
@@ -136,7 +134,7 @@
 }
 
 .sleep-timer__hint {
-  margin: 5px 0 0;
+  margin: 4px 0 0;
   color: var(--text-muted);
   font-size: 9px;
   line-height: 1.35;
@@ -148,26 +146,56 @@
   border-radius: 999px;
 }
 
-/* Desktop browser: the same block, opened from the footer pill. */
-.sleep-timer-popover {
-  position: fixed;
-  z-index: 1500;
-  width: 286px;
-  padding: 6px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--bg-dark);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+/* Desktop browser: inline in the footer bar, [Timer] [track] [0:00]. */
+.sleep-timer-footer {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
 }
 
-.sleep-timer-popover[hidden] {
+.sleep-timer--footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 2px;
+}
+
+.sleep-timer--footer .sleep-timer__head {
+  display: contents;
+}
+
+.sleep-timer--footer .sleep-timer__label {
+  order: 0;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.sleep-timer--footer .sleep-timer__label svg {
+  width: 13px;
+  height: 13px;
+}
+
+.sleep-timer--footer .sleep-timer__track {
+  order: 1;
+  width: 120px;
+  height: 18px;
+}
+
+.sleep-timer--footer .sleep-timer__value {
+  order: 2;
+  min-width: 34px;
+  margin-left: 0;
+  text-align: right;
+}
+
+.sleep-timer--footer .sleep-timer__cancel {
+  order: 3;
+}
+
+.sleep-timer--footer .sleep-timer__hint {
   display: none;
-}
-
-.sleep-timer-popover .sleep-timer {
-  padding: 6px 8px 4px;
-  border: 0;
-  background: transparent;
 }
 
 /* Sleep timer is a PWA feature; the Electron shell does not mount it, and the

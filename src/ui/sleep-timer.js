@@ -99,7 +99,7 @@ export function createSleepTimerController({ now = () => Date.now(), onFinish } 
 function blockMarkup() {
   return `
     <div class="sleep-timer__head">
-      <span class="sleep-timer__label">${MOON_ICON}<span>Sleep timer</span></span>
+      <span class="sleep-timer__label">${MOON_ICON}<span>Timer</span></span>
       <span class="sleep-timer__value">Off</span>
       <button type="button" class="sleep-timer__cancel" aria-label="Cancel sleep timer" hidden>${CLOSE_ICON}</button>
     </div>
@@ -221,59 +221,11 @@ export function mountSleepTimer({ player, onEnd } = {}) {
     bindBlock(block);
   }
 
-  const footerBtn = document.getElementById('footerSleepTimerBtn');
-  const popover = document.getElementById('sleepTimerPopover');
-  if (footerBtn && popover) {
-    let open = false;
-    let bound = false;
-
-    const close = () => {
-      if (!open) return;
-      open = false;
-      popover.hidden = true;
-      footerBtn.setAttribute('aria-expanded', 'false');
-      document.removeEventListener('pointerdown', onOutside, true);
-      document.removeEventListener('keydown', onKey, true);
-    };
-
-    function onOutside(evt) {
-      if (popover.contains(evt.target) || footerBtn.contains(evt.target)) return;
-      close();
-    }
-
-    function onKey(evt) {
-      if (evt.key === 'Escape') close();
-    }
-
-    const position = () => {
-      const rect = footerBtn.getBoundingClientRect();
-      const width = popover.offsetWidth || 286;
-      const height = popover.offsetHeight || 120;
-      popover.style.left = `${Math.max(8, Math.min(rect.left + rect.width - width, window.innerWidth - width - 8))}px`;
-      popover.style.top = `${Math.max(8, Math.min(rect.top - height - 8, window.innerHeight - height - 8))}px`;
-    };
-
-    const show = () => {
-      popover.hidden = false;
-      if (!bound) {
-        const block = buildBlock('sleep-timer--popover');
-        popover.appendChild(block);
-        bindBlock(block);
-        bound = true;
-      }
-      open = true;
-      footerBtn.setAttribute('aria-expanded', 'true');
-      position();
-      document.addEventListener('pointerdown', onOutside, true);
-      document.addEventListener('keydown', onKey, true);
-      popover.querySelector('.sleep-timer__track')?.focus();
-    };
-
-    footerBtn.addEventListener('click', () => (open ? close() : show()));
-
-    controller.subscribe((snapshot) => {
-      footerBtn.textContent = snapshot.active ? `Sleep ${formatRemaining(snapshot.remainingMs)}` : 'Sleep timer';
-    });
+  const footerRoot = document.getElementById('sleepTimerFooter');
+  if (footerRoot) {
+    const block = buildBlock('sleep-timer--footer');
+    footerRoot.appendChild(block);
+    bindBlock(block);
   }
 
   return { controller };

@@ -576,7 +576,7 @@
         <button type="button" class="footer-pill footer-pill--sm" id="footerSyncBtn">Sync</button>
         <button type="button" class="footer-pill footer-pill--sm" id="footerAddBtn">Database</button>
         <button type="button" class="footer-pill footer-pill--sm" id="footerChangelogBtn">Features<span class="nav-dot" data-changelog-dot></span></button>
-        <button type="button" class="footer-pill footer-pill--sm" id="footerSleepTimerBtn" aria-expanded="false" aria-controls="sleepTimerPopover">Sleep timer</button>
+        <div id="sleepTimerFooter" class="sleep-timer-footer"></div>
         <a class="footer-pill footer-pill--sm" href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener">GitHub</a>
         <a class="footer-pill footer-pill--sm" href="https://github.com/bitm4ncer/radiodock.app/issues" target="_blank" rel="noopener">Issues</a>
         <a class="footer-pill footer-pill--sm" href="https://ko-fi.com/radiodock" target="_blank" rel="noopener">Donate</a>
@@ -593,9 +593,6 @@
         <span class="site-footer-desktop__version app-version" aria-hidden="true">v1.0.0</span>
       </div>
     </footer>
-
-    <!-- Desktop-browser sleep timer: a popover above the footer pill. -->
-    <div id="sleepTimerPopover" class="sleep-timer-popover" hidden></div>
 
     <!-- Toast for notifications -->
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
