@@ -111,7 +111,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
             <h2 class="stations-title" id="stationsTitle">Stations</h2>
           </div>
           <div class="stations-header-actions">
-            <button type="button" class="stations-pill stations-discover-btn" data-action="discover">${discoverIcon()}<span>Discover</span></button>
+            <button type="button" class="stations-pill stations-discover-btn" data-action="discover">${discoverIcon()}<span>Discover Lists</span></button>
             <button type="button" class="stations-icon-btn" data-action="shuffle" aria-label="Play a random station" title="Play a random station">${shuffleIcon()}</button>
             <button type="button" class="stations-icon-btn" data-action="close" aria-label="Close Stations">${closeIcon()}</button>
           </div>

@@ -149,7 +149,7 @@
 }
 
 .stations-search-input:focus {
-  outline: 2px solid var(--red);
+  outline: 2px solid var(--text-muted);
   outline-offset: 1px;
 }
 
@@ -197,7 +197,7 @@
 .stations-load-more:focus-visible,
 .stations-filter-option:focus-visible,
 .stations-filter-search:focus-visible {
-  outline: 2px solid var(--red);
+  outline: 2px solid var(--text-muted);
   outline-offset: 2px;
 }
 
@@ -1250,7 +1250,7 @@ html.is-standalone .stations-panel-grip {
 }
 
 .stations-submit-link:focus-visible {
-  outline: 2px solid var(--red);
+  outline: 2px solid var(--text-muted);
   outline-offset: 2px;
 }
 
@@ -1400,7 +1400,7 @@ html.is-standalone .stations-panel-grip {
 
 .stations-playlist-field input:focus-visible,
 .stations-playlist-field textarea:focus-visible {
-  outline: 2px solid var(--red);
+  outline: 2px solid var(--text-muted);
   outline-offset: 1px;
 }
 
