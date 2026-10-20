@@ -328,6 +328,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     inlineInfoId = null;
     body.querySelectorAll('[data-action="info"], [data-action="collection-info"]')
       .forEach((btn) => btn.setAttribute('aria-expanded', 'false'));
+    body.querySelectorAll('.is-info-open').forEach((el) => el.classList.remove('is-info-open'));
   }
 
   function toggleInlineInfo(anchor, station) {
@@ -340,6 +341,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     closeInlineInfo();
     inlineInfoEl = createInlineStationInfo(station, { onClose: closeInlineInfo });
     anchor.after(inlineInfoEl);
+    anchor.classList.add('is-info-open');
     inlineInfoId = id;
     anchor.querySelector('[data-action="info"], [data-action="collection-info"]')
       ?.setAttribute('aria-expanded', 'true');

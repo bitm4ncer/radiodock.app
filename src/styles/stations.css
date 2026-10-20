@@ -1578,3 +1578,20 @@ html.is-standalone .stations-panel-grip {
     padding-right: 22px;
   }
 }
+
+/* An expanded row and its info section read as one surface: same grey as the
+   hover state, no radius or seam where they meet. */
+.stations-row.is-info-open {
+  background: var(--surface);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+
+.stations-row.is-info-open + .stations-inline-info {
+  margin-top: 0;
+  border: 0;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+
+.stations-collection-tile.is-info-open {
+  background: var(--surface);
+}
