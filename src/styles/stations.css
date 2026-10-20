@@ -346,7 +346,7 @@
 }
 
 .stations-row:hover,
-.stations-row:focus-within {
+.stations-row:has(:focus-visible) {
   background: var(--surface);
 }
 
