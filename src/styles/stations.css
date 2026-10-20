@@ -600,6 +600,12 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
   color: var(--red);
 }
 
+/* The shared icon rule colours every action SVG with --text, so the added
+   state has to reach the SVG itself, not just the button. */
+.stations-row-actions .is-added svg {
+  color: var(--red);
+}
+
 .stations-row-actions .is-added svg path {
   fill: currentColor;
 }
@@ -1687,6 +1693,10 @@ html.is-standalone .stations-panel-grip {
   color: var(--red);
 }
 
+.stations-collection-tile-actions .is-added svg {
+  color: var(--red);
+}
+
 .stations-collection-tile-actions .is-added svg path {
   fill: currentColor;
 }
@@ -1698,5 +1708,10 @@ html.is-standalone .stations-panel-grip {
 
 .stations-collection-tile-actions .is-move,
 .stations-row-actions .is-move {
+  color: var(--text-muted);
+}
+
+.stations-collection-tile-actions .is-move svg,
+.stations-row-actions .is-move svg {
   color: var(--text-muted);
 }
