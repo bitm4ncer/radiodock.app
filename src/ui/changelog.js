@@ -11,7 +11,7 @@ const ISSUES_URL = 'https://github.com/bitm4ncer/radiodock.app/issues';
 // numbered — the app's real version comes from the git commit count, so any label
 // here would only ever be a second, wrong one.
 // main.js compares this to the on-device `changelogSeenRevision` pref.
-export const CHANGELOG_REVISION = 10;
+export const CHANGELOG_REVISION = 11;
 
 // Stroke line icons, no emoji. Inner markup only; wrapped by iconTile() so they
 // share one viewBox + stroke treatment and inherit `currentColor`.
@@ -29,10 +29,17 @@ const ICONS = {
   lock: '<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.2"/>',
   install: '<path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>',
   detect: '<path d="M12 3v18M8 6v12M16 6v12M4 10v4M20 10v4"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
 };
 
 // Newest release first. Each feature: { icon, title, body }.
 export const CHANGELOG = [
+  {
+    name: 'Sleep timer',
+    features: [
+      { icon: 'clock', title: 'Drift off to the radio', body: 'Open the menu and pull the sleep timer slider to the right. It glides back while you listen and pauses the stream when it reaches the left edge. On desktop, the timer lives in the footer bar.' },
+    ],
+  },
   {
     name: 'Stations & shared playlists',
     features: [

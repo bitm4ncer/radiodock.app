@@ -1,0 +1,177 @@
+/* Sleep timer: a rubber-band slider. Resting chrome is muted; the only red
+   is the final ten seconds, where the countdown becomes a real signal. */
+
+.sleep-timer-slot {
+  padding: 4px 2px 2px;
+}
+
+.sleep-timer {
+  padding: 10px 12px 9px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-dark);
+}
+
+.sleep-timer__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 18px;
+  margin-bottom: 6px;
+}
+
+.sleep-timer__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.sleep-timer__label svg {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 auto;
+}
+
+.sleep-timer__value {
+  margin-left: auto;
+  color: var(--text);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.sleep-timer__cancel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: var(--text-muted);
+  background: transparent;
+  cursor: pointer;
+}
+
+.sleep-timer__cancel[hidden] {
+  display: none;
+}
+
+.sleep-timer__cancel:hover {
+  color: var(--text);
+  background: var(--overlay-soft);
+}
+
+.sleep-timer__cancel svg {
+  width: 12px;
+  height: 12px;
+}
+
+.sleep-timer__track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 24px;
+  cursor: ew-resize;
+  touch-action: none;
+  outline: none;
+}
+
+.sleep-timer__rail,
+.sleep-timer__fill {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 6px;
+  border-radius: 999px;
+  transform: translateY(-50%);
+}
+
+.sleep-timer__rail {
+  right: 0;
+  background: var(--overlay-soft);
+}
+
+.sleep-timer__fill {
+  width: 0;
+  background: color-mix(in srgb, var(--text) 34%, transparent);
+}
+
+.sleep-timer.is-active .sleep-timer__fill {
+  background: color-mix(in srgb, var(--text) 55%, transparent);
+}
+
+.sleep-timer__handle {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 20px;
+  height: 14px;
+  margin-top: -7px;
+  border-radius: 999px;
+  background: var(--text);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.sleep-timer__handle::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 50%;
+  width: 2px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--bg) 45%, transparent);
+  transform: translateX(-50%);
+}
+
+.sleep-timer.is-ending .sleep-timer__value {
+  color: var(--red);
+}
+
+.sleep-timer__hint {
+  margin: 5px 0 0;
+  color: var(--text-muted);
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.sleep-timer__track:focus-visible {
+  outline: 2px solid var(--text-muted);
+  outline-offset: 2px;
+  border-radius: 999px;
+}
+
+/* Desktop browser: the same block, opened from the footer pill. */
+.sleep-timer-popover {
+  position: fixed;
+  z-index: 1500;
+  width: 286px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-dark);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+
+.sleep-timer-popover[hidden] {
+  display: none;
+}
+
+.sleep-timer-popover .sleep-timer {
+  padding: 6px 8px 4px;
+  border: 0;
+  background: transparent;
+}
+
+/* Sleep timer is a PWA feature; the Electron shell does not mount it, and the
+   slot stays hidden if an older renderer is cached. */
+body.is-electron .sleep-timer-slot {
+  display: none !important;
+}

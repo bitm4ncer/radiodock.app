@@ -13,6 +13,7 @@ import { mountListTabs } from './ui/list-tabs.js';
 import { mountListsCarousel } from './ui/lists-carousel.js';
 import { mountSearch } from './ui/search.js';
 import { mountStationsPanel } from './ui/stations-panel.js';
+import { mountSleepTimer } from './ui/sleep-timer.js';
 import { mountKeyboardShortcuts } from './ui/keyboard.js';
 import { mountStationInfo } from './ui/station-info.js';
 import { initModals, openModal, closeModal } from './ui/modals.js';
@@ -207,6 +208,10 @@ subscribeThemeOSChange();
 // one-off cold-start delay in exchange for a leak-free launch.
 
 const playerCard = mountPlayerCard({ player });
+mountSleepTimer({
+  player,
+  onEnd: ({ paused }) => toast(paused ? 'Sleep timer ended – playback paused' : 'Sleep timer ended'),
+});
 // Publishes --app-page-top / --app-page-bottom so About / Notes / Sync / Log open
 // between the top bar and the player instead of covering them.
 mountAppPageBounds();

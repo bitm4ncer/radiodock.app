@@ -270,6 +270,9 @@
             <span class="off-canvas__chev">→</span>
           </button>
 
+          <!-- Sleep timer: mounted by src/ui/sleep-timer.js. -->
+          <div id="sleepTimerDrawer" class="sleep-timer-slot"></div>
+
           <!-- Internal pages sit at the top; external links + theme + legal are
                pushed to the bottom of the drawer by this flex spacer. -->
           <div class="off-canvas__nav-spacer" aria-hidden="true"></div>
@@ -573,6 +576,7 @@
         <button type="button" class="footer-pill footer-pill--sm" id="footerSyncBtn">Sync</button>
         <button type="button" class="footer-pill footer-pill--sm" id="footerAddBtn">Database</button>
         <button type="button" class="footer-pill footer-pill--sm" id="footerChangelogBtn">Features<span class="nav-dot" data-changelog-dot></span></button>
+        <button type="button" class="footer-pill footer-pill--sm" id="footerSleepTimerBtn" aria-expanded="false" aria-controls="sleepTimerPopover">Sleep timer</button>
         <a class="footer-pill footer-pill--sm" href="https://github.com/bitm4ncer/radiodock.app" target="_blank" rel="noopener">GitHub</a>
         <a class="footer-pill footer-pill--sm" href="https://github.com/bitm4ncer/radiodock.app/issues" target="_blank" rel="noopener">Issues</a>
         <a class="footer-pill footer-pill--sm" href="https://ko-fi.com/radiodock" target="_blank" rel="noopener">Donate</a>
@@ -589,6 +593,9 @@
         <span class="site-footer-desktop__version app-version" aria-hidden="true">v1.0.0</span>
       </div>
     </footer>
+
+    <!-- Desktop-browser sleep timer: a popover above the footer pill. -->
+    <div id="sleepTimerPopover" class="sleep-timer-popover" hidden></div>
 
     <!-- Toast for notifications -->
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -637,6 +644,7 @@
             <li><strong>Live now-playing</strong> info for stations that publish it</li>
             <li><strong>Install</strong> on phone, desktop, or as a browser extension</li>
             <li><strong>Background playback</strong> with lock-screen and Bluetooth-headphone controls</li>
+            <li><strong>Sleep timer</strong> – pull the slider in the menu; playback pauses when it runs out</li>
             <li><strong>Installs like a native app</strong> — opens instantly from your home screen or dock</li>
             <li><strong>No ads, no cookies, no tracking</strong> beyond opt-out-able anonymous usage counts</li>
           </ul>
