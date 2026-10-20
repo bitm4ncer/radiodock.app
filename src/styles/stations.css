@@ -1607,3 +1607,96 @@ html.is-standalone .stations-panel-grip {
     font-size: 9.5px;
   }
 }
+
+/* ---- Move-to-list menu (heart ? plus) ---- */
+.stations-move-menu {
+  position: fixed;
+  z-index: 140;
+  min-width: 190px;
+  max-width: 260px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-dark);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+
+.stations-move-menu-head {
+  padding: 6px 8px 4px;
+  color: var(--text-muted);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.stations-move-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 32px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  color: var(--text);
+  background: transparent;
+  font: inherit;
+  font-size: 11.5px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.stations-move-item:hover {
+  background: var(--surface);
+}
+
+.stations-move-item.is-current {
+  color: var(--text-muted);
+  cursor: default;
+}
+
+.stations-move-item.is-current:hover {
+  background: transparent;
+}
+
+.stations-move-check {
+  flex: 0 0 12px;
+  width: 12px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.stations-move-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stations-move-empty {
+  margin: 0;
+  padding: 8px;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+/* Added state and the transient plus affordance in Discover tiles. */
+.stations-collection-tile-actions .is-added {
+  color: var(--red);
+}
+
+.stations-collection-tile-actions .is-added svg path {
+  fill: currentColor;
+}
+
+.stations-collection-tile-actions .heart-pop {
+  animation: stations-heart-pop 320ms cubic-bezier(0.2, 0.8, 0.3, 1);
+  color: var(--red);
+}
+
+.stations-collection-tile-actions .is-move,
+.stations-row-actions .is-move {
+  color: var(--text-muted);
+}

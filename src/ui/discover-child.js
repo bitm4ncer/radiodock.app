@@ -111,7 +111,7 @@ function collectionTile(station) {
       </button>
       <span class="stations-collection-tile-actions">
         <button type="button" class="stations-icon-btn" data-action="collection-info" data-uuid="${escapeHtml(uuid)}" aria-label="Station info" aria-expanded="false">i</button>
-        <button type="button" class="stations-icon-btn" data-action="collection-add" data-uuid="${escapeHtml(uuid)}" aria-label="Add to list">${HEART_ICON}</button>
+        <button type="button" class="stations-icon-btn" data-action="collection-add" data-uuid="${escapeHtml(uuid)}" aria-label="Add to list" aria-pressed="false">${HEART_ICON}</button>
       </span>
     </article>
   `;

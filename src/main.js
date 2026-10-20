@@ -380,6 +380,29 @@ const stations = mountStationsPanel({
       player.playStation(station);
     },
     onAdd: (station) => toggleStationInActiveList(station),
+    onMove: async (station, listId) => {
+      const from = getActiveEditableList();
+      if (!station || !from || from.id === listId) return;
+      try {
+        const to = (await listsApi.getUserLists()).find((l) => l.id === listId);
+        if (!to) return;
+        await listsApi.removeStationFromList(from.id, station.id);
+        from.stations = from.stations.filter((s) => s.id !== station.id);
+        await listsApi.addStationToList(listId, station);
+        state.userLists = await listsApi.getUserLists();
+        if (state.currentListId === from.id) renderActiveList();
+        else listDropdown.setLists(allListsForDropdown());
+        stations.refreshAddedFlags();
+        scheduleSyncPush();
+        toast(`Moved to "${to.name}"`);
+      } catch (err) {
+        toast(err.message);
+      }
+    },
+    getActiveList: () => {
+      const list = getActiveEditableList();
+      return list ? { id: list.id, name: list.name } : null;
+    },
     onInfo: (station) => openStationInfo(station),
     isAlreadyInActiveList: (stationId) => {
       const list = getActiveEditableList();

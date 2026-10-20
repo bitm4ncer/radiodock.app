@@ -1,7 +1,7 @@
 // Stations page: browse, search and Discover. Owns state, requests and the
 // panel lifecycle. Main.js wires the data clients and play/list actions.
 
-import { stationsRow, updateRowNowPlaying } from './stations-row.js';
+import { stationsRow, updateRowNowPlaying, HEART_ICON, PLUS_ICON } from './stations-row.js';
 import { mountStationsFilters } from './stations-filter.js';
 import { buildBrowseParams, communityParams, mergeRows, searchModeFor, popularParams, searchParams, MAX_ROWS } from './stations-state.js';
 import { escapeHtml, formatCount } from './stations-format.js';
@@ -104,6 +104,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   let panelPosition = null;
   let inlineInfoEl = null;
   let inlineInfoId = null;
+  let moveTimers = [];
+  let moveState = null; // { button, stationId }
+  let moveMenu = null; // { el, button, station }
 
   function shell() {
     body.innerHTML = `
@@ -231,7 +234,11 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   function renderContent() {
     const content = body.querySelector('#stationsContent');
     if (!content) return;
-    // The list markup is replaced below, so any expanded info panel goes with it.
+    // The list markup is replaced below, so any expanded info panel or move
+    // menu goes with it.
+    closeMoveMenu();
+    clearMoveTimers();
+    moveState = null;
     inlineInfoEl = null;
     inlineInfoId = null;
     content.setAttribute('aria-busy', String(state.loading));
@@ -320,6 +327,132 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     return `${head}<div class="stations-empty"><p>No stations match these filters.</p><button type="button" class="stations-pill" data-action="clear-filters">Clear filters</button></div>`;
   }
 
+  // Heart → plus: adding a station makes the heart red; a moment later it
+  // turns into a plus that opens a "move to list" menu. Ignored for two
+  // seconds, the plus settles back into the red heart.
+  function clearMoveTimers() {
+    moveTimers.forEach(clearTimeout);
+    moveTimers = [];
+  }
+
+  function settleHeart(button) {
+    if (!button?.isConnected) return;
+    button.innerHTML = HEART_ICON;
+    button.classList.remove('is-move');
+    button.setAttribute('aria-label', button.classList.contains('is-added') ? 'Already in list' : 'Add to list');
+  }
+
+  function startHeartFlow(button, station) {
+    clearMoveTimers();
+    moveState = { button, stationId: station.id };
+    moveTimers.push(setTimeout(() => {
+      if (!button.isConnected || moveMenu) return;
+      button.innerHTML = PLUS_ICON;
+      button.classList.add('is-move');
+      button.setAttribute('aria-label', 'Move to another list');
+    }, 350));
+    moveTimers.push(setTimeout(() => {
+      if (moveMenu) return;
+      settleHeart(button);
+      moveState = null;
+    }, 2350));
+  }
+
+  function handleAdd(button, station) {
+    const id = station?.id;
+    if (!id) return;
+    if (moveState?.stationId === id && button.classList.contains('is-move')) {
+      openMoveMenu(button, station);
+      return;
+    }
+    const wasAdded = !!actions.isAlreadyInActiveList?.(id);
+    clearMoveTimers();
+    moveState = null;
+    button.classList.remove('heart-pop');
+    void button.offsetWidth;
+    button.classList.add('heart-pop');
+    button.addEventListener('animationend', () => button.classList.remove('heart-pop'), { once: true });
+    actions.onAdd?.(station);
+    if (wasAdded) {
+      settleHeart(button);
+      return;
+    }
+    // Optimistic red until refreshAddedFlags confirms it.
+    button.classList.add('is-added');
+    button.setAttribute('aria-pressed', 'true');
+    startHeartFlow(button, station);
+  }
+
+  function closeMoveMenu() {
+    if (!moveMenu) return;
+    const { el, button } = moveMenu;
+    moveMenu = null;
+    el.remove();
+    document.removeEventListener('pointerdown', onMoveMenuOutside, true);
+    document.removeEventListener('keydown', onMoveMenuKey, true);
+    settleHeart(button);
+  }
+
+  function onMoveMenuOutside(evt) {
+    if (!moveMenu) return;
+    if (moveMenu.el.contains(evt.target) || moveMenu.button.contains(evt.target)) return;
+    closeMoveMenu();
+  }
+
+  function onMoveMenuKey(evt) {
+    if (evt.key !== 'Escape') return;
+    evt.preventDefault();
+    closeMoveMenu();
+  }
+
+  function positionMoveMenu(el, button) {
+    const r = button.getBoundingClientRect();
+    const mr = el.getBoundingClientRect();
+    const left = Math.max(8, Math.min(r.right - mr.width, window.innerWidth - mr.width - 8));
+    const below = r.bottom + 6;
+    const top = below + mr.height > window.innerHeight - 8
+      ? Math.max(8, r.top - mr.height - 6)
+      : below;
+    el.style.left = `${left}px`;
+    el.style.top = `${top}px`;
+  }
+
+  async function openMoveMenu(button, station) {
+    clearMoveTimers();
+    let lists = [];
+    try { lists = (await data.getUserLists?.()) ?? []; } catch { lists = []; }
+    if (!button.isConnected) return;
+    closeMoveMenu();
+    const activeId = actions.getActiveList?.()?.id ?? null;
+    const el = document.createElement('div');
+    el.className = 'stations-move-menu';
+    el.setAttribute('role', 'menu');
+    el.innerHTML = `
+      <div class="stations-move-menu-head">Move to list</div>
+      ${lists.map((list) => `
+        <button type="button" class="stations-move-item${list.id === activeId ? ' is-current' : ''}" data-list-id="${escapeHtml(list.id)}" role="menuitem"${list.id === activeId ? ' aria-current="true"' : ''}>
+          <span class="stations-move-check" aria-hidden="true">${list.id === activeId ? '✓' : ''}</span>
+          <span class="stations-move-name">${escapeHtml(list.name)}</span>
+        </button>`).join('')}
+    `;
+    if (!lists.length) el.insertAdjacentHTML('beforeend', '<p class="stations-move-empty">No lists yet.</p>');
+    document.body.appendChild(el);
+    moveMenu = { el, button, station };
+    positionMoveMenu(el, button);
+    el.addEventListener('click', async (evt) => {
+      const item = evt.target.closest('[data-list-id]');
+      if (!item || item.classList.contains('is-current')) return;
+      const target = moveMenu;
+      await actions.onMove?.(station, item.dataset.listId);
+      if (moveMenu === target) closeMoveMenu();
+      settleHeart(button);
+    });
+    setTimeout(() => {
+      document.addEventListener('pointerdown', onMoveMenuOutside, true);
+      document.addEventListener('keydown', onMoveMenuKey, true);
+    }, 0);
+  }
+
   // Inline info: expanding a row (or a Discover tile) opens the station info
   // underneath it instead of the player's bottom sheet. One panel at a time.
   function closeInlineInfo() {
@@ -391,11 +524,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       return;
     }
     if (button?.dataset.action === 'add') {
-      button.classList.remove('heart-pop');
-      void button.offsetWidth;
-      button.classList.add('heart-pop');
-      button.addEventListener('animationend', () => button.classList.remove('heart-pop'), { once: true });
-      actions.onAdd?.(station);
+      handleAdd(button, station);
       return;
     }
     if (button?.dataset.action === 'play' || !button) {
@@ -588,6 +717,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   }
 
   function discoverShell(title, backAction, contentHtml) {
+    closeMoveMenu();
+    clearMoveTimers();
+    moveState = null;
     inlineInfoEl = null;
     inlineInfoId = null;
     body.innerHTML = `
@@ -618,6 +750,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.collection = null;
     const lists = normaliseDiscover(state.discover).lists;
     discoverShell('Discover', 'back', renderDiscover({ lists }));
+    applyNowPlaying();
+    refreshAddedFlags();
   }
 
   async function openDiscover() {
@@ -639,6 +773,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.collection = list;
     discoverShell(list.title, 'back-discover', renderCollection({ list }));
     applyNowPlaying();
+    refreshAddedFlags();
   }
 
   function renderPlaylistPicker() {
@@ -796,7 +931,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       actions.onPlay?.(station);
     }
     else if (name === 'collection-info') toggleInlineInfo(action.closest('.stations-collection-tile'), station);
-    else if (name === 'collection-add') actions.onAdd?.(station);
+    else if (name === 'collection-add') handleAdd(action, station);
   }
 
   function browseAll() {
@@ -971,6 +1106,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.loading = false;
     state.tooShort = false;
     state.playlistPicker = null;
+    closeMoveMenu();
+    clearMoveTimers();
+    moveState = null;
     filters?.close();
     document.removeEventListener('keydown', onDocumentKeydown);
     panel.classList.remove('is-open');
@@ -1000,13 +1138,15 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       applyNowPlaying();
     },
     refreshAddedFlags() {
-      if (state.view !== 'stations') return;
-      body.querySelectorAll('[data-action="add"]').forEach((button) => {
-        const row = button.closest('[data-id]');
-        const added = !!actions.isAlreadyInActiveList?.(row?.dataset.id);
+      body.querySelectorAll('[data-action="add"], [data-action="collection-add"]').forEach((button) => {
+        const item = button.closest('[data-id], [data-uuid]');
+        const id = item?.dataset.id ?? item?.dataset.uuid;
+        const added = !!actions.isAlreadyInActiveList?.(id);
         button.classList.toggle('is-added', added);
         button.setAttribute('aria-pressed', String(added));
-        button.setAttribute('aria-label', added ? 'Already in list' : 'Add to list');
+        if (!button.classList.contains('is-move')) {
+          button.setAttribute('aria-label', added ? 'Already in list' : 'Add to list');
+        }
       });
     },
   };
