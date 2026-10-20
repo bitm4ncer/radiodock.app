@@ -32,7 +32,7 @@ function pluralCount(count, singular) {
 }
 
 function logoStack(stations = []) {
-  return `<span class="stations-logo-stack">${stations.slice(0, 3)
+  return `<span class="stations-logo-stack">${stations.slice(0, 5)
     .map((station) => renderLogoSlot(station, { imgClass: 'stations-stack-logo', initialsClass: 'stations-stack-initials', size: 'sm', resolveById: true, priority: true }))
     .join('')}</span>`;
 }
@@ -47,8 +47,8 @@ function collectionCard(list, { user = false } = {}) {
         ${user ? '<span class="stations-collection-card-kicker">User playlist</span>' : ''}
         <span class="stations-collection-card-line">
           <strong>${escapeHtml(list.title)}</strong>
-          <span class="stations-collection-card-count">${pluralCount(list.stations.length, 'station')}</span>
         </span>
+        <span class="stations-collection-card-count">${pluralCount(list.stations.length, 'station')}</span>
       </span>
     </button>
   `;
