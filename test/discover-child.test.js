@@ -41,7 +41,7 @@ test('renderDiscover splits official and user collections', () => {
     ],
     genres: [],
   });
-  assert.match(html, /Curated by RadioDock/);
+  assert.doesNotMatch(html, /Curated by RadioDock/);
   assert.match(html, /Curated by users/);
   assert.match(html, /Submit Playlist/);
   assert.doesNotMatch(html, /Collection of the week/);

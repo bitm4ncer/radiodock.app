@@ -64,7 +64,6 @@ export function renderDiscover({ lists = [] } = {}) {
 
   const officialSection = official.length
     ? `
-      <p class="stations-discover-sub">Curated by RadioDock · ${pluralCount(official.length, 'collection')}</p>
       <div class="stations-collection-grid">${official.map((list) => collectionCard(list)).join('')}</div>
     `
     : `
