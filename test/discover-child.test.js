@@ -12,13 +12,12 @@ test('normaliseDiscover keeps valid curated lists only', () => {
   assert.equal(normaliseDiscover(null).lists.length, 0);
 });
 
-test('renderDiscover uses singular copy for one collection', () => {
+test('renderDiscover uses singular copy for one station', () => {
   const html = renderDiscover({
     lists: [{ slug: 'party', title: 'Party', stations: [{ stationuuid: 'a', name: 'A' }] }],
     genres: [],
   });
-  assert.match(html, /1 collection/);
-  assert.doesNotMatch(html, /1 collections/);
+  assert.doesNotMatch(html, /Curated by RadioDock/);
   assert.match(html, /1 station/);
   assert.doesNotMatch(html, /1 stations/);
 });
