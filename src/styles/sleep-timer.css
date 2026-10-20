@@ -6,7 +6,7 @@
    own 14px padding, so the moon/label and the value line up with the item
    text on the left and the chevrons on the right. */
 .sleep-timer-slot {
-  padding: 6px 14px 2px;
+  padding: 12px 14px 2px;
 }
 
 .sleep-timer {
