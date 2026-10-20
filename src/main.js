@@ -720,9 +720,9 @@ document.body.addEventListener('click', (evt) => {
 // manual there, so iOS installs go uncounted at this layer.
 window.addEventListener('appinstalled', () => track('pwa-installed'));
 
-// Ko-fi support outbound link. Several link instances live in the DOM
-// (mobile drawer + desktop footer + install badge); delegating from body
-// covers them all without per-element wiring. The link's container
+// Ko-fi donate outbound link. Several link instances live in the DOM (mobile
+// drawer + desktop footer + install badge + onboarding nudge); delegating from
+// body covers them all without per-element wiring. The link's container
 // disambiguates which surface the click came from.
 document.body.addEventListener('click', (evt) => {
   const link = evt.target.closest('a[href*="ko-fi.com"]');
@@ -731,8 +731,10 @@ document.body.addEventListener('click', (evt) => {
     ? 'drawer'
     : link.closest('.install-section')
       ? 'install'
-      : 'footer';
-  track('support-click', { source });
+      : link.closest('.nudge')
+        ? 'nudge'
+        : 'footer';
+  track('donate-click', { source });
 });
 
 // Only one full-page surface (Notes / Sync / About / Log / Stations) is open at a

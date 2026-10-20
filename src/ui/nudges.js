@@ -1,4 +1,4 @@
-// Nudge system: dezente, engagement-gated cards (Share, Support). One module
+// Nudge system: dezente, engagement-gated cards (Share, Donate). One module
 // owns usage tracking, eligibility, and rendering. Nudges appear at most once
 // per session and only after the user has shown they like the app.
 //
@@ -11,7 +11,7 @@ import { track } from '../analytics/umami.js';
 // --- Tunables (all thresholds + URLs in one place) ---
 const SHARE_LISTEN_MINUTES = 5;
 const SUPPORT_DAY_COUNT = 3;
-const SUPPORT_URL = 'https://ko-fi.com/radiodock';
+const DONATE_URL = 'https://ko-fi.com/radiodock';
 const APP_SHARE_URL = 'https://radiodock.app';
 
 // --- Icons ---
@@ -130,11 +130,12 @@ const REGISTRY = {
     content: {
       icon: HEART_ICON,
       headline: "You're a power user!",
-      body: 'RadioDock is free & ad-free. Help keep the server alive and support the project.',
+      body: 'RadioDock is free & ad-free. If it is part of your day, you can help keep the server alive.',
     },
     mountActions(el) {
-      el.innerHTML = `<a class="nudge__btn nudge__btn--primary" href="${SUPPORT_URL}" target="_blank" rel="noopener" data-support>Support</a>`;
-      el.querySelector('[data-support]').addEventListener('click', () => track('nudge-support-click'));
+      // No local listener: the delegated Ko-fi handler in main.js records every
+      // outbound click as donate-click with its source.
+      el.innerHTML = `<a class="nudge__btn nudge__btn--primary" href="${DONATE_URL}" target="_blank" rel="noopener" data-donate>Donate</a>`;
     },
   },
 };
