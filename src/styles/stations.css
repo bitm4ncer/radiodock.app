@@ -80,6 +80,20 @@
   gap: 6px;
 }
 
+/* Browse view: the Discover Lists pill sits next to the title, while the
+   shuffle/close icons keep the right edge. */
+.stations-header--browse {
+  align-items: center;
+}
+
+.stations-header--browse .stations-header-copy {
+  flex: 0 1 auto;
+}
+
+.stations-header--browse .stations-header-actions {
+  margin-left: auto;
+}
+
 .stations-pill,
 .stations-icon-btn {
   display: inline-flex;
