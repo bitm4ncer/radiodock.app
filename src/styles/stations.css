@@ -116,7 +116,7 @@
 }
 
 .stations-discover-btn {
-  padding: 0 12px;
+  padding: 0 24px;
   border-color: color-mix(in srgb, var(--red) 42%, var(--border));
   background: color-mix(in srgb, var(--red) 7%, transparent);
 }
@@ -1458,7 +1458,7 @@ html.is-standalone .stations-panel-grip {
   }
 
   .stations-discover-btn {
-    padding: 0 9px;
+    padding: 0 18px;
     font-size: 10px;
   }
 
