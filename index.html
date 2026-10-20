@@ -567,7 +567,7 @@
     <!-- Desktop-only footer; sits below the centered .page so it's just
          below the fold by default and revealed when the user scrolls.
          Hidden on mobile — the same links live in the off-canvas drawer. -->
-    <footer class="site-footer-desktop desktop-only">
+    <footer class="site-footer-desktop desktop-only" id="siteFooter">
       <div class="site-footer-desktop__inner">
         <button type="button" class="footer-pill footer-pill--sm footer-pill--cta" id="footerReinstallBtn">
           Install on Devices
@@ -593,6 +593,9 @@
         <span class="site-footer-desktop__version app-version" aria-hidden="true">v1.0.0</span>
       </div>
     </footer>
+
+    <!-- Subtle grabber for the hidden footer: a short rounded line. -->
+    <button type="button" class="footer-handle desktop-only" id="footerHandle" aria-label="Show footer" aria-controls="siteFooter"></button>
 
     <!-- Toast for notifications -->
     <div id="toast" class="toast" role="status" aria-live="polite"></div>

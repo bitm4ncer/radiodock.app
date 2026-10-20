@@ -65,6 +65,14 @@ export function mountFooterReveal() {
   // mouseenter on the footer pins it open until cursor leaves the area.
   footer.addEventListener('mouseenter', () => setRevealed(true));
 
+  // The little grabber at the bottom edge is a keyboard/tap entry point for
+  // the same reveal, not just decoration.
+  const handle = document.getElementById('footerHandle');
+  handle?.addEventListener('click', () => {
+    setRevealed(true);
+    footer.querySelector('.footer-pill')?.focus();
+  });
+
   document.addEventListener('mousemove', onMove, { passive: true });
   document.addEventListener('mouseleave', onLeave);
 }
