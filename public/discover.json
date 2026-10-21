@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T03:48:07.507Z",
+  "generatedAt": "2026-10-21T03:56:42.411Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2232,6 +2232,11 @@
             "stationuuid": "b7154644-7519-4c14-8891-023c23387e4f",
             "name": "Kapitał",
             "countrycode": "PL"
+          },
+          {
+            "stationuuid": "bae70c5c-9f3f-42fc-a83d-6c13920590e0",
+            "name": "Kiosk Radio",
+            "countrycode": "BE"
           }
         ]
       },
