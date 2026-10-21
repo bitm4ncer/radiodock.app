@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T15:13:19.521Z",
+  "generatedAt": "2026-10-21T15:43:52.375Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -1950,114 +1950,6 @@
             "stationuuid": "960ece9a-0601-11e8-ae97-52543be04c81",
             "name": "Country Radio",
             "countrycode": "CZ"
-          }
-        ]
-      },
-      {
-        "slug": "party",
-        "title": "Electronic",
-        "source": "radiodock",
-        "featured": true,
-        "stations": [
-          {
-            "stationuuid": "29ba74b4-c8cd-45d3-990d-91d08cb5a329",
-            "name": "Mad Radio Barcelona",
-            "countrycode": "ES"
-          },
-          {
-            "stationuuid": "5fcea0b1-dd78-49d3-a8f1-41ff3b00124f",
-            "name": "Veneno",
-            "countrycode": "BR"
-          },
-          {
-            "stationuuid": "214f3da4-7795-491e-b5e7-91a18b18d089",
-            "name": "Club Radio",
-            "countrycode": "RO"
-          },
-          {
-            "stationuuid": "9c100db7-ba97-4e6f-821f-dba1ed08ad52",
-            "name": "Rinse UK",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "b1d72676-8870-47da-91db-a88357b64c51",
-            "name": "Dance Revolution",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "bf694cb5-5897-4930-989a-35932c39875b",
-            "name": "Drift Radio",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "963fb135-0601-11e8-ae97-52543be04c81",
-            "name": "Radio 90s Eurodance",
-            "countrycode": ""
-          },
-          {
-            "stationuuid": "962cc6df-0601-11e8-ae97-52543be04c81",
-            "name": "Dance Wave!",
-            "countrycode": "HU"
-          },
-          {
-            "stationuuid": "961787d1-0601-11e8-ae97-52543be04c81",
-            "name": "Frisky Radio",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "af6f51b1-0ca9-11ea-a87e-52543be04c81",
-            "name": "Intense Radio - We love Dance 256K",
-            "countrycode": "NL"
-          },
-          {
-            "stationuuid": "563f5559-105c-11e9-a80b-52543be04c81",
-            "name": "DFM RUSSIAN DANCE",
-            "countrycode": "RU"
-          },
-          {
-            "stationuuid": "9628632e-0601-11e8-ae97-52543be04c81",
-            "name": "Radio Stereocittà",
-            "countrycode": "IT"
-          },
-          {
-            "stationuuid": "d847db37-5f89-48a5-be32-b10e5406f0e6",
-            "name": "Mixadance FM",
-            "countrycode": "RU"
-          },
-          {
-            "stationuuid": "26edc6b6-d221-4814-a6a9-0dd5d5d365d2",
-            "name": "Pure Ibiza Radio",
-            "countrycode": "ES"
-          },
-          {
-            "stationuuid": "07b51aa7-527e-11ea-be63-52543be04c81",
-            "name": "Radio Studio Più - HQ",
-            "countrycode": "IT"
-          },
-          {
-            "stationuuid": "960f7041-0601-11e8-ae97-52543be04c81",
-            "name": "RMF Dance",
-            "countrycode": "PL"
-          },
-          {
-            "stationuuid": "962c7032-0601-11e8-ae97-52543be04c81",
-            "name": "Italia Dance Music",
-            "countrycode": "IT"
-          },
-          {
-            "stationuuid": "962cd7e3-0601-11e8-ae97-52543be04c81",
-            "name": "European Hit Radio - Dance",
-            "countrycode": "LV"
-          },
-          {
-            "stationuuid": "9629d012-0601-11e8-ae97-52543be04c81",
-            "name": "Kiss FM 87.6, 87.8 & 88.0 Melbourne, VIC",
-            "countrycode": "AU"
-          },
-          {
-            "stationuuid": "962c02bc-0601-11e8-ae97-52543be04c81",
-            "name": "Radio Ibiza",
-            "countrycode": "IT"
           }
         ]
       },
