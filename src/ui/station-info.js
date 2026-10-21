@@ -221,15 +221,20 @@ export function mountStationInfo() {
   if (!appMode) {
     const handle = panel.querySelector('[data-role="drag"]');
     let dragging = false, pointerId = null, offX = 0, offY = 0;
-    handle.addEventListener('pointerdown', (e) => {
+    const startDrag = (e) => {
       if (e.button !== 0) return;
+      if (e.target.closest('button, a, input, textarea, select')) return;
       const rect = panel.getBoundingClientRect();
       dragging = true; pointerId = e.pointerId;
       handle.setPointerCapture(pointerId);
       offX = e.clientX - rect.left; offY = e.clientY - rect.top;
       panel.classList.add('is-dragging');
       e.preventDefault();
-    });
+    };
+    // The whole header is the grab area, like the notes / stations / add /
+    // sync panels; the six-dot glyph stays as the visual affordance.
+    const dragArea = panel.querySelector('.info-panel__header') ?? handle;
+    dragArea.addEventListener('pointerdown', startDrag);
     handle.addEventListener('pointermove', (e) => {
       if (!dragging || e.pointerId !== pointerId) return;
       applyDesktopPos(e.clientX - offX, e.clientY - offY);
