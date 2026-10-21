@@ -787,8 +787,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     host.innerHTML = `
       <div class="stations-collection-grid stations-featured-grid">${lists.map((list) => collectionCard(list)).join('')}</div>
       <div class="stations-featured-actions">
-        <button type="button" class="stations-pill stations-discover-btn" data-action="discover-more">${discoverIcon()}<span>Discover more lists</span></button>
-        <button type="button" class="stations-submit-link" data-action="submit-list">Submit your list</button>
+        <button type="button" class="stations-pill stations-discover-btn" data-action="discover-more">${discoverIcon()}<span>Discover more collections</span></button>
+        <button type="button" class="stations-submit-link" data-action="submit-list">Suggest a collection</button>
       </div>
     `;
     // Logo slots only swap their initials for artwork once the behavior is
@@ -978,7 +978,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     } catch (err) {
       if (!state.playlistPicker) return;
       state.playlistPicker.submitting = false;
-      state.playlistPicker.error = err?.message || 'Could not submit the playlist.';
+      state.playlistPicker.error = err?.message || 'Could not submit the collection.';
       renderPlaylistPicker();
     }
   }

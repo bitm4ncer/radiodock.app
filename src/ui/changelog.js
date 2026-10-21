@@ -41,11 +41,11 @@ export const CHANGELOG = [
     ],
   },
   {
-    name: 'Stations & shared playlists',
+    name: 'Stations & shared collections',
     features: [
       { icon: 'search', title: 'One place for every station', body: 'Open Stations to browse more than 50,000 radio stations. Switch between Popular, A-Z and Community Radios, then filter by country, genre, or stations with a description.' },
       { icon: 'music', title: 'Popular, not just clicked', body: 'Popular now looks at how many people listen and how long they stay, so a station cannot reach the top from repeated clicks alone.' },
-      { icon: 'share', title: 'Share a playlist with everyone', body: 'In Discover, choose Submit Playlist, pick one of your lists, and send it for review. Published playlists appear under Curated by users for everyone to explore.' },
+      { icon: 'share', title: 'Share a collection with everyone', body: 'In Discover, choose Suggest a collection, pick one of your lists, and send it for review. Published collections appear under Community collections for everyone to explore.' },
     ],
   },
   {

@@ -1303,7 +1303,7 @@ html.is-standalone .stations-panel:not(.is-open) {
   translate: 0 100%;
 }
 
-/* Curated by users */
+/* Community collections */
 .stations-user-collections {
   margin-top: 24px;
 }

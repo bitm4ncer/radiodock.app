@@ -45,7 +45,7 @@ export function collectionCard(list, { user = false } = {}) {
     <button type="button" class="stations-collection-card${user ? ' is-user' : ''}" data-collection="${escapeHtml(list.slug)}">
       <span class="stations-collection-card-top">${logoStack(list.stations)}</span>
       <span class="stations-collection-card-copy">
-        ${user ? '<span class="stations-collection-card-kicker">User playlist</span>' : ''}
+        ${user ? '<span class="stations-collection-card-kicker">Community collection</span>' : ''}
         <span class="stations-collection-card-line">
           <strong>${escapeHtml(list.title)}</strong>
         </span>
@@ -56,7 +56,7 @@ export function collectionCard(list, { user = false } = {}) {
 }
 
 function submitLink() {
-  return '<button type="button" class="stations-submit-link" data-action="submit-playlist">Submit Playlist</button>';
+  return '<button type="button" class="stations-submit-link" data-action="submit-playlist">Suggest a collection</button>';
 }
 
 // The Stations page shows at most six editorial picks, in curated order.
@@ -82,7 +82,7 @@ export function renderDiscover({ lists = [] } = {}) {
   const userSection = `
     <div class="stations-user-collections">
       <div class="stations-section-head">
-        <strong>Curated by users</strong>
+        <strong>Community collections</strong>
         <div class="stations-section-actions">
           ${user.length ? `<span>${formatCount(user.length)}</span>` : ''}
           ${submitLink()}
@@ -90,7 +90,7 @@ export function renderDiscover({ lists = [] } = {}) {
       </div>
       ${user.length
         ? `<div class="stations-collection-grid">${user.map((list) => collectionCard(list, { user: true })).join('')}</div>`
-        : '<p class="stations-user-empty">No user playlists yet. Be the first.</p>'}
+        : '<p class="stations-user-empty">No community collections yet. Be the first.</p>'}
     </div>
   `;
 
@@ -126,7 +126,7 @@ export function renderCollection({ list } = {}) {
   if (!list) return '<div class="stations-empty">Collection not found.</div>';
   return `
     <div class="stations-collection">
-      <p class="stations-discover-sub">${formatCount(list.stations.length)} stations · ${list.source === 'user' ? 'Curated by a listener' : 'Curated list'}</p>
+      <p class="stations-discover-sub">${formatCount(list.stations.length)} stations · ${list.source === 'user' ? 'Community collection' : 'Curated collection'}</p>
       <div class="stations-collection-grid is-tiles">${list.stations.map(collectionTile).join('')}</div>
     </div>
   `;

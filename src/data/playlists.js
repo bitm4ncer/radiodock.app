@@ -40,7 +40,7 @@ export async function submitPlaylist({ title, note = '', stationUuids = [], subm
   } catch (err) {
     if (err instanceof PlaylistSubmitError) throw err;
     if (err?.name === 'AbortError') throw new PlaylistSubmitError('The submission timed out. Try again.');
-    throw new PlaylistSubmitError(err?.message || 'Could not submit the playlist.');
+    throw new PlaylistSubmitError(err?.message || 'Could not submit the collection.');
   } finally {
     clearTimeout(timer);
   }

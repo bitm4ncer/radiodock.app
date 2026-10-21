@@ -37,10 +37,10 @@ function formStep(selected, title, note, submitterName, submitterContact, error,
   const value = title || selected.name;
   return `
     <button type="button" class="stations-playlist-back" data-playlist-back>← Back to lists</button>
-    <p class="stations-playlist-help">Your name and the station list are sent for review. Email or contact is optional and only used to reach you about this submission.</p>
+    <p class="stations-playlist-help">Your name and the selected list are sent for review. Email or contact is optional and only used to reach you about this submission.</p>
     <form class="stations-playlist-form" data-playlist-form>
       <label class="stations-playlist-field">
-        <span>Playlist title</span>
+        <span>Collection title</span>
         <input id="playlistTitle" name="title" maxlength="60" value="${escapeHtml(value)}" required />
       </label>
       <label class="stations-playlist-field">
@@ -49,11 +49,11 @@ function formStep(selected, title, note, submitterName, submitterContact, error,
       </label>
       <label class="stations-playlist-field">
         <span>Email or contact <em>optional</em></span>
-        <input id="playlistSubmitterContact" name="submitterContact" maxlength="120" value="${escapeHtml(submitterContact)}" placeholder="So the editors can reach you about this list." />
+        <input id="playlistSubmitterContact" name="submitterContact" maxlength="120" value="${escapeHtml(submitterContact)}" placeholder="So the editors can reach you about this collection." />
       </label>
       <label class="stations-playlist-field">
         <span>Note <em>optional</em></span>
-        <textarea id="playlistNote" name="note" maxlength="280" rows="3" placeholder="Tell the editor what makes this list special.">${escapeHtml(note)}</textarea>
+        <textarea id="playlistNote" name="note" maxlength="280" rows="3" placeholder="Tell the editor what makes this collection special.">${escapeHtml(note)}</textarea>
       </label>
       ${error ? `<p class="stations-playlist-error" role="alert">${escapeHtml(error)}</p>` : ''}
       <button type="submit" class="stations-pill stations-playlist-submit" data-playlist-submit${submitting ? ' disabled aria-disabled="true"' : ''}>${submitting ? 'Submitting…' : 'Submit for review'}</button>
@@ -64,7 +64,7 @@ function formStep(selected, title, note, submitterName, submitterContact, error,
 function successStep() {
   return `
     <div class="stations-playlist-success">
-      <p><strong>Submitted for review.</strong> Your playlist will be reviewed and published if it fits.</p>
+      <p><strong>Submitted for review.</strong> Your collection will be reviewed and published if it fits.</p>
       <button type="button" class="stations-pill" data-playlist-close>Done</button>
     </div>
   `;
@@ -91,10 +91,10 @@ export function pickerHtml({
   return `
     <div class="stations-playlist-head">
       <div>
-        <p class="stations-kicker">Curated by users</p>
-        <h3 id="playlistPickerTitle">Submit Playlist</h3>
+        <p class="stations-kicker">Community collections</p>
+        <h3 id="playlistPickerTitle">Suggest a collection</h3>
       </div>
-      <button type="button" class="stations-icon-btn" data-playlist-close aria-label="Close playlist submission">×</button>
+      <button type="button" class="stations-icon-btn" data-playlist-close aria-label="Close collection submission">×</button>
     </div>
     <div class="stations-playlist-body">${body}</div>
   `;

@@ -38,7 +38,7 @@ test('pickerHtml asks for a required name and an optional contact', () => {
   assert.match(html, /id="playlistSubmitterName"[^>]*required/);
   assert.match(html, /id="playlistSubmitterContact"/);
   assert.match(html, /Email or contact/);
-  assert.match(html, /Your name and the station list are sent/);
+  assert.match(html, /Your name and the selected list are sent/);
 });
 
 test('pickerHtml shows an honest empty state when nothing is shareable', () => {

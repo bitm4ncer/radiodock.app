@@ -56,29 +56,29 @@ test('renderDiscover splits official and user collections', () => {
     genres: [],
   });
   assert.doesNotMatch(html, /Curated by RadioDock/);
-  assert.match(html, /Curated by users/);
-  assert.match(html, /Submit Playlist/);
+  assert.match(html, /Community collections/);
+  assert.match(html, /Suggest a collection/);
   assert.doesNotMatch(html, /Collection of the week/);
   assert.doesNotMatch(html, /stations-feature/);
   assert.match(html, /stations-collection-grid/);
   assert.match(html, /My Jazz/);
 });
 
-test('renderDiscover shows the submit CTA even when no user playlists exist', () => {
+test('renderDiscover shows the submit CTA even when no community collections exist', () => {
   const html = renderDiscover({
     lists: [{ slug: 'jazz', title: 'Jazz', source: 'radiodock', stations: [{ stationuuid: 'a', name: 'A' }] }],
     genres: [],
   });
-  assert.match(html, /No user playlists yet/);
+  assert.match(html, /No community collections yet/);
   assert.match(html, /stations-submit-link/);
-  assert.match(html, /Submit Playlist/);
+  assert.match(html, /Suggest a collection/);
 });
 
 test('renderDiscover keeps the user CTA when the database has no collections', () => {
   const html = renderDiscover({ lists: [], genres: [] });
   assert.match(html, /Collections are being prepared/);
-  assert.match(html, /Curated by users/);
-  assert.match(html, /Submit Playlist/);
+  assert.match(html, /Community collections/);
+  assert.match(html, /Suggest a collection/);
 });
 
 test('renderDiscover never renders the genre browser', () => {
