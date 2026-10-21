@@ -103,3 +103,20 @@ test('updateRowNowPlaying toggles class and aria state', () => {
   updateRowNowPlaying(row, true);
   assert.equal(toggled, true);
 });
+
+test('renders a source chip inside the metadata line', () => {
+  const html = stationsRow(base, { source: 'Deep Jazz' });
+
+  assert.match(html, /class="stations-row-source"[^>]*title="Deep Jazz"/);
+  assert.match(html, /class="stations-row-source"[^>]*>Deep Jazz<\/span>/);
+  assert.match(html, /stations-row-meta[\s\S]*stations-row-source/);
+  assert.doesNotMatch(html, /<(button|a)[^>]*stations-row-source/);
+});
+
+test('omits the source chip when source is empty', () => {
+  assert.doesNotMatch(stationsRow(base), /stations-row-source/);
+});
+
+test('escapes the source title', () => {
+  assert.match(stationsRow(base, { source: '<b>Jazz</b>' }), /&lt;b&gt;Jazz&lt;\/b&gt;/);
+});
