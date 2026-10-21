@@ -49,6 +49,7 @@ import { mountAddPanel } from './ui/add-panel.js';
 import { mountChangelog, CHANGELOG_REVISION } from './ui/changelog.js';
 import { startLiveSync, stopLiveSync, pushWithStatus as syncPushWithStatus, getSyncToken, extractTokenFromInput, pullFromServer, applyImportPayload, markSyncDirty, hasSyncConflict } from './data/sync.js';
 import { track, identifySession, trackStationPlay } from './analytics/umami.js';
+import { buildListItemEvent } from './analytics/stations-events.js';
 import { attachListenHeartbeat } from './analytics/listen-heartbeat.js';
 import { attachListenSession } from './analytics/listen-session.js';
 import { attachStreamOutcome } from './analytics/stream-outcome.js';
@@ -1032,8 +1033,16 @@ function isStationInFavorites(station) {
   return !!favoritesList()?.stations?.some((s) => s.id === station.id);
 }
 
+function isStationInAnyList(station) {
+  if (!station) return false;
+  return (state.userLists ?? []).some(
+    (list) => Array.isArray(list?.stations) && list.stations.some((s) => s.id === station.id),
+  );
+}
+
 function updateFavoriteHeart() {
-  playerCard.setFavoriteState(isStationInFavorites(state.currentStation));
+  const station = state.currentStation;
+  playerCard.setFavoriteState(isStationInAnyList(station), isStationInFavorites(station));
 }
 
 // --- Player events ---
