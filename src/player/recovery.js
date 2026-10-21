@@ -14,6 +14,8 @@ export function attachRecovery(player) {
   let stallTimer = null;
   let recoveryTimer = null;
   let waitingForNetwork = false;
+  let userPaused = false;
+  let internalPauseExpected = false;
 
   const emit = (type, detail) =>
     player.events?.dispatchEvent(new CustomEvent(type, { detail }));
@@ -35,6 +37,7 @@ export function attachRecovery(player) {
     attempts = 0;
     gaveUp = false;
     waitingForNetwork = false;
+    userPaused = false;
     clearStallTimer();
     clearRecoveryTimer();
   };
@@ -46,11 +49,13 @@ export function attachRecovery(player) {
     attempts = 0;
     gaveUp = false;
     waitingForNetwork = false;
+    userPaused = false;
     clearStallTimer();
     clearRecoveryTimer();
   };
 
   const tryRecover = () => {
+    if (userPaused) return;
     const station = player.getCurrentStation();
     if (!station) return;
     if (!navigator.onLine) {
@@ -82,8 +87,18 @@ export function attachRecovery(player) {
   audio.addEventListener('playing', reset);
   audio.addEventListener('pause', () => {
     clearStallTimer();
-    // While parked no retries run, so a pause during park is user intent —
-    // don't let the online handler override it.
+    // playStation() pauses the outgoing stream before switching; that pause
+    // is an internal loading step, not user intent, so it must not cancel a
+    // pending retry. A real pause (the user tapping pause) does.
+    if (internalPauseExpected) {
+      internalPauseExpected = false;
+      return;
+    }
+    userPaused = true;
+    clearStallTimer();
+    clearRecoveryTimer();
+    attempts = 0;
+    gaveUp = false;
     waitingForNetwork = false;
   });
   // playStation() emits stationchange on every call — including our own
@@ -92,6 +107,11 @@ export function attachRecovery(player) {
   let lastStationId = null;
   player.on('stationchange', (evt) => {
     const id = evt.detail?.station?.id ?? null;
+    // Only expect an internal pause when the element was actually playing:
+    // on a cold start audio.pause() is a no-op (no pause event), so a flag
+    // set unconditionally here would swallow the user's next real pause.
+    internalPauseExpected = !audio.paused;
+    userPaused = false;
     if (lastStationId !== null && id !== lastStationId) resetSilently();
     lastStationId = id;
   });
@@ -124,6 +144,7 @@ export function attachRecovery(player) {
   });
 
   window.addEventListener('online', () => {
+    if (userPaused) return;
     const station = player.getCurrentStation();
     if (!station) return;
     if (!waitingForNetwork && !recoveryTimer && !gaveUp) return;

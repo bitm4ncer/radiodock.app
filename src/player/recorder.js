@@ -31,7 +31,7 @@ export function mountRecorder({ maxDurationMs = 60 * 60 * 1000 } = {}) {
 
   let audioEl = null, ctx = null, srcNode = null, destNode = null, recorder = null;
   let chunks = [], bytes = 0, startedAt = 0, ticker = null, hardStop = null;
-  let recording = false, currentStation = null;
+  let recording = false, currentStation = null, starting = false;
 
   function tick() {
     emit('progress', { seconds: Math.floor((Date.now() - startedAt) / 1000), bytes });
@@ -46,54 +46,61 @@ export function mountRecorder({ maxDurationMs = 60 * 60 * 1000 } = {}) {
   }
 
   async function start(station) {
-    if (recording) return;
+    if (recording || starting) return;
     const uuid = station?.id;
     if (!uuid) { emit('error', { message: 'Station cannot be recorded (no id).' }); return; }
     const mime = pickMime();
     if (!mime) { emit('error', { message: 'Recording is not supported in this browser.' }); return; }
 
-    currentStation = station;
-    chunks = []; bytes = 0;
-
-    audioEl = document.createElement('audio');
-    audioEl.crossOrigin = 'anonymous'; // relay sends CORS headers → graph not tainted
-    audioEl.preload = 'auto';
-    audioEl.src = relayUrl(uuid);
-    audioEl.addEventListener('error', () => { if (recording) { emit('streamdrop', {}); stop(); } });
-    audioEl.addEventListener('ended', () => { if (recording) { emit('streamdrop', {}); stop(); } });
-
-    ctx = new AudioContext();
-    try { await ctx.resume(); } catch {}
-    srcNode = ctx.createMediaElementSource(audioEl);
-    destNode = ctx.createMediaStreamDestination();
-    srcNode.connect(destNode); // capture only — NOT to ctx.destination (no double audio)
-
+    // Reserve the start synchronously so a second tap before the first await
+    // can't open a parallel AudioContext / MediaRecorder.
+    starting = true;
     try {
-      await audioEl.play();
-    } catch (err) {
-      cleanup();
-      emit('error', { message: 'Could not start the recording stream.', name: err?.name });
-      return;
+      currentStation = station;
+      chunks = []; bytes = 0;
+
+      audioEl = document.createElement('audio');
+      audioEl.crossOrigin = 'anonymous'; // relay sends CORS headers → graph not tainted
+      audioEl.preload = 'auto';
+      audioEl.src = relayUrl(uuid);
+      audioEl.addEventListener('error', () => { if (recording) { emit('streamdrop', {}); stop(); } });
+      audioEl.addEventListener('ended', () => { if (recording) { emit('streamdrop', {}); stop(); } });
+
+      ctx = new AudioContext();
+      try { await ctx.resume(); } catch {}
+      srcNode = ctx.createMediaElementSource(audioEl);
+      destNode = ctx.createMediaStreamDestination();
+      srcNode.connect(destNode); // capture only — NOT to ctx.destination (no double audio)
+
+      try {
+        await audioEl.play();
+      } catch (err) {
+        cleanup();
+        emit('error', { message: 'Could not start the recording stream.', name: err?.name });
+        return;
+      }
+
+      recorder = new MediaRecorder(destNode.stream, { mimeType: mime });
+      recorder.ondataavailable = (e) => {
+        if (e.data && e.data.size) { chunks.push(e.data); bytes += e.data.size; }
+      };
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: mime });
+        emit('stopped', { blob, mime, durationMs: Date.now() - startedAt, bytes: blob.size, station: currentStation });
+        cleanup();
+      };
+      recorder.onerror = () => { emit('error', { message: 'Recorder error.' }); stop(); };
+
+      startedAt = Date.now();
+      recording = true;
+      recorder.start(1000); // 1s timeslice → periodic size updates
+      ticker = setInterval(tick, 1000);
+      hardStop = setTimeout(stop, maxDurationMs);
+      emit('started', { station });
+      tick();
+    } finally {
+      starting = false;
     }
-
-    recorder = new MediaRecorder(destNode.stream, { mimeType: mime });
-    recorder.ondataavailable = (e) => {
-      if (e.data && e.data.size) { chunks.push(e.data); bytes += e.data.size; }
-    };
-    recorder.onstop = () => {
-      const blob = new Blob(chunks, { type: mime });
-      emit('stopped', { blob, mime, durationMs: Date.now() - startedAt, bytes: blob.size, station: currentStation });
-      cleanup();
-    };
-    recorder.onerror = () => { emit('error', { message: 'Recorder error.' }); stop(); };
-
-    startedAt = Date.now();
-    recording = true;
-    recorder.start(1000); // 1s timeslice → periodic size updates
-    ticker = setInterval(tick, 1000);
-    hardStop = setTimeout(stop, maxDurationMs);
-    emit('started', { station });
-    tick();
   }
 
   function stop() {
@@ -107,7 +114,7 @@ export function mountRecorder({ maxDurationMs = 60 * 60 * 1000 } = {}) {
   return {
     start,
     stop,
-    isRecording: () => recording,
+    isRecording: () => recording || starting,
     on: (type, handler) => { events.addEventListener(type, handler); return () => events.removeEventListener(type, handler); },
   };
 }

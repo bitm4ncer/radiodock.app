@@ -42,15 +42,18 @@ export function mountMobileRecorder() {
     if (recording || fetching) return;
     const uuid = station?.id;
     if (!uuid) { emit('error', { message: 'Station cannot be recorded (no id).' }); return; }
+    // Reserve the start synchronously so a second tap before the first await
+    // can't open a second server recording.
+    recording = true;
     try {
       const { id, mime } = await startRecording(uuid);
       handle = { id, mime, uuid, station, startedAt: Date.now() };
       await setPref(PREF_PENDING, handle);
-      recording = true;
       startTicker();
       emit('started', { station });
       emit('progress', { seconds: 0, bytes: null });
     } catch (err) {
+      recording = false;
       emit('error', { message: 'Recording could not start.', name: err?.name });
     }
   }
