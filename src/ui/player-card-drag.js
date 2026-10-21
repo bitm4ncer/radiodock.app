@@ -24,7 +24,10 @@ export async function mountPlayerCardDragMinimize() {
 
   const container = document.getElementById('app');
   if (!container) return null;
-  registerSnapSurface(container);
+  registerSnapSurface(container, {
+    setPosition: (x, y) => applyPosition(x, y),
+    persist: (x, y) => { persistPosition(x, y).catch(() => {}); },
+  });
 
   const card = document.getElementById('playerCard');
   const details = card?.querySelector('.station-details') ?? null;

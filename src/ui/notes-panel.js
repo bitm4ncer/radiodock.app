@@ -64,7 +64,12 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
   const panel = buildPanel({ isMobile, showRecord: showPanelRecordButton });
   if (flag) document.body.appendChild(flag);
   document.body.appendChild(panel);
-  if (!isMobile) registerSnapSurface(panel);
+  if (!isMobile) {
+    registerSnapSurface(panel, {
+      setPosition: applyPosition,
+      persist: (x, y) => setPref(PREF_POS, { x, y }).catch(() => {}),
+    });
+  }
   let pageMenu = null;
   let noteMenu = null;
   let moveSubmenu = null;

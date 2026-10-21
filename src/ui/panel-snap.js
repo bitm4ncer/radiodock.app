@@ -1,13 +1,15 @@
 // Snap-away geometry for floating desktop panels.
 //
-// Every draggable panel registers its root element. When a drag ends the
-// caller passes the final viewport position to snapPanel(). If the panel
-// overlaps another registered surface (main player, Stations, Notes, Sync,
-// Add, install card), the nearest free side wins and the panel springs
-// there with a small overshoot. The geometry is a pure function so it can
-// be unit-tested without a DOM.
+// Every draggable panel registers its root element, optionally with an
+// adapter that can move and persist it. When a drag ends the caller passes
+// the final viewport position to snapPanel(). If the panel was dropped
+// between two vertically overlapping panels, the neighbours part like a
+// squeezed rubber band: they slide outward and spring back with a small
+// overshoot. Otherwise the old rule applies and the dragged panel escapes to
+// the nearest free side. The geometry is pure so it can be unit-tested
+// without a DOM.
 
-const surfaces = new Set();
+const surfaces = new Map();
 const animations = new WeakMap();
 
 export const SNAP_GAP = 12;
@@ -17,8 +19,8 @@ const SNAP_DURATION = 280;
 const SNAP_OVERSHOOT = 10; // px along the travel vector; ~4-5px past target
 const MAX_ITERATIONS = 8;
 
-export function registerSnapSurface(el) {
-  if (el) surfaces.add(el);
+export function registerSnapSurface(el, adapter = null) {
+  if (el) surfaces.set(el, adapter || null);
 }
 
 export function unregisterSnapSurface(el) {
@@ -36,9 +38,9 @@ export function cancelSnap(el) {
 }
 
 /**
- * Move `el` out of every overlapping surface and animate it into place.
- * Returns the final target immediately; the caller can persist it before
- * the spring has finished.
+ * Move `el` into place and animate it. If it was dropped between two panels,
+ * those panels are pushed aside first. Returns the final target immediately;
+ * the caller can persist it before the spring has finished.
  */
 export function snapPanel(el, { x, y, setPosition } = {}) {
   if (!el || typeof setPosition !== 'function') return { x, y };
@@ -46,18 +48,66 @@ export function snapPanel(el, { x, y, setPosition } = {}) {
   const rect = el.getBoundingClientRect();
   const width = rect.width;
   const height = rect.height;
-  const others = collectOtherRects(el);
+  const entries = collectOtherRects(el);
   const viewport = { width: window.innerWidth, height: window.innerHeight };
-  const target = resolveSnapPosition({
-    x, y, width, height, others, viewport, gap: SNAP_GAP, margin: SNAP_MARGIN,
+
+  const insertion = resolvePanelInsertion({
+    x,
+    y,
+    width,
+    height,
+    others: entries.map((entry) => ({
+      id: entry.el,
+      left: entry.rect.left,
+      top: entry.rect.top,
+      right: entry.rect.right,
+      bottom: entry.rect.bottom,
+      movable: !!(entry.adapter && typeof entry.adapter.setPosition === 'function'),
+    })),
+    viewport,
+    gap: SNAP_GAP,
+    margin: SNAP_MARGIN,
   });
 
-  const dx = target.x - x;
-  const dy = target.y - y;
+  if (insertion.inserted) {
+    const byId = new Map(entries.map((entry) => [entry.el, entry]));
+    for (const move of insertion.moves) {
+      const entry = byId.get(move.id);
+      if (!entry?.adapter?.setPosition) continue;
+      // Each neighbour gets a tiny outward kick, like the panel is settling
+      // into a too-small gap.
+      const distance = Math.hypot(move.x - entry.rect.left, move.y - entry.rect.top);
+      const bump = Math.min(8, Math.max(2, distance * 0.1));
+      animateElement(entry.el, entry.rect.left, entry.rect.top, move.x, move.y, entry.adapter.setPosition, bump);
+      try {
+        entry.adapter.persist?.(move.x, move.y);
+      } catch {}
+    }
+    animateElement(el, x, y, insertion.x, insertion.y, setPosition, SNAP_OVERSHOOT);
+    return { x: insertion.x, y: insertion.y };
+  }
+
+  const target = resolveSnapPosition({
+    x,
+    y,
+    width,
+    height,
+    others: entries.map((entry) => entry.rect),
+    viewport,
+    gap: SNAP_GAP,
+    margin: SNAP_MARGIN,
+  });
+  animateElement(el, x, y, target.x, target.y, setPosition, SNAP_OVERSHOOT);
+  return target;
+}
+
+function animateElement(el, fromX, fromY, toX, toY, setPosition, bump) {
+  const dx = toX - fromX;
+  const dy = toY - fromY;
   const distance = Math.hypot(dx, dy);
   if (distance < 0.5) {
-    setPosition(target.x, target.y);
-    return target;
+    setPosition(toX, toY);
+    return;
   }
 
   cancelSnap(el);
@@ -66,10 +116,19 @@ export function snapPanel(el, { x, y, setPosition } = {}) {
     // Suppress the panel's own left/top transition for this frame so the snap
     // lands instantly instead of gliding for another 300ms.
     el.classList.add('is-snapping');
-    setPosition(target.x, target.y);
+    setPosition(toX, toY);
     requestAnimationFrame(() => el.classList.remove('is-snapping'));
-    return target;
+    return;
   }
+
+  const rect = el.getBoundingClientRect();
+  const width = rect.width;
+  const height = rect.height;
+  const viewport = { width: window.innerWidth, height: window.innerHeight };
+  const minX = SNAP_MARGIN;
+  const minY = SNAP_MARGIN;
+  const maxX = Math.max(minX, viewport.width - width - SNAP_MARGIN);
+  const maxY = Math.max(minY, viewport.height - height - SNAP_MARGIN);
 
   el.classList.add('is-snapping');
   const started = performance.now();
@@ -77,18 +136,14 @@ export function snapPanel(el, { x, y, setPosition } = {}) {
   animations.set(el, anim);
   const ux = dx / distance;
   const uy = dy / distance;
-  const bump = Math.min(SNAP_OVERSHOOT, Math.max(3, distance * 0.12));
-  const minX = SNAP_MARGIN;
-  const minY = SNAP_MARGIN;
-  const maxX = Math.max(minX, viewport.width - width - SNAP_MARGIN);
-  const maxY = Math.max(minY, viewport.height - height - SNAP_MARGIN);
+  const kickSize = Math.min(SNAP_OVERSHOOT, Math.max(3, bump ?? distance * 0.12));
 
   function frame(now) {
     const t = Math.min(1, (now - started) / SNAP_DURATION);
     const eased = 1 - Math.pow(1 - t, 3);
-    const kick = Math.sin(Math.PI * t) * bump;
-    const px = x + dx * eased + ux * kick;
-    const py = y + dy * eased + uy * kick;
+    const kick = Math.sin(Math.PI * t) * kickSize;
+    const px = fromX + dx * eased + ux * kick;
+    const py = fromY + dy * eased + uy * kick;
     setPosition(
       Math.min(Math.max(px, minX), maxX),
       Math.min(Math.max(py, minY), maxY),
@@ -97,22 +152,21 @@ export function snapPanel(el, { x, y, setPosition } = {}) {
       anim.raf = requestAnimationFrame(frame);
       return;
     }
-    setPosition(target.x, target.y);
+    setPosition(toX, toY);
     animations.delete(el);
     el.classList.remove('is-snapping');
   }
 
   anim.raf = requestAnimationFrame(frame);
-  return target;
 }
 
 function collectOtherRects(el) {
   const out = [];
-  for (const other of surfaces) {
+  for (const [other, adapter] of surfaces) {
     if (!other || other === el || !other.isConnected) continue;
     if (other.contains(el) || el.contains(other)) continue;
     const rect = visibleRect(other);
-    if (rect) out.push(rect);
+    if (rect) out.push({ el: other, rect, adapter });
   }
   return out;
 }
@@ -126,6 +180,99 @@ function visibleRect(el) {
   const rect = el.getBoundingClientRect();
   if (rect.width < 2 || rect.height < 2) return null;
   return { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom };
+}
+
+/**
+ * Pure insertion resolver. If the drop sits between two movable panels that
+ * overlap it vertically, push those panels outward (never inward) until the
+ * dragged panel fits with the standard gap. When the neighbours run out of
+ * room the dragged panel may shift into the remaining slot; if that still
+ * does not fit, return inserted:false so the normal snap-away logic runs.
+ */
+export function resolvePanelInsertion({
+  x,
+  y,
+  width,
+  height,
+  others = [],
+  viewport,
+  gap = SNAP_GAP,
+  margin = SNAP_MARGIN,
+}) {
+  const minX = margin;
+  const minY = margin;
+  const maxX = Math.max(minX, viewport.width - width - margin);
+  const maxY = Math.max(minY, viewport.height - height - margin);
+  const clampX = (value) => Math.min(Math.max(value, minX), maxX);
+  const clampY = (value) => Math.min(Math.max(value, minY), maxY);
+
+  const dropX = clampX(x);
+  const dropY = clampY(y);
+  const drag = rectAt(dropX, dropY, width, height);
+  const centerX = dropX + width / 2;
+  const minOverlap = Math.max(40, Math.min(120, height * 0.35));
+  const overlapsVertically = (other) => (
+    Math.min(drag.bottom, other.bottom) - Math.max(drag.top, other.top) >= minOverlap
+  );
+
+  // Classify by the neighbour's centre instead of its inner edge: a wide
+  // panel can overlap past the dragged panel's centre and still sit on its
+  // right-hand side.
+  const left = others
+    .filter((other) => other.movable && overlapsVertically(other) && (other.left + other.right) / 2 <= centerX)
+    .sort((a, b) => b.right - a.right)[0];
+  const right = others
+    .filter((other) => (
+      other.movable
+      && overlapsVertically(other)
+      && (other.left + other.right) / 2 >= centerX
+      && other.id !== left?.id
+    ))
+    .sort((a, b) => a.left - b.left)[0];
+
+  if (!left || !right) return { inserted: false };
+  // Already clear of both neighbours: leave the drop alone.
+  if (dropX >= left.right + gap && dropX + width <= right.left - gap) {
+    return { inserted: false };
+  }
+
+  const leftX = clampX(Math.min(left.left, dropX - gap - (left.right - left.left)));
+  const rightX = clampX(Math.max(right.left, dropX + width + gap));
+  const leftInner = leftX + (left.right - left.left);
+  const rightInner = rightX;
+  const minDropX = leftInner + gap;
+  const maxDropX = rightInner - gap - width;
+  if (minDropX > maxDropX + 0.5) return { inserted: false };
+
+  // If the drop itself no longer fits (the neighbours ran into the viewport
+  // edges), settle in the middle of the remaining slot instead of hugging one
+  // neighbour.
+  const nextX = dropX < minDropX - 0.5 || dropX > maxDropX + 0.5
+    ? (minDropX + maxDropX) / 2
+    : dropX;
+  const nextY = dropY;
+  const moves = [];
+  if (Math.abs(leftX - left.left) > 0.5) moves.push({ id: left.id, x: leftX, y: left.top });
+  if (Math.abs(rightX - right.left) > 0.5) moves.push({ id: right.id, x: rightX, y: right.top });
+
+  const moveIds = new Set(moves.map((move) => move.id));
+  for (const move of moves) {
+    const source = move.id === left.id ? left : right;
+    const target = rectAt(move.x, move.y, source.right - source.left, source.bottom - source.top);
+    for (const other of others) {
+      if (other.id === move.id || moveIds.has(other.id)) continue;
+      if (other.id === left.id || other.id === right.id) continue;
+      if (overlapArea(target, other) > 1) return { inserted: false };
+    }
+  }
+
+  const dragTarget = rectAt(nextX, nextY, width, height);
+  for (const other of others) {
+    if (other.id === left.id || other.id === right.id) continue;
+    if (overlapArea(dragTarget, other) > 1) return { inserted: false };
+  }
+
+  return { inserted: true, x: nextX, y: nextY, moves };
 }
 
 /**

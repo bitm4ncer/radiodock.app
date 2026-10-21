@@ -160,7 +160,10 @@ export function mountSyncModal({ onListsChanged, onLinked, onUnlinked, track }) 
   // Drag is wired unconditionally; the handle is hidden by CSS on the mobile
   // fullscreen variant, so it can only be grabbed on the desktop card.
   if (panel) {
-    registerSnapSurface(panel);
+    registerSnapSurface(panel, {
+      setPosition: applyPosition,
+      persist: (x, y) => storage.setPref(PREF_POS, { x, y }).catch(() => {}),
+    });
     wireDrag();
     storage.getPref(PREF_POS, null).then((pos) => {
       if (pos && Number.isFinite(pos.x) && Number.isFinite(pos.y)) applyPosition(pos.x, pos.y);

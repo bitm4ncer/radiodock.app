@@ -5,6 +5,7 @@ import {
   SNAP_GAP,
   SNAP_MARGIN,
   resolveSnapPosition,
+  resolvePanelInsertion,
 } from '../src/ui/panel-snap.js';
 
 const viewport = { width: 1000, height: 800 };
@@ -79,4 +80,72 @@ test('keeps the result inside the viewport when the panel barely fits', () => {
   });
   assert.equal(pos.x, SNAP_MARGIN);
   assert.ok(pos.x + 300 <= 320);
+});
+
+function insert(overrides = {}) {
+  return resolvePanelInsertion({
+    x: 380,
+    y: 100,
+    width: 200,
+    height: 300,
+    others: [
+      { id: 'left', left: 100, top: 80, right: 400, bottom: 420, movable: true },
+      { id: 'right', left: 520, top: 80, right: 820, bottom: 420, movable: true },
+    ],
+    viewport,
+    ...overrides,
+  });
+}
+
+test('squeezes the drop between two panels and pushes both outward', () => {
+  const result = insert();
+  assert.equal(result.inserted, true);
+  assert.equal(result.x, 380);
+  assert.deepEqual(result.moves, [
+    { id: 'left', x: 68, y: 80 },
+    { id: 'right', x: 592, y: 80 },
+  ]);
+});
+
+test('does not squeeze when there is not enough room for both neighbours', () => {
+  const result = insert({
+    viewport: { width: 700, height: 800 },
+    width: 200,
+    x: 250,
+    others: [
+      { id: 'left', left: 0, top: 80, right: 300, bottom: 420, movable: true },
+      { id: 'right', left: 400, top: 80, right: 700, bottom: 420, movable: true },
+    ],
+  });
+  assert.equal(result.inserted, false);
+});
+
+test('does not squeeze with only one flanking panel', () => {
+  const result = insert({
+    others: [{ id: 'left', left: 100, top: 80, right: 400, bottom: 420, movable: true }],
+  });
+  assert.equal(result.inserted, false);
+});
+
+test('does not squeeze without enough vertical overlap', () => {
+  const result = insert({
+    y: 100,
+    height: 100,
+    others: [
+      { id: 'left', left: 100, top: 300, right: 400, bottom: 600, movable: true },
+      { id: 'right', left: 520, top: 300, right: 820, bottom: 600, movable: true },
+    ],
+  });
+  assert.equal(result.inserted, false);
+});
+
+test('does not push a neighbour into an unmovable obstacle', () => {
+  const result = insert({
+    others: [
+      { id: 'left', left: 100, top: 80, right: 400, bottom: 420, movable: true },
+      { id: 'right', left: 520, top: 80, right: 820, bottom: 420, movable: true },
+      { id: 'install', left: 0, top: 100, right: 100, bottom: 200, movable: false },
+    ],
+  });
+  assert.equal(result.inserted, false);
 });

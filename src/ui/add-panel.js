@@ -79,7 +79,10 @@ function wireLogoPicker(root, maxPx) {
 export function mountAddPanel({ getUserLists, getActiveListId, addStationToList, track }) {
   const panel = document.getElementById('addPanel');
   if (!panel) return { open() {}, close() {} };
-  registerSnapSurface(panel);
+  registerSnapSurface(panel, {
+    setPosition: applyPosition,
+    persist: (x, y) => storage.setPref(PREF_POS, { x, y }).catch(() => {}),
+  });
   let panelOpen = false;
 
   function isMobileNow() {
