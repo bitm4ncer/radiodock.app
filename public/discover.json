@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T21:10:15.655Z",
+  "generatedAt": "2026-10-21T21:11:06.453Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -4684,6 +4684,11 @@
             "countrycode": "GB"
           },
           {
+            "stationuuid": "85668c4c-de87-4d72-abbd-79af985ff5c1",
+            "name": "WGNX RADIO DETROIT",
+            "countrycode": "US"
+          },
+          {
             "stationuuid": "f9a4e918-7df8-42ba-862f-21828d7c9b09",
             "name": "Just House Music",
             "countrycode": "GB"
@@ -4691,11 +4696,6 @@
           {
             "stationuuid": "bb278b88-3836-479d-9ad7-7a3d5c07b001",
             "name": "Deep Space Radio",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "85668c4c-de87-4d72-abbd-79af985ff5c1",
-            "name": "WGNX RADIO DETROIT",
             "countrycode": "US"
           },
           {
@@ -5120,6 +5120,39 @@
             "stationuuid": "963e66a5-0601-11e8-ae97-52543be04c81",
             "name": "Alte Schule",
             "countrycode": "DE"
+          }
+        ]
+      },
+      {
+        "slug": "trap-drill",
+        "title": "Trap / Drill",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "8e8c8250-709a-4a2d-b651-28b5bafebb20",
+            "name": "Trap",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "ee243600-1f17-4819-9658-48a525e5bb27",
+            "name": "Best of Trap",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "c513e2b5-270e-4cdf-8df1-ee04efb73b23",
+            "name": "Invalidsquad",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "ebd49ed7-be1f-483c-a27b-b972eee57a9a",
+            "name": "Fatrap FM",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "dea175ee-eb4d-4779-9f9e-fe945ba674ad",
+            "name": "Drill",
+            "countrycode": ""
           }
         ]
       }
