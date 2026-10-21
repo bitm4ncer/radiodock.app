@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T19:54:12.950Z",
+  "generatedAt": "2026-10-21T19:54:33.839Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2269,6 +2269,149 @@
             "stationuuid": "2e1cb65b-967f-4221-8bcb-1baecea7784c",
             "name": "Avant-Garde Jazz/Free Improvisation - Radio Caprice",
             "countrycode": ""
+          }
+        ]
+      },
+      {
+        "slug": "bass-rave",
+        "title": "Bass / Breaks",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "6a79ad48-3c95-472d-bdf0-850c1172cf69",
+            "name": "Infrared.fm",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "11ea7da5-283c-487f-9e66-49e115d7ac9f",
+            "name": "DFM - Breakbeat",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "b591d01a-e72b-4030-a640-a8da10ed73f6",
+            "name": "Breakz.FM",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "4dd48108-a67c-46ef-81bd-528876649a48",
+            "name": "Record Breaks",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "0a026fcc-20dd-4277-b2ad-8113b652221b",
+            "name": "BBZ BREAKBEATZONE",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "edd5f1a1-1bc1-456d-9880-c4604380a0f3",
+            "name": "BreakSpace.FM",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "6215226f-5e96-404b-aa6f-0cf41040b088",
+            "name": "Decibelia FM",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "96453752-0601-11e8-ae97-52543be04c81",
+            "name": "Atm.Fm",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "9d7a91ae-3ecf-49b7-a7fa-71e839b5d74d",
+            "name": "Truskool Breakz",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "1c61e510-1967-43a8-9599-ea91d201a3c2",
+            "name": "DFM Bass House",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "22423370-efbf-4bf2-a301-5bd918cd8ad5",
+            "name": "Technolovers Bass House",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "2820436b-1401-42d5-adf7-9a411d66e40b",
+            "name": "Subline – Bass & Tech House",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "631049dc-60cf-4e27-95c8-8593e03aee20",
+            "name": "Record Bass House",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "6b36f91e-0a61-459c-bd84-853df27c49ed",
+            "name": "RauteMusik Bass",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "bff54c56-1798-4f2e-83bc-ec3c90c732a6",
+            "name": "I Love Bass by HBz",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "5a71d128-cb37-4d62-8b8b-a705e95ad2d8",
+            "name": "Dubplate.fm Dub &Bass",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "91a14ec6-a008-4a12-b6d3-65db918e12e0",
+            "name": "Algorythme UK Garage",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9ade6f14-73bb-4bc8-8234-2e40134966c1",
+            "name": "UKG247",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "462a1756-2a14-49c7-ad7e-7db5054e238c",
+            "name": "UKG Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "1c759224-cd2a-417c-a777-11e985f67582",
+            "name": "Funky SX",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "29dc48c6-adf5-49bf-a9d7-dfde3e9cfc6d",
+            "name": "UK Bass Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "d716df3e-37ee-4601-97e3-f041dfb28539",
+            "name": "Radio Caprice - grime",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "59a283e1-4a13-11e9-a4d7-52543be04c81",
+            "name": "DFM Trap",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "3511172e-a0f1-4568-9d34-87c3ef0fa608",
+            "name": "Technolovers Trap",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "5378792b-2ad9-4fae-b00f-e431766771c0",
+            "name": "__TRAP__ by rautemusik (rm.fm)",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "0ebe3b8d-3b42-4a08-880d-3d5691058dbe",
+            "name": "Радио Рекорд Trap",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "6e285729-085e-4dc8-8305-531e5f5c11fe",
+            "name": "Record Future Bass",
+            "countrycode": "RU"
           }
         ]
       },
