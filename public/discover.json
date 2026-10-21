@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T00:30:51.833Z",
+  "generatedAt": "2026-10-21T01:14:56.143Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -455,6 +455,71 @@
         "countrycode": "NO"
       },
       {
+        "stationuuid": "244b3bb9-1497-4f94-8dd3-2d8f7a1344fa",
+        "name": "Zabrij Radio",
+        "countrycode": ""
+      },
+      {
+        "stationuuid": "3717842d-e18c-4699-9539-796e620fbf05",
+        "name": "Calotropis",
+        "countrycode": "KE"
+      },
+      {
+        "stationuuid": "70272aef-71c4-42af-bf88-0cf658ee94d3",
+        "name": "Bvlbancha Liberation Radio",
+        "countrycode": ""
+      },
+      {
+        "stationuuid": "29d848b8-5401-4170-aa95-84eecd3c211b",
+        "name": "Intergalactic FM | CBS TV",
+        "countrycode": "NL"
+      },
+      {
+        "stationuuid": "96109b22-0601-11e8-ae97-52543be04c81",
+        "name": "Radio Galère",
+        "countrycode": "FR"
+      },
+      {
+        "stationuuid": "9614b499-0601-11e8-ae97-52543be04c81",
+        "name": "Radio Helsinki 92,6 MHz (160 kbps)",
+        "countrycode": "AT"
+      },
+      {
+        "stationuuid": "19fa202f-4045-4bce-a544-588e3683a0f9",
+        "name": "Radio Aparat",
+        "countrycode": "RS"
+      },
+      {
+        "stationuuid": "70fd37a9-f2ed-4037-ba64-da69141abf3e",
+        "name": "Station Station",
+        "countrycode": "FR"
+      },
+      {
+        "stationuuid": "6b5b7e02-c21a-4fdc-ab01-53d775502f6d",
+        "name": "Rinse France",
+        "countrycode": "FR"
+      },
+      {
+        "stationuuid": "d9e327ff-2c59-4145-83a9-67f7b33a1ab2",
+        "name": "Resonance Extra",
+        "countrycode": "GB"
+      },
+      {
+        "stationuuid": "b7154644-7519-4c14-8891-023c23387e4f",
+        "name": "Kapitał",
+        "countrycode": "PL"
+      },
+      {
+        "stationuuid": "86b931f3-e8e7-43b8-bd60-2baff4749e37",
+        "name": "RBL Berlin",
+        "countrycode": "DE"
+      },
+      {
+        "stationuuid": "033b3a5b-93cc-46d2-b7f4-0c381fb800e8",
+        "name": "Radio Radio",
+        "countrycode": "GB"
+      },
+      {
         "stationuuid": "de5aaea1-15a8-437f-bd9c-fa65b7f4afc3",
         "name": "Internet Public Radio",
         "countrycode": "MX"
@@ -468,16 +533,6 @@
         "stationuuid": "399ca326-0f67-4015-a51b-d7ba2bd4ebbe",
         "name": "KEXP",
         "countrycode": "US"
-      },
-      {
-        "stationuuid": "86b931f3-e8e7-43b8-bd60-2baff4749e37",
-        "name": "RBL Berlin",
-        "countrycode": "DE"
-      },
-      {
-        "stationuuid": "033b3a5b-93cc-46d2-b7f4-0c381fb800e8",
-        "name": "Radio Radio",
-        "countrycode": "GB"
       },
       {
         "stationuuid": "d9b11ab6-74f0-4be0-a104-2e68c1ee3c4f",
@@ -520,11 +575,6 @@
         "countrycode": ""
       },
       {
-        "stationuuid": "244b3bb9-1497-4f94-8dd3-2d8f7a1344fa",
-        "name": "Zabrij Radio",
-        "countrycode": ""
-      },
-      {
         "stationuuid": "a7d7ca76-674d-4523-960b-76cfc6dc0da7",
         "name": "Stay.FM",
         "countrycode": "MY"
@@ -563,16 +613,6 @@
         "stationuuid": "db695122-b64f-4be3-a2b6-633e8722d4ba",
         "name": "dubsideradio",
         "countrycode": "FR"
-      },
-      {
-        "stationuuid": "70272aef-71c4-42af-bf88-0cf658ee94d3",
-        "name": "Bvlbancha Liberation Radio",
-        "countrycode": ""
-      },
-      {
-        "stationuuid": "3717842d-e18c-4699-9539-796e620fbf05",
-        "name": "Calotropis",
-        "countrycode": "KE"
       },
       {
         "stationuuid": "92796d0d-e83b-4db9-ae30-fa2cf3d1a985",
@@ -643,11 +683,6 @@
         "stationuuid": "fb87433e-2095-4c03-b411-ca0a0603ebcd",
         "name": "Hotel Costes",
         "countrycode": "FR"
-      },
-      {
-        "stationuuid": "29d848b8-5401-4170-aa95-84eecd3c211b",
-        "name": "Intergalactic FM | CBS TV",
-        "countrycode": "NL"
       },
       {
         "stationuuid": "b58a4aaa-d5be-4925-be71-f69d1cccc13f",
@@ -755,11 +790,6 @@
         "countrycode": "NO"
       },
       {
-        "stationuuid": "19fa202f-4045-4bce-a544-588e3683a0f9",
-        "name": "Radio Aparat",
-        "countrycode": "RS"
-      },
-      {
         "stationuuid": "790ef988-70ac-4823-9732-c80f57a129f0",
         "name": "Radio Bollwerk",
         "countrycode": "NL"
@@ -773,21 +803,6 @@
         "stationuuid": "961d67e0-0601-11e8-ae97-52543be04c81",
         "name": "Radio FRO",
         "countrycode": "AT"
-      },
-      {
-        "stationuuid": "96109b22-0601-11e8-ae97-52543be04c81",
-        "name": "Radio Galère",
-        "countrycode": "FR"
-      },
-      {
-        "stationuuid": "9614b499-0601-11e8-ae97-52543be04c81",
-        "name": "Radio Helsinki 92,6 MHz (160 kbps)",
-        "countrycode": "AT"
-      },
-      {
-        "stationuuid": "b7154644-7519-4c14-8891-023c23387e4f",
-        "name": "Kapitał",
-        "countrycode": "PL"
       },
       {
         "stationuuid": "96129899-0601-11e8-ae97-52543be04c81",
@@ -840,16 +855,6 @@
         "countrycode": "NL"
       },
       {
-        "stationuuid": "d9e327ff-2c59-4145-83a9-67f7b33a1ab2",
-        "name": "Resonance Extra",
-        "countrycode": "GB"
-      },
-      {
-        "stationuuid": "6b5b7e02-c21a-4fdc-ab01-53d775502f6d",
-        "name": "Rinse France",
-        "countrycode": "FR"
-      },
-      {
         "stationuuid": "f8cddae0-8645-47ac-84fd-870c2a55ac41",
         "name": "Practice Room Radio",
         "countrycode": "US"
@@ -888,11 +893,6 @@
         "stationuuid": "27678e79-3f8f-42d3-a47b-bf17d5cd804c",
         "name": " Punk Rock Demonstration Radio Station",
         "countrycode": "US"
-      },
-      {
-        "stationuuid": "70fd37a9-f2ed-4037-ba64-da69141abf3e",
-        "name": "Station Station",
-        "countrycode": "FR"
       },
       {
         "stationuuid": "66b45c1a-ec76-453d-9a71-396b9fed09bf",
@@ -1489,6 +1489,11 @@
             "stationuuid": "6762db0c-f054-49ec-bc95-b3345423ab2d",
             "name": "Jazz FM (Ciudad de México) - Online - Independiente - Ciudad de México",
             "countrycode": "MX"
+          },
+          {
+            "stationuuid": "962a36dd-0601-11e8-ae97-52543be04c81",
+            "name": "Radio X",
+            "countrycode": "IT"
           }
         ]
       },
@@ -1532,6 +1537,21 @@
             "stationuuid": "bee1a30d-a2dd-4a95-b959-a8c2681c77df",
             "name": "Island Time | NTS",
             "countrycode": ""
+          },
+          {
+            "stationuuid": "50071895-eda0-407d-ac37-08b4c157e1d7",
+            "name": "Bob's Ska Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "1be154bf-1aa6-4637-89d8-f394780479fc",
+            "name": "4TunesFM",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "db695122-b64f-4be3-a2b6-633e8722d4ba",
+            "name": "dubsideradio",
+            "countrycode": "FR"
           }
         ]
       },
@@ -1557,11 +1577,6 @@
             "countrycode": "RO"
           },
           {
-            "stationuuid": "b1d72676-8870-47da-91db-a88357b64c51",
-            "name": "Dance Revolution",
-            "countrycode": "GB"
-          },
-          {
             "stationuuid": "9c100db7-ba97-4e6f-821f-dba1ed08ad52",
             "name": "Rinse UK",
             "countrycode": "GB"
@@ -1570,6 +1585,26 @@
             "stationuuid": "1dbdc89f-f0d1-4bf7-8922-266edeb912dd",
             "name": "Subtle Radio",
             "countrycode": "GB"
+          },
+          {
+            "stationuuid": "b1d72676-8870-47da-91db-a88357b64c51",
+            "name": "Dance Revolution",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "bf694cb5-5897-4930-989a-35932c39875b",
+            "name": "Drift Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "d9463f80-ff7b-49cd-a3a2-fae1484d0009",
+            "name": " Club Sabroso Radio",
+            "countrycode": "DO"
+          },
+          {
+            "stationuuid": "5fcea0b1-dd78-49d3-a8f1-41ff3b00124f",
+            "name": "Veneno",
+            "countrycode": "BR"
           }
         ]
       },
@@ -1686,14 +1721,14 @@
             "countrycode": "GB"
           },
           {
-            "stationuuid": "960cc332-0601-11e8-ae97-52543be04c81",
-            "name": "Bassdrive",
-            "countrycode": "US"
-          },
-          {
             "stationuuid": "6b5b7e02-c21a-4fdc-ab01-53d775502f6d",
             "name": "Rinse France",
             "countrycode": "FR"
+          },
+          {
+            "stationuuid": "cd477c35-d625-11e8-a54a-52543be04c81",
+            "name": "Miami Beach Radio",
+            "countrycode": "US"
           }
         ]
       },
@@ -1724,14 +1759,19 @@
             "countrycode": "DK"
           },
           {
-            "stationuuid": "03e68f6d-1ca3-459f-891a-c55d84711646",
-            "name": "BBC Radio 3 (128k)",
-            "countrycode": "GB"
-          },
-          {
             "stationuuid": "d71dd8f6-a3d7-11e8-abb8-52543be04c81",
             "name": "New Sounds Radio",
             "countrycode": "US"
+          },
+          {
+            "stationuuid": "96162e74-0601-11e8-ae97-52543be04c81",
+            "name": "France Musique | Classique Easy",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "5e992e1e-e6ef-11e9-a96c-52543be04c81",
+            "name": "France Musique",
+            "countrycode": "FR"
           }
         ]
       },
@@ -1765,6 +1805,36 @@
             "stationuuid": "26b78408-d833-11e9-a861-52543be04c81",
             "name": "Doujinstyle Radio",
             "countrycode": ""
+          },
+          {
+            "stationuuid": "5fcea0b1-dd78-49d3-a8f1-41ff3b00124f",
+            "name": "Veneno",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "244b3bb9-1497-4f94-8dd3-2d8f7a1344fa",
+            "name": "Zabrij Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "1943674b-be5d-42bc-b363-646b9086d10c",
+            "name": "Good Times Bad Times",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "8ba9281c-f9d9-442a-b227-11e590a7c396",
+            "name": "Gässjer FM",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "d9e327ff-2c59-4145-83a9-67f7b33a1ab2",
+            "name": "Resonance Extra",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "b7154644-7519-4c14-8891-023c23387e4f",
+            "name": "Kapitał",
+            "countrycode": "PL"
           }
         ]
       },
@@ -1813,18 +1883,309 @@
         "featured": false,
         "stations": [
           {
-            "stationuuid": "d271b4e8-a298-4862-9f4b-025c110cedd9",
-            "name": "IBIZA CHILLOUT LOUNGE - Ambient, Deep House, Balearic, Smooth Jazz, Acoustic, Chill House, Lo-Fi, Chillwave, Dream Pop, Electro, Tropical House, Sunset Chill, Café del Mar, Soft Electronica, Slow House, Ambient, Relax, Easy Listening, Beach Vibes, Summer",
-            "countrycode": "DE"
-          },
-          {
             "stationuuid": "128d5561-8439-4e2a-9e6c-4e48ad4f0cc0",
             "name": "Do You Radio",
             "countrycode": "GB"
           },
           {
+            "stationuuid": "0596bdc5-77fc-48ba-8653-e5e34bb86568",
+            "name": "SomaFM Groove Salad - EE. UU (Ambient/Downtempo) ",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "12f45ca4-3d96-4937-85e0-a424d36a4d09",
+            "name": "RadioActive",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "d271b4e8-a298-4862-9f4b-025c110cedd9",
+            "name": "IBIZA CHILLOUT LOUNGE - Ambient, Deep House, Balearic, Smooth Jazz, Acoustic, Chill House, Lo-Fi, Chillwave, Dream Pop, Electro, Tropical House, Sunset Chill, Café del Mar, Soft Electronica, Slow House, Ambient, Relax, Easy Listening, Beach Vibes, Summer",
+            "countrycode": "DE"
+          },
+          {
             "stationuuid": "49902d2d-672d-4130-b42a-90592d0460c5",
             "name": "0R - LO-FI || LoFi, Chill, Study, Hip Hop, Relax, Background, Calm, Instrumental, Smooth, Beats, Coffee, Work, Focus, Soft, Chillhop",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "fb87433e-2095-4c03-b411-ca0a0603ebcd",
+            "name": "Hotel Costes",
+            "countrycode": "FR"
+          }
+        ]
+      },
+      {
+        "slug": "country-roots",
+        "title": "Country & Roots",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "96107c68-0601-11e8-ae97-52543be04c81",
+            "name": "WSM 650 Nashville, TN",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96c148b5-7023-11ea-b1cf-52543be04c81",
+            "name": "WSM Route 650 Americana",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "dd6dfb85-5d3e-11e8-b0ce-52543be04c81",
+            "name": "Music City Roadhouse",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "960d4889-0601-11e8-ae97-52543be04c81",
+            "name": "181.FM - Highway 181",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "e24d321a-729f-4015-903a-ba3486b793f6",
+            "name": "Boss Country Radio | The Greatest Country Music Legends Of All Time",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "962a66fd-0601-11e8-ae97-52543be04c81",
+            "name": "1.FM - Classic Country Radio",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "f4896119-5e73-42be-8c07-bc1e7e79e815",
+            "name": "HPR1: Traditional Classic Country",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9648c332-0601-11e8-ae97-52543be04c81",
+            "name": "Best Net Radio - Country Oldies",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "8c8387f4-7377-47ba-ba38-5e51e7f8e539",
+            "name": "Legends Classic Country",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9644e7d0-0601-11e8-ae97-52543be04c81",
+            "name": "KKXA \"KXA 1520\" & 101.1 Everett, WA",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "15f11859-6dcf-11ea-b1cf-52543be04c81",
+            "name": "99.3 WCON My Country",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "b4f70221-40e1-11e8-b74d-52543be04c81",
+            "name": "CFCW  \"840 CFCW\" Edmonton / Camrose AB",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "c220f289-1eb3-42cb-b583-707de31a8307",
+            "name": "Honkytonk Hootenanny",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "cff15c5d-86f0-4c0b-8f0e-897ef382a97c",
+            "name": "East Tenneessee’s FM",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "66963034-c303-47d4-ba04-93aa14dfa6ec",
+            "name": "WNCW",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "b6e184ab-0ea7-4268-9901-7ad5ca80457e",
+            "name": "WPAQ 740AM 106.7FM Voice of the Blue Ridge",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "f694cac6-628d-4253-8938-2abf32ab4719",
+            "name": "WETS Americana",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "4b397571-0d64-4038-b497-dd5d6e7dee86",
+            "name": "KPIG-FM ",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96058344-0601-11e8-ae97-52543be04c81",
+            "name": "WEVL 89.9 Memphis, TN",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "6fd171cd-6f94-4e27-be25-eace7e1151b8",
+            "name": "WTJU 91.1 FM | The University of Virginia, Charlottesville, VA",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9625b91d-0601-11e8-ae97-52543be04c81",
+            "name": "KRVM 91.9 Eugene, OR",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "62c46a39-ab2a-11e9-88f4-52543be04c81",
+            "name": "WERU Community Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9608a481-2a40-424d-8f55-b8be24710776",
+            "name": "KRFC",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "d30c38d2-0817-4016-932a-1c60d9f99925",
+            "name": "Radio Free Americana [64kbps AAC+]",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "655def6d-734f-4ef7-972a-6abc56763162",
+            "name": "Bluegrass Country",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9f96edb3-1c4b-4373-b56a-be368cb1e368",
+            "name": "Folk Alley FreshGrass",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "21e82b22-9da7-11e9-a787-52543be04c81",
+            "name": "KOKE 99.3 & 98.5 FM - Austin, TX",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "4405c47b-9db5-11e9-a787-52543be04c81",
+            "name": "KORA 98.3 The Texas Country Original",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "e50b50ba-8ddb-4322-a471-5d4449376c55",
+            "name": "KNBT Radio New Braunfels",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "a746c820-ddaa-4760-b53c-db268386b34e",
+            "name": "Radio Free Texas",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "84dc85c2-6264-408a-ab83-99bdfb68f0c4",
+            "name": "KFWR 95.9 The Ranch",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "357e3ed4-b13a-11e8-afe1-52543be04c81",
+            "name": "The Outlaw",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "0af543e7-f8a6-4f0e-afde-bd5fe4420520",
+            "name": "Outlaw Country Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "b83aa19f-a899-4095-bf56-37e7d2750bfb",
+            "name": "Shotgun Radio 97-1",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "b6c6d93d-6ac5-4d1e-9a1e-3e28b9a69ffa",
+            "name": "Sun Country 97.7 FM (High River, CFXO-FM)",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "69cdf0f5-ed69-4bf2-be17-719a17c5681f",
+            "name": "Gritty Rock Radio",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "a3c23572-a610-11e9-a787-52543be04c81",
+            "name": "Radio Caprice - Southern Rock",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "d53d6545-0b7a-420d-9c8d-822d119f1d86",
+            "name": "Swamp Radio Miami WADS-DB",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "61a5cdcd-d883-4f6f-8c05-fb2c74ba6f43",
+            "name": "WLNX Pine Licks",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "1c6ee6e2-bbe4-44bc-b9e4-290ddf0bf4b7",
+            "name": "93.3 FM WXRH",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "961b27de-0601-11e8-ae97-52543be04c81",
+            "name": "Allegheny Mountain Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "ffe33802-6417-11e9-a622-52543be04c81",
+            "name": "SomaFM Boot Liquor (320k MP3)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "3cb76cc7-fa20-4c22-b33c-5268a2437e38",
+            "name": "ABC Country HLS",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "ce3b71f3-526e-48ee-ae8e-3bd94ea00adf",
+            "name": "KIX Country (MP3)",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "4e7766f3-dcd1-48a1-b721-e38f10f8d7ac",
+            "name": "CountryLine Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "bcd91fa9-7242-4443-96dc-aefe52e6798b",
+            "name": "Irish Country Music Radio",
+            "countrycode": "IE"
+          },
+          {
+            "stationuuid": "a438e66d-2ba7-46b4-89c9-01bc4204e161",
+            "name": "Grolloo Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "960d1692-0601-11e8-ae97-52543be04c81",
+            "name": "Country 108",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "fe4b3646-7164-11e8-83fa-52543be04c81",
+            "name": "Country Rocks Radio",
+            "countrycode": "SE"
+          },
+          {
+            "stationuuid": "960ece9a-0601-11e8-ae97-52543be04c81",
+            "name": "Country Radio",
+            "countrycode": "CZ"
+          }
+        ]
+      },
+      {
+        "slug": "pop",
+        "title": "Pop",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "d338b34f-e025-11e9-a8ba-52543be04c81",
+            "name": "Planet Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "54a6609e-2683-4364-a5c3-8314a152e02a",
+            "name": "Radio Energy Berlin",
             "countrycode": "DE"
           }
         ]
