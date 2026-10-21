@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T21:00:33.038Z",
+  "generatedAt": "2026-10-21T21:09:35.658Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -5005,6 +5005,44 @@
         ]
       },
       {
+        "slug": "grime",
+        "title": "Grime & UK Rap",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "4d6ddb77-1629-4f79-90cd-bef6b369193c",
+            "name": "E3 Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "a0cdaaf3-4693-4de7-b916-4094ab487074",
+            "name": "Grime Online",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "c478dd38-108e-40cc-b4ed-3b94fee6b6f1",
+            "name": "UK Grime FM",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "d716df3e-37ee-4601-97e3-f041dfb28539",
+            "name": "Radio Caprice - grime",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "dbf8bd04-b31d-4ad7-a59f-5b5680f06e76",
+            "name": "Australian Digital Radio Network - Grime",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "a99650cd-e163-4ed9-82e1-b505159c151c",
+            "name": "Radio Caprice - UK Rap/Hip-Hop",
+            "countrycode": "RU"
+          }
+        ]
+      },
+      {
         "slug": "black-metal-doom",
         "title": "Black Metal / Doom",
         "source": "radiodock",
@@ -5426,7 +5464,7 @@
       {
         "genre": "hiphop",
         "label": "Hip-Hop",
-        "count": 831
+        "count": 839
       },
       {
         "genre": "classic-rock",
@@ -5576,7 +5614,7 @@
       {
         "genre": "dubstep",
         "label": "Bass & Dubstep",
-        "count": 161
+        "count": 165
       },
       {
         "genre": "soundtrack",
