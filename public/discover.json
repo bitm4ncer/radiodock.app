@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T22:47:12.623Z",
+  "generatedAt": "2026-10-21T23:17:55.398Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -536,7 +536,7 @@
       },
       {
         "stationuuid": "399ca326-0f67-4015-a51b-d7ba2bd4ebbe",
-        "name": "KEXP",
+        "name": "KEXP 90.3",
         "countrycode": "US"
       },
       {
@@ -5203,6 +5203,246 @@
             "countrycode": "BR"
           }
         ]
+      },
+      {
+        "slug": "indie-alternative",
+        "title": "Indie / Alternative",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "399ca326-0f67-4015-a51b-d7ba2bd4ebbe",
+            "name": "KEXP 90.3",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9a7a93aa-244a-4a94-8676-c43fc38d0be7",
+            "name": "The Current",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "80e56153-1af2-43eb-8352-424524f804ed",
+            "name": "Indie88",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "69e80c6d-8a40-4138-8946-20a7b0a0460c",
+            "name": "KINK",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "6650bb57-12aa-41d3-8ae4-ed5dcf0909cd",
+            "name": "8Radio",
+            "countrycode": "IE"
+          },
+          {
+            "stationuuid": "e36a33c7-4071-42b2-9a39-f20ac137ebe1",
+            "name": "917xfm",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "96394224-0601-11e8-ae97-52543be04c81",
+            "name": "SomaFM Indie Pop Rocks!",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "f70bcf50-89b6-429e-98c1-4a5e662b867d",
+            "name": "WXPN 88.5",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "56a468c9-3eca-4079-a758-b4051e1afb2b",
+            "name": "KXT 91.7",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "folk-americana",
+        "title": "Folk / Americana",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "000dd66a-275b-4fa4-99d7-8812f40ed46f",
+            "name": "American Roots Radio",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "960862ef-0601-11e8-ae97-52543be04c81",
+            "name": "Radio Heartland",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "d16a3175-44c0-4cf7-9b1c-863b4d3fbd27",
+            "name": "WUMB Contemporary Folk",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "442fad00-5089-4616-a981-5ab4d8ee4539",
+            "name": "Folk Music Notebook",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "6372f18f-9798-4d4e-83c4-b0307f941331",
+            "name": "Radio Bristol WBCM 100.1 FM",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "88ec6e1f-f720-432f-a3eb-5cd504d51f07",
+            "name": "The Bluegrass Jamboree",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "6dbcf88e-c7b5-4cde-93ad-66d0782f98f7",
+            "name": "WNRV The Ridge",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "5aa2d2b0-bb71-44c4-ae56-33ededbf059f",
+            "name": "Dark Hollow Radio",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "oldies-decades",
+        "title": "Oldies / Decades",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "29e6919f-076d-4643-82df-a8bbaa6263a6",
+            "name": "Rockin50s Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "3ef9711b-5b2f-47d1-a0aa-430adc8086f7",
+            "name": "Radio Firebirds",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "9bfec0d1-4f47-11e9-a4d7-52543be04c81",
+            "name": "Doo Wop Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "2662ea1d-38ce-4285-ac43-b9c005005cb3",
+            "name": "Wayback Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "fe4dc8a9-b2a0-4660-8aa4-c66428854c5c",
+            "name": "Pop Gold Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "b421583d-b66d-49da-8980-f912448af8a7",
+            "name": "Flower Power Radio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "ccc9f19c-59ab-4808-b29d-285e470ef626",
+            "name": "Ultimate Oldies Radio",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "rnb",
+        "title": "R&B",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "58590ae8-2457-11e8-91bf-52543be04c81",
+            "name": "Allzic Radio R&B",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "c509f463-0b09-4b39-9ecc-96b6a77e3a71",
+            "name": "egoRNB",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "b3fb8244-cfe6-437f-99df-dbcce3c520ca",
+            "name": "Hotmix RnB",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "23b89519-7c6c-4f20-b133-659a56a716d4",
+            "name": "NRJ Classic RNB",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "a4c3f7e9-4b16-4566-8dc5-7f9b45faaca1",
+            "name": "90s90s Soul & RnB",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "189fcc22-07cc-44bd-ab08-2e3cf703dfde",
+            "name": "egoSOUL",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "9d2aa97e-2e00-11e9-a35e-52543be04c81",
+            "name": "Jazz Radio Nouveautés Soul",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "cfc37572-caa4-4172-bc5f-f9b32e35b365",
+            "name": "The Quiet Storm Station",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "latin",
+        "title": "Latin",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "ea4df68f-5d85-4185-884c-9fbaf1e1fdc9",
+            "name": "Your Latin Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "9e6c1b64-5395-4e2c-b71d-59a324fd266d",
+            "name": "Colombia Salsa Dura",
+            "countrycode": "CO"
+          },
+          {
+            "stationuuid": "659f5596-51a8-4e3a-802e-ef5e6ceb61d0",
+            "name": "Cumbias Inmortales Radio",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "8add5ff7-bdd5-4b46-9ce3-58fc9bb135f0",
+            "name": "Tropical 100 Merengue",
+            "countrycode": "DO"
+          },
+          {
+            "stationuuid": "d1b4a4ee-e101-4191-aecb-05ec78bb92d3",
+            "name": "Latina Bachata",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9617b9cb-0601-11e8-ae97-52543be04c81",
+            "name": "Latina Reggaeton",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "0c069c3d-d05a-48cf-9676-707f63b3d1ed",
+            "name": "Tumbado al 100",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "b31425e7-8988-433b-8162-ba66af7e1c45",
+            "name": "Panamericana Latino Refrescante",
+            "countrycode": "PE"
+          }
+        ]
       }
     ]
   },
@@ -5513,7 +5753,7 @@
       {
         "genre": "oldies",
         "label": "Oldies",
-        "count": 1824
+        "count": 1828
       },
       {
         "genre": "talk",
@@ -5581,14 +5821,14 @@
         "count": 840
       },
       {
+        "genre": "folk",
+        "label": "Folk & Acoustic",
+        "count": 824
+      },
+      {
         "genre": "classic-rock",
         "label": "Classic Rock",
         "count": 821
-      },
-      {
-        "genre": "folk",
-        "label": "Folk & Acoustic",
-        "count": 820
       },
       {
         "genre": "country",
@@ -5598,7 +5838,7 @@
       {
         "genre": "rnb",
         "label": "R&B & Soul",
-        "count": 698
+        "count": 700
       },
       {
         "genre": "sports",
@@ -5608,7 +5848,7 @@
       {
         "genre": "latin",
         "label": "Latin",
-        "count": 664
+        "count": 669
       },
       {
         "genre": "chillout",
@@ -5638,7 +5878,7 @@
       {
         "genre": "indie",
         "label": "Indie",
-        "count": 501
+        "count": 507
       },
       {
         "genre": "culture",
@@ -5648,7 +5888,7 @@
       {
         "genre": "salsa",
         "label": "Salsa & Tropical",
-        "count": 450
+        "count": 451
       },
       {
         "genre": "ambient",
