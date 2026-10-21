@@ -1,0 +1,113 @@
+/* One-time first-visit hint for the Stations button. Neutral, quiet, and
+   pointer-events-free so it never blocks the control it points at. */
+.stations-tip-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.stations-tip-layer.is-visible {
+  opacity: 1;
+}
+
+.stations-tip-layer.is-leaving {
+  opacity: 0;
+}
+
+.stations-tip__pulse {
+  position: absolute;
+  display: block;
+  border: 1px solid var(--text-muted);
+  border-radius: var(--radius-pill);
+  opacity: 0;
+  transform: scale(0.72);
+}
+
+.stations-tip__pulse.is-pulsing {
+  animation: stations-tip-pulse 1.6s ease-out 3;
+}
+
+@keyframes stations-tip-pulse {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.72);
+  }
+  72% {
+    opacity: 0;
+    transform: scale(1.24);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.24);
+  }
+}
+
+.stations-tip__bubble {
+  position: absolute;
+  max-width: min(250px, calc(100vw - 24px));
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-dark);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  opacity: 0;
+  transform: translateY(5px) scale(0.98);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.stations-tip-layer.is-visible .stations-tip__bubble {
+  opacity: 1;
+  transform: none;
+}
+
+.stations-tip__bubble::after {
+  content: '';
+  position: absolute;
+  left: var(--tip-arrow-x, 50%);
+  bottom: -5px;
+  width: 8px;
+  height: 8px;
+  background: var(--bg-dark);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  transform: rotate(45deg);
+}
+
+.stations-tip__bubble.is-below {
+  transform: translateY(-5px) scale(0.98);
+}
+
+.stations-tip__bubble.is-below::after {
+  top: -5px;
+  bottom: auto;
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+}
+
+@media (max-width: 699px) {
+  .stations-tip__bubble {
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stations-tip-layer,
+  .stations-tip__bubble {
+    transition: none;
+  }
+
+  .stations-tip__pulse.is-pulsing {
+    animation: none;
+    opacity: 0;
+  }
+}
