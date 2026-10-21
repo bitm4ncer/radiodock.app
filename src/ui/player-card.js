@@ -28,6 +28,7 @@ export function mountPlayerCard({ player }) {
   let infoCallback = null;
   let favoritePlusTimer = null;
   let favoritePlusSettleTimer = null;
+  let favoriteInFavorites = false;
   const favoriteHeartMarkup = favBtn.innerHTML;
   const FAVORITE_PLUS_ICON = '<svg class="heart-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
 
@@ -344,8 +345,7 @@ export function mountPlayerCard({ player }) {
 
   function syncFavoriteLabel() {
     if (favBtn.classList.contains('is-move')) return;
-    const on = favBtn.classList.contains('is-favorited');
-    const label = on ? 'Remove from favorites' : 'Add to favorites';
+    const label = favoriteInFavorites ? 'Remove from favorites' : 'Add to favorites';
     favBtn.title = label;
     favBtn.setAttribute('aria-label', label);
   }
@@ -435,9 +435,10 @@ export function mountPlayerCard({ player }) {
     onInfoClick(cb) {
       infoCallback = cb;
     },
-    setFavoriteState(isFavorited) {
-      favBtn.classList.toggle('is-favorited', !!isFavorited);
-      if (!isFavorited) settleFavoriteHeart();
+    setFavoriteState(isListed, isFavorite = isListed) {
+      favoriteInFavorites = !!isFavorite;
+      favBtn.classList.toggle('is-favorited', !!isListed);
+      if (!isListed) settleFavoriteHeart();
       else syncFavoriteLabel();
     },
     startFavoritePlusFlow,

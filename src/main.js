@@ -1033,8 +1033,16 @@ function isStationInFavorites(station) {
   return !!favoritesList()?.stations?.some((s) => s.id === station.id);
 }
 
+function isStationInAnyList(station) {
+  if (!station) return false;
+  return (state.userLists ?? []).some(
+    (list) => Array.isArray(list?.stations) && list.stations.some((s) => s.id === station.id),
+  );
+}
+
 function updateFavoriteHeart() {
-  playerCard.setFavoriteState(isStationInFavorites(state.currentStation));
+  const station = state.currentStation;
+  playerCard.setFavoriteState(isStationInAnyList(station), isStationInFavorites(station));
 }
 
 // --- Player events ---
