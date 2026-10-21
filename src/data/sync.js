@@ -183,11 +183,35 @@ export function getSyncToken() {
   return storage.getPref('syncToken', null);
 }
 
-// Local unsaved-changes marker: set on every local mutation (main.js), cleared
-// on a successful push. Guards the startup pull from clobbering edits that were
-// made but not yet pushed (e.g. app closed within the push debounce).
-export function markSyncDirty() {
-  return storage.setPref('syncDirty', true);
+// Local unsaved-changes marker plus a monotonic revision. Every local mutation
+// (main.js) bumps the revision; a push captures it at start and only clears the
+// dirty flag when the revision is still current at completion, so a push that
+// began before a newer edit can never clear that edit's dirty flag.
+let syncRevision = 0;
+
+async function getSyncRevision() {
+  const saved = await storage.getPref('syncRevision', 0);
+  if (typeof saved === 'number' && saved > syncRevision) syncRevision = saved;
+  return syncRevision;
+}
+
+async function clearDirtyIfCurrent(rev) {
+  const current = await getSyncRevision();
+  if (current === rev) await storage.setPref('syncDirty', false);
+}
+
+export async function markSyncDirty() {
+  syncRevision = (await getSyncRevision()) + 1;
+  await storage.setPref('syncRevision', syncRevision);
+  await storage.setPref('syncDirty', true);
+  return syncRevision;
+}
+
+// True while a merge conflict is awaiting a user decision. Automatic pushes are
+// skipped until the user resolves it (keep local or use server), so a conflict
+// never turns into a retry loop.
+export async function hasSyncConflict() {
+  return (await storage.getPref('syncConflict', false)) === true;
 }
 
 // --- Server communication (paths use the derived recordId, never the secret) ---
@@ -200,26 +224,163 @@ export async function getRemoteMeta(secret) {
   return res.json();
 }
 
-// Merge two export objects for a push conflict (409): union of lists by id.
-// If the same id exists on both sides, the local (pushing) side wins — a genuine
-// same-list simultaneous edit is rare; adds on either side are always preserved.
-// (Without a common ancestor a delete can't be told apart from "not yet synced",
-// so a list deleted on one device while untouched on the other may reappear —
-// an acceptable trade for a personal sync that never silently drops a change.)
-export function mergeExports(mine, theirs) {
-  const byId = new Map();
-  for (const l of (theirs?.lists ?? [])) if (l?.id) byId.set(l.id, l);
-  for (const l of (mine?.lists ?? [])) if (l?.id) byId.set(l.id, l);
-  return { version: '2.0', lists: [...byId.values()] };
+// Base-aware three-way merge for a push conflict (409). Merges per station id
+// against the common ancestor so a delete can be told apart from "not yet
+// synced": a station removed on exactly one side while the other left it
+// unchanged is tombstoned, adds on both sides survive (union), and a same
+// station edited on both sides (or a delete vs an edit) surfaces a conflict
+// instead of silently dropping an edit.
+function stationFingerprint(s) {
+  return JSON.stringify(normalizeStation(s));
+}
+
+// True when two list snapshots carry the same name and the same stations
+// (by id + content), so a whole-list delete can be told apart from a
+// delete-vs-edit: an unchanged survivor means the delete is clean, while a
+// changed survivor means someone still holds data we must not tombstone.
+function listEquals(a, b) {
+  if (!a || !b) return a === b;
+  if ((a.name ?? '') !== (b.name ?? '')) return false;
+  const as = a.stations ?? [];
+  const bs = b.stations ?? [];
+  if (as.length !== bs.length) return false;
+  return as.every((s, i) => stationFingerprint(s) === stationFingerprint(bs[i]));
+}
+
+function resolveListName(baseList, localList, remoteList) {
+  const baseName = baseList?.name;
+  const localName = localList?.name;
+  const remoteName = remoteList?.name;
+  let conflict = false;
+  let name;
+  if (baseName !== undefined) {
+    const localChanged = localName !== undefined && localName !== baseName;
+    const remoteChanged = remoteName !== undefined && remoteName !== baseName;
+    if (localChanged && remoteChanged && localName !== remoteName) conflict = true;
+    name = localChanged ? localName : (remoteChanged ? remoteName : baseName);
+  } else {
+    name = localName ?? remoteName ?? '';
+  }
+  return { name, conflict };
+}
+
+function mergeStations(baseList, localList, remoteList, onConflict) {
+  const bStations = baseList?.stations ?? [];
+  const lStations = localList?.stations ?? [];
+  const rStations = remoteList?.stations ?? [];
+
+  const bById = new Map(bStations.map((s) => [s.id, s]));
+  const lById = new Map(lStations.map((s) => [s.id, s]));
+  const rById = new Map(rStations.map((s) => [s.id, s]));
+  const eq = (a, b) => stationFingerprint(a) === stationFingerprint(b);
+
+  const result = [];
+  const placed = new Set();
+
+  // Base order first: reconcile stations present in the common ancestor.
+  for (const b of bStations) {
+    const l = lById.get(b.id);
+    const r = rById.get(b.id);
+    if (l && r) {
+      const lChanged = !eq(l, b);
+      const rChanged = !eq(r, b);
+      if (lChanged && rChanged && !eq(l, r)) onConflict();
+      result.push(normalizeStation(lChanged ? l : (rChanged ? r : b)));
+      placed.add(b.id);
+    } else if (l && !r) {
+      if (eq(l, b)) continue; // remote deleted, local unchanged: tombstone
+      onConflict(); // delete vs edit
+      result.push(normalizeStation(l));
+      placed.add(b.id);
+    } else if (r && !l) {
+      if (eq(r, b)) continue; // local deleted, remote unchanged: tombstone
+      onConflict(); // delete vs edit
+      result.push(normalizeStation(r));
+      placed.add(b.id);
+    }
+    // both absent: deleted on both sides, drop
+  }
+
+  // Local-only appends, then remote-only appends.
+  for (const l of lStations) {
+    if (bById.has(l.id) || placed.has(l.id)) continue;
+    const r = rById.get(l.id);
+    if (r && !eq(l, r)) onConflict(); // added on both sides with different content
+    result.push(normalizeStation(l));
+    placed.add(l.id);
+  }
+  for (const r of rStations) {
+    if (bById.has(r.id) || placed.has(r.id)) continue;
+    result.push(normalizeStation(r));
+    placed.add(r.id);
+  }
+
+  return result;
+}
+
+export function mergeLists(base, local, remote) {
+  const baseLists = base?.lists ?? [];
+  const localLists = local?.lists ?? [];
+  const remoteLists = remote?.lists ?? [];
+  const listMap = (arr) => new Map((arr ?? []).filter((l) => l?.id).map((l) => [l.id, l]));
+  const bList = listMap(baseLists);
+  const lList = listMap(localLists);
+  const rList = listMap(remoteLists);
+
+  let conflict = false;
+  const listIds = [...new Set([...bList.keys(), ...lList.keys(), ...rList.keys()])];
+  const lists = [];
+  for (const id of listIds) {
+    const b = bList.get(id);
+    const l = lList.get(id);
+    const r = rList.get(id);
+
+    // List-level delete vs edit/change: when the common ancestor had the list
+    // and exactly one side removed it while the other still holds a CHANGED
+    // version, surface a conflict and keep the survivor's data wholesale.
+    // Running the per-station merge here would tombstone every base station
+    // the survivor still has (silent data loss), so skip it for this case.
+    //
+    // With no base (upgrading users with no stored syncBaseExport) this branch
+    // never runs; the two-way union below is deliberately conservative then: a
+    // list absent on one side is restored rather than deleted, because without
+    // a common ancestor a creation and a deletion are indistinguishable. Prefer
+    // retaining data over deleting it.
+    if (b) {
+      const localDeleted = !l;
+      const remoteDeleted = !r;
+      if (localDeleted && remoteDeleted) continue; // deleted on both sides: drop
+      if (localDeleted !== remoteDeleted) {
+        const survivor = localDeleted ? r : l;
+        // Both sides agree the stations are gone (one removed the list, the
+        // other emptied it): a clean drop, not a conflict.
+        if ((survivor.stations ?? []).length === 0) continue;
+        if (!listEquals(b, survivor)) {
+          conflict = true;
+          lists.push({ id, name: survivor.name, stations: (survivor.stations ?? []).map(normalizeStation) });
+          continue;
+        }
+        // Survivor is unchanged: the delete is clean, drop the list.
+        continue;
+      }
+    }
+
+    const { name, conflict: nameConflict } = resolveListName(b, l, r);
+    if (nameConflict) conflict = true;
+    const stations = mergeStations(b, l, r, () => { conflict = true; });
+    lists.push({ id, name, stations });
+  }
+  return { lists, conflict };
 }
 
 export async function pushToServer(secret, signal, retries = 3) {
+  const rev = await getSyncRevision();
   const { exportJson, stationCount, listCount } = await buildExportPayload();
   const hash = await computeContentHash(exportJson);
   const lastHash = await storage.getPref('syncLastHash', null);
 
   if (hash === lastHash) {
-    await storage.setPref('syncDirty', false);
+    await clearDirtyIfCurrent(rev);
     return null;
   }
 
@@ -243,13 +404,25 @@ export async function pushToServer(secret, signal, retries = 3) {
     const current = body.current;
     if (!current?.payload || !current?.content_hash) throw new SyncError('Sync conflict', 'conflict');
     const serverJson = await decryptPayload(current.payload, secret);
-    let mine, theirs;
-    try { mine = JSON.parse(exportJson); theirs = JSON.parse(serverJson); }
-    catch { throw new SyncError('Invalid sync payload', 'decrypt'); }
-    const mergedJson = JSON.stringify(mergeExports(mine, theirs));
-    // Reconcile local lists to the merge and adopt the server's hash as our base,
-    // so the retry pushes FROM the state we just conflicted with.
-    await applyImportPayload(mergedJson, current.content_hash, current.updated_at);
+    let mine, theirs, base;
+    try {
+      mine = JSON.parse(exportJson);
+      theirs = JSON.parse(serverJson);
+      const baseRaw = await storage.getPref('syncBaseExport', null);
+      base = baseRaw ? JSON.parse(baseRaw) : null;
+    } catch { throw new SyncError('Invalid sync payload', 'decrypt'); }
+    const merged = mergeLists(base, mine, theirs);
+    if (merged.conflict) {
+      await storage.setPref('syncConflict', true);
+      throw new SyncError('Sync conflict: the same station was changed on two devices', 'conflict');
+    }
+    const mergedJson = JSON.stringify({ version: '2.0', lists: merged.lists });
+    // Reconcile local lists to the merge, but adopt the SERVER document as the
+    // new base (the true common ancestor the merge was derived from), not the
+    // merged result. Merging against the merged result on a second 409 would
+    // tombstone local-only additions. Keep dirty so a crash before the retry
+    // pushes (rather than pulls and overwrites) the merged local state.
+    await applyImportPayload(mergedJson, current.content_hash, current.updated_at, { baseExport: serverJson, dirty: true });
     liveOnChange?.(); // the merge pulled in the other device's lists — re-render
     return pushToServer(secret, signal, retries - 1);
   }
@@ -261,7 +434,8 @@ export async function pushToServer(secret, signal, retries = 3) {
   const result = await res.json();
   await storage.setPref('syncLastHash', hash);
   await storage.setPref('syncLastUpdatedAt', result.updated_at);
-  await storage.setPref('syncDirty', false);
+  await storage.setPref('syncBaseExport', exportJson);
+  await clearDirtyIfCurrent(rev);
   return { ok: true, updated_at: result.updated_at, created: result.created, station_count: stationCount, list_count: listCount };
 }
 
@@ -302,11 +476,14 @@ export async function deleteFromServer(secret) {
   await storage.setPref('syncLastHash', undefined);
   await storage.setPref('syncLastUpdatedAt', undefined);
   await storage.setPref('syncDirty', false);
+  await storage.setPref('syncBaseExport', undefined);
+  await storage.setPref('syncRevision', undefined);
+  await storage.setPref('syncConflict', false);
 }
 
 // --- Import: reconcile by id, propagate deletions ---
 
-export async function applyImportPayload(exportJson, hash, updatedAt) {
+export async function applyImportPayload(exportJson, hash, updatedAt, { baseExport = exportJson, dirty = false } = {}) {
   const incoming = parseSyncPayload(exportJson);
   const existing = await listsApi.getUserLists();
   const { upserts, deleteIds } = planImport(incoming, existing);
@@ -341,7 +518,8 @@ export async function applyImportPayload(exportJson, hash, updatedAt) {
 
   await storage.setPref('syncLastHash', hash);
   await storage.setPref('syncLastUpdatedAt', updatedAt);
-  await storage.setPref('syncDirty', false);
+  await storage.setPref('syncBaseExport', baseExport);
+  await storage.setPref('syncDirty', dirty);
   return { imported, stationCount: totalStations, deleted: deleteIds.length };
 }
 
@@ -349,6 +527,11 @@ export async function applyImportPayload(exportJson, hash, updatedAt) {
 
 export async function autoSyncOnStartup(secret) {
   try {
+    // A pending conflict blocks automatic sync: pushing again would re-trigger
+    // the same 409/merge loop, and pulling would overwrite local edits the user
+    // has not yet chosen between. The user resolves it explicitly instead.
+    if (await hasSyncConflict()) return 'conflict';
+
     // Unpushed local edits take priority: push them rather than pulling and
     // overwriting. Otherwise pull remote changes, then push if we're ahead.
     const dirty = await storage.getPref('syncDirty', false);
@@ -366,6 +549,9 @@ export async function autoSyncOnStartup(secret) {
     if (pushed) return 'pushed';
     return 'unchanged';
   } catch (err) {
+    // A merge conflict surfaced during this sync: report it as such (the marker
+    // is already persisted) so the UI can offer a resolution instead of retrying.
+    if (err instanceof SyncError && err.type === 'conflict') return 'conflict';
     // A "not found" may be a transient read-after-write race (right after a
     // fresh push) or a real "unlinked/expired elsewhere". Don't self-nuke the
     // link on one blip — report it; the live engine clears the link only after
@@ -382,6 +568,9 @@ async function clearSyncPrefsLocal() {
   await storage.setPref('syncLastHash', undefined);
   await storage.setPref('syncLastUpdatedAt', undefined);
   await storage.setPref('syncDirty', false);
+  await storage.setPref('syncBaseExport', undefined);
+  await storage.setPref('syncRevision', undefined);
+  await storage.setPref('syncConflict', false);
 }
 
 // --- Push-on-change with external debounce + AbortController ---
@@ -397,15 +586,17 @@ export function cancelPendingPush() {
 
 export async function pushOnChange(secret) {
   cancelPendingPush();
-  pendingPushController = new AbortController();
+  const ctl = new AbortController();
+  pendingPushController = ctl;
   try {
-    return await pushToServer(secret, pendingPushController.signal);
+    return await pushToServer(secret, ctl.signal);
   } catch (err) {
     if (err.name === 'AbortError') return null;
     console.warn('Sync push failed:', err);
     throw err;
   } finally {
-    pendingPushController = null;
+    // Only clear the shared controller if a newer push hasn't replaced it.
+    if (pendingPushController === ctl) pendingPushController = null;
   }
 }
 
@@ -449,6 +640,12 @@ const NOTFOUND_UNLINK_THRESHOLD = 3;
 async function syncNow() {
   if (liveInFlight) return;
   if (typeof navigator !== 'undefined' && !navigator.onLine) { setStatus('offline'); return; }
+  // A push is in flight: defer rather than running a concurrent pull/push that
+  // could interleave with (or clobber) the pending compare-and-swap push.
+  if (pendingPushController) {
+    setTimeout(() => { if (!liveInFlight) syncNow(); }, 2500);
+    return;
+  }
   const secret = await liveGetToken?.();
   if (!secret) { setStatus('unlinked'); return; }
   liveInFlight = true;
@@ -471,6 +668,9 @@ async function syncNow() {
     } else if (result === 'error') {
       notFoundStreak = 0;
       setStatus(navigator.onLine ? 'error' : 'offline');
+    } else if (result === 'conflict') {
+      notFoundStreak = 0;
+      setStatus('conflict');
     } else {
       notFoundStreak = 0;
       setStatus('synced', Date.now());
@@ -524,8 +724,51 @@ export async function pushWithStatus(secret) {
     const result = await pushOnChange(secret);
     setStatus('synced', Date.now());
     return result;
-  } catch {
-    setStatus(navigator.onLine ? 'error' : 'offline');
+  } catch (err) {
+    if (err instanceof SyncError && err.type === 'conflict') setStatus('conflict');
+    else setStatus(navigator.onLine ? 'error' : 'offline');
     return null;
   }
+}
+
+// --- Conflict resolution (explicit user choice) ---
+
+// Keep this device's lists and overwrite the server. Omitting base_hash skips
+// the server's compare-and-swap, so this is a deliberate last-writer-wins push.
+export async function resolveConflictKeepLocal(secret) {
+  const { exportJson, stationCount, listCount } = await buildExportPayload();
+  const hash = await computeContentHash(exportJson);
+  const recordId = await deriveRecordId(secret);
+  const envelope = await encryptPayload(exportJson, secret);
+  const res = await fetch(`${SYNC_BASE}/${recordId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ payload: envelope, content_hash: hash, list_count: listCount, station_count: stationCount }),
+    referrerPolicy: 'no-referrer',
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new SyncError(body.error || `Server error: ${res.status}`, 'server');
+  }
+  const result = await res.json();
+  await storage.setPref('syncLastHash', hash);
+  await storage.setPref('syncLastUpdatedAt', result.updated_at);
+  await storage.setPref('syncBaseExport', exportJson);
+  await storage.setPref('syncDirty', false);
+  await storage.setPref('syncConflict', false);
+  setStatus('synced', Date.now());
+  return { ok: true, updated_at: result.updated_at, created: result.created, station_count: stationCount, list_count: listCount };
+}
+
+// Discard this device's conflicting edits and adopt the server's state.
+export async function resolveConflictUseServer(secret) {
+  const pulled = await pullFromServer(secret);
+  if (pulled) {
+    await applyImportPayload(pulled.exportJson, pulled.hash, pulled.updated_at);
+  }
+  await storage.setPref('syncConflict', false);
+  await storage.setPref('syncDirty', false);
+  setStatus('synced', Date.now());
+  liveOnChange?.();
+  return pulled;
 }

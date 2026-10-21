@@ -4,6 +4,8 @@
 
 import * as storage from './storage.js';
 import { createList } from './lists.js';
+import { markSyncDirty } from './sync.js';
+import { isAllowedHttpUrl } from './url-validation.js';
 
 const EXPORT_VERSION = '2.0';
 
@@ -45,7 +47,8 @@ function isStation(s) {
     typeof s === 'object' &&
     typeof s.id === 'string' &&
     typeof s.name === 'string' &&
-    typeof s.url === 'string'
+    typeof s.url === 'string' &&
+    isAllowedHttpUrl(s.url)
   );
 }
 
@@ -98,6 +101,7 @@ export async function applyImport(parsed) {
     await storage.putList(list);
     created.push(list);
   }
+  await markSyncDirty();
   return created;
 }
 

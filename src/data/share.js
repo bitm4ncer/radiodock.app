@@ -10,6 +10,11 @@ import { exportListAsJson } from './import-export.js';
 
 const PREFIX = '#s=';
 
+export const MAX_SHARE_INPUT_CHARS = 2_000_000;
+export const MAX_SHARE_OUTPUT_BYTES = 5_000_000;
+export const MAX_SHARE_LISTS = 100;
+export const MAX_SHARE_STATIONS = 5000;
+
 async function gzipString(str) {
   const stream = new Blob([str]).stream().pipeThrough(new CompressionStream('gzip'));
   return new Uint8Array(await new Response(stream).arrayBuffer());
@@ -17,7 +22,26 @@ async function gzipString(str) {
 
 async function gunzipBytes(bytes) {
   const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
-  return new Response(stream).text();
+  const reader = stream.getReader();
+  const chunks = [];
+  let total = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    total += value.byteLength;
+    if (total > MAX_SHARE_OUTPUT_BYTES) {
+      await reader.cancel().catch(() => {});
+      throw new Error('Share link is too large.');
+    }
+    chunks.push(value);
+  }
+  const out = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    out.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return new TextDecoder().decode(out);
 }
 
 function bytesToBase64Url(bytes) {
@@ -45,14 +69,35 @@ export async function buildShareUrl(list) {
   return `${window.location.origin}/${PREFIX}${bytesToBase64Url(bytes)}`;
 }
 
+function countShareShape(parsed) {
+  if (Array.isArray(parsed?.lists)) {
+    let stationCount = 0;
+    for (const l of parsed.lists) {
+      stationCount += Array.isArray(l?.stations) ? l.stations.length : 0;
+    }
+    return { listCount: parsed.lists.length, stationCount };
+  }
+  if (Array.isArray(parsed?.stations)) {
+    return { listCount: 1, stationCount: parsed.stations.length };
+  }
+  return { listCount: 0, stationCount: 0 };
+}
+
 /** Try to decode an inbound location.hash. Returns the parsed export
  *  payload (same shape as JSON file import) or null if the hash isn't
- *  a share link. Throws on malformed data so the caller can toast it. */
+ *  a share link. Throws on malformed or oversized data so the caller can
+ *  toast it before confirmation. */
 export async function tryDecodeShareHash(hash) {
   if (!hash || !hash.startsWith(PREFIX)) return null;
   const encoded = hash.slice(PREFIX.length);
   if (!encoded) return null;
+  if (encoded.length > MAX_SHARE_INPUT_CHARS) throw new Error('Share link is too large.');
   const bytes = base64UrlToBytes(encoded);
   const json = await gunzipBytes(bytes);
-  return JSON.parse(json);
+  const parsed = JSON.parse(json);
+  const { listCount, stationCount } = countShareShape(parsed);
+  if (listCount > MAX_SHARE_LISTS || stationCount > MAX_SHARE_STATIONS) {
+    throw new Error('Share link has too many lists or stations.');
+  }
+  return parsed;
 }

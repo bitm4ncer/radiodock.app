@@ -24,8 +24,8 @@ import { HISTORY_LIST_ID, addToHistory } from './data/history.js';
 import * as storage from './data/storage.js';
 import { downloadList, parseExport, applyImport } from './data/import-export.js';
 import { buildShareUrl, tryDecodeShareHash } from './data/share.js';
-import { searchStations, setBackendOverride } from './data/stations-source.js';
-import { browseStations, getBrowseMeta, getRandomStation, getStationByUuid } from './data/stations-api.js';
+import { searchStations, setBackendOverride, browseStations } from './data/stations-source.js';
+import { getBrowseMeta, getRandomStation, getStationByUuid } from './data/stations-api.js';
 import { loadDiscover, clearDiscoverCache } from './data/discover.js';
 import { submitPlaylist } from './data/playlists.js';
 import { cleanupOrphanedLogoPrefs } from './data/logo-resolver.js';
@@ -47,7 +47,7 @@ import { mountDetectButton } from './ui/detect-button.js';
 import { mountSyncModal } from './ui/sync-modal.js';
 import { mountAddPanel } from './ui/add-panel.js';
 import { mountChangelog, CHANGELOG_REVISION } from './ui/changelog.js';
-import { startLiveSync, stopLiveSync, pushWithStatus as syncPushWithStatus, getSyncToken, extractTokenFromInput, pullFromServer, applyImportPayload, markSyncDirty } from './data/sync.js';
+import { startLiveSync, stopLiveSync, pushWithStatus as syncPushWithStatus, getSyncToken, extractTokenFromInput, pullFromServer, applyImportPayload, markSyncDirty, hasSyncConflict } from './data/sync.js';
 import { track, identifySession, trackStationPlay } from './analytics/umami.js';
 import { attachListenHeartbeat } from './analytics/listen-heartbeat.js';
 import { attachListenSession } from './analytics/listen-session.js';
@@ -1492,6 +1492,7 @@ listDropdown.onImport(async (file) => {
     const text = await file.text();
     const parsed = parseExport(text);
     const created = await applyImport(parsed);
+    scheduleSyncPush();
     state.userLists = await listsApi.getUserLists();
     if (created[0]) state.currentListId = created[0].id;
     renderActiveList();
@@ -1681,6 +1682,7 @@ async function importSharedSingle({ name, stations }) {
     });
     if (!ok) return;
     const [created] = await applyImport({ kind: 'single', list: { name, stations } });
+    scheduleSyncPush();
     if (created) await switchToList(created.id);
     track('list-import-shared', { stationCount: stations.length, resolution: 'new' });
     toast(`Imported "${created?.name ?? name}"`);
@@ -1706,6 +1708,7 @@ async function importSharedSingle({ name, stations }) {
       toast(`Updated "${existing.name}"`);
     } else {
       const [created] = await applyImport({ kind: 'single', list: { name, stations } });
+      scheduleSyncPush();
       if (created) await switchToList(created.id);
       track('list-import-shared', { stationCount: stations.length, resolution: 'new' });
       toast(`Imported "${created?.name ?? name}"`);
@@ -1727,6 +1730,7 @@ async function confirmAndImportMulti(parsed) {
   if (!ok) return;
   try {
     const created = await applyImport(parsed);
+    scheduleSyncPush();
     state.userLists = await listsApi.getUserLists();
     if (created[0]) await switchToList(created[0].id);
     track('list-import-shared', { listCount: created.length, resolution: 'new' });
@@ -1917,7 +1921,9 @@ export function scheduleSyncPush() {
   if (syncPushTimer) clearTimeout(syncPushTimer);
   syncPushTimer = setTimeout(async () => {
     const token = await getSyncToken();
-    if (token) {
+    // A pending conflict blocks automatic pushes: pushing again would re-trigger
+    // the same 409/merge loop. The user resolves it from the sync panel instead.
+    if (token && !(await hasSyncConflict())) {
       const result = await syncPushWithStatus(token);
       if (result) {
         track('sync-push', {

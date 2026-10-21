@@ -4,7 +4,8 @@ import * as storage from '../data/storage.js';
 import {
   generateToken, pushToServer, pullFromServer, deleteFromServer,
   getSyncToken, buildExportPayload, applyImportPayload, extractTokenFromInput,
-  getRemoteMeta, onSyncStatus, SyncError,
+  getRemoteMeta, onSyncStatus, getSyncStatus, SyncError,
+  resolveConflictKeepLocal, resolveConflictUseServer,
 } from '../data/sync.js';
 import { registerSnapSurface, snapPanel, cancelSnap } from './panel-snap.js';
 
@@ -25,6 +26,7 @@ const STATUS_TEXT = {
   synced: (at) => `✓ Up to date${at ? ` · synced ${relativeTime(at)}` : ''}`,
   offline: () => '⚠ Offline — will sync when back online',
   error: () => '⚠ Sync error — retrying…',
+  conflict: () => '⚠ Sync conflict: choose which version to keep',
   unlinked: () => '',
 };
 
@@ -182,6 +184,7 @@ export function mountSyncModal({ onListsChanged, onLinked, onUnlinked, track }) 
     el.textContent = text;
     el.dataset.state = status.state;
     el.hidden = !text;
+    if (status.state === 'conflict') showConflictState();
   }
   onSyncStatus(renderStatus);
   setInterval(() => {
@@ -213,11 +216,85 @@ export function mountSyncModal({ onListsChanged, onLinked, onUnlinked, track }) 
     show(states.error);
   }
 
+  // --- Conflict resolution: two buttons injected into #syncStateError (no
+  // index.html edit). Shown while a merge conflict awaits a user decision. ---
+  let conflictButtons = null;
+
+  function removeConflictButtons() {
+    if (conflictButtons) {
+      conflictButtons.wrap?.remove();
+      conflictButtons = null;
+    }
+  }
+
+  function setConflictBusy(busy) {
+    if (!conflictButtons) return;
+    conflictButtons.keep.disabled = busy;
+    conflictButtons.use.disabled = busy;
+  }
+
+  function ensureConflictButtons() {
+    if (conflictButtons && conflictButtons.keep.isConnected && conflictButtons.use.isConnected) return;
+    removeConflictButtons();
+    const errorEl = states.error;
+    if (!errorEl) return;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'sync-actions';
+    wrap.dataset.conflictResolution = '';
+    const keep = document.createElement('button');
+    keep.type = 'button';
+    keep.className = 'btn-secondary';
+    keep.textContent = 'Keep this device';
+    const use = document.createElement('button');
+    use.type = 'button';
+    use.className = 'btn-secondary';
+    use.textContent = 'Use server version';
+    wrap.append(keep, use);
+    errorEl.appendChild(wrap);
+    conflictButtons = { keep, use, wrap };
+
+    async function resolve(mode) {
+      const token = await getSyncToken();
+      if (!token) return;
+      setConflictBusy(true);
+      try {
+        if (mode === 'keep-local') await resolveConflictKeepLocal(token);
+        else await resolveConflictUseServer(token);
+        removeConflictButtons();
+        onListsChanged?.();
+        await refreshState();
+      } catch (err) {
+        showError(err.message || 'Failed to resolve the sync conflict.');
+      } finally {
+        setConflictBusy(false);
+      }
+    }
+    keep.addEventListener('click', () => resolve('keep-local'));
+    use.addEventListener('click', () => resolve('use-server'));
+  }
+
+  function showConflictState() {
+    hideAll();
+    const msg = document.getElementById('syncErrorMsg');
+    if (msg) msg.textContent = 'A station was changed on two devices at once. Choose which version to keep.';
+    show(states.error);
+    ensureConflictButtons();
+  }
+
+  function isConflictError(err) {
+    return err instanceof SyncError && err.type === 'conflict';
+  }
+
   async function refreshState() {
     const token = await getSyncToken();
     hideAll();
     if (!token) {
       showState('unlinked');
+      return;
+    }
+    if (getSyncStatus().state === 'conflict') {
+      showConflictState();
       return;
     }
 
@@ -266,7 +343,8 @@ export function mountSyncModal({ onListsChanged, onLinked, onUnlinked, track }) 
         listCount: result?.list_count ?? 0,
       });
     } catch (err) {
-      showError(err.message || 'Failed to generate sync link');
+      if (isConflictError(err)) showConflictState();
+      else showError(err.message || 'Failed to generate sync link');
     }
   });
 
@@ -294,7 +372,9 @@ export function mountSyncModal({ onListsChanged, onLinked, onUnlinked, track }) 
       track?.('sync-pull', { stationCount, listCount: imported, source });
       toast(`Synced ${imported} list${imported !== 1 ? 's' : ''} (${stationCount} stations)`);
     } catch (err) {
-      if (err instanceof SyncError && err.type === 'server' && err.message.includes('not found')) {
+      if (isConflictError(err)) {
+        showConflictState();
+      } else if (err instanceof SyncError && err.type === 'server' && err.message.includes('not found')) {
         showError('Sync token not found or expired.');
       } else {
         showError(err.message || 'Failed to connect.');

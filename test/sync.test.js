@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 
 import {
   deriveRecordId,
@@ -84,4 +85,15 @@ test('extractTokenFromInput pulls the secret out of a full sync link', () => {
   const secret = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
   assert.equal(extractTokenFromInput(`https://radiodock.app/#sync=${secret}`), secret);
   assert.equal(extractTokenFromInput('   '), null);
+});
+
+test('sync-modal wires both conflict resolvers and inserts buttons into the error state', () => {
+  // No DOM harness: assert at the source level that the conflict UI is wired.
+  const src = readFileSync(new URL('../src/ui/sync-modal.js', import.meta.url), 'utf8');
+  assert.match(src, /resolveConflictKeepLocal/, 'calls resolveConflictKeepLocal');
+  assert.match(src, /resolveConflictUseServer/, 'calls resolveConflictUseServer');
+  assert.match(src, /syncStateError/, 'targets the error state');
+  assert.match(src, /createElement/, 'creates the buttons dynamically');
+  assert.match(src, /Keep this device/, 'keep-local button label');
+  assert.match(src, /Use server version/, 'use-server button label');
 });
