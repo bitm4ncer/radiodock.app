@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T23:19:33.192Z",
+  "generatedAt": "2026-10-21T23:22:56.247Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -5388,6 +5388,11 @@
         "featured": false,
         "stations": [
           {
+            "stationuuid": "23b89519-7c6c-4f20-b133-659a56a716d4",
+            "name": "NRJ Classic RNB",
+            "countrycode": "FR"
+          },
+          {
             "stationuuid": "58590ae8-2457-11e8-91bf-52543be04c81",
             "name": "Allzic Radio R&B",
             "countrycode": "FR"
@@ -5400,11 +5405,6 @@
           {
             "stationuuid": "b3fb8244-cfe6-437f-99df-dbcce3c520ca",
             "name": "Hotmix RnB",
-            "countrycode": "FR"
-          },
-          {
-            "stationuuid": "23b89519-7c6c-4f20-b133-659a56a716d4",
-            "name": "NRJ Classic RNB",
             "countrycode": "FR"
           },
           {
