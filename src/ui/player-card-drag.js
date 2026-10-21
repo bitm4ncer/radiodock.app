@@ -186,7 +186,8 @@ export async function mountPlayerCardDragMinimize() {
 
   // --- Dragging ---
   // Shared by the 6-dot handle and, while minimized, the pill body. Buttons,
-  // links and inputs never start a drag, so play/expand/action clicks work.
+  // links, inputs and the volume rail never start a drag, so play/expand,
+  // action clicks and volume dragging work.
 
   let dragging = false;
   let pointerId = null;
@@ -205,7 +206,7 @@ export async function mountPlayerCardDragMinimize() {
       if (matchMedia('(max-width: 699px)').matches
           || document.documentElement.classList.contains('is-standalone')) return;
     }
-    if (source === card && evt.target.closest('button, a, input, textarea, select')) return;
+    if (source === card && evt.target.closest('button, a, input, textarea, select, .volume-controls')) return;
     cancelSnap(container);
     dragging = true;
     pointerId = evt.pointerId;
