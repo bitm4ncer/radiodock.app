@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T16:42:23.782Z",
+  "generatedAt": "2026-10-21T16:44:21.818Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2264,11 +2264,6 @@
             "stationuuid": "cd280bad-abd6-47ab-8847-735b4f6dc937",
             "name": "SomaFM n5MD (128k AAC)",
             "countrycode": "US"
-          },
-          {
-            "stationuuid": "85864736-a73e-11e8-abb8-52543be04c81",
-            "name": "Path through the Forest",
-            "countrycode": "DE"
           },
           {
             "stationuuid": "2e1cb65b-967f-4221-8bcb-1baecea7784c",
