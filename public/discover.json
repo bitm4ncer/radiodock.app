@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T00:02:29.336Z",
+  "generatedAt": "2026-10-21T00:09:21.342Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -1567,7 +1567,7 @@
         "slug": "ambient-drone",
         "title": "Ambient & Drone",
         "source": "radiodock",
-        "featured": true,
+        "featured": false,
         "stations": [
           {
             "stationuuid": "960eb2e9-0601-11e8-ae97-52543be04c81",
@@ -1686,7 +1686,7 @@
         "slug": "classical",
         "title": "Classical & Neue Musik",
         "source": "radiodock",
-        "featured": false,
+        "featured": true,
         "stations": [
           {
             "stationuuid": "0bcd73d1-fd8c-49c2-914e-f3fb3c4920e3",
@@ -1788,6 +1788,19 @@
             "stationuuid": "f226bc65-686a-49f1-b82c-6743612197ba",
             "name": "Starpoint Radio",
             "countrycode": "GB"
+          }
+        ]
+      },
+      {
+        "slug": "chill",
+        "title": "Chill",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "d271b4e8-a298-4862-9f4b-025c110cedd9",
+            "name": "IBIZA CHILLOUT LOUNGE - Ambient, Deep House, Balearic, Smooth Jazz, Acoustic, Chill House, Lo-Fi, Chillwave, Dream Pop, Electro, Tropical House, Sunset Chill, Café del Mar, Soft Electronica, Slow House, Ambient, Relax, Easy Listening, Beach Vibes, Summer",
+            "countrycode": "DE"
           }
         ]
       }
