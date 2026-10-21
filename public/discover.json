@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T14:11:26.780Z",
+  "generatedAt": "2026-10-21T14:42:33.938Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2598,6 +2598,11 @@
             "stationuuid": "9613f1f2-0601-11e8-ae97-52543be04c81",
             "name": "Generations Funk",
             "countrycode": "FR"
+          },
+          {
+            "stationuuid": "cc4928e9-f513-4c59-b42c-56097b881431",
+            "name": "I Like It Oldskool",
+            "countrycode": "GB"
           }
         ]
       },
@@ -3274,11 +3279,6 @@
           {
             "stationuuid": "1fca6a62-12d1-4b9d-8485-8a8c06b1a790",
             "name": "Original Kool Archives",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "cc4928e9-f513-4c59-b42c-56097b881431",
-            "name": "I Like It Oldskool",
             "countrycode": "GB"
           },
           {
