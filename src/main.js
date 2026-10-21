@@ -20,6 +20,7 @@ import { initModals, openModal, closeModal } from './ui/modals.js';
 import { toast } from './ui/toast.js';
 import { promptDialog, confirmDialog, choiceDialog } from './ui/modal-helpers.js';
 import * as listsApi from './data/lists.js';
+import { HISTORY_LIST_ID, addToHistory } from './data/history.js';
 import * as storage from './data/storage.js';
 import { downloadList, parseExport, applyImport } from './data/import-export.js';
 import { buildShareUrl, tryDecodeShareHash } from './data/share.js';
@@ -62,8 +63,19 @@ const COMMUNITY_LIST_ID = listsApi.COMMUNITY_LIST_ID;
 // --- App state ---
 const state = {
   community: { id: COMMUNITY_LIST_ID, name: 'Community Radios', stations: [], readOnly: true, reorderable: true },
+  // System list, not part of userLists: cannot be deleted, renamed, shared
+  // or synced. Entries can be removed and the list can be cleared.
+  history: {
+    id: HISTORY_LIST_ID,
+    name: 'History',
+    stations: [],
+    readOnly: true,
+    removable: true,
+    reorderable: false,
+    emptyText: 'No stations yet.',
+  },
   userLists: [],            // [{id, name, stations, order, ...}]
-  currentListId: null,      // active list (community or a user list)
+  currentListId: null,      // active list (community, history or a user list)
   currentStation: null,
 };
 
@@ -911,11 +923,18 @@ if (isElectron()) {
 
 // --- Helpers ---
 function allListsForDropdown() {
-  return [state.community, ...state.userLists];
+  return [state.community, state.history, ...state.userLists];
+}
+
+function listPlaySource(listId) {
+  if (listId === COMMUNITY_LIST_ID) return 'community';
+  if (listId === HISTORY_LIST_ID) return 'history';
+  return 'user-list';
 }
 
 function findList(id) {
   if (id === COMMUNITY_LIST_ID) return state.community;
+  if (id === HISTORY_LIST_ID) return state.history;
   return state.userLists.find((l) => l.id === id);
 }
 
@@ -953,8 +972,9 @@ function renderActiveList() {
   listDropdown.setLists(allLists);
   listDropdown.setCurrent(list.id);
   stationList.setStations(list.stations, {
-    removable: !list.readOnly,
+    removable: list.removable ?? !list.readOnly,
     reorderable: list.reorderable ?? !list.readOnly,
+    emptyText: list.emptyText ?? (list.readOnly ? 'No stations available.' : 'No stations yet.'),
   });
   // Mobile tabs + carousel
   listTabs.setLists(allLists);
@@ -973,7 +993,9 @@ function renderActiveList() {
 function updateShareRowVisibility(list) {
   const row = document.getElementById('listShareRow');
   if (!row) return;
-  row.style.display = (list?.stations?.length ?? 0) > 0 ? '' : 'none';
+  // History is device-local and not a shareable list.
+  const hidden = list?.id === HISTORY_LIST_ID;
+  row.style.display = !hidden && (list?.stations?.length ?? 0) > 0 ? '' : 'none';
 }
 
 document.getElementById('shareCurrentListBtn')?.addEventListener('click', async () => {
@@ -1020,7 +1042,32 @@ player.on('stationchange', async (evt) => {
   state.currentStation = evt.detail.station;
   setActiveStationEverywhere(state.currentStation.id);
   updateFavoriteHeart();
-  await storage.setPref('currentStationId', state.currentStation.id);
+
+  // Record every play - browse, discover, community and user lists alike.
+  state.history.stations = addToHistory(state.history.stations, state.currentStation);
+
+  // Persist the full station object, not just its id: a station played from
+  // search/browse belongs to no saved list, so an id-only restore cannot find
+  // it after a reload.
+  const persists = [
+    storage.setPref('currentStationId', state.currentStation.id),
+    storage.setPref('currentStation', state.currentStation),
+    storage.setPref('history', state.history.stations),
+  ];
+
+  // Keep list counts in sync without rebuilding the active list (that would
+  // reset scroll/selection on every play). When History itself is active,
+  // re-render it so the new entry appears at the top immediately.
+  if (state.currentListId === HISTORY_LIST_ID) {
+    renderActiveList();
+  } else {
+    const lists = allListsForDropdown();
+    listDropdown.setLists(lists);
+    listTabs.setLists(lists);
+    listsCarousel.setLists(lists);
+  }
+
+  await Promise.all(persists);
 });
 
 player.on('error', (evt) => {
@@ -1130,7 +1177,7 @@ player.on('volumechange', async (evt) => {
 
 // --- Station list interactions ---
 stationList.onClick((station) => {
-  trackStationPlay(station, state.currentListId === COMMUNITY_LIST_ID ? 'community' : 'user-list');
+  trackStationPlay(station, listPlaySource(state.currentListId));
   player.playStation(station);
 });
 
@@ -1139,9 +1186,36 @@ stationList.onClick((station) => {
 // hence the reorder against the pre-removal id order to restore the exact slot.
 async function removeStationWithUndo(listId, stationId) {
   const list = findList(listId);
-  if (!list || list.readOnly) return;
-  const removed = list.stations.find((s) => s.id === stationId);
+  // History is read-only at the list level (no rename/delete) but its
+  // entries are removable, hence the explicit per-affordance flag.
+  if (!list || !(list.removable ?? !list.readOnly)) return;
+  const previousIndex = list.stations.findIndex((s) => s.id === stationId);
+  const removed = previousIndex >= 0 ? list.stations[previousIndex] : null;
+  if (!removed) return;
   const previousOrder = list.stations.map((s) => s.id);
+
+  if (list.id === HISTORY_LIST_ID) {
+    list.stations = list.stations.filter((s) => s.id !== stationId);
+    await storage.setPref('history', list.stations);
+    renderActiveList();
+    toast(`Removed "${removed.name}"`, {
+      action: {
+        label: 'Undo',
+        callback: async () => {
+          const target = findList(listId);
+          if (!target || target.stations.some((s) => s.id === removed.id)) return;
+          // Reinsert at the original slot, keeping anything played since.
+          const next = target.stations.slice();
+          next.splice(Math.min(previousIndex, next.length), 0, removed);
+          target.stations = next;
+          await storage.setPref('history', target.stations);
+          renderActiveList();
+        },
+      },
+    });
+    return;
+  }
+
   try {
     await listsApi.removeStationFromList(list.id, stationId);
     list.stations = list.stations.filter((s) => s.id !== stationId);
@@ -1253,7 +1327,7 @@ listsCarousel.onCurrentChange(async (listId) => {
 // list directly, no state.currentListId lookup needed (avoids races
 // with the swipe-driven state update).
 listsCarousel.onClick((station) => {
-  trackStationPlay(station, state.currentListId === COMMUNITY_LIST_ID ? 'community' : 'user-list');
+  trackStationPlay(station, listPlaySource(state.currentListId));
   player.playStation(station);
 });
 
@@ -1389,6 +1463,21 @@ listDropdown.onDelete(async (list) => {
   }
 });
 
+listDropdown.onClear(async (list) => {
+  if (list?.id !== HISTORY_LIST_ID || !state.history.stations.length) return;
+  const ok = await confirmDialog({
+    title: 'Clear History',
+    message: 'Remove every station from your history?',
+    confirmLabel: 'Clear',
+  });
+  if (!ok) return;
+  state.history.stations = [];
+  await storage.setPref('history', []);
+  renderActiveList();
+  track('history-clear');
+  toast('History cleared');
+});
+
 listDropdown.onSyncDevices(() => syncModal.open());
 
 listDropdown.onImport(async (file) => {
@@ -1464,6 +1553,9 @@ async function bootstrap() {
   }
 
   state.userLists = userLists;
+  state.history.stations = Array.isArray(prefs.history)
+    ? prefs.history.filter((s) => s?.id)
+    : [];
   state.currentListId = prefs.currentListId ?? COMMUNITY_LIST_ID;
   if (!findList(state.currentListId)) state.currentListId = COMMUNITY_LIST_ID;
 
@@ -1471,24 +1563,32 @@ async function bootstrap() {
   renderActiveList();   // re-render with restored ordering + active list
   if (OFF_INDICATOR_ENABLED) streamProber.start(); // begin probing station URLs every 60s
 
-  // Restore current station view (without auto-playing — first play needs user gesture).
-  if (prefs.currentStationId) {
-    const all = [
-      ...(state.community?.stations ?? []),
-      ...state.userLists.flatMap((l) => l.stations),
-    ];
-    const station = all.find((s) => s.id === prefs.currentStationId);
-    if (station) {
-      state.currentStation = station;
-      playerCard.setStation(station);
-      setActiveStationEverywhere(station.id);
-      updateFavoriteHeart();
-      // Browsers require a user gesture for the first play(), so the
-      // restored station sits silent with the play icon showing. Without
-      // a hint, returning users assume the app is broken. The text
-      // clears on the next stationchange (i.e. the moment they tap play).
-      playerCard.setNowPlaying('Tap ▶ to resume');
-    }
+  // Restore current station view (without auto-playing - first play needs user gesture).
+  // Prefer the full station snapshot: a station played from search/browse is
+  // not a member of any list, so the id-only lookup below would miss it.
+  const savedStationId = prefs.currentStationId;
+  const savedStation = prefs.currentStation?.id
+    && (prefs.currentStation.url || prefs.currentStation.url_resolved)
+    ? prefs.currentStation
+    : null;
+  const lookedUpStation = savedStationId
+    ? [
+        ...(state.community?.stations ?? []),
+        ...state.history.stations,
+        ...state.userLists.flatMap((l) => l.stations),
+      ].find((s) => s.id === savedStationId)
+    : null;
+  const station = savedStation ?? lookedUpStation;
+  if (station) {
+    state.currentStation = station;
+    playerCard.setStation(station);
+    setActiveStationEverywhere(station.id);
+    updateFavoriteHeart();
+    // Browsers require a user gesture for the first play(), so the
+    // restored station sits silent with the play icon showing. Without
+    // a hint, returning users assume the app is broken. The text
+    // clears on the next stationchange (i.e. the moment they tap play).
+    playerCard.setNowPlaying('Tap ▶ to resume');
   }
 
   // hls.js is imported on demand at tap time — for HLS stations that

@@ -5,6 +5,7 @@
 // action menu with bigger tap targets.
 
 import { openModal, closeModal } from './modals.js';
+import { HISTORY_LIST_ID } from '../data/history.js';
 
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({
@@ -18,6 +19,7 @@ function escapeHtml(s) {
 
 const ICON_RENAME = `<svg viewBox="0 0 24 24" class="action-icon" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25Zm17.71-10.04a1 1 0 0 0 0-1.41l-2.5-2.5a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.99-1.67Z" fill="currentColor"/></svg>`;
 const ICON_EXPORT = `<svg viewBox="0 0 24 24" class="action-icon" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`;
+const ICON_TRASH = `<svg viewBox="0 0 24 24" class="action-icon" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`;
 const ICON_SHARE = `<svg viewBox="0 0 24 24" class="action-icon" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 1 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 1 0 7.07 7.07l1.71-1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`;
 const ICON_MORE = `<svg viewBox="0 0 24 24" class="action-icon action-icon--more" aria-hidden="true"><circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/></svg>`;
 
@@ -40,6 +42,7 @@ export function mountListDropdown() {
   let exportCb = null;
   let shareCb = null;
   let deleteCb = null;
+  let clearCb = null;
   let toggleCb = null;
   let syncCb = null;
 
@@ -75,14 +78,22 @@ export function mountListDropdown() {
     itemsEl.innerHTML = lists
       .map((l) => {
         const readOnly = l.readOnly;
-        // Per-row actions only on user-owned (editable) lists.
-        const actions = readOnly
-          ? ''
-          : `<button type="button" class="list-edit-btn" data-action="rename" title="Rename list">${ICON_RENAME}</button>
+        // History is not a user list: only "clear" (desktop trash icon /
+        // mobile action-sheet row) is exposed. Never rename/share/export/
+        // delete, and only while it has entries.
+        let actions = '';
+        if (l.id === HISTORY_LIST_ID) {
+          if ((l.stations?.length ?? 0) > 0) {
+            actions = `<button type="button" class="list-remove-btn" data-action="clear" title="Clear history">${ICON_TRASH}</button>
+             <button type="button" class="list-more-btn" data-action="more" title="More" aria-label="List actions">${ICON_MORE}</button>`;
+          }
+        } else if (!readOnly) {
+          actions = `<button type="button" class="list-edit-btn" data-action="rename" title="Rename list">${ICON_RENAME}</button>
              <button type="button" class="list-share-btn" data-action="share" title="Share list">${ICON_SHARE}</button>
              <button type="button" class="list-export-btn" data-action="export" title="Export list">${ICON_EXPORT}</button>
              <button type="button" class="list-remove-btn" data-action="delete" title="Delete list">×</button>
              <button type="button" class="list-more-btn" data-action="more" title="More" aria-label="List actions">${ICON_MORE}</button>`;
+        }
         const isActive = l.id === currentId;
         return `
           <div class="list-item${isActive ? ' active' : ''}" data-id="${escapeHtml(l.id)}">
@@ -122,6 +133,9 @@ export function mountListDropdown() {
     } else if (action === 'delete') {
       deleteCb?.(list);
       close();
+    } else if (action === 'clear') {
+      clearCb?.(list);
+      close();
     } else if (action === 'more') {
       openActionsSheet(list);
       close();
@@ -139,6 +153,16 @@ export function mountListDropdown() {
     actionsCurrentList = list;
     const titleEl = document.getElementById('listActionsTitle');
     if (titleEl) titleEl.textContent = list.name;
+    // History's sheet contains exactly one action: clear. User lists keep
+    // the regular rename/share/export/delete set.
+    const isHistory = list.id === HISTORY_LIST_ID;
+    actionsModal?.querySelectorAll('.list-action-row').forEach((row) => {
+      if (row.dataset.action === 'clear') {
+        row.style.display = isHistory && (list.stations?.length ?? 0) > 0 ? '' : 'none';
+      } else {
+        row.style.display = isHistory ? 'none' : '';
+      }
+    });
     openModal(actionsModal);
   }
 
@@ -153,6 +177,7 @@ export function mountListDropdown() {
     else if (action === 'share') shareCb?.(list);
     else if (action === 'export') exportCb?.(list);
     else if (action === 'delete') deleteCb?.(list);
+    else if (action === 'clear') clearCb?.(list);
   });
 
   addBtn.addEventListener('click', () => {
@@ -191,6 +216,7 @@ export function mountListDropdown() {
     onExport(cb) { exportCb = cb; },
     onShare(cb) { shareCb = cb; },
     onDelete(cb) { deleteCb = cb; },
+    onClear(cb) { clearCb = cb; },
     onToggle(cb) { toggleCb = cb; },
     onSyncDevices(cb) { syncCb = cb; },
     openActionsSheet,

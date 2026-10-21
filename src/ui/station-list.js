@@ -436,6 +436,10 @@ export function mountStationList({ container, listId = null }) {
       }
       if ('removable' in opts) removable = !!opts.removable;
       if ('reorderable' in opts) reorderable = !!opts.reorderable;
+      if (opts.emptyText && emptyEl) {
+        const text = emptyEl.querySelector('p');
+        if (text) text.textContent = opts.emptyText;
+      }
       render();
     },
     setActive(id) {

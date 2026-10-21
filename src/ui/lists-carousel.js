@@ -34,8 +34,9 @@ export function mountListsCarousel({ root }) {
    // arrange the default stations to taste; user lists allow both.
   function listOpts(list) {
     return {
-      removable: !list?.readOnly,
+      removable: list?.removable ?? !list?.readOnly,
       reorderable: list?.reorderable ?? !list?.readOnly,
+      emptyText: list?.emptyText,
     };
   }
 
@@ -65,7 +66,7 @@ export function mountListsCarousel({ root }) {
     pageEl.innerHTML = `
       <div class="favorites-list" id="favoritesList-${escapeHtml(list.id)}">
         <div class="empty-state">
-          <p>${list.readOnly ? 'No stations available.' : 'No stations yet.'}</p>
+          <p>${escapeHtml(list.emptyText ?? (list.readOnly ? 'No stations available.' : 'No stations yet.'))}</p>
         </div>
       </div>`;
     root.append(pageEl);
