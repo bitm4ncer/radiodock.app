@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T19:48:12.896Z",
+  "generatedAt": "2026-10-21T19:48:17.769Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2495,6 +2495,114 @@
             "stationuuid": "cc4928e9-f513-4c59-b42c-56097b881431",
             "name": "I Like It Oldskool",
             "countrycode": "GB"
+          }
+        ]
+      },
+      {
+        "slug": "rap",
+        "title": "Rap",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "01b61e49-18bd-486d-b0e1-cb51cbaf9a6d",
+            "name": "Skyrock",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "85c799b3-d91f-4f60-b91a-723e4a04acf5",
+            "name": "90s90s HipHop & Rap",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "96135476-0601-11e8-ae97-52543be04c81",
+            "name": "Generations Rap U.S",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "c550de06-48be-11e8-b1b0-52543be04c81",
+            "name": "Hot 108 JAMZ",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9c3f1676-9445-4d72-b4da-d3a1c4847b91",
+            "name": "Deutschrap",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "960ecc44-0601-11e8-ae97-52543be04c81",
+            "name": "Generations Rap FR Gold",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9614e0a1-0601-11e8-ae97-52543be04c81",
+            "name": "SomaFM Fluid (128k MP3)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "2082b714-38e5-4a66-9629-5440c90d3382",
+            "name": "Rap House | NTS",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "afd853b3-e6d1-11e9-a96c-52543be04c81",
+            "name": "100% Hip Hop | NTS",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "504e3cdf-dc53-11e9-a8ba-52543be04c81",
+            "name": "HIP HOP RADIO",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "c46731e7-4163-4175-8b0d-4c512de020ef",
+            "name": "Old School Hip Hop - Urbanradio.com",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "960f774b-0601-11e8-ae97-52543be04c81",
+            "name": "RMF Hip Hop",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "63c56fba-2e27-4983-a78e-5798aba8d73a",
+            "name": "TRAP RADIO TRAP.radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "ccf16787-7e0f-4b1a-9599-c318a8e0cf02",
+            "name": "Skyrock Klassics",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "483a2e55-2047-11e8-a334-52543be04c81",
+            "name": "bigFM Deutsch Rap",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "96283d73-0601-11e8-ae97-52543be04c81",
+            "name": "Radio 105 - Rap Italia",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "0ee149d6-e190-11e9-a8ba-52543be04c81",
+            "name": "bigFM Oldschool Rap & Hip-Hop",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "460d2683-8054-4845-9690-05962167c9c7",
+            "name": "OLDSCHOOL HIPHOP",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "961e20e5-0601-11e8-ae97-52543be04c81",
+            "name": "NPO FunX Hip Hop",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "0f61c98f-b394-4d61-adcb-827021c29f93",
+            "name": "All Underground Hip Hop Radio",
+            "countrycode": "US"
           }
         ]
       },
