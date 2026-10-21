@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T16:12:55.863Z",
+  "generatedAt": "2026-10-21T16:21:42.500Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -3433,6 +3433,109 @@
             "stationuuid": "1792b3c5-c299-4dd3-97ad-db94a489becd",
             "name": "Anima Amoris Minimal Deep Techno",
             "countrycode": "RU"
+          }
+        ]
+      },
+      {
+        "slug": "techno",
+        "title": "Techno",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "9643c506-0601-11e8-ae97-52543be04c81",
+            "name": "FluxFM Techno Underground",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "c26f30d5-3fd2-4353-9601-b668fda28207",
+            "name": "re:union Radio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "58bfb205-fea8-4a9b-aae5-b9737115605e",
+            "name": "techno bunker",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "780f330e-5a1f-4f98-a5ba-cc261ec6a06c",
+            "name": "TEKNO1",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "7ccca232-b731-4060-9baf-c3a1a5b992e7",
+            "name": "Techno.FM (320 kbit)",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "685ec2f1-d235-11e9-a861-52543be04c81",
+            "name": "Schranz.in - Hardtechno",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "e166a702-0de3-4d67-81aa-c949d27970c0",
+            "name": "Planet Frequency Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "e8b71483-aa1f-47f6-9fb6-02bef8153a69",
+            "name": "Radio Techno Zagreb",
+            "countrycode": "HR"
+          },
+          {
+            "stationuuid": "280a4ae0-6946-4db7-8f5f-9cf122cfca1c",
+            "name": "EILO Techno Radio",
+            "countrycode": "BG"
+          },
+          {
+            "stationuuid": "2f7feb09-8e0e-4aae-ad68-d1856aa1ba5d",
+            "name": "Techno Live Sets",
+            "countrycode": "CO"
+          },
+          {
+            "stationuuid": "96643f48-c85c-41d5-b9a0-6c6cd861e87b",
+            "name": "N10.AS",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "cd08ddef-18ae-421c-85a3-971ee8caa5d5",
+            "name": "RES FM",
+            "countrycode": "PT"
+          },
+          {
+            "stationuuid": "f52c28fa-5259-42f2-85ee-471425627da7",
+            "name": "Free Techno",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "6dcb8eb0-9f72-45db-87d1-31c3441d508d",
+            "name": "Evosonic Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "57f6f43b-7af5-449e-a05c-632c03a7ea85",
+            "name": "Ossido",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "9391f9be-cbc1-4c84-8da5-cf7eebefaab2",
+            "name": "Labyrinth | NTS",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "626a21e7-25f4-4c7b-9f8f-5e580c493bfc",
+            "name": "Teknival Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "6fa5c74b-1f5c-11ea-a955-52543be04c81",
+            "name": "1000 Techno",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "ecb854f2-4a6c-43ec-8805-e9e475b190ca",
+            "name": "Ola Radio",
+            "countrycode": ""
           }
         ]
       },
