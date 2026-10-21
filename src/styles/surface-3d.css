@@ -1204,3 +1204,16 @@ body:has(.install-section:not(.is-dismissed)) .notes-flag {
 :root.surface-3d .notes-popup-menu button:hover {
   background-color: var(--g-control-hover);
 }
+
+/* The base row hover is a neutral grey, which reads warm next to the
+   blue-tinted 3D panel. Keep rows on the same cool control tint. */
+:root.surface-3d .stations-row:hover,
+:root.surface-3d .stations-row:has(:focus-visible) {
+  background-color: var(--g-control-hover);
+  background-image: var(--g-gloss);
+}
+
+:root.surface-3d .stations-row.is-playing {
+  background-color: var(--g-selected);
+  background-image: var(--g-gloss);
+}
