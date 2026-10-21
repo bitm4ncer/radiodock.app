@@ -141,3 +141,9 @@ body {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+
+/* Panels drive their own spring to the snapped position; any open/close
+   transition would lag behind the per-frame left/top updates. */
+.is-snapping {
+  transition: none !important;
+}

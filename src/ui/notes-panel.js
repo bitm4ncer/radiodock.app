@@ -15,6 +15,7 @@
 
 import * as notes from '../data/notes.js';
 import { getPref, setPref, sumRecordingBytes } from '../data/storage.js';
+import { registerSnapSurface, snapPanel, cancelSnap } from './panel-snap.js';
 import { toast } from './toast.js';
 import { promptDialog, confirmDialog } from './modal-helpers.js';
 import { exportNotesPayload } from '../data/notes-export.js';
@@ -63,6 +64,7 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
   const panel = buildPanel({ isMobile, showRecord: showPanelRecordButton });
   if (flag) document.body.appendChild(flag);
   document.body.appendChild(panel);
+  if (!isMobile) registerSnapSurface(panel);
   let pageMenu = null;
   let noteMenu = null;
   let moveSubmenu = null;
@@ -264,6 +266,7 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     let offsetX = 0, offsetY = 0;
     handle.addEventListener('pointerdown', (evt) => {
       if (evt.button !== 0) return;
+      cancelSnap(panel);
       const rect = panel.getBoundingClientRect();
       dragging = true;
       pointerId = evt.pointerId;
@@ -284,7 +287,14 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
       try { handle.releasePointerCapture(pointerId); } catch {}
       pointerId = null;
       const pos = getCurrentPosition();
-      if (pos) setPref(PREF_POS, pos).catch(() => {});
+      if (pos) {
+        const target = snapPanel(panel, {
+          x: pos.x,
+          y: pos.y,
+          setPosition: applyPosition,
+        });
+        setPref(PREF_POS, target).catch(() => {});
+      }
     };
     handle.addEventListener('pointerup', end);
     handle.addEventListener('pointercancel', end);

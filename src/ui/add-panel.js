@@ -4,6 +4,7 @@ import { resizeToDataUrl } from '../data/image-resize.js';
 import { submitStation, SubmitError } from '../data/submit.js';
 import { createDbHistory } from './db-history.js';
 import { STATIONS_BASE } from '../data/stations-api.js';
+import { registerSnapSurface, snapPanel, cancelSnap } from './panel-snap.js';
 
 const SOCIAL_KEYS = ['instagram', 'soundcloud', 'mixcloud', 'bandcamp', 'youtube', 'facebook', 'x', 'tiktok'];
 const PREF_POS = 'addPanelPos';
@@ -78,6 +79,7 @@ function wireLogoPicker(root, maxPx) {
 export function mountAddPanel({ getUserLists, getActiveListId, addStationToList, track }) {
   const panel = document.getElementById('addPanel');
   if (!panel) return { open() {}, close() {} };
+  registerSnapSurface(panel);
   let panelOpen = false;
 
   function isMobileNow() {
@@ -121,6 +123,7 @@ export function mountAddPanel({ getUserLists, getActiveListId, addStationToList,
     let dragging = false, pid = null, ox = 0, oy = 0;
     handle.addEventListener('pointerdown', (e) => {
       if (e.button !== 0) return;
+      cancelSnap(panel);
       const r = panel.getBoundingClientRect();
       dragging = true; pid = e.pointerId; handle.setPointerCapture(pid);
       ox = e.clientX - r.left; oy = e.clientY - r.top;
@@ -135,7 +138,10 @@ export function mountAddPanel({ getUserLists, getActiveListId, addStationToList,
       dragging = false; panel.classList.remove('is-dragging');
       const x = parseFloat(panel.style.getPropertyValue('--add-x'));
       const y = parseFloat(panel.style.getPropertyValue('--add-y'));
-      if (Number.isFinite(x) && Number.isFinite(y)) storage.setPref(PREF_POS, { x, y }).catch(() => {});
+      if (Number.isFinite(x) && Number.isFinite(y)) {
+        const target = snapPanel(panel, { x, y, setPosition: applyPosition });
+        storage.setPref(PREF_POS, target).catch(() => {});
+      }
     };
     handle.addEventListener('pointerup', end);
     handle.addEventListener('pointercancel', end);

@@ -6,6 +6,7 @@ import {
   getSyncToken, buildExportPayload, applyImportPayload, extractTokenFromInput,
   getRemoteMeta, onSyncStatus, SyncError,
 } from '../data/sync.js';
+import { registerSnapSurface, snapPanel, cancelSnap } from './panel-snap.js';
 
 // Human-readable "synced N ago" from a ms timestamp.
 function relativeTime(at) {
@@ -118,6 +119,7 @@ export function mountSyncModal({ onListsChanged, onLinked, onUnlinked, track }) 
     let dragging = false, pointerId = null, offsetX = 0, offsetY = 0;
     handle.addEventListener('pointerdown', (evt) => {
       if (evt.button !== 0) return;
+      cancelSnap(panel);
       const rect = panel.getBoundingClientRect();
       dragging = true; pointerId = evt.pointerId;
       handle.setPointerCapture(pointerId);
@@ -134,7 +136,14 @@ export function mountSyncModal({ onListsChanged, onLinked, onUnlinked, track }) 
       try { handle.releasePointerCapture(pointerId); } catch {}
       pointerId = null;
       const pos = getCurrentPosition();
-      if (pos) storage.setPref(PREF_POS, pos).catch(() => {});
+      if (pos) {
+        const target = snapPanel(panel, {
+          x: pos.x,
+          y: pos.y,
+          setPosition: applyPosition,
+        });
+        storage.setPref(PREF_POS, target).catch(() => {});
+      }
     };
     handle.addEventListener('pointerup', end);
     handle.addEventListener('pointercancel', end);
@@ -148,6 +157,7 @@ export function mountSyncModal({ onListsChanged, onLinked, onUnlinked, track }) 
   // Drag is wired unconditionally; the handle is hidden by CSS on the mobile
   // fullscreen variant, so it can only be grabbed on the desktop card.
   if (panel) {
+    registerSnapSurface(panel);
     wireDrag();
     storage.getPref(PREF_POS, null).then((pos) => {
       if (pos && Number.isFinite(pos.x) && Number.isFinite(pos.y)) applyPosition(pos.x, pos.y);

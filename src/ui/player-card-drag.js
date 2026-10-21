@@ -14,6 +14,7 @@
 // again. Electron keeps its own tiny mode; the pill pieces are skipped there.
 
 import { getPref, setPref } from '../data/storage.js';
+import { registerSnapSurface, snapPanel, cancelSnap } from './panel-snap.js';
 
 const PREF_POS = 'containerPos';
 const PREF_MIN = 'containerMinimized';
@@ -23,6 +24,7 @@ export async function mountPlayerCardDragMinimize() {
 
   const container = document.getElementById('app');
   if (!container) return null;
+  registerSnapSurface(container);
 
   const card = document.getElementById('playerCard');
   const details = card?.querySelector('.station-details') ?? null;
@@ -176,6 +178,7 @@ export async function mountPlayerCardDragMinimize() {
       if (!minimized) return;
       if (evt.target.closest('button, a, input, textarea, select')) return;
     }
+    cancelSnap(container);
     dragging = true;
     pointerId = evt.pointerId;
     dragSource = source;
@@ -204,7 +207,14 @@ export async function mountPlayerCardDragMinimize() {
 
     const xStr = container.style.getPropertyValue('--container-x');
     const yStr = container.style.getPropertyValue('--container-y');
-    if (xStr && yStr) persistPosition(parseFloat(xStr), parseFloat(yStr));
+    if (xStr && yStr) {
+      const target = snapPanel(container, {
+        x: parseFloat(xStr),
+        y: parseFloat(yStr),
+        setPosition: applyPosition,
+      });
+      persistPosition(target.x, target.y);
+    }
   }
 
   handle.addEventListener('pointerdown', (evt) => startDrag(evt, handle));

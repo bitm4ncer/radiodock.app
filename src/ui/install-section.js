@@ -10,6 +10,7 @@
 
 import * as storage from '../data/storage.js';
 import { detectPlatform } from '../platform.js';
+import { registerSnapSurface, unregisterSnapSurface } from './panel-snap.js';
 
 // Which buttons to highlight as the user's relevant install path(s). Returns
 // an array so multiple buttons can be highlighted at once (Chromium desktop
@@ -136,7 +137,11 @@ export async function mountInstallSection({ container, installInfo, animateIn = 
 
   // If a previous instance is still in the DOM (e.g. mid-dismiss-fade-out),
   // remove it immediately so we don't end up with two badges stacked.
-  document.getElementById('installSection')?.remove();
+  const previous = document.getElementById('installSection');
+  if (previous) {
+    unregisterSnapSurface(previous);
+    previous.remove();
+  }
 
   const highlights = highlightTargetsFor(platform);
   const visible = visibleTargetsFor(platform);
@@ -191,6 +196,7 @@ export async function mountInstallSection({ container, installInfo, animateIn = 
     </div>
   `;
   container.append(section);
+  registerSnapSurface(section);
 
   // Commit the .is-entering initial layout, then flip the class off so the
   // CSS transition runs. We use setTimeout(20) rather than requestAnimationFrame
@@ -224,6 +230,7 @@ export async function mountInstallSection({ container, installInfo, animateIn = 
   }
 
   function dismiss() {
+    unregisterSnapSurface(section);
     section.classList.add('is-dismissed');
     storage.setPref('installSectionDismissed', true).catch(() => {});
     // Remove from DOM after slide-out so it doesn't intercept clicks.
@@ -350,6 +357,7 @@ export async function mountInstallSection({ container, installInfo, animateIn = 
 
   return {
     destroy() {
+      unregisterSnapSurface(section);
       section.remove();
     },
   };

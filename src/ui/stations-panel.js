@@ -10,6 +10,7 @@ import { eligibleLists, pickerHtml } from './playlist-picker.js';
 import { mountLogoBehavior } from './station-logo.js';
 import { createInlineStationInfo } from './station-info-inline.js';
 import * as storage from '../data/storage.js';
+import { registerSnapSurface, snapPanel, cancelSnap } from './panel-snap.js';
 
 const LETTERS = ['All', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''), '#'];
 
@@ -48,6 +49,7 @@ function discoverIcon() {
 export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = {}) {
   const panel = elements.panel ?? document.getElementById('stationsPanel');
   const body = elements.body ?? document.getElementById('stationsBody');
+  if (panel) registerSnapSurface(panel);
 
   if (!panel || !body) {
     return {
@@ -1062,6 +1064,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   function startDrag(evt) {
     if (isAppRegime() || evt.button !== 0) return;
     if (evt.target.closest('button, input, a')) return;
+    cancelSnap(panel);
     evt.preventDefault();
     const rect = panel.getBoundingClientRect();
     const offsetX = evt.clientX - rect.left;
@@ -1082,7 +1085,15 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       panel.classList.remove('is-dragging');
       document.removeEventListener('pointermove', move);
       document.removeEventListener('pointerup', up);
-      panelPosition = { left: panel.offsetLeft, top: panel.offsetTop };
+      const target = snapPanel(panel, {
+        x: panel.offsetLeft,
+        y: panel.offsetTop,
+        setPosition: (nx, ny) => {
+          panel.style.left = `${nx}px`;
+          panel.style.top = `${ny}px`;
+        },
+      });
+      panelPosition = { left: target.x, top: target.y };
       storage.setPref('stationsPanelPos', panelPosition).catch(() => {});
     }
 
