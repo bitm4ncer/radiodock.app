@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-10-07T19:00:35.993Z",
+  "exportDate": "2026-10-21T00:12:08.095Z",
   "listName": "Community Radios",
   "stations": [
     {
@@ -313,7 +313,7 @@
       "homepage": "https://wfmu.org/",
       "id": "61d90ec1-615e-489b-a175-110076596a3b",
       "name": "WFMU",
-      "url": "http://stream0.wfmu.org/freeform-high.aac"
+      "url": "http://stream2.wfmu.org/freeform-128k"
     },
     {
       "countrycode": "GB",
@@ -461,7 +461,7 @@
     },
     {
       "countrycode": "FR",
-      "favicon": "https://www.radiogrenouille.com/wp-content/uploads/2026/08/cropped-favicon-192x192.png",
+      "favicon": "https://cdn.radiogrenouille.com/2026/08/cropped-favicon-192x192.png",
       "homepage": "http://www.radiogrenouille.com/",
       "id": "e6639188-dc36-4441-ba83-4b6832a58c83",
       "name": "Radio grenouille",
