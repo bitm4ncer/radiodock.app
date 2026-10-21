@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T20:02:50.580Z",
+  "generatedAt": "2026-10-21T20:05:34.504Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -3730,11 +3730,6 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "bc195601-561a-473a-b3b4-7b80e540811c",
-            "name": "DnBRadio.com - Darkstep Channel (DE Mirror)",
-            "countrycode": "DE"
-          },
-          {
             "stationuuid": "e2f8a671-835a-4223-ad0f-33ac7aa9ed05",
             "name": "DnB&EDM",
             "countrycode": "US"
@@ -3748,6 +3743,11 @@
             "stationuuid": "e70083a3-133b-4b8f-9509-ae2d37fdbe7b",
             "name": "Uturn Radio – Drum And Bass",
             "countrycode": "CA"
+          },
+          {
+            "stationuuid": "bc195601-561a-473a-b3b4-7b80e540811c",
+            "name": "DnBRadio.com - Darkstep Channel (DE Mirror)",
+            "countrycode": "DE"
           },
           {
             "stationuuid": "64712b5f-a8c3-48cd-a8d2-2f19c94b3473",
