@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T03:31:45.130Z",
+  "generatedAt": "2026-10-21T03:38:12.375Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -1784,7 +1784,7 @@
         "slug": "country-roots",
         "title": "Country / Roots",
         "source": "radiodock",
-        "featured": false,
+        "featured": true,
         "stations": [
           {
             "stationuuid": "96107c68-0601-11e8-ae97-52543be04c81",
@@ -2287,7 +2287,7 @@
         "slug": "classical",
         "title": "Classical / Neue Musik",
         "source": "radiodock",
-        "featured": true,
+        "featured": false,
         "stations": [
           {
             "stationuuid": "0bcd73d1-fd8c-49c2-914e-f3fb3c4920e3",
@@ -2424,6 +2424,11 @@
             "countrycode": "CH"
           },
           {
+            "stationuuid": "96200095-0601-11e8-ae97-52543be04c81",
+            "name": "Capital FM London",
+            "countrycode": "GB"
+          },
+          {
             "stationuuid": "fdbdc2b0-c184-437b-8643-9a5bfa45c253",
             "name": "BBC Radio 1",
             "countrycode": "GB"
@@ -2436,11 +2441,6 @@
           {
             "stationuuid": "1c6dcd6f-88c6-4fd4-8191-078435168e85",
             "name": "BBC Radio 6 Music",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "96200095-0601-11e8-ae97-52543be04c81",
-            "name": "Capital FM London",
             "countrycode": "GB"
           },
           {
