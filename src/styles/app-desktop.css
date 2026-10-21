@@ -14,9 +14,9 @@
      card still feels frosted on a pale backdrop. */
   .container {
     /* Match the stations panel instead of staying at the mobile column
-       width. On large desktop displays the old 480px cap read as a
-       narrow strip, so the panel now grows with the screen. */
-    max-width: min(960px, calc(100vw - 32px));
+       width. The old 480px cap read as a narrow strip next to the
+       stations window on a desktop-sized preview pane. */
+    max-width: min(720px, calc(100vw - 32px));
     padding: 59px 34px;
     background: #4141415c;
     border-radius: 25px;
