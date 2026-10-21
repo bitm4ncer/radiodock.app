@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T19:48:34.872Z",
+  "generatedAt": "2026-10-21T19:51:27.686Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -4046,6 +4046,99 @@
             "stationuuid": "a28a2833-e6f7-4274-8711-1b8e25afc744",
             "name": "Anima Amoris Deep Tech House",
             "countrycode": "RU"
+          }
+        ]
+      },
+      {
+        "slug": "house",
+        "title": "House",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "7f624ac0-0ada-467f-b249-b3643e3ce404",
+            "name": "313 LIVE Detroit",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "95912a6e-9de0-4b3b-b120-c9988d70d4a8",
+            "name": "Chicago House Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "1a421361-eb9f-40e9-9ab1-1a4ca39b90dd",
+            "name": "House FM",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "f9a4e918-7df8-42ba-862f-21828d7c9b09",
+            "name": "Just House Music",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "bb278b88-3836-479d-9ad7-7a3d5c07b001",
+            "name": "Deep Space Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "85668c4c-de87-4d72-abbd-79af985ff5c1",
+            "name": "WGNX RADIO DETROIT",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "55495003-c899-48fe-a51a-12c4a381f0db",
+            "name": "Centreforce 883",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "e231378a-e6d1-11e9-a96c-52543be04c81",
+            "name": "4 To The Floor | NTS",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "0bebe5e6-5630-11e9-a4d7-52543be04c81",
+            "name": "MixCult",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "1e9d72a2-8075-11e9-aa30-52543be04c81",
+            "name": "Point Blank Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "3f198fb4-b7dc-4232-bc00-3cbac649accb",
+            "name": "House Classics",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "fd3c673c-ffe1-4621-8f83-d827b26dc0bc",
+            "name": "Classic House Music",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "a20e7f55-661e-4f4c-b87f-a087c64633f8",
+            "name": "54house.fm Clubstream",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "bd466ab0-e4ff-11e9-a96c-52543be04c81",
+            "name": "GROOVE RADIO",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "0f894e67-7d53-4d60-9aa8-f3b6e208bf1b",
+            "name": "1st-House",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "5e8bf0d1-4c8f-4199-873e-db554f55364f",
+            "name": "NightGrid FM",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "bae70c5c-9f3f-42fc-a83d-6c13920590e0",
+            "name": "Kiosk Radio",
+            "countrycode": "BE"
           }
         ]
       }
