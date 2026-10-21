@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T16:21:42.500Z",
+  "generatedAt": "2026-10-21T16:37:21.893Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2392,6 +2392,11 @@
         "featured": false,
         "stations": [
           {
+            "stationuuid": "9034682c-5121-11e8-a4d1-52543be04c81",
+            "name": "WEFUNK",
+            "countrycode": "CA"
+          },
+          {
             "stationuuid": "a6f07bae-327a-4a76-bd1d-f305c1af35a1",
             "name": "Totally Wired Radio",
             "countrycode": "GB"
@@ -2400,11 +2405,6 @@
             "stationuuid": "9612102b-0601-11e8-ae97-52543be04c81",
             "name": "SomaFM Seven Inch Soul (128k MP3)",
             "countrycode": "US"
-          },
-          {
-            "stationuuid": "9034682c-5121-11e8-a4d1-52543be04c81",
-            "name": "WEFUNK",
-            "countrycode": "CA"
           },
           {
             "stationuuid": "c454908c-eb81-11e9-a96c-52543be04c81",
@@ -3362,7 +3362,7 @@
         "slug": "minimal",
         "title": "Minimal",
         "source": "radiodock",
-        "featured": false,
+        "featured": true,
         "stations": [
           {
             "stationuuid": "f7a27449-af1b-470e-aa50-bc5f1df79f4e",
@@ -3440,7 +3440,7 @@
         "slug": "techno",
         "title": "Techno",
         "source": "radiodock",
-        "featured": false,
+        "featured": true,
         "stations": [
           {
             "stationuuid": "9643c506-0601-11e8-ae97-52543be04c81",
