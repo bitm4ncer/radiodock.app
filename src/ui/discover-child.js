@@ -2,7 +2,7 @@
 // entries in discover.json are deliberately ignored.
 
 import { renderLogoSlot } from './station-logo.js';
-import { HEART_ICON } from './stations-row.js';
+import { HEART_ICON, PLUS_ICON } from './stations-row.js';
 import { escapeHtml, countryLabel, formatCount } from './stations-format.js';
 
 export function normaliseDiscover(data) {
@@ -40,18 +40,41 @@ function logoStack(stations = []) {
 
 
 
-export function collectionCard(list, { user = false } = {}) {
+const CHECK_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.4 4.4L19 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+export function collectionSaveButton(list, { saved = false, saving = false } = {}) {
   return `
-    <button type="button" class="stations-collection-card${user ? ' is-user' : ''}" data-collection="${escapeHtml(list.slug)}">
-      <span class="stations-collection-card-top">${logoStack(list.stations)}</span>
-      <span class="stations-collection-card-copy">
-        ${user ? '<span class="stations-collection-card-kicker">Community collection</span>' : ''}
-        <span class="stations-collection-card-line">
-          <strong>${escapeHtml(list.title)}</strong>
+    <button type="button" class="stations-collection-save${saved ? ' is-saved' : ''}${saving ? ' is-saving' : ''}" data-action="save-collection" data-slug="${escapeHtml(list.slug)}" aria-label="${saved ? 'Collection saved as a list' : 'Save collection as a list'}" title="${saved ? 'Collection saved as a list' : 'Save collection as a list'}" aria-pressed="${saved ? 'true' : 'false'}"${saving ? ' disabled aria-disabled="true"' : ''}>${saved ? CHECK_ICON : PLUS_ICON}</button>
+  `;
+}
+
+export function syncCollectionSaveButton(button, { saved = false, saving = false } = {}) {
+  if (!button) return;
+  button.classList.toggle('is-saved', !!saved);
+  button.classList.toggle('is-saving', !!saving);
+  button.disabled = !!saving;
+  button.setAttribute('aria-disabled', String(!!saving));
+  button.setAttribute('aria-pressed', String(!!saved));
+  button.setAttribute('aria-label', saved ? 'Collection saved as a list' : 'Save collection as a list');
+  button.title = saved ? 'Collection saved as a list' : 'Save collection as a list';
+  button.innerHTML = saved ? CHECK_ICON : PLUS_ICON;
+}
+
+export function collectionCard(list, { user = false, saved = false, saving = false } = {}) {
+  return `
+    <div class="stations-collection-card-wrap">
+      <button type="button" class="stations-collection-card${user ? ' is-user' : ''}" data-collection="${escapeHtml(list.slug)}">
+        <span class="stations-collection-card-top">${logoStack(list.stations)}</span>
+        <span class="stations-collection-card-copy">
+          ${user ? '<span class="stations-collection-card-kicker">Community collection</span>' : ''}
+          <span class="stations-collection-card-line">
+            <strong>${escapeHtml(list.title)}</strong>
+          </span>
+          <span class="stations-collection-card-count">${pluralCount(list.stations.length, 'station')}</span>
         </span>
-        <span class="stations-collection-card-count">${pluralCount(list.stations.length, 'station')}</span>
-      </span>
-    </button>
+      </button>
+      ${collectionSaveButton(list, { saved, saving })}
+    </div>
   `;
 }
 
@@ -78,13 +101,13 @@ export function pickFeaturedLists(lists = [], count = 4, random = Math.random) {
   return picks.slice(0, count);
 }
 
-export function renderDiscover({ lists = [] } = {}) {
+export function renderDiscover({ lists = [], isSaved = () => false } = {}) {
   const official = lists.filter((list) => list.source !== 'user');
   const user = lists.filter((list) => list.source === 'user');
 
   const officialSection = official.length
     ? `
-      <div class="stations-collection-grid">${official.map((list) => collectionCard(list)).join('')}</div>
+      <div class="stations-collection-grid">${official.map((list) => collectionCard(list, { saved: isSaved(list.slug) })).join('')}</div>
     `
     : `
       <div class="stations-empty">
@@ -103,7 +126,7 @@ export function renderDiscover({ lists = [] } = {}) {
         </div>
       </div>
       ${user.length
-        ? `<div class="stations-collection-grid">${user.map((list) => collectionCard(list, { user: true })).join('')}</div>`
+        ? `<div class="stations-collection-grid">${user.map((list) => collectionCard(list, { user: true, saved: isSaved(list.slug) })).join('')}</div>`
         : '<p class="stations-user-empty">No community collections yet. Be the first.</p>'}
     </div>
   `;

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normaliseDiscover, renderDiscover, renderCollection, featuredLists, pickFeaturedLists, renderDiscoverUnavailable } from '../src/ui/discover-child.js';
+import { normaliseDiscover, renderDiscover, renderCollection, collectionCard, featuredLists, pickFeaturedLists, renderDiscoverUnavailable } from '../src/ui/discover-child.js';
 
 test('normaliseDiscover keeps valid curated lists only', () => {
   const data = { curated: { lists: [
@@ -153,4 +153,27 @@ test('renderDiscoverUnavailable produces an honest unavailable message', () => {
   const html = renderDiscoverUnavailable();
   assert.match(html, /unavailable/i);
   assert.ok(!html.includes('Loading'));
+});
+
+test('collection cards expose a separate save-as-list button', () => {
+  const html = collectionCard(
+    { slug: 'news', title: 'News', stations: [{ stationuuid: 'a', name: 'A' }] },
+    { saved: false },
+  );
+  assert.match(html, /stations-collection-card-wrap/);
+  assert.match(html, /stations-collection-card-wrap[\s\S]*data-collection="news"[\s\S]*<\/button>/);
+  assert.match(html, /data-action="save-collection"[^>]*data-slug="news"/);
+  assert.match(html, /aria-label="Save collection as a list"/);
+  assert.match(html, /aria-pressed="false"/);
+});
+
+test('saved collections render a checked save button', () => {
+  const html = renderDiscover({
+    lists: [{ slug: 'news', title: 'News', source: 'radiodock', stations: [{ stationuuid: 'a', name: 'A' }] }],
+    isSaved: (slug) => slug === 'news',
+  });
+  const save = html.match(/<button[^>]*data-action="save-collection"[^>]*>/)[0];
+  assert.match(save, /is-saved/);
+  assert.match(save, /aria-pressed="true"/);
+  assert.match(save, /aria-label="Collection saved as a list"/);
 });

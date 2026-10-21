@@ -1293,6 +1293,83 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
   white-space: nowrap;
 }
 
+/* Collections can be copied into a personal list. The plus sits on the card
+   corner, while the collection itself keeps its full click target. */
+.stations-collection-card-wrap {
+  position: relative;
+  display: flex;
+  min-width: 0;
+}
+
+.stations-collection-card-wrap .stations-collection-card {
+  width: 100%;
+}
+
+/* Float the badge over the card corner instead of reserving space inside it:
+   the card titles need every pixel at the narrow two-column width. */
+.stations-collection-save {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  background: var(--bg);
+  cursor: pointer;
+  transition: color 140ms ease, background 140ms ease, border-color 140ms ease;
+}
+
+.stations-collection-save svg {
+  width: 14px;
+  height: 14px;
+}
+
+.stations-collection-save:hover {
+  color: var(--text);
+  background: var(--surface-2);
+  border-color: var(--overlay-hard);
+}
+
+.stations-collection-save.is-saved {
+  color: var(--red);
+  border-color: color-mix(in srgb, var(--red) 45%, var(--border));
+  background: color-mix(in srgb, var(--red) 9%, transparent);
+}
+
+.stations-collection-save.is-saving {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+.stations-collection-save:focus-visible {
+  outline: 2px solid var(--text-muted);
+  outline-offset: 2px;
+}
+
+/* In the collection header the same control joins the row of icon buttons. */
+.stations-header-actions .stations-collection-save {
+  position: static;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+}
+
+.stations-header-actions .stations-collection-save.is-saved {
+  background: color-mix(in srgb, var(--red) 9%, transparent);
+}
+
+.stations-header-actions .stations-collection-save svg {
+  width: 16px;
+  height: 16px;
+}
+
 .stations-collection-tile {
   display: flex;
   align-items: center;

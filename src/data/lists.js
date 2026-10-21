@@ -3,8 +3,10 @@
 // reorder / move-station). Handles default "Favorites" creation lazily.
 
 import * as storage from './storage.js';
+import { collectionListId, uniqueListName } from './collection-list.js';
 
 export const COMMUNITY_LIST_ID = '__community__';
+export { collectionListId, uniqueListName };
 const FAVORITES_LIST_ID = 'favorites';
 
 function genId() {
@@ -54,6 +56,40 @@ export async function createList(name) {
   };
   await storage.putList(list);
   return list;
+}
+
+/**
+ * Save a curated collection as a normal private user list. The id is derived
+ * from the collection slug so clicking "add" twice cannot create duplicates.
+ * Stations must already be hydrated with a playable url.
+ */
+export async function createListFromCollection({ title, slug, stations } = {}) {
+  const id = collectionListId(slug);
+  const existing = await storage.getAllLists();
+  const found = existing.find((list) => list.id === id);
+  if (found) return { list: found, already: true };
+
+  const seen = new Set();
+  const playable = [];
+  for (const station of Array.isArray(stations) ? stations : []) {
+    const stationId = station?.id ?? station?.stationuuid ?? station?.uuid;
+    const url = station?.url ?? station?.url_resolved ?? '';
+    if (!stationId || !url || seen.has(stationId)) continue;
+    seen.add(stationId);
+    playable.push({ ...station, id: stationId, url });
+  }
+  if (!playable.length) throw new Error('This collection has no playable stations.');
+
+  const maxOrder = existing.reduce((max, list) => Math.max(max, list.order ?? 0), 0);
+  const list = {
+    id,
+    name: uniqueListName(title, existing.map((item) => item.name)),
+    stations: playable.map(sanitizeStation),
+    order: maxOrder + 1,
+    createdAt: now(),
+  };
+  await storage.putList(list);
+  return { list, already: false };
 }
 
 export async function renameList(id, name) {

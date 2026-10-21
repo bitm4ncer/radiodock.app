@@ -5,7 +5,7 @@ import { stationsRow, updateRowNowPlaying, HEART_ICON, PLUS_ICON } from './stati
 import { mountStationsFilters } from './stations-filter.js';
 import { buildBrowseParams, communityParams, mergeRows, searchModeFor, popularParams, searchParams, MAX_ROWS } from './stations-state.js';
 import { escapeHtml, formatCount } from './stations-format.js';
-import { normaliseDiscover, renderDiscover, renderCollection, collectionCard, featuredLists, pickFeaturedLists, renderDiscoverUnavailable } from './discover-child.js';
+import { normaliseDiscover, renderDiscover, renderCollection, collectionCard, collectionSaveButton, syncCollectionSaveButton, featuredLists, pickFeaturedLists, renderDiscoverUnavailable } from './discover-child.js';
 import { eligibleLists, pickerHtml } from './playlist-picker.js';
 import { mountLogoBehavior } from './station-logo.js';
 import { createInlineStationInfo } from './station-info-inline.js';
@@ -346,6 +346,19 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     });
     body.querySelectorAll('.stations-collection-tile').forEach((tile) => {
       tile.classList.toggle('is-playing', tile.dataset.uuid === id);
+    });
+  }
+
+  function refreshAddedFlags() {
+    body.querySelectorAll('[data-action="add"], [data-action="collection-add"]').forEach((button) => {
+      const item = button.closest('[data-id], [data-uuid]');
+      const id = item?.dataset.id ?? item?.dataset.uuid;
+      const added = !!actions.isFavorited?.(id);
+      button.classList.toggle('is-added', added);
+      button.setAttribute('aria-pressed', String(added));
+      if (!button.classList.contains('is-move')) {
+        button.setAttribute('aria-label', added ? 'Already in favorites' : 'Add to favorites');
+      }
     });
   }
 
@@ -790,7 +803,36 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     }
   }
 
-  function discoverShell(title, backAction, contentHtml) {
+  function isCollectionSaved(slug) {
+    return !!actions.isCollectionSaved?.(slug);
+  }
+
+  function syncCollectionButtons(slug, { saved = isCollectionSaved(slug), saving = false } = {}) {
+    body.querySelectorAll('[data-action="save-collection"]').forEach((button) => {
+      if (button.dataset.slug !== slug) return;
+      syncCollectionSaveButton(button, { saved, saving });
+    });
+  }
+
+  async function saveCollection(button) {
+    const slug = button?.dataset.slug;
+    if (!slug) return;
+    if (isCollectionSaved(slug)) {
+      actions.toast?.('This collection is already in your lists.');
+      return;
+    }
+    const list = normaliseDiscover(state.discover).lists.find((item) => item.slug === slug);
+    if (!list) return;
+    syncCollectionButtons(slug, { saved: false, saving: true });
+    const result = await actions.onSaveCollection?.(list);
+    if (result?.ok) {
+      syncCollectionButtons(slug, { saved: true, saving: false });
+      return;
+    }
+    syncCollectionButtons(slug, { saved: isCollectionSaved(slug), saving: false });
+  }
+
+  function discoverShell(title, backAction, contentHtml, { list = null } = {}) {
     closeMoveMenu();
     clearMoveTimers();
     moveState = null;
@@ -805,11 +847,18 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
             <p class="stations-kicker">Stations</p>
             <h2 class="stations-title" id="stationsTitle">${escapeHtml(title)}</h2>
           </div>
-          <button type="button" class="stations-icon-btn" data-action="close" aria-label="Close Stations">${closeIcon()}</button>
+          <div class="stations-header-actions">
+            ${list ? collectionSaveButton(list, { saved: isCollectionSaved(list.slug) }) : ''}
+            <button type="button" class="stations-icon-btn" data-action="close" aria-label="Close Stations">${closeIcon()}</button>
+          </div>
         </header>
         <div id="stationsContent" class="stations-content">${contentHtml}</div>
       </div>`;
     body.querySelector('[data-action="close"]')?.addEventListener('click', close);
+    body.querySelector('.stations-header-actions [data-action="save-collection"]')?.addEventListener('click', (evt) => {
+      evt.stopPropagation();
+      saveCollection(evt.currentTarget);
+    });
     body.querySelector(`[data-action="${backAction}"]`)?.addEventListener('click', () => {
       if (backAction === 'back-discover') renderDiscoverView();
       else backToStations();
@@ -851,7 +900,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.featuredSlugs = lists.map((list) => list.slug);
     host.hidden = false;
     host.innerHTML = `
-      <div class="stations-collection-grid stations-featured-grid">${lists.map((list) => collectionCard(list)).join('')}</div>
+      <div class="stations-collection-grid stations-featured-grid">${lists.map((list) => collectionCard(list, { saved: isCollectionSaved(list.slug) })).join('')}</div>
       <div class="stations-featured-actions">
         <button type="button" class="stations-pill stations-discover-btn" data-action="discover-more">${discoverIcon()}<span>Discover more collections</span></button>
         <button type="button" class="stations-submit-link" data-action="submit-list">Suggest a collection</button>
@@ -863,6 +912,11 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   }
 
   function onFeaturedClick(evt) {
+    const save = evt.target.closest('[data-action="save-collection"]');
+    if (save) {
+      saveCollection(save);
+      return;
+    }
     const collection = evt.target.closest('[data-collection]');
     if (collection) {
       // A featured card is a detour from the Stations page: its back button
@@ -887,7 +941,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       return;
     }
     const lists = normaliseDiscover(state.discover).lists;
-    discoverShell('Discover', 'back', renderDiscover({ lists }));
+    discoverShell('Discover', 'back', renderDiscover({ lists, isSaved: isCollectionSaved }));
     applyNowPlaying();
     refreshAddedFlags();
   }
@@ -915,7 +969,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.loading = false;
     state.view = 'discover';
     state.collection = list;
-    discoverShell(list.title, backAction, renderCollection({ list }));
+    discoverShell(list.title, backAction, renderCollection({ list }), { list });
     applyNowPlaying();
     refreshAddedFlags();
   }
@@ -1068,6 +1122,11 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   }
 
   async function onDiscoverClick(evt) {
+    const save = evt.target.closest('[data-action="save-collection"]');
+    if (save) {
+      saveCollection(save);
+      return;
+    }
     const collection = evt.target.closest('[data-collection]');
     if (collection) {
       openCollection(collection.dataset.collection);
@@ -1440,17 +1499,11 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       state.nowPlayingId = id ?? null;
       applyNowPlaying();
     },
-    refreshAddedFlags() {
-      body.querySelectorAll('[data-action="add"], [data-action="collection-add"]').forEach((button) => {
-        const item = button.closest('[data-id], [data-uuid]');
-        const id = item?.dataset.id ?? item?.dataset.uuid;
-        const added = !!actions.isFavorited?.(id);
-        button.classList.toggle('is-added', added);
-        button.setAttribute('aria-pressed', String(added));
-        if (!button.classList.contains('is-move')) {
-          button.setAttribute('aria-label', added ? 'Already in favorites' : 'Add to favorites');
-        }
+    refreshCollectionSaveFlags() {
+      body.querySelectorAll('[data-action="save-collection"]').forEach((button) => {
+        syncCollectionSaveButton(button, { saved: isCollectionSaved(button.dataset.slug) });
       });
     },
+    refreshAddedFlags,
   };
 }
