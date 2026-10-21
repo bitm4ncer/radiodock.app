@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T18:14:26.276Z",
+  "generatedAt": "2026-10-21T18:15:36.014Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -3744,6 +3744,16 @@
             "countrycode": "RU"
           },
           {
+            "stationuuid": "4b628ed0-0666-4893-9b35-72fa1cbdf377",
+            "name": "LOCA FM TechHouse",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "a0f16337-dc2e-4b33-ad36-1fbef6dcc6d5",
+            "name": "United Music Tech House",
+            "countrycode": "IT"
+          },
+          {
             "stationuuid": "21443448-7b21-4831-8134-20c4ab700241",
             "name": "DFM - Tech House",
             "countrycode": "RU"
@@ -3774,11 +3784,6 @@
             "countrycode": "FR"
           },
           {
-            "stationuuid": "a0f16337-dc2e-4b33-ad36-1fbef6dcc6d5",
-            "name": "United Music Tech House",
-            "countrycode": "IT"
-          },
-          {
             "stationuuid": "79dea38e-6c70-401e-9557-4bedf428d7b2",
             "name": "Prysm Tech House",
             "countrycode": "FR"
@@ -3792,11 +3797,6 @@
             "stationuuid": "4a0083ec-e094-47a8-845f-cf9a4679f7d3",
             "name": "ADRENALINE Tech House Radio",
             "countrycode": "US"
-          },
-          {
-            "stationuuid": "4b628ed0-0666-4893-9b35-72fa1cbdf377",
-            "name": "LOCA FM TechHouse",
-            "countrycode": "ES"
           },
           {
             "stationuuid": "dd70fa73-7210-41b9-b984-5ae09c3233e4",
