@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T03:38:12.375Z",
+  "generatedAt": "2026-10-21T03:48:07.507Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -242,7 +242,7 @@
       {
         "stationuuid": "11e3be6e-1b64-4fe1-9245-f302ac938cf2",
         "name": "Dublin Digital Radio",
-        "countrycode": "IE"
+        "countrycode": ""
       },
       {
         "stationuuid": "9d78c2eb-8a8e-4964-9b0f-ec5505d61c97",
@@ -252,7 +252,7 @@
       {
         "stationuuid": "7babd377-ed7c-4a63-9778-47b0fd94983b",
         "name": "Oroko Radio",
-        "countrycode": "GH"
+        "countrycode": ""
       },
       {
         "stationuuid": "7ac3bf7f-d2c4-4f5c-afe8-a222d773eaea",
@@ -397,7 +397,7 @@
       {
         "stationuuid": "96643f48-c85c-41d5-b9a0-6c6cd861e87b",
         "name": "N10.AS",
-        "countrycode": "CA"
+        "countrycode": ""
       },
       {
         "stationuuid": "71fd3641-4271-4f47-a2b9-acf91822fe02",
@@ -417,7 +417,7 @@
       {
         "stationuuid": "2a5af2b2-dc8a-4d1a-91b9-a491022b5f59",
         "name": "Subcity Radio",
-        "countrycode": "GB"
+        "countrycode": ""
       },
       {
         "stationuuid": "447e8667-583f-42a5-98a4-f0aa2fea246c",
@@ -437,7 +437,7 @@
       {
         "stationuuid": "3bee72bd-0de4-448e-ae23-2e962923643f",
         "name": "Radio Buena Vida",
-        "countrycode": "GB"
+        "countrycode": ""
       },
       {
         "stationuuid": "7c84c634-ab44-450b-90fa-90457690eff3",
@@ -821,8 +821,8 @@
       },
       {
         "stationuuid": "d9463f80-ff7b-49cd-a3a2-fae1484d0009",
-        "name": " Club Sabroso Radio",
-        "countrycode": "DO"
+        "name": "Club Sabroso Radio",
+        "countrycode": ""
       },
       {
         "stationuuid": "962a36dd-0601-11e8-ae97-52543be04c81",
@@ -2086,13 +2086,13 @@
           },
           {
             "stationuuid": "d9463f80-ff7b-49cd-a3a2-fae1484d0009",
-            "name": " Club Sabroso Radio",
-            "countrycode": "DO"
+            "name": "Club Sabroso Radio",
+            "countrycode": ""
           },
           {
             "stationuuid": "963fb135-0601-11e8-ae97-52543be04c81",
             "name": "Radio 90s Eurodance",
-            "countrycode": "KZ"
+            "countrycode": ""
           }
         ]
       },
@@ -2104,7 +2104,7 @@
         "stations": [
           {
             "stationuuid": "960eb2e9-0601-11e8-ae97-52543be04c81",
-            "name": "SomaFM Drone Zone (128k MP3)",
+            "name": "SomaFM Drone Zone",
             "countrycode": "US"
           },
           {
@@ -2114,7 +2114,7 @@
           },
           {
             "stationuuid": "a807ecc5-8410-4704-bac4-aed64ba76742",
-            "name": "SomaFM Deep Space One (128k MP3)",
+            "name": "SomaFM Deep Space One",
             "countrycode": "US"
           },
           {
@@ -2232,54 +2232,6 @@
             "stationuuid": "b7154644-7519-4c14-8891-023c23387e4f",
             "name": "Kapitał",
             "countrycode": "PL"
-          }
-        ]
-      },
-      {
-        "slug": "bass-rave",
-        "title": "Bass / Breaks",
-        "source": "radiodock",
-        "featured": false,
-        "stations": [
-          {
-            "stationuuid": "973c30a5-a178-4daf-89c7-272ec6c47456",
-            "name": "Kool FM",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "6a79ad48-3c95-472d-bdf0-850c1172cf69",
-            "name": "Infrared.fm",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "ecb854f2-4a6c-43ec-8805-e9e475b190ca",
-            "name": "Ola Radio",
-            "countrycode": "FR"
-          },
-          {
-            "stationuuid": "5f5a7aec-b11b-432c-9866-6df57e111aec",
-            "name": "Sub.fm",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "705c6f01-92b5-4766-9c6f-53540414b6c3",
-            "name": "DnBRadio.com",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "fb156190-ade3-4f47-873a-2136cdc793d6",
-            "name": "SWU FM",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "6b5b7e02-c21a-4fdc-ab01-53d775502f6d",
-            "name": "Rinse France",
-            "countrycode": "FR"
-          },
-          {
-            "stationuuid": "cd477c35-d625-11e8-a54a-52543be04c81",
-            "name": "Miami Beach Radio",
-            "countrycode": "US"
           }
         ]
       },
@@ -2927,7 +2879,7 @@
     },
     {
       "stationuuid": "44eadfaf-d590-4017-a8e6-a1ee52924b24",
-      "name": "Electronica Vibes - Pirate Radio GR",
+      "name": "Electronica Vibes",
       "countrycode": "GR",
       "listen_minutes": 432,
       "plays": 0
