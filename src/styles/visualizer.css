@@ -95,6 +95,32 @@
 
 .player-card-drag-handle.is-dragging { cursor: grabbing; }
 
+/* Empty strip above the player card: the rest of the main panel's topbar.
+   It sits under the tool buttons (z-index 3) so handle/minimize stay clickable
+   and takes the drag gesture for the whole header area. */
+.player-card-topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 59px;
+  z-index: 1;
+  cursor: grab;
+  touch-action: none;
+}
+.player-card-topbar.is-dragging { cursor: grabbing; }
+
+/* Browser-minimized is a pill without a header strip; mobile/standalone keep
+   their fullscreen chrome. Electron keeps the strip in its normal window. */
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .player-card-topbar {
+  display: none;
+}
+@media (max-width: 699px) {
+  .player-card-topbar { display: none; }
+}
+html.is-standalone .player-card-topbar { display: none; }
+body.is-tiny-player .player-card-topbar { display: none; }
+
 /* On desktop the .container has 59px top padding (the tinted card). Nudge
    the strip down so it sits comfortably inside the tinted card. */
 @media (min-width: 700px) and (display-mode: browser) {

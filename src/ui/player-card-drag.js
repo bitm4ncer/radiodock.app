@@ -61,6 +61,23 @@ export async function mountPlayerCardDragMinimize() {
   });
   container.appendChild(minBtn);
 
+  // The empty strip above the player card is the main panel's topbar. Make it
+  // a drag surface too: the card itself is draggable, but users naturally grab
+  // the header area around the handle (where every other panel is draggable).
+  const topbar = document.createElement('div');
+  topbar.className = 'player-card-topbar';
+  topbar.setAttribute('aria-hidden', 'true');
+  container.appendChild(topbar);
+
+  function syncTopbarHeight() {
+    // The container's top padding is exactly the header strip above the card.
+    // Measuring the card instead can overshoot when the player section is
+    // taller for a moment (e.g. before a station loads) and then overlap it.
+    const pad = parseFloat(getComputedStyle(container).paddingTop) || 0;
+    topbar.style.height = `${Math.max(0, pad)}px`;
+  }
+  syncTopbarHeight();
+
   // --- State ---
 
   let savedPos = await getPref(PREF_POS, null);
@@ -121,6 +138,7 @@ export async function mountPlayerCardDragMinimize() {
     applyPill(true);
   }
   paintMinimize();
+  syncTopbarHeight();
 
   function setMinimized(next) {
     if (minimized === next) return;
@@ -128,6 +146,7 @@ export async function mountPlayerCardDragMinimize() {
     container.classList.toggle('is-minimized', minimized);
     paintMinimize();
     applyPill(minimized);
+    syncTopbarHeight();
     // A pill can be dragged lower than the full panel fits. Re-clamp once
     // the sections have expanded so the restored panel stays on screen.
     if (!minimized && savedPos) {
@@ -174,16 +193,16 @@ export async function mountPlayerCardDragMinimize() {
 
   function startDrag(evt, source) {
     if (evt.button !== 0) return;
-    if (source === card) {
-      // The player card is the main panel's topbar: drag it in both the
-      // expanded and pill states, in the browser and in the normal Electron
-      // window. Touch layouts and the installed app keep their fullscreen
-      // chrome, and the Electron tiny player is a native drag region.
+    if (source === card || source === topbar) {
+      // The top strip and the player card form the main panel's topbar: drag
+      // them in both the expanded and pill states, in the browser and in the
+      // normal Electron window. Touch layouts and the installed app keep their
+      // fullscreen chrome, and the Electron tiny player is a native drag region.
       if (document.body.classList.contains('is-tiny-player')) return;
       if (matchMedia('(max-width: 699px)').matches
           || document.documentElement.classList.contains('is-standalone')) return;
-      if (evt.target.closest('button, a, input, textarea, select')) return;
     }
+    if (source === card && evt.target.closest('button, a, input, textarea, select')) return;
     cancelSnap(container);
     dragging = true;
     pointerId = evt.pointerId;
@@ -229,6 +248,12 @@ export async function mountPlayerCardDragMinimize() {
   handle.addEventListener('pointercancel', endDrag);
   handle.addEventListener('dblclick', () => resetPosition());
 
+  topbar.addEventListener('pointerdown', (evt) => startDrag(evt, topbar));
+  topbar.addEventListener('pointermove', onDragMove);
+  topbar.addEventListener('pointerup', endDrag);
+  topbar.addEventListener('pointercancel', endDrag);
+  topbar.addEventListener('dblclick', () => resetPosition());
+
   if (card) {
     card.addEventListener('pointerdown', (evt) => startDrag(evt, card));
     card.addEventListener('pointermove', onDragMove);
@@ -239,9 +264,12 @@ export async function mountPlayerCardDragMinimize() {
   minBtn.addEventListener('click', () => setMinimized(!minimized));
 
   window.addEventListener('resize', () => {
+    syncTopbarHeight();
     if (!savedPos) return;
     applyPosition(savedPos.x, savedPos.y);
   });
+  // Electron's tiny switch changes the container padding/CSS regime.
+  window.addEventListener('rd:tiny-changed', () => syncTopbarHeight());
 
   return {
     isMinimized: () => minimized,
