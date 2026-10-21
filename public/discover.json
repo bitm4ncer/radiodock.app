@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T23:17:55.398Z",
+  "generatedAt": "2026-10-21T23:19:33.192Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -5163,6 +5163,39 @@
             "stationuuid": "dea175ee-eb4d-4779-9f9e-fe945ba674ad",
             "name": "Drill",
             "countrycode": ""
+          }
+        ]
+      },
+      {
+        "slug": "blues",
+        "title": "Blues",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "a648882e-b8d3-422a-9a79-307ccab8c406",
+            "name": "24/7 Blues Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "6f3f2d9c-ea04-4490-86df-a68b64170e3d",
+            "name": "BMFR - Blues Music Fan Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "25f74e5f-195c-454f-9878-51b344976730",
+            "name": "Clasic Radio_Blues",
+            "countrycode": "RO"
+          },
+          {
+            "stationuuid": "b2d960e0-c643-4472-9429-ff02a5925372",
+            "name": "Hotmix Blues",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "2bc6b472-2dac-47d9-8c77-5bd8ed18af74",
+            "name": "K-SUN66 - The Bridge",
+            "countrycode": "DZ"
           }
         ]
       },
