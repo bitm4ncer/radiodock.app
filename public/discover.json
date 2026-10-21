@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T20:51:00.410Z",
+  "generatedAt": "2026-10-21T20:51:04.679Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2077,6 +2077,84 @@
           {
             "stationuuid": "fffeaf03-4b5a-46b1-a1f1-575513c346f4",
             "name": "RADCAP: DRONE AMBIENT",
+            "countrycode": "RU"
+          }
+        ]
+      },
+      {
+        "slug": "noise",
+        "title": "Noise",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "1d209449-d62e-442d-bbd6-eb3bcf53ff67",
+            "name": "Radio Caprice Industrial/Dark/Ritual Ambient",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "0bbf49cc-0e44-4766-87b5-9d4c0aae2d47",
+            "name": "Experimentalgems",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "75df05dc-afb6-478b-8caf-98c25dc0dea5",
+            "name": "Power Electronics",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "ac497573-a6c5-4505-9086-2a905134abb5",
+            "name": "RadCap - Noise Rock",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "1dda6ddb-db9c-4b4f-ac89-b337dc5af20f",
+            "name": "Dark City Signal",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "f6187277-4921-437f-bb6a-7ffb00a71c79",
+            "name": "laut.fm - Greyarea",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "bb7572df-2619-43fd-9ce1-c2a288671fe2",
+            "name": "Noise Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "c19e39ff-a86f-4d55-a4c1-55e9d791f59a",
+            "name": "MDK Space Radio",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "dcc883b6-3083-4ab0-8105-5094054305cd",
+            "name": "Grey Clay Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "d35f26d3-71b3-4115-8fed-8352e8f6f32e",
+            "name": "SomaFM Doomed (256k MP3)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "161201f8-ae58-4f44-806b-4f8c8b90c853",
+            "name": "Soundart Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "b442fa34-6f8d-11ea-b1cf-52543be04c81",
+            "name": "p-node",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "559c881b-7555-4845-9d67-7fdae6843faf",
+            "name": "Radio Sphinkta-X",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "19ad483c-32ff-43f0-90f1-bc23a83b7c23",
+            "name": "RadCap - Drone Metal",
             "countrycode": "RU"
           }
         ]
