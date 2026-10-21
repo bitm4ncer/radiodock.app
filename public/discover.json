@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T20:32:28.688Z",
+  "generatedAt": "2026-10-21T20:32:57.154Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -4662,24 +4662,6 @@
             "stationuuid": "1c759224-cd2a-417c-a777-11e985f67582",
             "name": "Funky SX",
             "countrycode": "GB"
-          }
-        ]
-      },
-      {
-        "slug": "grime",
-        "title": "Grime",
-        "source": "radiodock",
-        "featured": false,
-        "stations": [
-          {
-            "stationuuid": "d716df3e-37ee-4601-97e3-f041dfb28539",
-            "name": "Radio Caprice - grime",
-            "countrycode": "RU"
-          },
-          {
-            "stationuuid": "dbf8bd04-b31d-4ad7-a59f-5b5680f06e76",
-            "name": "Australian Digital Radio Network - Grime",
-            "countrycode": "AU"
           }
         ]
       }
