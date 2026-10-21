@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T14:02:28.218Z",
+  "generatedAt": "2026-10-21T14:03:37.712Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2623,6 +2623,11 @@
             "countrycode": "DE"
           },
           {
+            "stationuuid": "fb87433e-2095-4c03-b411-ca0a0603ebcd",
+            "name": "Hotel Costes",
+            "countrycode": "FR"
+          },
+          {
             "stationuuid": "3fd18c3f-8157-11e9-aa30-52543be04c81",
             "name": "Café del Mar",
             "countrycode": "ES"
@@ -2631,11 +2636,6 @@
             "stationuuid": "49902d2d-672d-4130-b42a-90592d0460c5",
             "name": "0R - LO-FI || LoFi, Chill, Study, Hip Hop, Relax, Background, Calm, Instrumental, Smooth, Beats, Coffee, Work, Focus, Soft, Chillhop",
             "countrycode": "DE"
-          },
-          {
-            "stationuuid": "fb87433e-2095-4c03-b411-ca0a0603ebcd",
-            "name": "Hotel Costes",
-            "countrycode": "FR"
           },
           {
             "stationuuid": "961fb4b2-0601-11e8-ae97-52543be04c81",
