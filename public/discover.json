@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T19:55:29.728Z",
+  "generatedAt": "2026-10-21T19:57:46.442Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -4533,6 +4533,114 @@
             "countrycode": "BE"
           }
         ]
+      },
+      {
+        "slug": "metal",
+        "title": "Metal",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "75b6b22f-f4b7-43ae-aa73-96a7b47eeb4f",
+            "name": "FIP Metal",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9e219cbd-9bd0-4950-997d-f17bd8fbe793",
+            "name": "Radio Metal",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "961291f5-0601-11e8-ae97-52543be04c81",
+            "name": "La Grosse Radio Métal",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9618d38b-0601-11e8-ae97-52543be04c81",
+            "name": "RADIO BOB! BOBs Metal",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "960cca40-0601-11e8-ae97-52543be04c81",
+            "name": "Rock Antenne - Heavy Metal",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "259e410c-b516-11e8-afe1-52543be04c81",
+            "name": "METAL ONLY",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "ee587805-11d2-4d3a-b676-8121e149b0ff",
+            "name": "RPR1. Heavy Metal",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "db00c1f9-f3eb-4da5-acf8-90d26e7ab43b",
+            "name": "StarFM From Hell",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "960de41d-0601-11e8-ae97-52543be04c81",
+            "name": "SomaFM Metal Detector",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "102fd070-4146-4dd7-afca-88c8c6484b9b",
+            "name": "Metal Devastation Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "37d8c726-c98c-4690-84aa-8f71c715081c",
+            "name": "Metal Express Radio",
+            "countrycode": "NO"
+          },
+          {
+            "stationuuid": "139eec8c-d0b7-4ace-9443-2a6ec74c789f",
+            "name": "Northern Metal Radio",
+            "countrycode": "SE"
+          },
+          {
+            "stationuuid": "4340f942-c877-4b60-9d2e-e628db62f761",
+            "name": "Metal Zone Radio",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "c11e4caf-0344-4ab5-8567-95cfac2f570f",
+            "name": "Metalwar",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "b05bc526-0822-4a8d-9e86-e0b19f119f30",
+            "name": "MetalON - The Heavy",
+            "countrycode": "PT"
+          },
+          {
+            "stationuuid": "d6316691-8619-42ae-8dbb-75dfdd7a7eb5",
+            "name": "Metal Radio",
+            "countrycode": "AT"
+          },
+          {
+            "stationuuid": "1901f7f2-727f-4fb1-b9d8-bf3f50e1419c",
+            "name": "Bear Metal Radio",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "c5405d8b-9d43-4d22-bc8a-40c7b9ca4d54",
+            "name": "LOUD! Metal Radio",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "8cc275fb-f527-4cff-9539-58da50df8782",
+            "name": "Andrew Haug Metal Radio",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "41e4522c-2cbb-4cb6-9976-fe2182d01bad",
+            "name": "Svartkrog Black Metal Radio",
+            "countrycode": "DE"
+          }
+        ]
       }
     ]
   },
@@ -4956,14 +5064,14 @@
         "count": 538
       },
       {
+        "genre": "metal",
+        "label": "Metal",
+        "count": 535
+      },
+      {
         "genre": "world",
         "label": "World",
         "count": 530
-      },
-      {
-        "genre": "metal",
-        "label": "Metal",
-        "count": 529
       },
       {
         "genre": "indie",
