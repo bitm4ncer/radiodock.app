@@ -1261,7 +1261,8 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
   border-radius: 999px;
   color: var(--text-muted);
   background: var(--bg);
-  opacity: 0.7;
+  opacity: 0;
+  pointer-events: none;
   cursor: pointer;
   transition: color 140ms ease, background 140ms ease, border-color 140ms ease, opacity 140ms ease;
 }
@@ -1280,17 +1281,25 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
 
 /* A saved collection only shows the red tick: no ring, no fill. */
 .stations-collection-save.is-saved {
-  width: 16px;
-  height: 16px;
+  width: 30px;
+  height: 30px;
   color: var(--red);
   border-color: transparent;
   background: transparent;
-  opacity: 1;
+  opacity: 0;
 }
 
 .stations-collection-save.is-saved svg {
-  width: 13px;
-  height: 13px;
+  width: 26px;
+  height: 26px;
+}
+
+/* Keep the cards quiet: the save control only appears when the card is
+   hovered or reached with the keyboard. */
+.stations-collection-card-wrap:hover > .stations-collection-save,
+.stations-collection-card-wrap:focus-within > .stations-collection-save {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .stations-collection-save.is-saving {
@@ -1309,6 +1318,8 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
   width: 32px;
   height: 32px;
   background: transparent;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .stations-header-actions .stations-collection-save.is-saved {
@@ -1318,6 +1329,19 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
 .stations-header-actions .stations-collection-save svg {
   width: 16px;
   height: 16px;
+}
+
+.stations-header-actions .stations-collection-save.is-saved svg {
+  width: 26px;
+  height: 26px;
+}
+
+/* Touch/mobile has no hover: the card action stays out of the way and the
+   collection page header keeps the save control. */
+@media (hover: none), (max-width: 699px) {
+  .stations-collection-card-wrap > .stations-collection-save {
+    display: none;
+  }
 }
 
 .stations-collection-tile {
