@@ -5,7 +5,7 @@ import { stationsRow, updateRowNowPlaying, HEART_ICON, PLUS_ICON } from './stati
 import { mountStationsFilters } from './stations-filter.js';
 import { buildBrowseParams, communityParams, mergeRows, searchModeFor, popularParams, searchParams, MAX_ROWS } from './stations-state.js';
 import { escapeHtml, formatCount } from './stations-format.js';
-import { normaliseDiscover, renderDiscover, renderCollection, collectionCard, featuredLists } from './discover-child.js';
+import { normaliseDiscover, renderDiscover, renderCollection, collectionCard, featuredLists, pickFeaturedLists } from './discover-child.js';
 import { eligibleLists, pickerHtml } from './playlist-picker.js';
 import { mountLogoBehavior } from './station-logo.js';
 import { createInlineStationInfo } from './station-info-inline.js';
@@ -89,6 +89,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     tooShort: false,
     nowPlayingId: null,
     restoreScroll: null,
+    featuredSlugs: null,
     animateRows: false,
     discover: null,
     collection: null,
@@ -796,8 +797,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     queueMicrotask(() => body.querySelector(`[data-action="${backAction}"]`)?.focus());
   }
 
-  // Featured editorial lists above the search bar. Loaded once per panel
-  // session, capped at six and rendered with the same cards as Discover.
+  // Featured editorial lists above the search bar. The dashboard can feature
+  // any number of lists; each visit shows four random picks from that pool.
   async function renderFeaturedSection() {
     const host = body.querySelector('#stationsFeatured');
     if (!host) return;
@@ -805,12 +806,26 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       try { state.discover = (await data.loadDiscover?.({})) ?? null; } catch { state.discover = null; }
     }
     if (!host.isConnected || state.view !== 'stations') return;
-    const lists = featuredLists(normaliseDiscover(state.discover).lists, 6);
-    if (!lists.length) {
+    const pool = featuredLists(normaliseDiscover(state.discover).lists);
+    if (!pool.length) {
+      state.featuredSlugs = null;
       host.hidden = true;
       host.innerHTML = '';
       return;
     }
+    let lists = [];
+    if (Array.isArray(state.featuredSlugs)) {
+      const bySlug = new Map(pool.map((list) => [list.slug, list]));
+      lists = state.featuredSlugs.map((slug) => bySlug.get(slug)).filter(Boolean);
+    }
+    if (!lists.length) lists = pickFeaturedLists(pool, 4);
+    // Keep the current picks stable when the section re-renders, but replace
+    // any picks that disappeared from the pool so the row stays full.
+    if (lists.length < Math.min(4, pool.length)) {
+      const chosen = new Set(lists.map((list) => list.slug));
+      lists = lists.concat(pool.filter((list) => !chosen.has(list.slug)).slice(0, Math.min(4, pool.length) - lists.length));
+    }
+    state.featuredSlugs = lists.map((list) => list.slug);
     host.hidden = false;
     host.innerHTML = `
       <div class="stations-collection-grid stations-featured-grid">${lists.map((list) => collectionCard(list)).join('')}</div>
@@ -1206,6 +1221,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.tooShort = false;
     if (firstOpen || state.view !== 'stations') {
       state.view = 'stations';
+      // A new visit rotates the four featured picks from the whole pool.
+      state.featuredSlugs = null;
       if (firstOpen) {
         isOpen = true;
         panel.classList.add('is-open');

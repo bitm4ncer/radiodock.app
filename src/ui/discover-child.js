@@ -59,9 +59,23 @@ function submitLink() {
   return '<button type="button" class="stations-submit-link" data-action="submit-playlist">Suggest a collection</button>';
 }
 
-// The Stations page shows at most six editorial picks, in curated order.
-export function featuredLists(lists = [], limit = 6) {
+// All featured editorial picks, in curated order.
+export function featuredLists(lists = [], limit = Infinity) {
   return lists.filter((list) => list.featured).slice(0, limit);
+}
+
+// The Stations page rotates four picks out of the whole featured pool every
+// time it opens. Shuffle a copy so the curated order stays intact.
+export function pickFeaturedLists(lists = [], count = 4, random = Math.random) {
+  const pool = featuredLists(lists);
+  if (count <= 0) return [];
+  if (pool.length <= count) return pool;
+  const picks = pool.slice();
+  for (let i = picks.length - 1; i > 0; i -= 1) {
+    const j = Math.min(i, Math.floor(random() * (i + 1)));
+    [picks[i], picks[j]] = [picks[j], picks[i]];
+  }
+  return picks.slice(0, count);
 }
 
 export function renderDiscover({ lists = [] } = {}) {

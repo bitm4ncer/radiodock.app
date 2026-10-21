@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normaliseDiscover, renderDiscover, renderCollection, featuredLists } from '../src/ui/discover-child.js';
+import { normaliseDiscover, renderDiscover, renderCollection, featuredLists, pickFeaturedLists } from '../src/ui/discover-child.js';
 
 test('normaliseDiscover keeps valid curated lists only', () => {
   const data = { curated: { lists: [
@@ -22,7 +22,7 @@ test('renderDiscover uses singular copy for one station', () => {
   assert.doesNotMatch(html, /1 stations/);
 });
 
-test('normaliseDiscover keeps the featured flag and the Stations picks cap at six', () => {
+test('normaliseDiscover keeps the whole featured pool', () => {
   const lists = Array.from({ length: 8 }, (_, i) => ({
     slug: `list-${i}`,
     title: `List ${i}`,
@@ -32,9 +32,32 @@ test('normaliseDiscover keeps the featured flag and the Stations picks cap at si
   const normalised = normaliseDiscover({ curated: { lists } }).lists;
   assert.equal(normalised[0].featured, true);
   assert.equal(normalised[7].featured, false);
-  assert.equal(featuredLists(normalised).length, 6);
+  assert.equal(featuredLists(normalised).length, 7);
   assert.equal(featuredLists(normalised, 2).length, 2);
-  assert.deepEqual(featuredLists(normalised).map((l) => l.slug), ['list-0', 'list-1', 'list-2', 'list-3', 'list-4', 'list-5']);
+  assert.deepEqual(featuredLists(normalised).map((l) => l.slug), ['list-0', 'list-1', 'list-2', 'list-3', 'list-4', 'list-5', 'list-6']);
+});
+
+test('pickFeaturedLists rotates four unique picks from the featured pool', () => {
+  const lists = Array.from({ length: 8 }, (_, i) => ({
+    slug: `list-${i}`,
+    title: `List ${i}`,
+    featured: i < 6,
+    stations: [{ stationuuid: 'a', name: 'A' }],
+  }));
+  const picks = pickFeaturedLists(lists, 4, () => 0.42);
+  assert.equal(picks.length, 4);
+  assert.equal(new Set(picks.map((l) => l.slug)).size, 4);
+  assert.ok(picks.every((l) => l.featured));
+});
+
+test('pickFeaturedLists returns the whole pool when it is smaller than four', () => {
+  const lists = Array.from({ length: 3 }, (_, i) => ({
+    slug: `list-${i}`,
+    title: `List ${i}`,
+    featured: true,
+    stations: [{ stationuuid: 'a', name: 'A' }],
+  }));
+  assert.deepEqual(pickFeaturedLists(lists).map((l) => l.slug), ['list-0', 'list-1', 'list-2']);
 });
 
 test('normaliseDiscover preserves user list provenance', () => {
