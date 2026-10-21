@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T20:01:51.645Z",
+  "generatedAt": "2026-10-21T20:02:50.580Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -4571,6 +4571,11 @@
             "countrycode": "FR"
           },
           {
+            "stationuuid": "ee587805-11d2-4d3a-b676-8121e149b0ff",
+            "name": "RPR1. Heavy Metal",
+            "countrycode": "DE"
+          },
+          {
             "stationuuid": "9618d38b-0601-11e8-ae97-52543be04c81",
             "name": "RADIO BOB! BOBs Metal",
             "countrycode": "DE"
@@ -4583,11 +4588,6 @@
           {
             "stationuuid": "259e410c-b516-11e8-afe1-52543be04c81",
             "name": "METAL ONLY",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "ee587805-11d2-4d3a-b676-8121e149b0ff",
-            "name": "RPR1. Heavy Metal",
             "countrycode": "DE"
           },
           {
