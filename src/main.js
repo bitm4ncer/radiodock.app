@@ -329,13 +329,14 @@ async function toggleStationInFavorites(station, source = 'list') {
       : await listsApi.addStationToList(target.id, station);
     // Trust the stored list instead of spreading a possibly stale array.
     if (Array.isArray(updated?.stations)) target.stations = updated.stations;
-    track(...buildListItemEvent({
+    const listItemEvent = buildListItemEvent({
       action: has ? 'remove' : 'add',
       uuid: station.stationuuid,
       listId: target.id,
       listKind,
       source,
-    }));
+    });
+    track(listItemEvent.name, listItemEvent.data);
     if (!has) track('station-add', { country: station.countrycode ?? '' });
     toast(has ? `Removed from "${target.name}"` : `Added to "${target.name}"`);
     scheduleSyncPush();
