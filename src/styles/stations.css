@@ -2343,3 +2343,542 @@ html.is-standalone .stations-panel:not(.is-open) {
 .stations-panel.is-dragging .stations-header { cursor: grabbing; }
 .stations-header :is(button, a, [role="button"]) { cursor: pointer; }
 .stations-header :is(input, textarea) { cursor: text; }
+
+/* ---- Cloud: collections as an interactive constellation ---- */
+.stations-content.is-cloud {
+  overflow: hidden;
+}
+
+.stations-discover.is-cloud {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+  padding-bottom: 0;
+}
+
+.stations-discover.is-cloud .stations-discover-results {
+  flex: 1;
+  min-height: 0;
+}
+
+.stations-cloud {
+  position: relative;
+  height: 100%;
+  min-height: 420px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-dark);
+}
+
+.stations-cloud-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  background: radial-gradient(circle at 50% 45%, var(--surface) 0%, var(--bg-dark) 55%, var(--bg) 100%);
+}
+
+.stations-cloud-stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0.7px, transparent 0.8px);
+  background-size: 26px 26px;
+  opacity: 0.5;
+}
+
+.stations-cloud-stage.is-dragging {
+  cursor: grabbing;
+}
+
+.stations-cloud img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.stations-cloud-world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  overflow: visible;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.stations-cloud-links {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.stations-cloud-link {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 1;
+  opacity: 0.35;
+  vector-effect: non-scaling-stroke;
+}
+
+.stations-cloud-link.is-active {
+  stroke: var(--text-muted);
+  opacity: 0.7;
+}
+
+.stations-cloud-link.is-dimmed {
+  opacity: 0.06;
+}
+
+.stations-cloud-node {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: var(--text);
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  transition: opacity 0.25s ease;
+}
+
+.stations-cloud-bubble {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--surface-2), var(--bg-dark) 70%);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35), inset 0 0 30px rgba(255, 255, 255, 0.03);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, translate 0.2s ease;
+  animation: stations-cloud-float 9s ease-in-out infinite alternate;
+  animation-delay: var(--float-delay, 0s);
+}
+
+.stations-cloud-node:hover .stations-cloud-bubble,
+.stations-cloud-node:focus-visible .stations-cloud-bubble {
+  border-color: var(--text-muted);
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.45), inset 0 0 36px rgba(255, 255, 255, 0.05);
+  animation: none;
+  translate: 0 -3px;
+}
+
+.stations-cloud-orbit {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.stations-cloud-bubble .logo-slot {
+  position: absolute;
+  translate: -50% -50%;
+  overflow: hidden;
+  border: 0;
+  border-radius: 50%;
+  background: var(--logo-chip-bg);
+}
+
+.stations-cloud-logo {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--logo-chip-bg);
+  object-fit: cover;
+}
+
+.stations-cloud-initials {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 8px;
+}
+
+.stations-cloud-label {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform-origin: top center;
+  translate: -50% 0;
+  color: var(--text);
+  text-align: center;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.stations-cloud-label strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.stations-cloud-label span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 9px;
+}
+
+.stations-cloud-node.is-label-visible .stations-cloud-label,
+.stations-cloud-node:hover .stations-cloud-label,
+.stations-cloud-node:focus-visible .stations-cloud-label,
+.stations-cloud-stage.is-zoomed .stations-cloud-label {
+  opacity: 1;
+}
+
+.stations-cloud-node.is-dimmed {
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.stations-cloud-node.is-open {
+  opacity: 0;
+}
+
+.stations-cloud-ring {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.stations-cloud-station {
+  position: absolute;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--bg-dark);
+  translate: -50% -50%;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stations-cloud-station .logo-slot {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--logo-chip-bg);
+}
+
+.stations-cloud-station .logo-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.stations-cloud-station.is-playing {
+  border-color: var(--red);
+  box-shadow: 0 0 0 2px var(--red);
+}
+
+.stations-cloud-station.is-search-match {
+  border-color: var(--text);
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--text);
+  animation: stations-cloud-match 0.8s ease-in-out infinite alternate;
+}
+
+.stations-cloud-station.is-flashing {
+  animation: stations-cloud-flash 0.5s ease;
+}
+
+.stations-cloud-node:focus-visible,
+.stations-cloud-station:focus-visible,
+.stations-cloud-controls button:focus-visible,
+.stations-cloud-back:focus-visible,
+.stations-cloud-results button:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+
+.stations-cloud-ring-label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 160px;
+  transform-origin: center;
+  translate: -50% -50%;
+  text-align: center;
+  pointer-events: none;
+}
+
+.stations-cloud-ring-label strong {
+  display: block;
+  font-size: 14px;
+}
+
+.stations-cloud-ring-label span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.stations-cloud-ring-current {
+  margin-top: 3px;
+  color: var(--text);
+  font-size: 9px;
+  line-height: 1.35;
+  white-space: normal;
+}
+
+.stations-cloud-controls {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stations-cloud-controls button,
+.stations-cloud-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text);
+  background: var(--surface);
+  font: inherit;
+  cursor: pointer;
+}
+
+.stations-cloud-back {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 5;
+  display: none;
+  width: auto;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+}
+
+.stations-cloud-stage.is-ring-open .stations-cloud-back {
+  display: inline-flex;
+}
+
+.stations-cloud-hint {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  color: var(--text-muted);
+  font-size: 9px;
+  pointer-events: none;
+}
+
+.stations-cloud-results {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  z-index: 6;
+  width: min(460px, calc(100% - 24px));
+  max-height: 50%;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  translate: -50% 0;
+  touch-action: pan-y;
+}
+
+.stations-cloud-results[hidden],
+.stations-cloud-tooltip[hidden] {
+  display: none !important;
+}
+
+.stations-cloud-results-head {
+  padding: 8px 10px 4px;
+  color: var(--text-muted);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.stations-cloud-results button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.stations-cloud-results button:hover {
+  background: var(--surface);
+}
+
+.stations-cloud-results .logo-slot {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--logo-chip-bg);
+}
+
+.stations-cloud-results .logo-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.stations-cloud-results-copy {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stations-cloud-results-title {
+  overflow: hidden;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stations-cloud-results-count {
+  color: var(--text-muted);
+  font-size: 9px;
+}
+
+.stations-cloud-results-empty {
+  padding: 12px;
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.stations-cloud-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: var(--text-muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.stations-cloud-tooltip {
+  position: absolute;
+  z-index: 7;
+  padding: 4px 7px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 9px;
+  white-space: nowrap;
+  translate: -50% -100%;
+  pointer-events: none;
+}
+
+@keyframes stations-cloud-float {
+  from { translate: 0 0; }
+  to { translate: 0 -6px; }
+}
+
+@keyframes stations-cloud-match {
+  from { outline-color: transparent; }
+  to { outline-color: var(--text); }
+}
+
+@keyframes stations-cloud-flash {
+  from { box-shadow: 0 0 0 0 var(--text); }
+  to { box-shadow: 0 0 0 10px transparent; }
+}
+
+@media (max-width: 699px) {
+  .stations-shell:has(.stations-content.is-cloud) {
+    overflow: hidden;
+  }
+
+  .stations-main:has(.stations-content.is-cloud) {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .stations-content.is-cloud {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .stations-discover.is-cloud {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .stations-cloud {
+    min-height: 0;
+  }
+
+  .stations-cloud-ring-label {
+    width: 120px;
+  }
+
+  .stations-cloud-hint {
+    font-size: 9px;
+  }
+
+  .stations-cloud-controls {
+    right: calc(12px + env(safe-area-inset-right));
+    bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .stations-cloud-back {
+    top: calc(12px + env(safe-area-inset-top));
+    left: calc(12px + env(safe-area-inset-left));
+  }
+
+  .stations-cloud-results {
+    right: 12px;
+    left: 12px;
+    width: auto;
+    max-height: 50%;
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stations-cloud-bubble,
+  .stations-cloud-station,
+  .stations-cloud-label,
+  .stations-cloud-node,
+  .stations-cloud-results button {
+    animation: none;
+    transition: none;
+  }
+}

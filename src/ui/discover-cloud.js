@@ -1,3 +1,6 @@
+import { renderLogoSlot } from './station-logo.js';
+import { formatCount } from './stations-format.js';
+
 const PADDING = 240;
 const CLEARANCE = 20;
 const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
@@ -237,5 +240,831 @@ export function matchCloud(model, query, { collectionLimit = 6, stationLimit = 1
     stations: stations.slice(0, stationMax),
     collectionTotal: collections.length,
     stationTotal: stations.length,
+  };
+}
+
+function logoElement(station, options) {
+  const wrapper = document.createElement('span');
+  wrapper.innerHTML = renderLogoSlot(station, options);
+  return wrapper.firstElementChild;
+}
+
+function hydrateLogoSlot(slot) {
+  if (!slot || slot.dataset.logoHydrated === '1') return;
+  slot.dataset.logoHydrated = '1';
+  const image = slot.querySelector('[data-logo-img]');
+  const fallback = slot.querySelector('[data-logo-fallback]');
+  if (!image) {
+    fallback?.classList.remove('is-hidden');
+    return;
+  }
+  const showImage = () => {
+    slot.classList.add('is-loaded');
+    fallback?.classList.add('is-hidden');
+  };
+  const showFallback = () => {
+    slot.classList.remove('is-loaded');
+    fallback?.classList.remove('is-hidden');
+  };
+  image.addEventListener('load', showImage, { once: true });
+  image.addEventListener('error', showFallback, { once: true });
+  if (image.complete) {
+    if (image.naturalWidth > 0) showImage();
+    else showFallback();
+  }
+}
+
+function hydrateLogos(root) {
+  root.querySelectorAll('[data-logo-slot]').forEach(hydrateLogoSlot);
+}
+
+export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPlay = async () => false } = {}) {
+  const model = buildCloudModel(lists);
+  let destroyed = false;
+  let fitScale = 0;
+  let camera = { scale: 1, tx: 0, ty: 0 };
+  let overviewCamera = null;
+  let ring = null;
+  let resultsEl = null;
+  let tooltip = null;
+  let highlightTimer = null;
+  let cameraFrame = 0;
+  let suppressClick = false;
+  let dragMoved = false;
+  let dragStart = null;
+  let dragDistance = 0;
+  let pinch = null;
+  let resizeObserver = null;
+  const pointers = new Map();
+
+  host.classList.add('stations-cloud');
+  host.innerHTML = '';
+
+  const stage = document.createElement('div');
+  stage.className = 'stations-cloud-stage';
+  stage.setAttribute('role', 'region');
+  stage.setAttribute('aria-label', 'Collection cloud. Drag to pan, scroll to zoom, click a collection.');
+
+  const world = document.createElement('div');
+  world.className = 'stations-cloud-world';
+
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgNS, 'svg');
+  svg.classList.add('stations-cloud-links');
+  svg.setAttribute('aria-hidden', 'true');
+  if (model.nodes.length) {
+    svg.setAttribute('viewBox', `0 0 ${model.bounds.width} ${model.bounds.height}`);
+    svg.style.left = `${model.bounds.minX}px`;
+    svg.style.top = `${model.bounds.minY}px`;
+    svg.style.width = `${model.bounds.width}px`;
+    svg.style.height = `${model.bounds.height}px`;
+  }
+  const linkElements = [];
+  for (const edge of model.edges) {
+    const first = model.nodeBySlug.get(edge.a);
+    const second = model.nodeBySlug.get(edge.b);
+    if (!first || !second) continue;
+    const x1 = first.x - model.bounds.minX;
+    const y1 = first.y - model.bounds.minY;
+    const x2 = second.x - model.bounds.minX;
+    const y2 = second.y - model.bounds.minY;
+    const midX = (x1 + x2) / 2 + (y2 - y1) * 0.08;
+    const midY = (y1 + y2) / 2 - (x2 - x1) * 0.08;
+    const path = document.createElementNS(svgNS, 'path');
+    path.setAttribute('class', 'stations-cloud-link');
+    path.setAttribute('d', `M ${x1} ${y1} Q ${midX} ${midY} ${x2} ${y2}`);
+    path.setAttribute('vector-effect', 'non-scaling-stroke');
+    path.dataset.a = edge.a;
+    path.dataset.b = edge.b;
+    svg.append(path);
+    linkElements.push(path);
+  }
+
+  const nodeElements = new Map();
+  const labelElements = [];
+  const labelSlugs = new Set(
+    [...model.nodes]
+      .sort((a, b) => b.count - a.count || (a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0))
+      .slice(0, 12)
+      .map((node) => node.slug),
+  );
+
+  world.append(svg);
+
+  model.nodes.forEach((node, index) => {
+    const nodeEl = document.createElement('button');
+    nodeEl.type = 'button';
+    nodeEl.className = 'stations-cloud-node';
+    nodeEl.dataset.slug = node.slug;
+    nodeEl.setAttribute('aria-label', `${node.title}, ${formatCount(node.count)} stations`);
+    nodeEl.style.left = `${node.x - node.radius}px`;
+    nodeEl.style.top = `${node.y - node.radius}px`;
+    nodeEl.style.width = `${node.radius * 2}px`;
+    nodeEl.style.height = `${node.radius * 2}px`;
+    nodeEl.style.setProperty('--float-delay', `-${(index % 8) * 0.9}s`);
+    if (labelSlugs.has(node.slug)) nodeEl.classList.add('is-label-visible');
+
+    const bubble = document.createElement('span');
+    bubble.className = 'stations-cloud-bubble';
+    const orbit = document.createElement('span');
+    orbit.className = 'stations-cloud-orbit';
+    node.preview.forEach((preview) => {
+      const logo = logoElement(preview.station, {
+        imgClass: 'stations-cloud-logo',
+        initialsClass: 'stations-cloud-initials',
+        size: 'sm',
+        resolveById: true,
+        priority: index < 8,
+      });
+      if (!logo) return;
+      logo.style.left = `calc(50% + ${preview.x}px)`;
+      logo.style.top = `calc(50% + ${preview.y}px)`;
+      logo.style.width = `${preview.size}px`;
+      logo.style.height = `${preview.size}px`;
+      orbit.append(logo);
+    });
+    bubble.append(orbit);
+
+    const label = document.createElement('span');
+    label.className = 'stations-cloud-label';
+    const title = document.createElement('strong');
+    title.textContent = node.title;
+    const count = document.createElement('span');
+    count.textContent = `${formatCount(node.count)} stations`;
+    label.append(title, count);
+    labelElements.push(label);
+
+    nodeEl.append(bubble, label);
+    nodeEl.addEventListener('click', (evt) => {
+      evt.stopPropagation();
+      if (suppressClick) {
+        suppressClick = false;
+        return;
+      }
+      openCollection(node.slug);
+    });
+    nodeEl.addEventListener('pointerenter', () => activateNode(node.slug));
+    nodeEl.addEventListener('pointerleave', () => activateNode(null));
+    nodeEl.addEventListener('focus', () => activateNode(node.slug));
+    nodeEl.addEventListener('blur', () => activateNode(null));
+    world.append(nodeEl);
+    nodeElements.set(node.slug, nodeEl);
+  });
+
+  const back = document.createElement('button');
+  back.type = 'button';
+  back.className = 'stations-cloud-back';
+  back.textContent = 'All collections';
+  back.addEventListener('click', (evt) => {
+    evt.stopPropagation();
+    closeRing();
+  });
+
+  const controls = document.createElement('div');
+  controls.className = 'stations-cloud-controls';
+  const zoomIn = document.createElement('button');
+  zoomIn.type = 'button';
+  zoomIn.dataset.cloudZoom = 'in';
+  zoomIn.textContent = '+';
+  zoomIn.setAttribute('aria-label', 'Zoom in');
+  zoomIn.title = 'Zoom in';
+  const zoomOut = document.createElement('button');
+  zoomOut.type = 'button';
+  zoomOut.dataset.cloudZoom = 'out';
+  zoomOut.textContent = '-';
+  zoomOut.setAttribute('aria-label', 'Zoom out');
+  zoomOut.title = 'Zoom out';
+  const zoomReset = document.createElement('button');
+  zoomReset.type = 'button';
+  zoomReset.dataset.cloudZoom = 'reset';
+  zoomReset.textContent = '↺';
+  zoomReset.setAttribute('aria-label', 'Reset view');
+  zoomReset.title = 'Reset view';
+  zoomIn.addEventListener('click', (evt) => {
+    evt.stopPropagation();
+    const rect = stage.getBoundingClientRect();
+    zoomAt(rect.left + rect.width / 2, rect.top + rect.height / 2, 1.25);
+  });
+  zoomOut.addEventListener('click', (evt) => {
+    evt.stopPropagation();
+    const rect = stage.getBoundingClientRect();
+    zoomAt(rect.left + rect.width / 2, rect.top + rect.height / 2, 0.8);
+  });
+  zoomReset.addEventListener('click', (evt) => {
+    evt.stopPropagation();
+    reset();
+  });
+  controls.append(zoomIn, zoomOut, zoomReset);
+
+  const hint = document.createElement('div');
+  hint.className = 'stations-cloud-hint';
+  hint.textContent = window.matchMedia('(max-width: 699px)').matches
+    ? 'Drag to pan. Pinch to zoom. Tap a collection.'
+    : 'Drag to pan. Scroll to zoom. Click a collection.';
+
+  resultsEl = document.createElement('div');
+  resultsEl.className = 'stations-cloud-results';
+  resultsEl.setAttribute('role', 'region');
+  resultsEl.setAttribute('aria-label', 'Cloud search results');
+  resultsEl.hidden = true;
+
+  tooltip = document.createElement('div');
+  tooltip.className = 'stations-cloud-tooltip';
+  tooltip.hidden = true;
+
+  stage.append(back, world, controls, hint, resultsEl, tooltip);
+  if (!model.nodes.length) {
+    const empty = document.createElement('div');
+    empty.className = 'stations-cloud-empty';
+    empty.textContent = 'No collections to show yet.';
+    stage.append(empty);
+  }
+  host.append(stage);
+  hydrateLogos(stage);
+
+  function fitTarget() {
+    const width = Math.max(1, stage.clientWidth || host.clientWidth || 1);
+    const height = Math.max(1, stage.clientHeight || host.clientHeight || 1);
+    if (!model.nodes.length) return { scale: 1, tx: 0, ty: 0 };
+    const scale = Math.max(0.0001, Math.min(width / model.bounds.width, height / model.bounds.height) * 0.84);
+    return {
+      scale,
+      tx: width / 2 - (model.bounds.minX + model.bounds.width / 2) * scale,
+      ty: height / 2 - (model.bounds.minY + model.bounds.height / 2) * scale,
+    };
+  }
+
+  function clampScale(value) {
+    const base = fitScale > 0 ? fitScale : 0.0001;
+    return Math.min(base * 5, Math.max(base * 0.75, value));
+  }
+
+  function applyCamera() {
+    const scale = Math.max(0.0001, camera.scale);
+    world.style.transform = `translate3d(${camera.tx}px, ${camera.ty}px, 0) scale(${scale})`;
+    const labelScale = Math.min(8, 1 / scale);
+    for (const label of labelElements) label.style.transform = `scale(${labelScale})`;
+    if (ring?.label) ring.label.style.transform = `scale(${labelScale})`;
+    stage.classList.toggle('is-zoomed', fitScale > 0 && scale >= fitScale * 1.15);
+  }
+
+  function fitCamera() {
+    const target = fitTarget();
+    fitScale = target.scale;
+    camera = { ...target };
+    applyCamera();
+  }
+
+  function flyTo(target, { animate = true } = {}) {
+    const next = {
+      scale: Math.max(0.0001, target.scale),
+      tx: target.tx,
+      ty: target.ty,
+    };
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!animate || reduced) {
+      camera = next;
+      applyCamera();
+      return;
+    }
+    cancelAnimationFrame(cameraFrame);
+    const start = { ...camera };
+    const started = performance.now();
+    const duration = 420;
+    const step = (now) => {
+      if (destroyed) return;
+      const progress = Math.min(1, (now - started) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      camera = {
+        scale: start.scale + (next.scale - start.scale) * eased,
+        tx: start.tx + (next.tx - start.tx) * eased,
+        ty: start.ty + (next.ty - start.ty) * eased,
+      };
+      applyCamera();
+      if (progress < 1) cameraFrame = requestAnimationFrame(step);
+      else cameraFrame = 0;
+    };
+    cameraFrame = requestAnimationFrame(step);
+  }
+
+  function zoomAt(clientX, clientY, factor) {
+    const rect = stage.getBoundingClientRect();
+    const pointerX = clientX - rect.left;
+    const pointerY = clientY - rect.top;
+    const nextScale = clampScale(camera.scale * factor);
+    const worldX = (pointerX - camera.tx) / camera.scale;
+    const worldY = (pointerY - camera.ty) / camera.scale;
+    camera.scale = nextScale;
+    camera.tx = pointerX - worldX * nextScale;
+    camera.ty = pointerY - worldY * nextScale;
+    hideTooltip();
+    applyCamera();
+  }
+
+  function onWheel(evt) {
+    evt.preventDefault();
+    zoomAt(evt.clientX, evt.clientY, Math.exp(-evt.deltaY * 0.0015));
+  }
+
+  function onPointerDown(evt) {
+    if (evt.button != null && evt.button !== 0) return;
+    if (evt.target.closest('.stations-cloud-results, .stations-cloud-controls, .stations-cloud-back')) return;
+    pointers.set(evt.pointerId, { x: evt.clientX, y: evt.clientY });
+    if (pointers.size === 1) {
+      dragStart = { x: evt.clientX, y: evt.clientY };
+      dragDistance = 0;
+      dragMoved = false;
+      pinch = null;
+    }
+    if (pointers.size === 2) {
+      pinch = null;
+      stage.classList.add('is-dragging');
+      for (const id of pointers.keys()) {
+        try { stage.setPointerCapture(id); } catch { /* capture is best effort */ }
+      }
+    }
+  }
+
+  function onPointerMove(evt) {
+    if (!pointers.has(evt.pointerId)) return;
+    const previous = pointers.get(evt.pointerId);
+    pointers.set(evt.pointerId, { x: evt.clientX, y: evt.clientY });
+
+    if (pointers.size >= 2) {
+      const [first, second] = [...pointers.values()];
+      const distance = Math.hypot(second.x - first.x, second.y - first.y);
+      const rect = stage.getBoundingClientRect();
+      const midpoint = {
+        x: (first.x + second.x) / 2 - rect.left,
+        y: (first.y + second.y) / 2 - rect.top,
+      };
+      if (!pinch) {
+        pinch = {
+          distance: Math.max(1, distance),
+          scale: camera.scale,
+          tx: camera.tx,
+          ty: camera.ty,
+          midpoint,
+        };
+        return;
+      }
+      const factor = Math.max(0.2, Math.min(5, distance / pinch.distance));
+      const nextScale = clampScale(pinch.scale * factor);
+      const worldX = (pinch.midpoint.x - pinch.tx) / pinch.scale;
+      const worldY = (pinch.midpoint.y - pinch.ty) / pinch.scale;
+      camera.scale = nextScale;
+      camera.tx = midpoint.x - worldX * nextScale;
+      camera.ty = midpoint.y - worldY * nextScale;
+      dragMoved = true;
+      hideTooltip();
+      applyCamera();
+      return;
+    }
+
+    if (!dragStart || pinch) return;
+    dragDistance = Math.max(dragDistance, Math.hypot(evt.clientX - dragStart.x, evt.clientY - dragStart.y));
+    if (dragDistance > 5) {
+      dragMoved = true;
+      stage.classList.add('is-dragging');
+      try { stage.setPointerCapture(evt.pointerId); } catch { /* capture is best effort */ }
+      camera.tx += evt.clientX - previous.x;
+      camera.ty += evt.clientY - previous.y;
+      hideTooltip();
+      applyCamera();
+    }
+  }
+
+  function onPointerUp(evt) {
+    pointers.delete(evt.pointerId);
+    if (pointers.size < 2) pinch = null;
+    if (pointers.size === 0) {
+      if (dragMoved) {
+        suppressClick = true;
+        setTimeout(() => { suppressClick = false; }, 0);
+      }
+      stage.classList.remove('is-dragging');
+      dragStart = null;
+      dragDistance = 0;
+      dragMoved = false;
+    }
+    try {
+      if (stage.hasPointerCapture?.(evt.pointerId)) stage.releasePointerCapture(evt.pointerId);
+    } catch { /* capture is best effort */ }
+  }
+
+  function onStageClick(evt) {
+    if (suppressClick) {
+      suppressClick = false;
+      return;
+    }
+    if (!ring) return;
+    if (evt.target.closest('.stations-cloud-node, .stations-cloud-station, .stations-cloud-controls, .stations-cloud-back, .stations-cloud-results, .stations-cloud-tooltip')) return;
+    closeRing();
+  }
+
+  function activateNode(slug) {
+    if (stage.classList.contains('is-ring-open')) return;
+    for (const [key, element] of nodeElements) {
+      const active = key === slug;
+      element.classList.toggle('is-active', active);
+      element.classList.toggle('is-dimmed', !!slug && !active);
+    }
+    for (const path of linkElements) {
+      const active = !!slug && (path.dataset.a === slug || path.dataset.b === slug);
+      path.classList.toggle('is-active', active);
+      path.classList.toggle('is-dimmed', !!slug && !active);
+    }
+  }
+
+  function showTooltip(station, element) {
+    if (!tooltip) return;
+    const rect = element.getBoundingClientRect();
+    const stageRect = stage.getBoundingClientRect();
+    const country = String(station?.countrycode ?? '').trim().toUpperCase();
+    tooltip.textContent = `${station?.name ?? 'Station'}${country ? ` · ${country}` : ''}`;
+    tooltip.style.left = `${rect.left - stageRect.left + rect.width / 2}px`;
+    tooltip.style.top = `${rect.top - stageRect.top - 6}px`;
+    tooltip.hidden = false;
+  }
+
+  function hideTooltip() {
+    if (tooltip) tooltip.hidden = true;
+  }
+
+  function hideResults() {
+    if (resultsEl) resultsEl.hidden = true;
+  }
+
+  function clearRing() {
+    clearTimeout(highlightTimer);
+    highlightTimer = null;
+    if (!ring) return;
+    ring.element.remove();
+    ring = null;
+    stage.classList.remove('is-ring-open');
+    for (const element of nodeElements.values()) {
+      element.classList.remove('is-dimmed', 'is-open');
+      element.removeAttribute('aria-hidden');
+      element.removeAttribute('tabindex');
+    }
+    for (const path of linkElements) path.classList.remove('is-dimmed');
+    for (const button of controls.querySelectorAll('button')) {
+      button.removeAttribute('aria-hidden');
+      button.removeAttribute('tabindex');
+    }
+    activateNode(null);
+    hideTooltip();
+  }
+
+  function closeRing({ restoreFocus = true, restoreCamera = true } = {}) {
+    if (!ring) return;
+    const slug = ring.slug;
+    const overview = overviewCamera;
+    clearRing();
+    overviewCamera = null;
+    if (restoreCamera) {
+      if (overview) flyTo(overview);
+      else {
+        const target = fitTarget();
+        fitScale = target.scale;
+        flyTo(target);
+      }
+    }
+    if (restoreFocus) nodeElements.get(slug)?.focus({ preventScroll: true });
+  }
+
+  function playStation(uuid, element = null) {
+    const target = element ?? ring?.stationEls.get(uuid) ?? null;
+    if (target) {
+      target.classList.remove('is-flashing');
+      void target.offsetWidth;
+      target.classList.add('is-flashing');
+      setTimeout(() => target.classList.remove('is-flashing'), 500);
+    }
+    let result;
+    try {
+      result = onPlay(uuid);
+    } catch {
+      target?.classList.remove('is-flashing');
+      return;
+    }
+    Promise.resolve(result).then((ok) => {
+      if (!ok) target?.classList.remove('is-flashing');
+    }).catch(() => {
+      target?.classList.remove('is-flashing');
+    });
+  }
+
+  function highlightStation(uuid) {
+    clearTimeout(highlightTimer);
+    const element = ring?.stationEls.get(uuid);
+    if (!element) return;
+    element.classList.add('is-search-match');
+    highlightTimer = setTimeout(() => {
+      element.classList.remove('is-search-match');
+      highlightTimer = null;
+    }, 1600);
+  }
+
+  function setNowPlaying(uuid) {
+    nowPlayingId = uuid ?? null;
+    if (destroyed || !ring) return;
+    for (const [stationUuid, element] of ring.stationEls) {
+      element.classList.toggle('is-playing', stationUuid === nowPlayingId);
+    }
+    const current = ring.node.stations.find((station) => (
+      (station.stationuuid ?? station.uuid ?? station.id) === nowPlayingId
+    ));
+    ring.current.textContent = current ? current.name : '';
+  }
+
+  function openCollection(slug) {
+    if (destroyed) return;
+    const node = model.nodeBySlug.get(slug);
+    if (!node) return;
+    const fit = fitTarget();
+    if (fit.scale > 0 && (fitScale <= 0 || camera.scale < fit.scale * 0.5)) {
+      fitScale = fit.scale;
+      camera = { ...fit };
+      applyCamera();
+    }
+    if (!ring) overviewCamera = { ...camera };
+    else clearRing();
+    hideResults();
+    stage.classList.add('is-ring-open');
+    for (const [key, element] of nodeElements) {
+      const selected = key === slug;
+      element.classList.toggle('is-dimmed', !selected);
+      element.classList.toggle('is-open', selected);
+      element.setAttribute('aria-hidden', 'true');
+      element.tabIndex = -1;
+    }
+    for (const path of linkElements) path.classList.add('is-dimmed');
+    for (const button of controls.querySelectorAll('button')) {
+      button.setAttribute('aria-hidden', 'true');
+      button.tabIndex = -1;
+    }
+
+    const points = ringLayout(node.count, { radius: 170, gap: 58 });
+    const maxRing = points.length ? Math.max(...points.map((point) => point.ring)) : 0;
+    const maxRadius = 170 + maxRing * 58;
+    const width = Math.max(1, stage.clientWidth || host.clientWidth || 1);
+    const height = Math.max(1, stage.clientHeight || host.clientHeight || 1);
+    const size = width < 520 ? 44 : 52;
+    const ringScale = clampScale(Math.min(width, height) / 2 / (maxRadius + 40));
+
+    const element = document.createElement('div');
+    element.className = 'stations-cloud-ring';
+    element.style.left = `${node.x}px`;
+    element.style.top = `${node.y}px`;
+    const stationEls = new Map();
+
+    points.forEach((point, index) => {
+      const station = node.stations[point.index];
+      if (!station) return;
+      const uuid = station.stationuuid ?? station.uuid ?? station.id;
+      if (!uuid) return;
+      const stationEl = document.createElement('button');
+      stationEl.type = 'button';
+      stationEl.className = 'stations-cloud-station';
+      stationEl.dataset.uuid = uuid;
+      stationEl.style.left = `${point.x}px`;
+      stationEl.style.top = `${point.y}px`;
+      stationEl.style.width = `${size / ringScale}px`;
+      stationEl.style.height = `${size / ringScale}px`;
+      const country = String(station.countrycode ?? '').trim().toUpperCase();
+      stationEl.setAttribute('aria-label', `${station.name ?? 'Station'}${country ? `, ${country}` : ''}`);
+      const logo = logoElement(station, {
+        imgClass: 'stations-cloud-logo',
+        initialsClass: 'stations-cloud-initials',
+        size: 'sm',
+        resolveById: true,
+        priority: index < 8,
+      });
+      if (logo) stationEl.append(logo);
+      stationEl.addEventListener('pointerenter', () => showTooltip(station, stationEl));
+      stationEl.addEventListener('pointerleave', hideTooltip);
+      stationEl.addEventListener('focus', () => showTooltip(station, stationEl));
+      stationEl.addEventListener('blur', hideTooltip);
+      stationEl.addEventListener('click', (evt) => {
+        evt.stopPropagation();
+        if (suppressClick) {
+          suppressClick = false;
+          return;
+        }
+        playStation(uuid, stationEl);
+      });
+      element.append(stationEl);
+      stationEls.set(uuid, stationEl);
+    });
+
+    const label = document.createElement('div');
+    label.className = 'stations-cloud-ring-label';
+    const title = document.createElement('strong');
+    title.textContent = node.title;
+    const count = document.createElement('span');
+    count.textContent = `${formatCount(node.count)} stations`;
+    const current = document.createElement('span');
+    current.className = 'stations-cloud-ring-current';
+    label.append(title, count, current);
+    element.append(label);
+    world.append(element);
+    hydrateLogos(element);
+
+    ring = { slug, node, element, label, current, stationEls, ringScale, size, points };
+    if (nowPlayingId) setNowPlaying(nowPlayingId);
+    flyTo({
+      scale: ringScale,
+      tx: width / 2 - node.x * ringScale,
+      ty: height / 2 - node.y * ringScale,
+    });
+    stationEls.values().next().value?.focus({ preventScroll: true });
+  }
+
+  function reset() {
+    if (destroyed) return;
+    clearRing();
+    overviewCamera = null;
+    hideResults();
+    const target = fitTarget();
+    fitScale = target.scale;
+    flyTo(target);
+  }
+
+  function search(query) {
+    if (destroyed) return;
+    const value = String(query ?? '').trim();
+    if (!value) {
+      hideResults();
+      return;
+    }
+    const matches = matchCloud(model, value, { collectionLimit: 6, stationLimit: 12 });
+    resultsEl.innerHTML = '';
+    resultsEl.hidden = false;
+    if (!matches.collections.length && !matches.stations.length) {
+      const empty = document.createElement('div');
+      empty.className = 'stations-cloud-results-empty';
+      empty.textContent = 'No collections or stations found.';
+      resultsEl.append(empty);
+      return;
+    }
+    if (matches.collections.length) {
+      const head = document.createElement('div');
+      head.className = 'stations-cloud-results-head';
+      head.textContent = 'Collections';
+      resultsEl.append(head);
+      for (const collection of matches.collections) {
+        const row = document.createElement('button');
+        row.type = 'button';
+        row.dataset.slug = collection.slug;
+        const title = document.createElement('span');
+        title.className = 'stations-cloud-results-title';
+        title.textContent = collection.title;
+        const count = document.createElement('span');
+        count.className = 'stations-cloud-results-count';
+        count.textContent = `${formatCount(collection.count)} stations`;
+        row.append(title, count);
+        row.addEventListener('click', (evt) => {
+          evt.stopPropagation();
+          openCollection(collection.slug);
+          hideResults();
+        });
+        resultsEl.append(row);
+      }
+    }
+    if (matches.stations.length) {
+      const head = document.createElement('div');
+      head.className = 'stations-cloud-results-head';
+      head.textContent = 'Stations';
+      resultsEl.append(head);
+      for (const station of matches.stations) {
+        const row = document.createElement('button');
+        row.type = 'button';
+        row.dataset.uuid = station.stationuuid;
+        row.dataset.collection = station.collectionSlug;
+        const logo = logoElement(station, {
+          imgClass: 'stations-cloud-results-logo',
+          initialsClass: 'stations-cloud-results-initials',
+          size: 'sm',
+          resolveById: true,
+        });
+        if (logo) row.append(logo);
+        const copy = document.createElement('span');
+        copy.className = 'stations-cloud-results-copy';
+        const name = document.createElement('span');
+        name.className = 'stations-cloud-results-title';
+        name.textContent = station.name;
+        const source = document.createElement('span');
+        source.className = 'stations-cloud-results-count';
+        source.textContent = station.collectionTitle;
+        copy.append(name, source);
+        row.append(copy);
+        row.addEventListener('click', (evt) => {
+          evt.stopPropagation();
+          openCollection(station.collectionSlug);
+          highlightStation(station.stationuuid);
+          playStation(station.stationuuid);
+          hideResults();
+        });
+        resultsEl.append(row);
+      }
+    }
+    hydrateLogos(resultsEl);
+  }
+
+  function onDocumentKeydown(evt) {
+    if (evt.key !== 'Escape') return;
+    if (resultsEl && !resultsEl.hidden) {
+      evt.preventDefault();
+      evt.stopPropagation();
+      hideResults();
+      return;
+    }
+    if (ring) {
+      evt.preventDefault();
+      evt.stopPropagation();
+      closeRing();
+    }
+  }
+
+  function handleResize() {
+    if (destroyed) return;
+    const width = Math.max(1, stage.clientWidth || host.clientWidth || 1);
+    const height = Math.max(1, stage.clientHeight || host.clientHeight || 1);
+    const fit = fitTarget();
+    fitScale = fit.scale;
+    if (ring) {
+      const maxRing = ring.points.length ? Math.max(...ring.points.map((point) => point.ring)) : 0;
+      const maxRadius = 170 + maxRing * 58;
+      const size = width < 520 ? 44 : 52;
+      const ringScale = clampScale(Math.min(width, height) / 2 / (maxRadius + 40));
+      ring.ringScale = ringScale;
+      ring.size = size;
+      for (const element of ring.stationEls.values()) {
+        element.style.width = `${size / ringScale}px`;
+        element.style.height = `${size / ringScale}px`;
+      }
+      camera = {
+        scale: ringScale,
+        tx: width / 2 - ring.node.x * ringScale,
+        ty: height / 2 - ring.node.y * ringScale,
+      };
+      applyCamera();
+      return;
+    }
+    fitCamera();
+  }
+
+  function destroy() {
+    if (destroyed) return;
+    destroyed = true;
+    cancelAnimationFrame(cameraFrame);
+    cameraFrame = 0;
+    clearTimeout(highlightTimer);
+    highlightTimer = null;
+    document.removeEventListener('keydown', onDocumentKeydown, true);
+    resizeObserver?.disconnect();
+    resizeObserver = null;
+    stage.removeEventListener('pointerdown', onPointerDown);
+    stage.removeEventListener('pointermove', onPointerMove);
+    stage.removeEventListener('pointerup', onPointerUp);
+    stage.removeEventListener('pointercancel', onPointerUp);
+    stage.removeEventListener('wheel', onWheel);
+    stage.removeEventListener('click', onStageClick);
+    pointers.clear();
+    ring = null;
+    resultsEl = null;
+    tooltip = null;
+    host.innerHTML = '';
+    host.classList.remove('stations-cloud');
+  }
+
+  stage.addEventListener('pointerdown', onPointerDown);
+  stage.addEventListener('pointermove', onPointerMove);
+  stage.addEventListener('pointerup', onPointerUp);
+  stage.addEventListener('pointercancel', onPointerUp);
+  stage.addEventListener('wheel', onWheel, { passive: false });
+  stage.addEventListener('click', onStageClick);
+  document.addEventListener('keydown', onDocumentKeydown, true);
+
+  resizeObserver = new ResizeObserver(handleResize);
+  resizeObserver.observe(stage);
+  if (model.nodes.length) fitCamera();
+  else {
+    camera = { scale: 1, tx: 0, ty: 0 };
+    applyCamera();
+  }
+  if (nowPlayingId) setNowPlaying(nowPlayingId);
+  setTimeout(() => {
+    if (!destroyed && !ring) fitCamera();
+  }, 0);
+
+  return {
+    destroy,
+    setNowPlaying,
+    search,
+    openCollection,
+    reset,
+    element: stage,
   };
 }

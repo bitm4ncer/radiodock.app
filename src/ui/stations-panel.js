@@ -7,6 +7,7 @@ import { buildBrowseParams, communityParams, mergeRows, searchModeFor, popularPa
 import { EXPLORE_PAGE_SIZE, buildExploreFeed, nextExploreLimit, pickExploreStation } from './stations-explore.js';
 import { escapeHtml, formatCount } from './stations-format.js';
 import { normaliseDiscover, renderDiscover, renderDiscoverResults, renderCollection, collectionCard, collectionSaveButton, syncCollectionSaveButton, featuredLists, pickFeaturedLists, renderDiscoverUnavailable } from './discover-child.js';
+import { mountDiscoverCloud } from './discover-cloud.js';
 import { eligibleLists, pickerHtml } from './playlist-picker.js';
 import { mountLogoBehavior } from './station-logo.js';
 import { createInlineStationInfo } from './station-info-inline.js';
@@ -110,6 +111,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     discoverView: 'small',
     discoverQuery: '',
     expandedCollection: null,
+    cloud: null,
     collection: null,
     playlistPicker: null,
     exploreFeed: [],
@@ -377,6 +379,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     body.querySelectorAll('.stations-collection-tile').forEach((tile) => {
       tile.classList.toggle('is-playing', tile.dataset.uuid === id);
     });
+    state.cloud?.setNowPlaying(id);
   }
 
   function refreshAddedFlags() {
@@ -1133,14 +1136,49 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     };
   }
 
+  function applyDiscoverClasses() {
+    const active = state.view === 'discover' && !state.collection && state.discoverView === 'cloud';
+    body.querySelector('#stationsContent')?.classList.toggle('is-cloud', active);
+    body.querySelector('.stations-discover')?.classList.toggle('is-cloud', active);
+  }
+
+  function destroyCloud() {
+    state.cloud?.destroy?.();
+    state.cloud = null;
+    body.querySelector('#stationsContent')?.classList.remove('is-cloud');
+    body.querySelector('.stations-discover')?.classList.remove('is-cloud');
+  }
+
+  function mountCloud(lists) {
+    destroyCloud();
+    const host = body.querySelector('[data-cloud-host]');
+    if (!host) return;
+    state.cloud = mountDiscoverCloud(host, {
+      lists,
+      nowPlayingId: state.nowPlayingId ?? actions.getNowPlayingId?.(),
+      onPlay: async (uuid) => {
+        const full = await resolveStation(uuid);
+        if (!full) return false;
+        actions.onPlay?.(full);
+        return true;
+      },
+    });
+    applyDiscoverClasses();
+    if (state.discoverQuery) state.cloud.search(state.discoverQuery);
+  }
+
   function renderDiscoverView() {
     state.view = 'discover';
     state.collection = null;
+    destroyCloud();
     if (!state.discover) {
       discoverShell('Discover', 'back', renderDiscoverUnavailable());
       return;
     }
+    const lists = normaliseDiscover(state.discover).lists;
     discoverShell('Discover', 'back', renderDiscover(discoverOptions()));
+    applyDiscoverClasses();
+    if (state.discoverView === 'cloud') mountCloud(lists);
     applyNowPlaying();
     refreshAddedFlags();
   }
@@ -1160,6 +1198,10 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.expandedCollection = null;
     const clear = body.querySelector('[data-action="clear-discover-search"]');
     if (clear) clear.hidden = !state.discoverQuery.trim();
+    if (state.discoverView === 'cloud') {
+      state.cloud?.search(state.discoverQuery);
+      return;
+    }
     renderDiscoverResultsOnly();
   }
 
@@ -1175,6 +1217,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
 
   function setDiscoverView(view) {
     if (!['small', 'large', 'cloud'].includes(view) || view === state.discoverView) return;
+    destroyCloud();
     state.discoverView = view;
     state.expandedCollection = null;
     const host = body.querySelector('#discoverResults');
@@ -1186,6 +1229,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     body.querySelectorAll('[data-view]').forEach((button) => {
       button.setAttribute('aria-pressed', String(button.dataset.view === state.discoverView));
     });
+    if (view === 'cloud' && state.discover) mountCloud(normaliseDiscover(state.discover).lists);
+    applyDiscoverClasses();
     applyNowPlaying();
     refreshAddedFlags();
   }
@@ -1204,6 +1249,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   async function openDiscover() {
     controller?.abort();
     loadToken++;
+    destroyCloud();
     state.loading = false;
     state.view = 'discover';
     state.collection = null;
@@ -1225,6 +1271,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     // its late response paints Popular into the collection's content slot.
     controller?.abort();
     loadToken++;
+    destroyCloud();
     state.loading = false;
     state.view = 'discover';
     state.collection = list;
@@ -1467,6 +1514,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   }
 
   function browseAll() {
+    destroyCloud();
     state.view = 'stations';
     state.collection = null;
     state.mode = 'az';
@@ -1482,6 +1530,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
 
   function backToStations() {
     clearTimeout(discoverTimer);
+    destroyCloud();
     state.view = 'stations';
     state.collection = null;
     shell();
@@ -1737,6 +1786,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     previousFocus = document.activeElement;
     state.tooShort = false;
     if (entering) {
+      destroyCloud();
+      clearTimeout(discoverTimer);
       state.view = 'stations';
       state.collection = null;
       state.mode = 'explore';
@@ -1809,6 +1860,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.stationActionToken++;
     controller?.abort();
     clearTimeout(discoverTimer);
+    destroyCloud();
     state.loading = false;
     state.tooShort = false;
     state.playlistPicker = null;
