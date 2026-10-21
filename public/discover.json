@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-20T23:59:04.691Z",
+  "generatedAt": "2026-10-21T00:02:29.336Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -930,6 +930,7 @@
         "slug": "news",
         "title": "News",
         "source": "radiodock",
+        "featured": true,
         "stations": [
           {
             "stationuuid": "98adecf7-2683-4408-9be7-02d3f9098eb8",
@@ -1212,6 +1213,7 @@
         "slug": "jazz",
         "title": "Jazz",
         "source": "radiodock",
+        "featured": true,
         "stations": [
           {
             "stationuuid": "3487079b-91b1-4fb8-b315-c4150e705b7a",
@@ -1494,6 +1496,7 @@
         "slug": "dubby",
         "title": "Dub & Reggae",
         "source": "radiodock",
+        "featured": true,
         "stations": [
           {
             "stationuuid": "93b6eecb-d160-4fc6-8edc-e1c3d1f0613a",
@@ -1536,6 +1539,7 @@
         "slug": "party",
         "title": "Electronic",
         "source": "radiodock",
+        "featured": true,
         "stations": [
           {
             "stationuuid": "4e952622-185b-4fda-8d3e-a98de4aaa55e",
@@ -1563,6 +1567,7 @@
         "slug": "ambient-drone",
         "title": "Ambient & Drone",
         "source": "radiodock",
+        "featured": true,
         "stations": [
           {
             "stationuuid": "960eb2e9-0601-11e8-ae97-52543be04c81",
@@ -1600,6 +1605,7 @@
         "slug": "working-focus",
         "title": "Focus",
         "source": "radiodock",
+        "featured": false,
         "stations": [
           {
             "stationuuid": "961fa288-0601-11e8-ae97-52543be04c81",
@@ -1637,6 +1643,7 @@
         "slug": "bass-rave",
         "title": "Bass, Breaks & Rave",
         "source": "radiodock",
+        "featured": false,
         "stations": [
           {
             "stationuuid": "973c30a5-a178-4daf-89c7-272ec6c47456",
@@ -1679,6 +1686,7 @@
         "slug": "classical",
         "title": "Classical & Neue Musik",
         "source": "radiodock",
+        "featured": false,
         "stations": [
           {
             "stationuuid": "0bcd73d1-fd8c-49c2-914e-f3fb3c4920e3",
@@ -1716,6 +1724,7 @@
         "slug": "obscure",
         "title": "Obscure",
         "source": "radiodock",
+        "featured": true,
         "stations": [
           {
             "stationuuid": "7b85cb6b-ebb8-11e8-a471-52543be04c81",
@@ -1748,6 +1757,7 @@
         "slug": "soul-funk-disco",
         "title": "Soul, Funk & Disco",
         "source": "radiodock",
+        "featured": false,
         "stations": [
           {
             "stationuuid": "a6f07bae-327a-4a76-bd1d-f305c1af35a1",
