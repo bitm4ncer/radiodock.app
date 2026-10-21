@@ -314,31 +314,29 @@ function scheduleSearchTrack(payload) {
   }, 1500);
 }
 
-// Shared add/remove flow for the player heart and Stations rows. Keeping
-// this in one place makes both surfaces update the active list, the player
-// heart, sync and the row flags consistently.
-async function toggleStationInActiveList(station) {
+// Shared favorite toggle for the player heart, Stations rows and search.
+// Favorites are global: they no longer depend on whichever list is active.
+async function toggleStationInFavorites(station) {
   if (!station) return;
-  const target = getActiveEditableList();
-  if (!target) return;
+  const target = favoritesList();
+  if (!target?.stations) return;
   const has = target.stations.some((s) => s.id === station.id);
   try {
-    if (has) {
-      await listsApi.removeStationFromList(target.id, station.id);
-      target.stations = target.stations.filter((s) => s.id !== station.id);
-      toast(`Removed from "${target.name}"`);
-      scheduleSyncPush();
-    } else {
-      await listsApi.addStationToList(target.id, station);
-      target.stations = [...target.stations, station];
-      toast(`Added to "${target.name}"`);
-      scheduleSyncPush();
-    }
+    const updated = has
+      ? await listsApi.removeStationFromList(target.id, station.id)
+      : await listsApi.addStationToList(target.id, station);
+    // Trust the stored list instead of spreading a possibly stale array.
+    if (Array.isArray(updated?.stations)) target.stations = updated.stations;
+    toast(has ? `Removed from "${target.name}"` : `Added to "${target.name}"`);
+    if (!has) track('station-add', { country: station.countrycode ?? '' });
+    scheduleSyncPush();
     updateFavoriteHeart();
     if (state.currentListId === target.id) renderActiveList();
     else listDropdown.setLists(allListsForDropdown());
     stations?.refreshAddedFlags?.();
+    search?.refreshAddedFlags?.();
   } catch (err) {
+    console.error('Favorite toggle failed:', err);
     toast(err.message);
   }
 }
@@ -358,27 +356,12 @@ const search = mountSearch({
     player.playStation(station);
   },
   onSubmit: (query) => stations.open({ query }),
-  onAdd: async (station) => {
-    const targetList = getActiveEditableList();
-    if (!targetList) return;
-    try {
-      await listsApi.addStationToList(targetList.id, station);
-      targetList.stations = [...targetList.stations, station];
-      if (state.currentListId === targetList.id) renderActiveList();
-      else listDropdown.setLists(allListsForDropdown());
-      search.refreshAddedFlags();
-      track('station-add', { country: station.countrycode ?? '' });
-      scheduleSyncPush();
-      toast(`Added to "${targetList.name}"`);
-    } catch (err) {
-      toast(err.message);
-    }
+  onAdd: (station) => toggleStationInFavorites(station),
+  isFavorited: (stationId) => {
+    const list = favoritesList();
+    return !!list?.stations?.some((s) => s.id === stationId);
   },
-  isAlreadyInActiveList: (stationId) => {
-    const list = getActiveEditableList();
-    return !!list?.stations.some((s) => s.id === stationId);
-  },
-  canAddToActiveList: () => true,
+  canFavorite: () => true,
 });
 
 const stations = mountStationsPanel({
@@ -401,36 +384,37 @@ const stations = mountStationsPanel({
       trackStationPlay(station, 'stations');
       player.playStation(station);
     },
-    onAdd: (station) => toggleStationInActiveList(station),
+    onAdd: (station) => toggleStationInFavorites(station),
     onMove: async (station, listId) => {
-      const from = getActiveEditableList();
+      const from = favoritesList();
       if (!station || !from || from.id === listId) return;
       try {
         const to = (await listsApi.getUserLists()).find((l) => l.id === listId);
         if (!to) return;
         await listsApi.removeStationFromList(from.id, station.id);
-        from.stations = from.stations.filter((s) => s.id !== station.id);
         await listsApi.addStationToList(listId, station);
         state.userLists = await listsApi.getUserLists();
         if (state.currentListId === from.id) renderActiveList();
         else listDropdown.setLists(allListsForDropdown());
+        updateFavoriteHeart();
         stations.refreshAddedFlags();
+        search?.refreshAddedFlags?.();
         scheduleSyncPush();
         toast(`Moved to "${to.name}"`);
       } catch (err) {
         toast(err.message);
       }
     },
-    getActiveList: () => {
-      const list = getActiveEditableList();
+    getFavoriteList: () => {
+      const list = favoritesList();
       return list ? { id: list.id, name: list.name } : null;
     },
     onInfo: (station) => openStationInfo(station),
-    isAlreadyInActiveList: (stationId) => {
-      const list = getActiveEditableList();
-      return !!list?.stations.some((s) => s.id === stationId);
+    isFavorited: (stationId) => {
+      const list = favoritesList();
+      return !!list?.stations?.some((s) => s.id === stationId);
     },
-    canAddToActiveList: () => true,
+    canFavorite: () => true,
     getNowPlayingId: () => player.getCurrentStation()?.id ?? null,
     togglePlay: () => playerCard.togglePlayPause(),
     toast,
@@ -1023,25 +1007,22 @@ function favoritesList() {
   return state.userLists[0];
 }
 
-// The list a "save / favorite" action targets. Default to the currently
-// active list so the heart on the player card and the + button on
-// search results both add to whatever the user is currently looking at.
-// Community is read-only, so fall back to Favorites when it's active —
-// keeps the heart functional without requiring a list switch.
+// The active writable list. Still used by the Add panel, which adds a new
+// station to the list the user is looking at. Favorite actions deliberately
+// do not use this: they always target Favorites.
 function getActiveEditableList() {
   const active = findList(state.currentListId);
   if (active && !active.readOnly) return active;
   return favoritesList();
 }
 
-function isStationInActiveList(station) {
+function isStationInFavorites(station) {
   if (!station) return false;
-  const target = getActiveEditableList();
-  return !!target?.stations.some((s) => s.id === station.id);
+  return !!favoritesList()?.stations?.some((s) => s.id === station.id);
 }
 
 function updateFavoriteHeart() {
-  playerCard.setFavoriteState(isStationInActiveList(state.currentStation));
+  playerCard.setFavoriteState(isStationInFavorites(state.currentStation));
 }
 
 // --- Player events ---
@@ -1268,9 +1249,9 @@ stationList.onReorder(async (orderedIds) => {
   }
 });
 
-// --- Save-to-current-list heart on player card ---
+// --- Favorite heart on player card: always Favorites, never the active list ---
 playerCard.onFavoriteClick(async (station) => {
-  await toggleStationInActiveList(station);
+  await toggleStationInFavorites(station);
 });
 
 // --- List dropdown ---

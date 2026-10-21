@@ -19,8 +19,8 @@ function resultRow(station, { canAdd, alreadyAdded }) {
   const addBtn = !canAdd
     ? ''
     : alreadyAdded
-      ? `<button class="btn-icon" title="Already in list" disabled>✓</button>`
-      : `<button type="button" class="btn-icon btn-add" data-action="add" title="Add to current list">
+      ? `<button class="btn-icon" title="Already in favorites" disabled>✓</button>`
+      : `<button type="button" class="btn-icon btn-add" data-action="add" title="Add to favorites">
            <svg viewBox="0 0 24 24" class="heart-icon" aria-hidden="true">
              <path d="M16.5 3C19.5376 3 22 5.5 22 9C22 16 14.5 20 12 21.5C9.5 20 2 16 2 9C2 5.5 4.5 3 7.5 3C9.35997 3 11 4 12 5C13 4 14.64 3 16.5 3Z"></path>
            </svg>
@@ -37,7 +37,7 @@ function resultRow(station, { canAdd, alreadyAdded }) {
   `;
 }
 
-export function mountSearch({ onSearch, onPlay, onAdd, onSubmit, isAlreadyInActiveList, canAddToActiveList } = {}) {
+export function mountSearch({ onSearch, onPlay, onAdd, onSubmit, isFavorited, canFavorite } = {}) {
   const input = document.getElementById('searchInput');
   const clearBtn = document.getElementById('clearSearchBtn');
   const filtersEl = document.getElementById('searchFilters');
@@ -87,9 +87,9 @@ export function mountSearch({ onSearch, onPlay, onAdd, onSubmit, isAlreadyInActi
       });
       return;
     }
-    const canAdd = !!canAddToActiveList?.();
+    const canAdd = !!canFavorite?.();
     const html = stations
-      .map((s) => resultRow(s, { canAdd, alreadyAdded: !!isAlreadyInActiveList?.(s.id) }))
+      .map((s) => resultRow(s, { canAdd, alreadyAdded: !!isFavorited?.(s.id) }))
       .join('');
     setVisibility({ filters: true, results: true, loading: false, error: false, list: html });
   }

@@ -63,7 +63,7 @@ export function stationsRow(station, { query = '', mode = 'az', algorithm = 'boo
     : '';
   const meta = metaLine(station, mode, query, algorithm);
   const addClass = `stations-icon-btn stations-row-action${alreadyAdded ? ' is-added' : ''}`;
-  const add = `<button class="${addClass}" type="button" data-action="add" aria-label="${alreadyAdded ? 'Already in list' : 'Add to list'}" aria-pressed="${alreadyAdded ? 'true' : 'false'}"${canAdd ? '' : ' disabled aria-disabled="true"'}>${HEART_ICON}</button>`;
+  const add = `<button class="${addClass}" type="button" data-action="add" aria-label="${alreadyAdded ? 'Already in favorites' : 'Add to favorites'}" aria-pressed="${alreadyAdded ? 'true' : 'false'}"${canAdd ? '' : ' disabled aria-disabled="true"'}>${HEART_ICON}</button>`;
   return `<article class="stations-row${mode === 'popular' ? ' stations-row--popular' : ''}${alreadyAdded ? ' is-added' : ''}" data-id="${id}">
   <button class="stations-row-main" type="button" data-action="play" aria-pressed="false" aria-label="Play ${escapeHtml(station.name)}">
     ${rank}
