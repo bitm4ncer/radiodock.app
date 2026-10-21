@@ -32,7 +32,7 @@ function stationRow(station, { activeId, removable, reorderable }) {
     : '';
   return `
     <div class="station-item${isActive ? ' playing' : ''}" data-id="${escapeHtml(station.id)}">
-      ${renderLogoSlot(station, { size: 'sm' })}
+      ${renderLogoSlot(station, { size: 'sm', resolveById: true })}
       <div class="station-item-info">
         <div class="station-item-name">${escapeHtml(station.name ?? '')}</div>
         <div class="station-item-country">${escapeHtml(station.countrycode ?? '')}</div>

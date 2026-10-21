@@ -33,6 +33,10 @@ test('getLogoUrl returns a data: favicon verbatim (local custom stream)', () => 
   assert.equal(getLogoUrl({ id: 'custom-abc', favicon: dataUrl }, 512), dataUrl);
 });
 
+test('getLogoUrl does not request the CDN for a custom stream without a data favicon', () => {
+  assert.equal(getLogoUrl({ id: 'custom-abc', favicon: '' }), '');
+});
+
 test('getLogoUrl still uses the CDN when favicon is not a data URL', () => {
   assert.equal(getLogoUrl({ id: 'abc', favicon: 'http://x/y.png' }), `${STATIONS_BASE}/logos/abc?size=64`);
 });
