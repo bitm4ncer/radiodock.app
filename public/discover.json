@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T19:57:46.442Z",
+  "generatedAt": "2026-10-21T20:01:30.969Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -4546,6 +4546,11 @@
             "countrycode": "FR"
           },
           {
+            "stationuuid": "102fd070-4146-4dd7-afca-88c8c6484b9b",
+            "name": "Metal Devastation Radio",
+            "countrycode": "US"
+          },
+          {
             "stationuuid": "9e219cbd-9bd0-4950-997d-f17bd8fbe793",
             "name": "Radio Metal",
             "countrycode": "FR"
@@ -4583,11 +4588,6 @@
           {
             "stationuuid": "960de41d-0601-11e8-ae97-52543be04c81",
             "name": "SomaFM Metal Detector",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "102fd070-4146-4dd7-afca-88c8c6484b9b",
-            "name": "Metal Devastation Radio",
             "countrycode": "US"
           },
           {
