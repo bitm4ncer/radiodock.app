@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T03:02:13.014Z",
+  "generatedAt": "2026-10-21T03:31:45.130Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2444,8 +2444,8 @@
             "countrycode": "GB"
           },
           {
-            "stationuuid": "9606ceae-0601-11e8-ae97-52543be04c81",
-            "name": "Radio Caroline",
+            "stationuuid": "e7205cd4-dc30-11e9-a8ba-52543be04c81",
+            "name": "Heart 70s",
             "countrycode": "GB"
           },
           {
@@ -2644,11 +2644,6 @@
             "countrycode": "TZ"
           },
           {
-            "stationuuid": "8e17bd51-765e-4103-916a-69a4ed56ac9a",
-            "name": "NRG Radio",
-            "countrycode": "KE"
-          },
-          {
             "stationuuid": "9614225b-0601-11e8-ae97-52543be04c81",
             "name": "Jacaranda FM",
             "countrycode": "ZA"
@@ -2669,8 +2664,8 @@
             "countrycode": "AU"
           },
           {
-            "stationuuid": "8ade45f1-f163-11e9-a96c-52543be04c81",
-            "name": "Pure Hits Australian Made",
+            "stationuuid": "cce43ad3-73c5-4aaa-b4af-2754277a40fd",
+            "name": "Totally Radio - Pop (MP3)",
             "countrycode": "AU"
           }
         ]
