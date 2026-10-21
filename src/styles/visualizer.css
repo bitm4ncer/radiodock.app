@@ -86,8 +86,12 @@
    Order (visually right-to-left): minimize, drag, viz. */
 
 .player-card-minimize-btn { top: var(--space-3); right: var(--space-3); }
-.player-card-drag-handle  { top: var(--space-3); right: calc(var(--space-3) + 36px); cursor: grab; }
-.viz-trigger-btn          { top: var(--space-3); right: calc(var(--space-3) + 72px); }
+.player-card-drag-handle  { top: var(--space-3); left: var(--space-3); right: auto; cursor: grab; }
+.viz-trigger-btn          { top: var(--space-3); right: calc(var(--space-3) + 36px); }
+
+/* The handle sits on the left like the other panel headers; its hover pill
+   would open off-screen to the left, so keep just the 6-dot glyph + title. */
+.player-card-drag-handle .tool-btn__pill { display: none; }
 
 .player-card-drag-handle.is-dragging { cursor: grabbing; }
 
@@ -95,8 +99,8 @@
    the strip down so it sits comfortably inside the tinted card. */
 @media (min-width: 700px) and (display-mode: browser) {
   .player-card-minimize-btn { top: 18px; right: 18px; }
-  .player-card-drag-handle  { top: 18px; right: 54px; }
-  .viz-trigger-btn          { top: 18px; right: 90px; }
+  .player-card-drag-handle  { top: 18px; left: 18px; right: auto; }
+  .viz-trigger-btn          { top: 18px; right: 54px; }
 }
 
 /* Container hosts the absolutely-positioned tool buttons; needs to act as
@@ -185,8 +189,8 @@
 }
 @media (min-width: 700px) and (display-mode: browser) {
   .container.is-minimized .player-card-minimize-btn { top: 8px; right: 16px; }
-  .container.is-minimized .player-card-drag-handle  { top: 8px; right: 52px; }
-  .container.is-minimized .viz-trigger-btn          { top: 8px; right: 88px; }
+  .container.is-minimized .player-card-drag-handle  { top: 8px; left: 16px; right: auto; }
+  .container.is-minimized .viz-trigger-btn          { top: 8px; right: 52px; }
 }
 
 /* Hide the volume strip / volume dots when minimized — extra chrome the
@@ -513,6 +517,13 @@ body.viz-active .modal,
 body.viz-active .toast {
   z-index: 1;
 }
+
+/* The player card is the main panel's topbar: show the grab affordance on
+   the card itself. Buttons and links keep their normal pointer cursor. */
+body:not(.is-electron) .player-card { cursor: grab; }
+body:not(.is-electron) .player-card.is-dragging { cursor: grabbing; }
+body:not(.is-electron) .player-card button,
+body:not(.is-electron) .player-card a { cursor: pointer; }
 
 /* --- Browser-minimized player: tiny-player pill -----------------------
    Mirrors the Electron tiny player (search.css body.is-tiny-player):

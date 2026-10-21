@@ -1042,3 +1042,9 @@ body.notes-overlay-open {
 @keyframes tape-spin {
   to { transform: rotate(360deg); }
 }
+
+/* The whole header is the grab area; the 6-dot handle is the visual cue. */
+.notes-panel__header { cursor: grab; }
+.notes-panel.is-dragging .notes-panel__header { cursor: grabbing; }
+.notes-panel__header :is(button, a, [role="button"]) { cursor: pointer; }
+.notes-panel__header :is(input, textarea) { cursor: text; }

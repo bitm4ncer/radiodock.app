@@ -118,17 +118,20 @@ export function mountAddPanel({ getUserLists, getActiveListId, addStationToList,
     panel.classList.add('is-positioned');
   }
   (function wireDrag() {
+    if (matchMedia('(max-width: 699px)').matches) return;
     const handle = panel.querySelector('[data-role="drag"]');
     if (!handle) return;
     let dragging = false, pid = null, ox = 0, oy = 0;
-    handle.addEventListener('pointerdown', (e) => {
+    const startDrag = (e) => {
       if (e.button !== 0) return;
+      if (e.target.closest('button, a, input, textarea, select')) return;
       cancelSnap(panel);
       const r = panel.getBoundingClientRect();
       dragging = true; pid = e.pointerId; handle.setPointerCapture(pid);
       ox = e.clientX - r.left; oy = e.clientY - r.top;
       panel.classList.add('is-dragging'); e.preventDefault();
-    });
+    };
+    (panel.querySelector('.add-panel__header') ?? handle).addEventListener('pointerdown', startDrag);
     handle.addEventListener('pointermove', (e) => {
       if (!dragging || e.pointerId !== pid) return;
       applyPosition(e.clientX - ox, e.clientY - oy);

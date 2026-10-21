@@ -1759,3 +1759,9 @@ html.is-standalone .stations-panel:not(.is-open) {
     padding: 0 14px 12px;
   }
 }
+
+/* The whole header is the grab area; the 6-dot handle is the visual cue. */
+.stations-header { cursor: grab; }
+.stations-panel.is-dragging .stations-header { cursor: grabbing; }
+.stations-header :is(button, a, [role="button"]) { cursor: pointer; }
+.stations-header :is(input, textarea) { cursor: text; }

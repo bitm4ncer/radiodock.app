@@ -304,3 +304,9 @@ body.sync-overlay-open { overflow: hidden; }
 .sync-unlink-btn:hover {
   background: rgba(205, 0, 37, 0.13);
 }
+
+/* The whole header is the grab area; the 6-dot handle is the visual cue. */
+.sync-panel__header { cursor: grab; }
+.sync-panel.is-dragging .sync-panel__header { cursor: grabbing; }
+.sync-panel__header :is(button, a, [role="button"]) { cursor: pointer; }
+.sync-panel__header :is(input, textarea) { cursor: text; }

@@ -259,13 +259,15 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
   // ============================================================== Drag
 
   function wireDrag() {
+    if (isMobile) return;
     const handle = panel.querySelector('[data-role="drag"]');
     if (!handle) return;
     let dragging = false;
     let pointerId = null;
     let offsetX = 0, offsetY = 0;
-    handle.addEventListener('pointerdown', (evt) => {
+    const startDrag = (evt) => {
       if (evt.button !== 0) return;
+      if (evt.target.closest('button, a, input, textarea, select')) return;
       cancelSnap(panel);
       const rect = panel.getBoundingClientRect();
       dragging = true;
@@ -275,7 +277,9 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
       offsetY = evt.clientY - rect.top;
       panel.classList.add('is-dragging');
       evt.preventDefault();
-    });
+    };
+    const dragArea = panel.querySelector('.notes-panel__header') ?? handle;
+    dragArea.addEventListener('pointerdown', startDrag);
     handle.addEventListener('pointermove', (evt) => {
       if (!dragging || evt.pointerId !== pointerId) return;
       applyPosition(evt.clientX - offsetX, evt.clientY - offsetY);

@@ -175,7 +175,11 @@ export async function mountPlayerCardDragMinimize() {
   function startDrag(evt, source) {
     if (evt.button !== 0) return;
     if (source === card) {
-      if (!minimized) return;
+      // The player card is the main panel's topbar: drag it in both the
+      // expanded and pill states. Touch layouts and the installed app keep
+      // their fullscreen chrome, so the card is not a drag surface there.
+      if (matchMedia('(max-width: 699px)').matches
+          || document.documentElement.classList.contains('is-standalone')) return;
       if (evt.target.closest('button, a, input, textarea, select')) return;
     }
     cancelSnap(container);

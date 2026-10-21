@@ -1205,7 +1205,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   }
 
   panel.addEventListener('pointerdown', (evt) => {
-    if (evt.target.closest('[data-role="drag"]')) startDrag(evt);
+    if (evt.target.closest('.stations-header')) startDrag(evt);
   });
   panel.addEventListener('keydown', onKeydown);
 

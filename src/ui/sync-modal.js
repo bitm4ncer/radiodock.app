@@ -114,18 +114,21 @@ export function mountSyncModal({ onListsChanged, onLinked, onUnlinked, track }) 
     return Number.isFinite(x) && Number.isFinite(y) ? { x, y } : null;
   }
   function wireDrag() {
+    if (matchMedia('(max-width: 699px)').matches) return;
     const handle = panel?.querySelector('[data-role="drag"]');
     if (!handle) return;
     let dragging = false, pointerId = null, offsetX = 0, offsetY = 0;
-    handle.addEventListener('pointerdown', (evt) => {
+    const startDrag = (evt) => {
       if (evt.button !== 0) return;
+      if (evt.target.closest('button, a, input, textarea, select')) return;
       cancelSnap(panel);
       const rect = panel.getBoundingClientRect();
       dragging = true; pointerId = evt.pointerId;
       handle.setPointerCapture(pointerId);
       offsetX = evt.clientX - rect.left; offsetY = evt.clientY - rect.top;
       panel.classList.add('is-dragging'); evt.preventDefault();
-    });
+    };
+    (panel.querySelector('.sync-panel__header') ?? handle).addEventListener('pointerdown', startDrag);
     handle.addEventListener('pointermove', (evt) => {
       if (!dragging || evt.pointerId !== pointerId) return;
       applyPosition(evt.clientX - offsetX, evt.clientY - offsetY);

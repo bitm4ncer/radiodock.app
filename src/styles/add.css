@@ -258,3 +258,9 @@ body.add-overlay-open { overflow: hidden; }
   opacity: 0;
   pointer-events: none;
 }
+
+/* The whole header is the grab area; the 6-dot handle is the visual cue. */
+.add-panel__header { cursor: grab; }
+.add-panel.is-dragging .add-panel__header { cursor: grabbing; }
+.add-panel__header :is(button, a, [role="button"]) { cursor: pointer; }
+.add-panel__header :is(input, textarea) { cursor: text; }
