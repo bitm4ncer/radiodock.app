@@ -176,8 +176,10 @@ export async function mountPlayerCardDragMinimize() {
     if (evt.button !== 0) return;
     if (source === card) {
       // The player card is the main panel's topbar: drag it in both the
-      // expanded and pill states. Touch layouts and the installed app keep
-      // their fullscreen chrome, so the card is not a drag surface there.
+      // expanded and pill states, in the browser and in the normal Electron
+      // window. Touch layouts and the installed app keep their fullscreen
+      // chrome, and the Electron tiny player is a native drag region.
+      if (document.body.classList.contains('is-tiny-player')) return;
       if (matchMedia('(max-width: 699px)').matches
           || document.documentElement.classList.contains('is-standalone')) return;
       if (evt.target.closest('button, a, input, textarea, select')) return;
@@ -227,7 +229,7 @@ export async function mountPlayerCardDragMinimize() {
   handle.addEventListener('pointercancel', endDrag);
   handle.addEventListener('dblclick', () => resetPosition());
 
-  if (!isElectronShell && card) {
+  if (card) {
     card.addEventListener('pointerdown', (evt) => startDrag(evt, card));
     card.addEventListener('pointermove', onDragMove);
     card.addEventListener('pointerup', endDrag);

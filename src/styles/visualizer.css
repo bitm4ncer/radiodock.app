@@ -525,6 +525,13 @@ body:not(.is-electron) .player-card.is-dragging { cursor: grabbing; }
 body:not(.is-electron) .player-card button,
 body:not(.is-electron) .player-card a { cursor: pointer; }
 
+/* Electron's normal window is also draggable by the card topbar. The tiny
+   player is a native drag region, so leave that one to the OS. */
+body.is-electron:not(.is-tiny-player) .player-card { cursor: grab; }
+body.is-electron:not(.is-tiny-player) .player-card.is-dragging { cursor: grabbing; }
+body.is-electron:not(.is-tiny-player) .player-card button,
+body.is-electron:not(.is-tiny-player) .player-card a { cursor: pointer; }
+
 /* --- Browser-minimized player: tiny-player pill -----------------------
    Mirrors the Electron tiny player (search.css body.is-tiny-player):
    the card itself is the pill, the action bar sits in the text column,
