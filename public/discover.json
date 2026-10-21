@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T19:52:52.203Z",
+  "generatedAt": "2026-10-21T19:54:12.950Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2269,6 +2269,99 @@
             "stationuuid": "2e1cb65b-967f-4221-8bcb-1baecea7784c",
             "name": "Avant-Garde Jazz/Free Improvisation - Radio Caprice",
             "countrycode": ""
+          }
+        ]
+      },
+      {
+        "slug": "dubstep",
+        "title": "Dubstep",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "9e286b3c-5185-11e9-a4d7-52543be04c81",
+            "name": "Sub FM",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "cc91af7c-42ee-11e9-aa55-52543be04c81",
+            "name": "SomaFM Dub Step Beyond (128k AAC)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "d7c66785-7cbd-4c02-ba30-35d5f5e6cbbf",
+            "name": "Sensimedia Dubstep & Bass Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "298371df-ecf9-46b3-90ac-b46fe5af7f61",
+            "name": "EILO Dubstep Radio",
+            "countrycode": "BG"
+          },
+          {
+            "stationuuid": "049e6b50-4604-4fc2-9ef9-aa2c754a0ca3",
+            "name": "Dubstep24h",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "8be21138-e88f-43c4-8deb-00a9020ae38b",
+            "name": "24Dubstep.pl DropZone Radio",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "92fd9109-d768-4b37-8131-8186088c7967",
+            "name": "Low Pressure Zone",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "962a8d6a-0601-11e8-ae97-52543be04c81",
+            "name": "1.FM - Dubstep Forward Radio",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "464b61af-1e0d-11e8-a334-52543be04c81",
+            "name": "Uturn Radio - Dubstep",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "acb9dde0-4c5a-4ffc-bf86-90bd43f0e14e",
+            "name": "Basstime",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "6400750e-3cf9-41b9-8c00-fb8a166940a7",
+            "name": "CLIAMP NCS Dubstep",
+            "countrycode": "NO"
+          },
+          {
+            "stationuuid": "80d5e7e3-8a71-4e2c-ab50-8e464ed5e640",
+            "name": "PARTY VIBE RADIO : DUBSTEP",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "b6188d52-62cb-4bde-945a-46230fadccb8",
+            "name": "Radio Caprice – Riddim Dubstep",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "dcdcb7b4-7c1e-4293-8244-c49379cf2c20",
+            "name": "Radio Caprice – Dark Dubstep",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "0cac8897-2fbf-404e-8ce6-ff3fe1afed73",
+            "name": "Record Dubstep",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "9626fd02-0601-11e8-ae97-52543be04c81",
+            "name": "DubTerrain",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "960e9a99-0601-11e8-ae97-52543be04c81",
+            "name": "Dublovers",
+            "countrycode": "DE"
           }
         ]
       },
