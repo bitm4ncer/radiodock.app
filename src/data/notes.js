@@ -79,8 +79,7 @@ export async function renamePage(id, name) {
 
 export async function deletePage(id) {
   if (id === JOURNAL_PAGE_ID) throw new Error('The Journal page cannot be deleted.');
-  await storage.deleteNotesForPage(id);
-  await storage.deleteNotePage(id);
+  await storage.deletePageContents(id);
 }
 
 // ---------- Notes ----------
@@ -138,8 +137,7 @@ export async function createRecording({ pageId, station = null, track = null, bl
     bytes: bytes || blob.size,
     createdAt: now(),
   };
-  await storage.putRecordingAudio(note.id, blob);
-  await storage.putNote(note);
+  await storage.putRecordingNote(note, blob);
   return note;
 }
 
@@ -148,8 +146,7 @@ export async function getRecordingBlob(id) {
 }
 
 export async function updateNoteBody(id, body) {
-  const all = await storage.getAllNotes();
-  const note = all.find((n) => n.id === id);
+  const note = await storage.getNoteById(id);
   if (!note) throw new Error('Note not found.');
   note.body = String(body ?? '');
   await storage.putNote(note);
@@ -157,8 +154,7 @@ export async function updateNoteBody(id, body) {
 }
 
 export async function moveNote(id, targetPageId) {
-  const all = await storage.getAllNotes();
-  const note = all.find((n) => n.id === id);
+  const note = await storage.getNoteById(id);
   if (!note) throw new Error('Note not found.');
   const pages = await storage.getAllNotePages();
   if (!pages.some((p) => p.id === targetPageId)) throw new Error('Target page not found.');
@@ -168,15 +164,17 @@ export async function moveNote(id, targetPageId) {
 }
 
 export async function deleteNote(id) {
-  await storage.deleteRecordingAudio(id); // no-op for non-recordings
-  await storage.deleteNote(id);
+  const note = await storage.getNoteById(id);
+  const blob = await storage.getRecordingAudio(id);
+  await storage.deleteNoteAndRecording(id);
+  return { note, blob };
 }
 
-export async function restoreNote(note) {
-  // Used by undo-toast — re-puts a previously deleted note. Caller
-  // guarantees the original record (no mutation since deletion).
+export async function restoreNote(note, blob = null) {
+  // Re-puts a previously deleted note for the undo toast. The caller keeps
+  // the original record and its recording blob, if any, unchanged since delete.
   if (!note?.id) throw new Error('Invalid note for restore.');
-  await storage.putNote(note);
+  await storage.restoreNoteAndRecording(note, blob);
   return note;
 }
 

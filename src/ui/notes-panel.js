@@ -1289,7 +1289,7 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     const list = state.notesByPage.get(state.currentPageId) ?? [];
     const note = list.find((n) => n.id === noteId);
     if (!note) return;
-    await notes.deleteNote(noteId);
+    const { note: deletedNote, blob } = await notes.deleteNote(noteId);
     state.notesByPage.set(
       state.currentPageId,
       list.filter((n) => n.id !== noteId),
@@ -1303,9 +1303,9 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
         label: 'Undo',
         callback: async () => {
           try {
-            await notes.restoreNote(note);
+            await notes.restoreNote(deletedNote, blob);
             const updated = state.notesByPage.get(state.currentPageId) ?? [];
-            state.notesByPage.set(state.currentPageId, [note, ...updated].sort((a, b) => b.createdAt - a.createdAt));
+            state.notesByPage.set(state.currentPageId, [deletedNote, ...updated].sort((a, b) => b.createdAt - a.createdAt));
             render();
           } catch (err) {
             toast(err.message);

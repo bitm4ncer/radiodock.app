@@ -29,7 +29,7 @@ export async function getUserLists() {
       order: 0,
       createdAt: now(),
     };
-    await storage.putList(favorites);
+    await storage.putList(favorites).catch(() => {});
     lists = [favorites];
   }
   return lists;

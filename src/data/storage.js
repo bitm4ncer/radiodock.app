@@ -78,6 +78,7 @@ function openDb() {
       if (settled) return;
       settled = true;
       clearTimeout(watchdog);
+      if (fn === reject) dbPromise = null;
       fn(arg);
     };
     const watchdog = setTimeout(() => {
@@ -120,7 +121,16 @@ function openDb() {
     };
     req.onsuccess = () => {
       setHealth('ok');
-      finish(resolve, req.result);
+      const db = req.result;
+      // versionchange fires on the IDBDatabase connection (req.result), not on
+      // the open request. Close the stale connection and reset dbPromise so a
+      // competing tab's upgrade can proceed and a later open creates a fresh
+      // connection instead of reusing the closed one.
+      db.onversionchange = () => {
+        db.close();
+        dbPromise = null;
+      };
+      finish(resolve, db);
     };
     req.onerror = () => {
       const err = req.error ?? new Error('IndexedDB open error');
@@ -156,6 +166,20 @@ async function withStore(name, mode, fn) {
   return result;
 }
 
+async function withStores(names, mode, fn) {
+  const db = await openDb();
+  const tx = db.transaction(names, mode);
+  const stores = {};
+  for (const name of names) stores[name] = tx.objectStore(name);
+  const result = await fn(stores);
+  await new Promise((resolve, reject) => {
+    tx.oncomplete = resolve;
+    tx.onabort = () => reject(tx.error);
+    tx.onerror = () => reject(tx.error);
+  });
+  return result;
+}
+
 // Wraps a withStore call with a try/catch that surfaces a fallback value
 // and logs once on failure. Used by every public helper so the rest of
 // the app never has to think about IDB exceptions.
@@ -177,6 +201,24 @@ async function safeWrite(name, fn) {
   }
 }
 
+async function safeWriteStrict(name, fn) {
+  try {
+    return await withStore(name, 'readwrite', fn);
+  } catch (err) {
+    if (idbHealth !== 'failed') setHealth('failed', err);
+    throw err;
+  }
+}
+
+async function safeWriteStrictMulti(names, fn) {
+  try {
+    return await withStores(names, 'readwrite', fn);
+  } catch (err) {
+    if (idbHealth !== 'failed') setHealth('failed', err);
+    throw err;
+  }
+}
+
 // --- Lists ---
 
 export async function getAllLists() {
@@ -189,11 +231,11 @@ export async function getList(id) {
 }
 
 export async function putList(list) {
-  return safeWrite('lists', (store) => promisify(store.put(list)));
+  return safeWriteStrict('lists', (store) => promisify(store.put(list)));
 }
 
 export async function deleteList(id) {
-  return safeWrite('lists', (store) => promisify(store.delete(id)));
+  return safeWriteStrict('lists', (store) => promisify(store.delete(id)));
 }
 
 export async function clearLists() {
@@ -230,11 +272,11 @@ export async function getAllUserBackgrounds() {
 }
 
 export async function putUserBackground(row) {
-  return safeWrite('userBackgrounds', (store) => promisify(store.put(row)));
+  return safeWriteStrict('userBackgrounds', (store) => promisify(store.put(row)));
 }
 
 export async function deleteUserBackground(id) {
-  return safeWrite('userBackgrounds', (store) => promisify(store.delete(id)));
+  return safeWriteStrict('userBackgrounds', (store) => promisify(store.delete(id)));
 }
 
 // --- Note pages ---
@@ -245,11 +287,11 @@ export async function getAllNotePages() {
 }
 
 export async function putNotePage(page) {
-  return safeWrite('notePages', (store) => promisify(store.put(page)));
+  return safeWriteStrict('notePages', (store) => promisify(store.put(page)));
 }
 
 export async function deleteNotePage(id) {
-  return safeWrite('notePages', (store) => promisify(store.delete(id)));
+  return safeWriteStrict('notePages', (store) => promisify(store.delete(id)));
 }
 
 // --- Notes ---
@@ -260,16 +302,20 @@ export async function getAllNotes() {
 }
 
 export async function getNotesForPage(pageId) {
-  const all = await getAllNotes();
-  return all.filter((n) => n.pageId === pageId);
+  const rows = await safeRead('notes', (store) => promisify(store.index('byPage').getAll(pageId)), []);
+  return (rows ?? []).sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
+}
+
+export async function getNoteById(id) {
+  return safeRead('notes', (store) => promisify(store.get(id)), undefined);
 }
 
 export async function putNote(note) {
-  return safeWrite('notes', (store) => promisify(store.put(note)));
+  return safeWriteStrict('notes', (store) => promisify(store.put(note)));
 }
 
 export async function deleteNote(id) {
-  return safeWrite('notes', (store) => promisify(store.delete(id)));
+  return safeWriteStrict('notes', (store) => promisify(store.delete(id)));
 }
 
 export async function deleteNotesForPage(pageId) {
@@ -285,7 +331,7 @@ export async function deleteNotesForPage(pageId) {
 // --- Recordings (audio Blob storage) ---
 
 export async function putRecordingAudio(id, blob) {
-  return safeWrite('recordings', (store) => promisify(store.put({ id, blob, bytes: blob.size })));
+  return safeWriteStrict('recordings', (store) => promisify(store.put({ id, blob, bytes: blob.size })));
 }
 
 export async function getRecordingAudio(id) {
@@ -294,10 +340,52 @@ export async function getRecordingAudio(id) {
 }
 
 export async function deleteRecordingAudio(id) {
-  return safeWrite('recordings', (store) => promisify(store.delete(id)));
+  return safeWriteStrict('recordings', (store) => promisify(store.delete(id)));
 }
 
 export async function sumRecordingBytes() {
   const rows = await safeRead('recordings', (store) => promisify(store.getAll()), []);
   return (rows ?? []).reduce((n, r) => n + (r.bytes ?? 0), 0);
+}
+
+// --- Atomic composites (note + recording blob, page + contents) ---
+
+export async function putRecordingNote(note, blob) {
+  return safeWriteStrictMulti(['recordings', 'notes'], ({ recordings, notes }) =>
+    Promise.all([
+      promisify(recordings.put({ id: note.id, blob, bytes: blob.size })),
+      promisify(notes.put(note)),
+    ])
+  );
+}
+
+export async function deleteNoteAndRecording(id) {
+  return safeWriteStrictMulti(['recordings', 'notes'], ({ recordings, notes }) =>
+    Promise.all([
+      promisify(recordings.delete(id)),
+      promisify(notes.delete(id)),
+    ])
+  );
+}
+
+export async function deletePageContents(pageId) {
+  return safeWriteStrictMulti(['notes', 'recordings', 'notePages'], async ({ notes, recordings, notePages }) => {
+    const all = await promisify(notes.getAll());
+    const matching = (all ?? []).filter((n) => n.pageId === pageId);
+    await Promise.all(matching.map((n) => promisify(recordings.delete(n.id))));
+    await Promise.all(matching.map((n) => promisify(notes.delete(n.id))));
+    await promisify(notePages.delete(pageId));
+  });
+}
+
+export async function restoreNoteAndRecording(note, blob) {
+  if (blob == null) {
+    return safeWriteStrict('notes', (store) => promisify(store.put(note)));
+  }
+  return safeWriteStrictMulti(['notes', 'recordings'], ({ notes, recordings }) =>
+    Promise.all([
+      promisify(notes.put(note)),
+      promisify(recordings.put({ id: note.id, blob, bytes: blob.size })),
+    ])
+  );
 }
