@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T14:03:37.712Z",
+  "generatedAt": "2026-10-21T14:11:26.780Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2618,11 +2618,6 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "d271b4e8-a298-4862-9f4b-025c110cedd9",
-            "name": "IBIZA CHILLOUT LOUNGE - Ambient, Deep House, Balearic, Smooth Jazz, Acoustic, Chill House, Lo-Fi, Chillwave, Dream Pop, Electro, Tropical House, Sunset Chill, Café del Mar, Soft Electronica, Slow House, Ambient, Relax, Easy Listening, Beach Vibes, Summer",
-            "countrycode": "DE"
-          },
-          {
             "stationuuid": "fb87433e-2095-4c03-b411-ca0a0603ebcd",
             "name": "Hotel Costes",
             "countrycode": "FR"
@@ -2635,6 +2630,11 @@
           {
             "stationuuid": "49902d2d-672d-4130-b42a-90592d0460c5",
             "name": "0R - LO-FI || LoFi, Chill, Study, Hip Hop, Relax, Background, Calm, Instrumental, Smooth, Beats, Coffee, Work, Focus, Soft, Chillhop",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "d271b4e8-a298-4862-9f4b-025c110cedd9",
+            "name": "IBIZA CHILLOUT LOUNGE - Ambient, Deep House, Balearic, Smooth Jazz, Acoustic, Chill House, Lo-Fi, Chillwave, Dream Pop, Electro, Tropical House, Sunset Chill, Café del Mar, Soft Electronica, Slow House, Ambient, Relax, Easy Listening, Beach Vibes, Summer",
             "countrycode": "DE"
           },
           {
@@ -2656,11 +2656,6 @@
             "stationuuid": "17d22fdd-f566-11e9-bbf2-52543be04c81",
             "name": "Chill FM Romania",
             "countrycode": "RO"
-          },
-          {
-            "stationuuid": "d69fbc2c-530a-4d40-ac9f-56532356b248",
-            "name": "Chillout Ibiza FM",
-            "countrycode": "GB"
           },
           {
             "stationuuid": "928a3762-2514-11e8-91bf-52543be04c81",
