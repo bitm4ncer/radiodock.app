@@ -11,6 +11,7 @@ const {
 } = require('electron');
 const path = require('path');
 const { createTray, updateTrayIcon, updateTrayMenu, destroyTray } = require('./tray');
+const { isAllowedExternalUrl } = require('./url-validation');
 
 const isDev = process.env.NODE_ENV === 'development';
 const APP_URL = isDev ? 'http://localhost:5173' : 'https://radiodock.app';
@@ -155,11 +156,11 @@ function createWindow() {
   mainWindow.webContents.on('will-navigate', (e, url) => {
     if (new URL(url).origin !== APP_ORIGIN) {
       e.preventDefault();
-      shell.openExternal(url);
+      if (isAllowedExternalUrl(url)) shell.openExternal(url);
     }
   });
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (/^https?:$/.test(new URL(url).protocol)) shell.openExternal(url);
+    if (isAllowedExternalUrl(url)) shell.openExternal(url);
     return { action: 'deny' };
   });
 
@@ -282,7 +283,7 @@ function setupIPC() {
     // Only ever hand real web URLs to the OS — never arbitrary protocol
     // handlers, in case the remote origin is ever compromised.
     try {
-      if (/^https?:$/.test(new URL(url).protocol)) return shell.openExternal(url);
+      if (isAllowedExternalUrl(url)) return shell.openExternal(url);
     } catch { /* malformed URL → ignore */ }
     return false;
   });
