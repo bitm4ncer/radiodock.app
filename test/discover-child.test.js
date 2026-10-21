@@ -1,6 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normaliseDiscover, renderDiscover, renderCollection, collectionCard, featuredLists, pickFeaturedLists, renderDiscoverUnavailable } from '../src/ui/discover-child.js';
+import { normaliseDiscover, renderDiscover, renderDiscoverToolbar, renderCollection, collectionCard, featuredLists, pickFeaturedLists, renderDiscoverUnavailable } from '../src/ui/discover-child.js';
+
+const searchLists = [
+  { slug: 'jazz', title: 'Jazz', source: 'radiodock', featured: true, stations: [
+    { stationuuid: 'j1', name: 'Jazz FM', countrycode: 'GB' },
+  ] },
+  { slug: 'news', title: 'News', source: 'radiodock', featured: true, stations: [
+    { stationuuid: 'n1', name: 'World News', countrycode: 'US' },
+  ] },
+  { slug: 'community-jazz', title: 'Community Jazz', source: 'user', featured: false, stations: [
+    { stationuuid: 'c1', name: 'Local Jazz', countrycode: 'DE' },
+  ] },
+];
 
 test('normaliseDiscover keeps valid curated lists only', () => {
   const data = { curated: { lists: [
@@ -176,4 +188,107 @@ test('saved collections render a checked save button', () => {
   assert.match(save, /is-saved/);
   assert.match(save, /aria-pressed="true"/);
   assert.match(save, /aria-label="Collection saved as a list"/);
+});
+
+test('renders the discover toolbar with search and three views', () => {
+  const html = renderDiscoverToolbar({ view: 'large', query: 'jazz' });
+  assert.match(html, /stations-discover-toolbar/);
+  assert.match(html, /type="search"/);
+  assert.match(html, /placeholder="Search collections or stations"/);
+  assert.match(html, /aria-label="Collection view"/);
+  assert.match(html, /data-view="large"[^>]*aria-pressed="true"/);
+  assert.match(html, /data-view="small"[^>]*aria-pressed="false"/);
+  assert.match(html, /data-view="cloud"[^>]*aria-pressed="false"/);
+  assert.equal((html.match(/data-view=/g) ?? []).length, 3);
+});
+
+test('renderDiscover keeps the toolbar and results container', () => {
+  const html = renderDiscover({ lists: searchLists });
+  assert.match(html, /stations-discover-toolbar[\s\S]*id="discoverResults"/);
+  assert.match(html, /data-view="small"[^>]*aria-pressed="true"/);
+});
+
+test('filters collections and stations by a case-insensitive substring', () => {
+  const html = renderDiscover({ lists: searchLists, query: 'JAZZ' });
+  assert.match(html, /data-collection="jazz"/);
+  assert.match(html, /data-collection="community-jazz"/);
+  assert.doesNotMatch(html, /data-collection="news"/);
+  assert.match(html, /stations-row-source[^>]*>Jazz<\/span>/);
+  assert.match(html, /stations-row-source[^>]*>Community Jazz<\/span>/);
+  assert.match(html, /data-id="j1"/);
+  assert.match(html, /data-id="c1"/);
+});
+
+test('shows station matches with their source collection', () => {
+  const html = renderDiscover({ lists: searchLists, query: 'world' });
+  assert.match(html, /data-id="n1"/);
+  assert.match(html, /World News/);
+  assert.match(html, /stations-row-source[^>]*title="News"/);
+  assert.doesNotMatch(html, /data-collection="news"/);
+});
+
+test('shows a no-results state with a clear action', () => {
+  const html = renderDiscover({ lists: searchLists, query: 'zzzz' });
+  assert.match(html, /No collections or stations match "zzzz"\./);
+  assert.match(html, /data-action="clear-discover-search"/);
+});
+
+test('clearing the query restores the normal sections', () => {
+  const html = renderDiscover({ lists: searchLists });
+  assert.match(html, /Community collections/);
+  assert.match(html, /stations-submit-link/);
+  assert.match(html, /data-collection="jazz"/);
+  assert.match(html, /data-collection="news"/);
+});
+
+test('community cards keep their kicker in search', () => {
+  const html = renderDiscover({ lists: searchLists, query: 'community' });
+  assert.match(html, /stations-collection-card[^"]*is-user/);
+  assert.match(html, /Community collection/);
+});
+
+test('existing save states still render', () => {
+  const html = renderDiscover({ lists: searchLists, isSaved: () => true });
+  assert.match(html, /is-saved/);
+});
+
+test('large mode renders one card per collection', () => {
+  const html = renderDiscover({ lists: searchLists, view: 'large' });
+  assert.match(html, /stations-collection-large/);
+  assert.match(html, /stations-collection-card is-large/);
+  assert.match(html, /data-action="toggle-collection"/);
+  assert.match(html, /data-slug="jazz"/);
+  assert.match(html, /aria-expanded="false"/);
+  assert.match(html, /aria-label="Show all stations in Jazz"/);
+});
+
+test('large cards keep the save button visible', () => {
+  const html = renderDiscover({ lists: searchLists, view: 'large' });
+  assert.match(html, /stations-collection-large-actions[\s\S]*stations-collection-save/);
+});
+
+test('large expanded card renders every station', () => {
+  const news = {
+    slug: 'news',
+    title: 'News',
+    source: 'radiodock',
+    stations: Array.from({ length: 51 }, (_, i) => ({ stationuuid: `n${i}`, name: `News ${i}`, countrycode: 'US' })),
+  };
+  const html = renderDiscover({ lists: [news], view: 'large', expandedSlug: 'news' });
+  assert.equal((html.match(/class="stations-collection-tile"/g) ?? []).length, 51);
+  assert.match(html, /stations-collection-large-stations/);
+  assert.match(html, /aria-expanded="true"/);
+  assert.match(html, /aria-label="Hide stations in News"/);
+});
+
+test('only one large collection expands', () => {
+  const html = renderDiscover({ lists: searchLists, view: 'large', expandedSlug: 'jazz' });
+  assert.equal((html.match(/aria-expanded="true"/g) ?? []).length, 1);
+  assert.equal((html.match(/stations-collection-large-stations/g) ?? []).length, 1);
+});
+
+test('community collections keep their section in large mode', () => {
+  const html = renderDiscover({ lists: searchLists, view: 'large' });
+  assert.match(html, /Community collections/);
+  assert.match(html, /stations-collection-card is-large is-user/);
 });

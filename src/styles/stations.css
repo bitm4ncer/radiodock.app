@@ -1233,7 +1233,7 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
 .stations-collection-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  gap: 14px;
   margin: 0 0 18px;
 }
 
@@ -1476,6 +1476,317 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
   min-height: 26px;
   border-color: transparent;
   color: var(--text-muted);
+}
+
+.stations-discover-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 6px 0 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-dark);
+}
+
+:root.theme-light .stations-discover-toolbar {
+  background: #d5d5d5;
+}
+
+.stations-discover-search {
+  display: flex;
+  flex: 0 1 220px;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+}
+
+.stations-discover-search:focus-within {
+  border-color: var(--text-muted);
+}
+
+.stations-discover-search-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  color: var(--text-muted);
+}
+
+.stations-discover-search-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.stations-discover-search-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 11px;
+}
+
+.stations-discover-search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.stations-discover-clear {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.stations-discover-clear[hidden] {
+  display: none !important;
+}
+
+.stations-view-toggle {
+  display: inline-flex;
+  height: 34px;
+  padding: 3px;
+  gap: 2px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg-dark);
+}
+
+.stations-view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.stations-view-btn[aria-pressed="true"] {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.stations-view-btn:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.stations-view-icon {
+  display: inline-flex;
+  width: 13px;
+  height: 13px;
+}
+
+.stations-view-icon svg {
+  width: 13px;
+  height: 13px;
+}
+
+.stations-view-label {
+  white-space: nowrap;
+}
+
+.stations-discover-results {
+  min-width: 0;
+}
+
+.stations-discover-search-results {
+  display: flex;
+  flex-direction: column;
+}
+
+.stations-discover-stations {
+  margin: 0 0 14px;
+}
+
+.stations-discover-more {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.stations-collection-large {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0 0 18px;
+}
+
+.stations-collection-card.is-large {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  gap: 0;
+  padding: 16px;
+  cursor: default;
+}
+
+.stations-collection-card.is-large:hover {
+  background: var(--bg-dark);
+}
+
+.stations-collection-large-head {
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.stations-collection-large-main {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  gap: 16px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.stations-collection-large-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.stations-collection-large-copy strong {
+  overflow: hidden;
+  font-size: 18px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stations-collection-large-copy .stations-collection-card-count {
+  font-size: 10px;
+}
+
+.stations-collection-large-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.stations-logo-stack.is-large .logo-slot {
+  margin-left: -14px;
+}
+
+.stations-logo-stack.is-large .logo-slot:first-child {
+  margin-left: 0;
+}
+
+.stations-logo-stack.is-large .stations-stack-logo,
+.stations-logo-stack.is-large .stations-stack-initials {
+  width: 52px;
+  height: 52px;
+  font-size: 13px;
+}
+
+.stations-collection-card.is-large .stations-collection-save,
+.stations-collection-card.is-large .stations-collection-save.is-saved,
+.stations-collection-card.is-large .stations-collection-save.is-saving {
+  position: static;
+  width: 28px;
+  height: 28px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.stations-collection-card.is-large .stations-collection-save svg {
+  width: 14px;
+  height: 14px;
+}
+
+.stations-collection-card.is-large .stations-collection-save.is-saved svg {
+  width: 22px;
+  height: 22px;
+}
+
+.stations-collection-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.stations-collection-more:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.stations-collection-large-stations {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+@container stations-panel (max-width: 640px) {
+  .stations-discover-toolbar {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .stations-discover-search {
+    flex: 1 0 100%;
+    max-width: none;
+  }
+
+  .stations-view-toggle {
+    margin-left: auto;
+  }
+
+  .stations-view-label {
+    display: none;
+  }
+
+  .stations-collection-large-head {
+    flex-wrap: wrap;
+  }
+
+  .stations-collection-large-main {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .stations-collection-large-actions {
+    margin-left: auto;
+  }
 }
 
 @media (max-width: 699px) {

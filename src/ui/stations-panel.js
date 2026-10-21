@@ -6,7 +6,7 @@ import { mountStationsFilters } from './stations-filter.js';
 import { buildBrowseParams, communityParams, mergeRows, searchModeFor, popularParams, searchParams, MAX_ROWS } from './stations-state.js';
 import { EXPLORE_PAGE_SIZE, buildExploreFeed, nextExploreLimit, pickExploreStation } from './stations-explore.js';
 import { escapeHtml, formatCount } from './stations-format.js';
-import { normaliseDiscover, renderDiscover, renderCollection, collectionCard, collectionSaveButton, syncCollectionSaveButton, featuredLists, pickFeaturedLists, renderDiscoverUnavailable } from './discover-child.js';
+import { normaliseDiscover, renderDiscover, renderDiscoverResults, renderCollection, collectionCard, collectionSaveButton, syncCollectionSaveButton, featuredLists, pickFeaturedLists, renderDiscoverUnavailable } from './discover-child.js';
 import { eligibleLists, pickerHtml } from './playlist-picker.js';
 import { mountLogoBehavior } from './station-logo.js';
 import { createInlineStationInfo } from './station-info-inline.js';
@@ -107,6 +107,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     featuredSlugs: null,
     animateRows: false,
     discover: null,
+    discoverView: 'small',
+    discoverQuery: '',
+    expandedCollection: null,
     collection: null,
     playlistPicker: null,
     exploreFeed: [],
@@ -141,6 +144,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   let metaApplied = false;
   let filters = null;
   let searchTimer = null;
+  let discoverTimer = null;
   let panelPosition = null;
   let panelSize = null;
   let inlineInfoEl = null;
@@ -1050,6 +1054,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     });
     const content = body.querySelector('#stationsContent');
     content?.addEventListener('click', onDiscoverClick);
+    content?.addEventListener('input', onDiscoverInput);
     mountLogoBehavior(content);
     queueMicrotask(() => body.querySelector(`[data-action="${backAction}"]`)?.focus());
   }
@@ -1116,6 +1121,18 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     }
   }
 
+  function discoverOptions() {
+    return {
+      lists: normaliseDiscover(state.discover).lists,
+      isSaved: isCollectionSaved,
+      view: state.discoverView,
+      query: state.discoverQuery,
+      expandedSlug: state.expandedCollection,
+      isFavorited: (id) => !!actions.isFavorited?.(id),
+      canAdd: !!actions.canFavorite?.(),
+    };
+  }
+
   function renderDiscoverView() {
     state.view = 'discover';
     state.collection = null;
@@ -1123,10 +1140,65 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       discoverShell('Discover', 'back', renderDiscoverUnavailable());
       return;
     }
-    const lists = normaliseDiscover(state.discover).lists;
-    discoverShell('Discover', 'back', renderDiscover({ lists, isSaved: isCollectionSaved }));
+    discoverShell('Discover', 'back', renderDiscover(discoverOptions()));
     applyNowPlaying();
     refreshAddedFlags();
+  }
+
+  function renderDiscoverResultsOnly() {
+    if (!state.discover || state.discoverView === 'cloud') return;
+    const host = body.querySelector('#discoverResults');
+    if (!host) return;
+    host.innerHTML = renderDiscoverResults(discoverOptions());
+    applyNowPlaying();
+    refreshAddedFlags();
+  }
+
+  function applyDiscoverQuery(query) {
+    if (!isOpen || state.view !== 'discover') return;
+    state.discoverQuery = String(query ?? '');
+    state.expandedCollection = null;
+    const clear = body.querySelector('[data-action="clear-discover-search"]');
+    if (clear) clear.hidden = !state.discoverQuery.trim();
+    renderDiscoverResultsOnly();
+  }
+
+  function onDiscoverInput(evt) {
+    const input = evt.target.closest('#discoverSearchInput');
+    if (!input) return;
+    state.discoverQuery = input.value;
+    const clear = body.querySelector('[data-action="clear-discover-search"]');
+    if (clear) clear.hidden = !input.value.trim();
+    clearTimeout(discoverTimer);
+    discoverTimer = setTimeout(() => applyDiscoverQuery(input.value), 120);
+  }
+
+  function setDiscoverView(view) {
+    if (!['small', 'large', 'cloud'].includes(view) || view === state.discoverView) return;
+    state.discoverView = view;
+    state.expandedCollection = null;
+    const host = body.querySelector('#discoverResults');
+    if (host) {
+      host.innerHTML = view === 'cloud'
+        ? '<div class="stations-cloud" data-cloud-host></div>'
+        : renderDiscoverResults(discoverOptions());
+    }
+    body.querySelectorAll('[data-view]').forEach((button) => {
+      button.setAttribute('aria-pressed', String(button.dataset.view === state.discoverView));
+    });
+    applyNowPlaying();
+    refreshAddedFlags();
+  }
+
+  function toggleCollection(button) {
+    const slug = button?.dataset.slug;
+    if (!slug) return;
+    state.expandedCollection = state.expandedCollection === slug ? null : slug;
+    renderDiscoverResultsOnly();
+    const card = [...body.querySelectorAll('[data-large-slug]')]
+      .find((el) => el.dataset.largeSlug === slug);
+    card?.scrollIntoView({ block: 'nearest' });
+    card?.querySelector('[data-action="toggle-collection"]')?.focus({ preventScroll: true });
   }
 
   async function openDiscover() {
@@ -1135,6 +1207,10 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.loading = false;
     state.view = 'discover';
     state.collection = null;
+    state.discoverView = 'small';
+    state.discoverQuery = '';
+    state.expandedCollection = null;
+    clearTimeout(discoverTimer);
     discoverShell('Discover', 'back', '<div class="stations-empty">Loading collections...</div>');
     await ensureMeta();
     await ensureDiscover();
@@ -1152,6 +1228,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.loading = false;
     state.view = 'discover';
     state.collection = list;
+    clearTimeout(discoverTimer);
     discoverShell(list.title, backAction, renderCollection({ list }), { list });
     applyNowPlaying();
     refreshAddedFlags();
@@ -1328,6 +1405,33 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   }
 
   async function onDiscoverClick(evt) {
+    const viewButton = evt.target.closest('[data-view]');
+    if (viewButton) {
+      setDiscoverView(viewButton.dataset.view);
+      return;
+    }
+    if (evt.target.closest('[data-action="clear-discover-search"]')) {
+      clearTimeout(discoverTimer);
+      const input = body.querySelector('#discoverSearchInput');
+      if (input) {
+        input.value = '';
+        input.focus();
+      }
+      applyDiscoverQuery('');
+      return;
+    }
+    const toggle = evt.target.closest('[data-action="toggle-collection"]');
+    if (toggle) {
+      toggleCollection(toggle);
+      return;
+    }
+    const row = evt.target.closest('.stations-row[data-id]');
+    if (row) {
+      const rowAction = evt.target.closest('[data-action]');
+      const actionName = rowAction?.dataset.action ?? 'play';
+      runStationAction(row, { id: row.dataset.id, stationuuid: row.dataset.id }, actionName, { flash: actionName === 'play' });
+      return;
+    }
     const save = evt.target.closest('[data-action="save-collection"]');
     if (save) {
       saveCollection(save);
@@ -1377,6 +1481,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   }
 
   function backToStations() {
+    clearTimeout(discoverTimer);
     state.view = 'stations';
     state.collection = null;
     shell();
@@ -1703,6 +1808,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     loadToken++;
     state.stationActionToken++;
     controller?.abort();
+    clearTimeout(discoverTimer);
     state.loading = false;
     state.tooShort = false;
     state.playlistPicker = null;
