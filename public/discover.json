@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T01:25:43.981Z",
+  "generatedAt": "2026-10-21T01:26:20.147Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -1557,7 +1557,7 @@
       },
       {
         "slug": "country-roots",
-        "title": "Country",
+        "title": "Country / Roots",
         "source": "radiodock",
         "featured": false,
         "stations": [
@@ -1944,7 +1944,7 @@
       },
       {
         "slug": "bass-rave",
-        "title": "Bass, Breaks & Rave",
+        "title": "Bass / Breaks",
         "source": "radiodock",
         "featured": false,
         "stations": [
@@ -1992,7 +1992,7 @@
       },
       {
         "slug": "classical",
-        "title": "Classical & Neue Musik",
+        "title": "Classical / Neue Musik",
         "source": "radiodock",
         "featured": true,
         "stations": [
