@@ -1,6 +1,7 @@
 // Single-instance audio player.
 // Wraps a <audio> element + dynamic hls.js for HLS streams.
 // Emits events via a private EventTarget; consumers subscribe with on(event, handler).
+import { relayHlsUrl, relayUrl } from '../data/relay.js';
 
 const events = new EventTarget();
 const emit = (type, detail) => events.dispatchEvent(new CustomEvent(type, { detail }));
@@ -18,6 +19,16 @@ let hls = null;
 let hlsModulePromise = null;
 let playToken = 0;
 let lastAudibleVolume = 0.8;
+// Per-selection escalation state: after the direct source fails once, the
+// server relay (uuid-only, stream URL resolved server-side) takes over —
+// that is what rescues http-only streams on https origins, where the https
+// upgrade silently fails on hosts that serve no TLS.
+let currentUuid = '';
+let currentIsHls = false;
+let assignedSrc = '';
+let relayTried = false;
+let directFailed = false;
+let escalationGraceUntil = 0;
 
 function getElement() {
   if (element) return element;
@@ -42,6 +53,12 @@ function getElement() {
       name: MEDIA_ERR_NAMES[err.code] ?? `MEDIA_ERR_${err.code}`,
       message: err.message ?? '',
     });
+    // A direct (non-relay) source that dies mid-play escalates to the relay
+    // once. HLS errors arrive through the hls.js handler instead — the
+    // element keeps a MediaSource blob here, so the src guard skips them.
+    if (assignedSrc && element.getAttribute('src') === assignedSrc && !assignedSrc.includes('/api/relay')) {
+      escalateThroughRelay(playToken);
+    }
   });
 
   return element;
@@ -65,17 +82,137 @@ function destroyHls() {
 }
 
 function isHlsUrl(url) {
-  return /\.m3u8(\?|$)/i.test(url);
+  return /\.m3u8(\?|#|$)/i.test(url);
+}
+
+function isPlaylistUrl(url) {
+  return /\.(?:pls|m3u|asx)(\?|#|$)/i.test(url);
 }
 
 // On https origins, http:// stream URLs are blocked as mixed content.
-// Try the https variant first; if it fails, the recovery layer retries with
-// the original (which will only succeed on http origins like localhost).
+// Try the https variant first; hosts that serve no TLS on that port fail
+// here and the relay escalation (below) takes the load over server-side.
 function preferHttps(url) {
   if (typeof window !== 'undefined' && window.isSecureContext && url.startsWith('http://')) {
     return 'https://' + url.slice('http://'.length);
   }
   return url;
+}
+
+function relayFor(station) {
+  const uuid = String(station?.stationuuid || station?.id || '');
+  if (!uuid || typeof window === 'undefined' || !window.isSecureContext) return null;
+  return relayUrl(uuid);
+}
+
+function relayHlsFor(station) {
+  const uuid = String(station?.stationuuid || station?.id || '');
+  if (!uuid || typeof window === 'undefined' || !window.isSecureContext) return null;
+  return relayHlsUrl(uuid);
+}
+
+// hls.js setup for one source URL. Network and media fatals get one local
+// recovery each before the ladder escalates. The relay HLS URL is a signed
+// manifest proxy, so relative segment and key URIs work as well as absolute
+// ones. Native HLS remains the Safari fallback.
+async function startHlsSource(token, url) {
+  const Hls = await loadHls();
+  if (token !== playToken) return; // station changed during dynamic import
+
+  const audio = getElement();
+  if (Hls.isSupported()) {
+    const instance = new Hls({
+      enableWorker: true,
+      maxBufferLength: 10,
+      liveSyncDurationCount: 3,
+      manifestLoadingTimeOut: 8000,
+      levelLoadingTimeOut: 8000,
+      fragLoadingTimeOut: 12000,
+      manifestLoadingMaxRetry: 2,
+      levelLoadingMaxRetry: 2,
+      fragLoadingMaxRetry: 2,
+    });
+    hls = instance;
+
+    instance.on(Hls.Events.FRAG_PARSING_METADATA, (_evt, data) => {
+      const samples = data?.samples ?? [];
+      for (const sample of samples) {
+        const frames = sample?.data;
+        if (!frames || typeof frames !== 'object') continue;
+        const title = frames.TIT2?.data ?? null;
+        const artist = frames.TPE1?.data ?? null;
+        if (title || artist) {
+          emit('metadata', { artist, title, source: 'hls-id3' });
+        }
+      }
+    });
+
+    let recoveredNetwork = false;
+    let recoveredMedia = false;
+    instance.on(Hls.Events.ERROR, (_evt, data) => {
+      if (!data?.fatal || hls !== instance) return;
+      if (data.type === Hls.ErrorTypes.NETWORK_ERROR && !recoveredNetwork) {
+        recoveredNetwork = true;
+        instance.startLoad();
+        return;
+      }
+      if (data.type === Hls.ErrorTypes.MEDIA_ERROR && !recoveredMedia) {
+        recoveredMedia = true;
+        instance.recoverMediaError();
+        return;
+      }
+      if (escalateThroughRelay(token)) return;
+      console.warn('hls fatal error, falling back to native src', data);
+      destroyHls();
+      assignedSrc = url;
+      audio.src = url;
+      audio.load();
+      audio.play().catch((err) => {
+        if (token !== playToken) return;
+        emit('error', { message: err.message, name: err.name });
+      });
+    });
+
+    instance.loadSource(url);
+    instance.attachMedia(audio);
+  } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+    // iOS Safari native HLS
+    assignedSrc = url;
+    audio.src = url;
+    audio.load();
+  } else {
+    throw new Error('HLS not supported in this browser');
+  }
+}
+
+// One-shot escalation of the current load to the server relay. HLS uses the
+// manifest proxy so relative segment URIs resolve server-side; native audio
+// uses the byte relay. The grace window tells the recovery layer not to race
+// this handoff with its own playStation retry.
+function escalateThroughRelay(token) {
+  if (token !== playToken) return false;
+  const relay = currentIsHls ? relayHlsFor(currentStation) : relayFor(currentStation);
+  if (!relay || relayTried) return false;
+  relayTried = true;
+  directFailed = true;
+  escalationGraceUntil = Date.now() + 1500;
+  destroyHls();
+  const audio = getElement();
+  if (currentIsHls) {
+    startHlsSource(token, relay).catch((err) => {
+      if (token !== playToken) return;
+      emit('error', { message: err?.message ?? 'Playback failed', name: err?.name });
+    });
+  } else {
+    assignedSrc = relay;
+    audio.src = relay;
+    audio.load();
+    audio.play().catch((err) => {
+      if (token !== playToken) return;
+      emit('error', { message: err.message, name: err.name });
+    });
+  }
+  return true;
 }
 
 async function playStation(station) {
@@ -85,7 +222,14 @@ async function playStation(station) {
   }
 
   const token = ++playToken;
+  const uuid = String(station.stationuuid || station.id || '');
+  if (uuid !== currentUuid || station.url !== currentStation?.url) {
+    relayTried = false;
+    directFailed = false;
+    escalationGraceUntil = 0;
+  }
   currentStation = station;
+  currentUuid = uuid;
   emit('stationchange', { station });
   emit('loading');
 
@@ -98,47 +242,21 @@ async function playStation(station) {
 
   try {
     const streamUrl = preferHttps(station.url);
+    currentIsHls = isHlsUrl(station.url) || isHlsUrl(streamUrl);
+    const relay = currentIsHls ? relayHlsFor(station) : relayFor(station);
+    // A previous attempt for this station already died on the direct source
+    // (this load or a recovery retry) — go straight to the relay instead of
+    // burning another round on a known-dead URL. Playlist files are not audio
+    // either, so let the relay resolve those first.
+    const useRelayFirst = Boolean(relay && (directFailed || isPlaylistUrl(station.url)));
+    const source = useRelayFirst ? relay : streamUrl;
+    relayTried = relayTried || useRelayFirst;
 
-    if (isHlsUrl(streamUrl)) {
-      const Hls = await loadHls();
-      if (token !== playToken) return; // station changed during dynamic import
-
-      if (Hls.isSupported()) {
-        hls = new Hls({ enableWorker: true, maxBufferLength: 10 });
-
-        hls.on(Hls.Events.FRAG_PARSING_METADATA, (_evt, data) => {
-          const samples = data?.samples ?? [];
-          for (const sample of samples) {
-            const frames = sample?.data;
-            if (!frames || typeof frames !== 'object') continue;
-            const title = frames.TIT2?.data ?? null;
-            const artist = frames.TPE1?.data ?? null;
-            if (title || artist) {
-              emit('metadata', { artist, title, source: 'hls-id3' });
-            }
-          }
-        });
-
-        hls.on(Hls.Events.ERROR, (_evt, data) => {
-          if (!data?.fatal) return;
-          console.warn('hls fatal error, falling back to native src', data);
-          destroyHls();
-          audio.src = streamUrl;
-          audio.load();
-          audio.play().catch((err) => emit('error', { message: err.message, name: err.name }));
-        });
-
-        hls.loadSource(streamUrl);
-        hls.attachMedia(audio);
-      } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-        // iOS Safari native HLS
-        audio.src = streamUrl;
-        audio.load();
-      } else {
-        throw new Error('HLS not supported in this browser');
-      }
+    if (currentIsHls) {
+      await startHlsSource(token, source);
     } else {
-      audio.src = streamUrl;
+      assignedSrc = source;
+      audio.src = source;
       audio.load();
     }
 
@@ -148,6 +266,9 @@ async function playStation(station) {
     }
   } catch (err) {
     if (token !== playToken) return; // superseded by a newer call
+    // One immediate escalation before surfacing the error, so an http-only
+    // host without TLS still starts on the first tap.
+    if (escalateThroughRelay(token)) return;
     console.warn('playStation failed:', err);
     emit('error', { message: err?.message ?? 'Playback failed', name: err?.name });
   }
@@ -181,6 +302,11 @@ function stop() {
   audio.removeAttribute('src');
   audio.load();
   currentStation = null;
+  currentUuid = '';
+  assignedSrc = '';
+  relayTried = false;
+  directFailed = false;
+  escalationGraceUntil = 0;
   emit('stopped');
 }
 
@@ -207,6 +333,10 @@ function isPlaying() {
   return Boolean(element) && !element.paused;
 }
 
+function isEscalating() {
+  return Date.now() < escalationGraceUntil;
+}
+
 function on(type, handler) {
   events.addEventListener(type, handler);
   return () => events.removeEventListener(type, handler);
@@ -228,6 +358,7 @@ export const player = {
   getVolume,
   getCurrentStation,
   isPlaying,
+  isEscalating,
   on,
   prefetchHls,
   isHlsUrl,
