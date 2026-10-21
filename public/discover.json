@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T18:56:43.587Z",
+  "generatedAt": "2026-10-21T18:59:10.899Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2274,7 +2274,7 @@
       },
       {
         "slug": "classical",
-        "title": "Classical / Neue Musik",
+        "title": "Classical",
         "source": "radiodock",
         "featured": false,
         "stations": [
