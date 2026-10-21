@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T18:59:10.899Z",
+  "generatedAt": "2026-10-21T19:34:22.500Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -3215,38 +3215,13 @@
       },
       {
         "slug": "drum-and-bass",
-        "title": "Drum & Bass / Jungle",
+        "title": "Drum & Bass",
         "source": "radiodock",
         "featured": true,
         "stations": [
           {
-            "stationuuid": "973c30a5-a178-4daf-89c7-272ec6c47456",
-            "name": "Kool FM",
-            "countrycode": "GB"
-          },
-          {
             "stationuuid": "b8148b29-09d0-4aa1-8bfe-43d236260170",
             "name": "Liquid DnB",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "2c3eac2c-4588-42d3-9c2e-0c6e99afaf6e",
-            "name": "Eruption Radio",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "0de447a3-bd91-4272-b2ec-8ca7e99472b2",
-            "name": "Underground Bass",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "3dff0ca7-e8d7-4966-a37f-2d754819af6b",
-            "name": "Jungle Planet Radio",
-            "countrycode": "IT"
-          },
-          {
-            "stationuuid": "5e9311c0-d676-4655-b73f-b9b3c8319430",
-            "name": "Strictly Ragga Jungle",
             "countrycode": "GB"
           },
           {
@@ -3282,11 +3257,6 @@
           {
             "stationuuid": "dff24996-4ee2-4ba3-b000-20d8be9490ef",
             "name": "DnB station",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "0a885695-4f50-4676-8fab-0e7dff0e4fa9",
-            "name": "Flex FM 101.4",
             "countrycode": "GB"
           },
           {
@@ -3375,18 +3345,8 @@
             "countrycode": "DE"
           },
           {
-            "stationuuid": "960e9a99-0601-11e8-ae97-52543be04c81",
-            "name": "Dublovers",
-            "countrycode": "DE"
-          },
-          {
             "stationuuid": "948dd047-1a0b-42c9-b769-19233dfadc7f",
             "name": "Dutch Delite Drum and Bass",
-            "countrycode": "NL"
-          },
-          {
-            "stationuuid": "be603e71-a49d-445e-a33b-3cb5ca25ce13",
-            "name": "jungletrain.net",
             "countrycode": "NL"
           },
           {
@@ -3397,11 +3357,6 @@
           {
             "stationuuid": "37f9c6db-a491-4893-a1b8-dcf22e73a0c1",
             "name": "Rádio DNB TV",
-            "countrycode": "CZ"
-          },
-          {
-            "stationuuid": "f6bc1537-107b-46a1-9c81-f25839474911",
-            "name": "Sunrise Radio (Czechia)",
             "countrycode": "CZ"
           },
           {
@@ -3418,11 +3373,44 @@
             "stationuuid": "31858a05-51df-4ff4-9d62-4f0a22fad870",
             "name": "DrumandBass.FM",
             "countrycode": "AT"
+          }
+        ]
+      },
+      {
+        "slug": "jungle",
+        "title": "Jungle",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "973c30a5-a178-4daf-89c7-272ec6c47456",
+            "name": "Kool FM",
+            "countrycode": "GB"
           },
           {
-            "stationuuid": "c515129c-3c44-4ffa-b407-ff3158468368",
-            "name": "LiSTNR – Drum & Bass",
-            "countrycode": "AU"
+            "stationuuid": "2c3eac2c-4588-42d3-9c2e-0c6e99afaf6e",
+            "name": "Eruption Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "0de447a3-bd91-4272-b2ec-8ca7e99472b2",
+            "name": "Underground Bass",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "3dff0ca7-e8d7-4966-a37f-2d754819af6b",
+            "name": "Jungle Planet Radio",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "5e9311c0-d676-4655-b73f-b9b3c8319430",
+            "name": "Strictly Ragga Jungle",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "be603e71-a49d-445e-a33b-3cb5ca25ce13",
+            "name": "jungletrain.net",
+            "countrycode": "NL"
           },
           {
             "stationuuid": "1fca6a62-12d1-4b9d-8485-8a8c06b1a790",
@@ -3450,11 +3438,6 @@
             "countrycode": "RU"
           },
           {
-            "stationuuid": "3ac90ab7-34f9-43d3-9f7c-26379a1a68a4",
-            "name": "Jungle Radio",
-            "countrycode": "PH"
-          },
-          {
             "stationuuid": "fc33f2de-34af-4985-8780-a5536b228c00",
             "name": "Radio Transdutor",
             "countrycode": "BR"
@@ -3463,6 +3446,41 @@
             "stationuuid": "f7c5d86d-f31d-422b-b138-4c9f0690539b",
             "name": "Full Spectrum Radio",
             "countrycode": "CA"
+          },
+          {
+            "stationuuid": "21581736-8ad2-4a73-a272-9f56e771839e",
+            "name": "Futuredrumz Jungle Drum & Bass Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "e1a177e9-5947-46a4-8757-0415c9b106bc",
+            "name": "Old Skool Rave Tapes",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "fba2054a-0812-4a8f-b9bf-ab0546c5cccd",
+            "name": "Kniteforce Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "b200fa87-76ec-4afc-9eef-6a609ef9d4b8",
+            "name": "Energy 1058",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "d7a59a3c-9287-4b86-9cc5-e7cd781975da",
+            "name": "SUBURBiA Planet Hardcore",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "138e0496-c5f1-48a0-8cad-764fb23dfec9",
+            "name": "Playback UK",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "4881d7d6-b288-4585-a383-f926f3d017cf",
+            "name": "DNB.BAND",
+            "countrycode": "DE"
           }
         ]
       },
