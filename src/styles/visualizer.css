@@ -521,3 +521,137 @@ body.viz-active .modal,
 body.viz-active .toast {
   z-index: 1;
 }
+
+/* --- Browser-minimized player: tiny-player pill -----------------------
+   Mirrors the Electron tiny player (search.css body.is-tiny-player):
+   the card itself is the pill, the action bar sits in the text column,
+   the country/domain line is gone and a chevron tab on the top edge
+   expands it. Electron/standalone keep their existing layouts. */
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized {
+  padding: 0 !important;
+  gap: 0;
+  overflow: visible;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .player-section {
+  gap: 0;
+  padding: 0;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .player-card {
+  position: relative;
+  padding: 12px 18px 12px 12px;
+  gap: 14px;
+  border-radius: 100px;
+  background: var(--bg-dark);
+  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.6), 0 4px 14px -2px rgba(0, 0, 0, 0.5);
+  opacity: 1;
+  cursor: grab;
+}
+
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .player-card.is-dragging {
+  cursor: grabbing;
+}
+
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .station-country-line {
+  display: none;
+}
+
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .station-logo-container,
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .station-logo-container .logo-slot,
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .station-logo-container img,
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .station-logo-container .station-initials,
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .station-logo-container .station-logo-fallback {
+  width: 56px !important;
+  height: 56px !important;
+  flex: 0 0 56px !important;
+}
+
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .play-pause-btn {
+  width: 46px;
+  height: 46px;
+}
+
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .station-name,
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .now-playing,
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .now-playing-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .station-name {
+  font-size: 15px;
+  line-height: 1.3;
+  margin-bottom: 1px;
+}
+
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .now-playing,
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .now-playing.show {
+  max-height: 18px;
+  margin-bottom: 3px;
+}
+
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .player-action-bar {
+  display: flex !important;
+  margin: 3px 0 0;
+  background: transparent;
+  width: auto;
+  max-width: 100%;
+  justify-content: flex-start;
+  overflow: visible;
+}
+
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .player-action-bar .pab-btn {
+  width: 27px;
+  height: 22px;
+}
+
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .player-action-bar .pab-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* The floating strip (drag / minimize / visuals) is replaced by the tab. */
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .tool-btn,
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .nudge {
+  display: none !important;
+}
+
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .player-card-expand-tab {
+  position: absolute;
+  top: -11px;
+  right: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 22px;
+  margin: 0;
+  padding: 0 0 3px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--bg-dark);
+  color: var(--text-muted);
+  box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  z-index: 3;
+  transition: transform 160ms ease, color 140ms ease;
+}
+
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .player-card-expand-tab:hover {
+  color: var(--text);
+  transform: translateY(-3px);
+}
+
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .player-card-expand-tab svg {
+  width: 15px;
+  height: 15px;
+}
