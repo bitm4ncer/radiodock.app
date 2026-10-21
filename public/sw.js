@@ -56,11 +56,34 @@ function fetchWithTimeout(req, ms) {
   return fetch(req, { signal: ctl.signal, cache: 'no-store' }).finally(() => clearTimeout(timer));
 }
 
+// The hashed JS/CSS bundles are only referenced by the freshly-fetched shell,
+// so the install-time precache list can't name them. Parse them out of the
+// shell HTML and cache them too, so an offline reload (and any lazy import)
+// still finds its bundles after a deploy.
+async function precacheHashedAssets(cache) {
+  let html;
+  try {
+    const res = await fetch('/');
+    if (!res.ok) return;
+    html = await res.text();
+  } catch {
+    return;
+  }
+  const urls = new Set();
+  const attrRe = /(?:src|href)=["']([^"']+)["']/g;
+  let m;
+  while ((m = attrRe.exec(html))) {
+    const url = m[1];
+    if (url.startsWith('/assets/') && /\.(js|css)$/.test(url)) urls.add(url);
+  }
+  if (urls.size) await cache.addAll([...urls]);
+}
+
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches
       .open(CACHE_NAME)
-      .then((cache) => cache.addAll(PRECACHE_URLS))
+      .then((cache) => cache.addAll(PRECACHE_URLS).then(() => precacheHashedAssets(cache)))
       .then(() => self.skipWaiting()),
   );
 });
@@ -69,8 +92,13 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     (async () => {
       const keys = await caches.keys();
+      const shellCaches = keys.filter((k) => k.startsWith('radiodock-shell-')).sort();
+      // Keep the current cache and the single most-recent previous one so a
+      // client mid-update (or one that skipped an activation) still finds its
+      // bundles; delete only the older caches.
+      const previous = shellCaches.filter((k) => k !== CACHE_NAME).sort().at(-1);
       await Promise.all(
-        keys.filter((k) => k.startsWith('radiodock-shell-') && k !== CACHE_NAME).map((k) => caches.delete(k)),
+        shellCaches.filter((k) => k !== CACHE_NAME && k !== previous).map((k) => caches.delete(k)),
       );
       await self.clients.claim();
     })(),
@@ -109,7 +137,8 @@ self.addEventListener('fetch', (event) => {
         const cache = await caches.open(CACHE_NAME);
         try {
           const res = await fetch(req);
-          if (res && res.ok) cache.put(req, res.clone());
+          if (!res.ok) throw new Error(`Network ${res.status}`);
+          cache.put(req, res.clone());
           return res;
         } catch (err) {
           const cached =
@@ -132,7 +161,8 @@ self.addEventListener('fetch', (event) => {
         const cache = await caches.open(CACHE_NAME);
         try {
           const res = await fetchWithTimeout(req, NETWORK_FIRST_TIMEOUT_MS);
-          if (res && res.ok) cache.put(req, res.clone());
+          if (!res.ok) throw new Error(`Network ${res.status}`);
+          cache.put(req, res.clone());
           return res;
         } catch (err) {
           const cached = await cache.match(req);
