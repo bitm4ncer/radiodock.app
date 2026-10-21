@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T12:59:25.233Z",
+  "generatedAt": "2026-10-21T14:02:28.218Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2605,7 +2605,7 @@
         "slug": "chill",
         "title": "Chill",
         "source": "radiodock",
-        "featured": false,
+        "featured": true,
         "stations": [
           {
             "stationuuid": "128d5561-8439-4e2a-9e6c-4e48ad4f0cc0",
@@ -2623,6 +2623,11 @@
             "countrycode": "DE"
           },
           {
+            "stationuuid": "3fd18c3f-8157-11e9-aa30-52543be04c81",
+            "name": "Café del Mar",
+            "countrycode": "ES"
+          },
+          {
             "stationuuid": "49902d2d-672d-4130-b42a-90592d0460c5",
             "name": "0R - LO-FI || LoFi, Chill, Study, Hip Hop, Relax, Background, Calm, Instrumental, Smooth, Beats, Coffee, Work, Focus, Soft, Chillhop",
             "countrycode": "DE"
@@ -2636,11 +2641,6 @@
             "stationuuid": "961fb4b2-0601-11e8-ae97-52543be04c81",
             "name": "1.FM - Chillout Lounge Radio",
             "countrycode": "CH"
-          },
-          {
-            "stationuuid": "3fd18c3f-8157-11e9-aa30-52543be04c81",
-            "name": "Café del Mar",
-            "countrycode": "ES"
           },
           {
             "stationuuid": "2b85feeb-2fb3-4144-af8e-d1df0b5d686b",
@@ -3069,7 +3069,7 @@
         "slug": "drum-and-bass",
         "title": "Drum & Bass / Jungle",
         "source": "radiodock",
-        "featured": false,
+        "featured": true,
         "stations": [
           {
             "stationuuid": "973c30a5-a178-4daf-89c7-272ec6c47456",
