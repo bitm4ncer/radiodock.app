@@ -1744,3 +1744,14 @@ html.is-standalone .stations-panel-grip {
     padding: 0 14px 6px;
   }
 }
+
+/* The featured actions sit a little further from the search field. */
+.stations-featured {
+  padding: 0 20px 16px;
+}
+
+@media (max-width: 699px) {
+  .stations-featured {
+    padding: 0 14px 12px;
+  }
+}

@@ -112,7 +112,6 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     body.innerHTML = `
       <div class="stations-shell">
         <header class="stations-header stations-header--browse">
-          <button type="button" class="stations-pill stations-discover-btn" data-action="discover">${discoverIcon()}<span>Discover Lists</span></button>
           <div class="stations-header-copy">
             
             <h2 class="stations-title" id="stationsTitle">Stations</h2>
@@ -141,7 +140,6 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       </div>
     `;
     body.querySelector('[data-action="close"]')?.addEventListener('click', close);
-    body.querySelector('[data-action="discover"]')?.addEventListener('click', openDiscover);
     body.querySelector('[data-action="shuffle"]')?.addEventListener('click', shuffle);
     const input = body.querySelector('#stationsSearch');
     input?.addEventListener('input', scheduleSearch);
@@ -767,7 +765,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     host.innerHTML = `
       <div class="stations-collection-grid stations-featured-grid">${lists.map((list) => collectionCard(list)).join('')}</div>
       <div class="stations-featured-actions">
-        <button type="button" class="stations-pill" data-action="discover-more">Discover more lists</button>
+        <button type="button" class="stations-pill stations-discover-btn" data-action="discover-more">${discoverIcon()}<span>Discover more lists</span></button>
         <button type="button" class="stations-submit-link" data-action="submit-list">Submit your list</button>
       </div>
     `;
