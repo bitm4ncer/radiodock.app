@@ -56,6 +56,9 @@ export function attachRecovery(player) {
 
   const tryRecover = () => {
     if (userPaused) return;
+    // audio.js is already handing this failure to the relay; a parallel retry
+    // would abort the relay load that is just starting.
+    if (player.isEscalating?.()) return;
     const station = player.getCurrentStation();
     if (!station) return;
     if (!navigator.onLine) {

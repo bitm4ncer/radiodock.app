@@ -1,7 +1,7 @@
 // Single-instance audio player.
 // Wraps a <audio> element + dynamic hls.js for HLS streams.
 // Emits events via a private EventTarget; consumers subscribe with on(event, handler).
-import { relayUrl } from '../data/relay.js';
+import { relayHlsUrl, relayUrl } from '../data/relay.js';
 
 const events = new EventTarget();
 const emit = (type, detail) => events.dispatchEvent(new CustomEvent(type, { detail }));
@@ -28,6 +28,7 @@ let currentIsHls = false;
 let assignedSrc = '';
 let relayTried = false;
 let directFailed = false;
+let escalationGraceUntil = 0;
 
 function getElement() {
   if (element) return element;
@@ -81,7 +82,11 @@ function destroyHls() {
 }
 
 function isHlsUrl(url) {
-  return /\.m3u8(\?|$)/i.test(url);
+  return /\.m3u8(\?|#|$)/i.test(url);
+}
+
+function isPlaylistUrl(url) {
+  return /\.(?:pls|m3u|asx)(\?|#|$)/i.test(url);
 }
 
 // On https origins, http:// stream URLs are blocked as mixed content.
@@ -100,19 +105,36 @@ function relayFor(station) {
   return relayUrl(uuid);
 }
 
-// hls.js setup for one source URL. Fatal errors escalate to the server relay
-// once (the relay serves the upstream playlist byte-for-byte; absolute
-// segment URLs play straight through), then fall back to the native src
-// for Safari-style HLS.
+function relayHlsFor(station) {
+  const uuid = String(station?.stationuuid || station?.id || '');
+  if (!uuid || typeof window === 'undefined' || !window.isSecureContext) return null;
+  return relayHlsUrl(uuid);
+}
+
+// hls.js setup for one source URL. Network and media fatals get one local
+// recovery each before the ladder escalates. The relay HLS URL is a signed
+// manifest proxy, so relative segment and key URIs work as well as absolute
+// ones. Native HLS remains the Safari fallback.
 async function startHlsSource(token, url) {
   const Hls = await loadHls();
   if (token !== playToken) return; // station changed during dynamic import
 
   const audio = getElement();
   if (Hls.isSupported()) {
-    hls = new Hls({ enableWorker: true, maxBufferLength: 10 });
+    const instance = new Hls({
+      enableWorker: true,
+      maxBufferLength: 10,
+      liveSyncDurationCount: 3,
+      manifestLoadingTimeOut: 8000,
+      levelLoadingTimeOut: 8000,
+      fragLoadingTimeOut: 12000,
+      manifestLoadingMaxRetry: 2,
+      levelLoadingMaxRetry: 2,
+      fragLoadingMaxRetry: 2,
+    });
+    hls = instance;
 
-    hls.on(Hls.Events.FRAG_PARSING_METADATA, (_evt, data) => {
+    instance.on(Hls.Events.FRAG_PARSING_METADATA, (_evt, data) => {
       const samples = data?.samples ?? [];
       for (const sample of samples) {
         const frames = sample?.data;
@@ -125,8 +147,20 @@ async function startHlsSource(token, url) {
       }
     });
 
-    hls.on(Hls.Events.ERROR, (_evt, data) => {
-      if (!data?.fatal) return;
+    let recoveredNetwork = false;
+    let recoveredMedia = false;
+    instance.on(Hls.Events.ERROR, (_evt, data) => {
+      if (!data?.fatal || hls !== instance) return;
+      if (data.type === Hls.ErrorTypes.NETWORK_ERROR && !recoveredNetwork) {
+        recoveredNetwork = true;
+        instance.startLoad();
+        return;
+      }
+      if (data.type === Hls.ErrorTypes.MEDIA_ERROR && !recoveredMedia) {
+        recoveredMedia = true;
+        instance.recoverMediaError();
+        return;
+      }
       if (escalateThroughRelay(token)) return;
       console.warn('hls fatal error, falling back to native src', data);
       destroyHls();
@@ -139,8 +173,8 @@ async function startHlsSource(token, url) {
       });
     });
 
-    hls.loadSource(url);
-    hls.attachMedia(audio);
+    instance.loadSource(url);
+    instance.attachMedia(audio);
   } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
     // iOS Safari native HLS
     assignedSrc = url;
@@ -151,15 +185,17 @@ async function startHlsSource(token, url) {
   }
 }
 
-// One-shot escalation of the current load to the server relay. HLS keeps
-// going through hls.js — the relay URL does not end in .m3u8, so the
-// station's own shape decides the pipeline, not the relay URL's suffix.
+// One-shot escalation of the current load to the server relay. HLS uses the
+// manifest proxy so relative segment URIs resolve server-side; native audio
+// uses the byte relay. The grace window tells the recovery layer not to race
+// this handoff with its own playStation retry.
 function escalateThroughRelay(token) {
   if (token !== playToken) return false;
-  const relay = relayFor(currentStation);
+  const relay = currentIsHls ? relayHlsFor(currentStation) : relayFor(currentStation);
   if (!relay || relayTried) return false;
   relayTried = true;
   directFailed = true;
+  escalationGraceUntil = Date.now() + 1500;
   destroyHls();
   const audio = getElement();
   if (currentIsHls) {
@@ -190,6 +226,7 @@ async function playStation(station) {
   if (uuid !== currentUuid || station.url !== currentStation?.url) {
     relayTried = false;
     directFailed = false;
+    escalationGraceUntil = 0;
   }
   currentStation = station;
   currentUuid = uuid;
@@ -206,11 +243,12 @@ async function playStation(station) {
   try {
     const streamUrl = preferHttps(station.url);
     currentIsHls = isHlsUrl(station.url) || isHlsUrl(streamUrl);
-    const relay = relayFor(station);
+    const relay = currentIsHls ? relayHlsFor(station) : relayFor(station);
     // A previous attempt for this station already died on the direct source
     // (this load or a recovery retry) — go straight to the relay instead of
-    // burning another round on a known-dead URL.
-    const useRelayFirst = Boolean(relay && directFailed);
+    // burning another round on a known-dead URL. Playlist files are not audio
+    // either, so let the relay resolve those first.
+    const useRelayFirst = Boolean(relay && (directFailed || isPlaylistUrl(station.url)));
     const source = useRelayFirst ? relay : streamUrl;
     relayTried = relayTried || useRelayFirst;
 
@@ -268,6 +306,7 @@ function stop() {
   assignedSrc = '';
   relayTried = false;
   directFailed = false;
+  escalationGraceUntil = 0;
   emit('stopped');
 }
 
@@ -294,6 +333,10 @@ function isPlaying() {
   return Boolean(element) && !element.paused;
 }
 
+function isEscalating() {
+  return Date.now() < escalationGraceUntil;
+}
+
 function on(type, handler) {
   events.addEventListener(type, handler);
   return () => events.removeEventListener(type, handler);
@@ -315,6 +358,7 @@ export const player = {
   getVolume,
   getCurrentStation,
   isPlaying,
+  isEscalating,
   on,
   prefetchHls,
   isHlsUrl,

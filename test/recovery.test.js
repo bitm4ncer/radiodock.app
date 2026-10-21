@@ -64,6 +64,20 @@ test('error then pause does not call playStation', () => {
   }
 });
 
+test('an escalation in flight is not raced by a recovery retry', () => {
+  const h = harness();
+  stubGlobals(h);
+  try {
+    attachRecovery(h.player);
+    h.player.isEscalating = () => true;
+    h.fire('error');
+    h.invokeTimers();
+    assert.deepEqual(h.plays, []);
+  } finally {
+    restoreGlobals(h);
+  }
+});
+
 test('an internal loading pause does not cancel a real retry', () => {
   const h = harness();
   stubGlobals(h);

@@ -6,3 +6,7 @@ const RELAY_BASE = 'https://stations.radiodock.app';
 export function relayUrl(uuid) {
   return `${RELAY_BASE}/api/relay?uuid=${encodeURIComponent(uuid)}`;
 }
+
+export function relayHlsUrl(uuid) {
+  return `${RELAY_BASE}/api/relay/hls?uuid=${encodeURIComponent(uuid)}`;
+}
