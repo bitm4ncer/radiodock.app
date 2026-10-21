@@ -377,6 +377,34 @@
   border-radius: var(--radius-sm);
 }
 
+/* Popular, A-Z, Community and search results all live in one inset list.
+   The section heading stays put while the dark rounded block scrolls inside
+   itself, exactly like the favourites list in the main player. Discover and
+   collection views do not have a direct .stations-list child, so they keep
+   scrolling as a whole. */
+.stations-content:has(> .stations-list) {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.stations-content:has(> .stations-list) > .stations-section-head {
+  flex: 0 0 auto;
+}
+
+.stations-content:has(> .stations-list) > .stations-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.stations-content:has(> .stations-list) > .stations-load-more,
+.stations-content:has(> .stations-list) > .stations-empty {
+  flex: 0 0 auto;
+}
+
 .stations-row {
   display: flex;
   align-items: stretch;

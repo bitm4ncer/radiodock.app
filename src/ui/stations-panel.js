@@ -49,7 +49,12 @@ function discoverIcon() {
 export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = {}) {
   const panel = elements.panel ?? document.getElementById('stationsPanel');
   const body = elements.body ?? document.getElementById('stationsBody');
-  if (panel) registerSnapSurface(panel);
+  if (panel) {
+    registerSnapSurface(panel, {
+      setPosition: setPanelPosition,
+      persist: (x, y) => storage.setPref('stationsPanelPos', { left: x, top: y }).catch(() => {}),
+    });
+  }
 
   if (!panel || !body) {
     return {
@@ -154,13 +159,14 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       if (button) setMode(button.dataset.mode);
     });
     body.querySelector('#stationsContent')?.addEventListener('click', onContentClick);
-    body.querySelector('#stationsContent')?.addEventListener('scroll', onContentScroll, { passive: true });
+    body.querySelector('#stationsContent')?.addEventListener('scroll', onContentScroll, { passive: true, capture: true });
     body.querySelector('#stationsRail')?.addEventListener('click', (evt) => {
       const button = evt.target.closest('[data-letter]');
       if (!button || button.disabled) return;
       state.letter = button.dataset.letter;
       state.offset = 0;
-      body.querySelector('#stationsContent')?.scrollTo({ top: 0, behavior: 'smooth' });
+      const content = body.querySelector('#stationsContent');
+      listScrollContainer(content)?.scrollTo({ top: 0, behavior: 'smooth' });
       load({ reset: true });
     });
     filters?.close();
@@ -280,8 +286,11 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       priority: index < 10,
     })).join('');
     const atCap = state.mode !== 'popular' && state.rows.length >= MAX_ROWS;
+    const endless = state.mode === 'popular' && state.nextOffset != null
+      ? '<div class="stations-endless" aria-hidden="true"></div>'
+      : '';
     const more = state.mode === 'popular'
-      ? (state.nextOffset != null ? '<div class="stations-endless" aria-hidden="true"></div>' : '')
+      ? ''
       : state.nextOffset != null && !atCap
         ? '<button type="button" class="stations-load-more" data-action="more">Load more stations</button>'
         : atCap
@@ -293,11 +302,12 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.animateRows = false;
     content.innerHTML = `
       <div class="stations-section-head">${sectionHead()}</div>
-      <div class="stations-list${state.loading ? ' is-loading' : ''}${animateRows ? ' is-entering' : ''}">${rows}</div>
+      <div class="stations-list${state.loading ? ' is-loading' : ''}${animateRows ? ' is-entering' : ''}">${rows}${endless}</div>
       ${more}
     `;
-    if (restoreScroll != null) content.scrollTop = restoreScroll;
-    else if (animateRows) content.scrollTo({ top: 0, behavior: 'smooth' });
+    const scroller = listScrollContainer(content);
+    if (restoreScroll != null) scroller.scrollTop = restoreScroll;
+    else if (animateRows) scroller.scrollTo({ top: 0, behavior: 'smooth' });
     mountLogoBehavior(content);
     applyNowPlaying();
     const entering = content.querySelector('.stations-list.is-entering');
@@ -541,12 +551,17 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     }
   }
 
+  function listScrollContainer(content) {
+    return content?.querySelector(':scope > .stations-list') ?? content;
+  }
+
   function onContentScroll() {
     if (state.view !== 'stations' || state.mode !== 'popular') return;
     if (state.loading || state.nextOffset == null) return;
     const content = body.querySelector('#stationsContent');
     if (!content) return;
-    if (content.scrollHeight - content.scrollTop - content.clientHeight < 240) {
+    const scroller = listScrollContainer(content);
+    if (scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight < 240) {
       state.offset = state.nextOffset;
       load({ reset: false });
     }
@@ -678,7 +693,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       if (state.view !== 'stations') return;
       const incoming = result?.stations ?? [];
       const content = body.querySelector('#stationsContent');
-      if (!reset) state.restoreScroll = content?.scrollTop ?? null;
+      if (!reset) state.restoreScroll = listScrollContainer(content)?.scrollTop ?? null;
       const maxRows = state.mode === 'popular' ? null : MAX_ROWS;
       state.rows = reset ? mergeRows([], incoming, maxRows) : mergeRows(state.rows, incoming, maxRows);
       if (reset) {
@@ -1039,6 +1054,17 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     renderHeader();
     renderRail();
     renderContent();
+  }
+
+  function setPanelPosition(x, y) {
+    const width = panel.offsetWidth;
+    const height = panel.offsetHeight;
+    const left = Math.max(0, Math.min(window.innerWidth - width, x));
+    const top = Math.max(0, Math.min(window.innerHeight - height, y));
+    panel.style.left = `${left}px`;
+    panel.style.top = `${top}px`;
+    panel.style.transform = 'none';
+    panelPosition = { left, top };
   }
 
   async function applyPosition() {
