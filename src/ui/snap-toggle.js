@@ -4,8 +4,19 @@
 
 import { isSnapEnabled, setSnapEnabled } from './panel-snap.js';
 
-const ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-  <path d="M9 3.75V9H3.75M9 9 3.75 3.75M15 3.75V9h5.25M15 9l5.25-5.25M9 20.25V15H3.75M9 15l-5.25 5.25M15 20.25V15h5.25M15 15l5.25 5.25"/>
+// Two window panes that meet in the middle when snapping is on. When it is
+// off the panes pull apart and turn into dashed outlines, so the state is
+// readable at a glance and not just from the button colour.
+const ICON_ON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <rect x="2.75" y="4.5" width="8" height="15" rx="2" fill="currentColor" fill-opacity=".18"/>
+  <rect x="13.25" y="4.5" width="8" height="15" rx="2"/>
+  <path d="M10.75 12h2.5"/>
+</svg>`;
+
+const ICON_OFF = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <rect x="2" y="4.5" width="6.5" height="15" rx="2" stroke-dasharray="2.2 2.2"/>
+  <rect x="15.5" y="4.5" width="6.5" height="15" rx="2" stroke-dasharray="2.2 2.2"/>
+  <path d="M12 9.5v5"/>
 </svg>`;
 
 export function mountSnapToggle() {
@@ -18,7 +29,7 @@ export function mountSnapToggle() {
     btn.type = 'button';
     btn.className = 'snap-toggle--pill';
     btn.dataset.action = 'snap-toggle';
-    btn.innerHTML = ICON;
+    btn.innerHTML = ICON_ON;
     const anchor = pills.querySelector('.surface-toggle--pill, .theme-toggle--pill, .site-footer-desktop__version');
     pills.insertBefore(btn, anchor);
   }
@@ -26,6 +37,8 @@ export function mountSnapToggle() {
   function sync() {
     const on = isSnapEnabled();
     btn.setAttribute('aria-pressed', String(on));
+    btn.dataset.state = on ? 'on' : 'off';
+    btn.innerHTML = on ? ICON_ON : ICON_OFF;
     const label = on ? 'Turn window snap off' : 'Turn window snap on';
     btn.setAttribute('aria-label', label);
     btn.title = on ? 'Window snap: on' : 'Window snap: off';

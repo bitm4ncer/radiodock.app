@@ -18,9 +18,10 @@
 }
 
 .snap-toggle--pill svg {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
   display: block;
+  transition: opacity 140ms ease;
 }
 
 .snap-toggle--pill:hover {
@@ -31,6 +32,13 @@
 
 .snap-toggle--pill[aria-pressed="true"] {
   color: var(--text);
+  border-color: var(--text-muted);
+  background: var(--overlay-soft);
+}
+
+.snap-toggle--pill[aria-pressed="false"] {
+  color: var(--text-muted);
+  background: transparent;
 }
 
 .snap-toggle--pill:focus-visible {
