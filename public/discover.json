@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T16:45:46.975Z",
+  "generatedAt": "2026-10-21T17:25:30.701Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -3726,6 +3726,89 @@
             "countrycode": ""
           }
         ]
+      },
+      {
+        "slug": "tech-house",
+        "title": "Tech House",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "05ffe1bf-578f-4e1a-8388-3932613fd5a6",
+            "name": "NRJ Tech House",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "21443448-7b21-4831-8134-20c4ab700241",
+            "name": "DFM - Tech House",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "b77ff005-3b78-495a-b705-828c44a96fac",
+            "name": "Радио Рекорд Tech House",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "6a73c6d1-5928-4de4-acfa-983b465013b0",
+            "name": "Record Minimal",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "efe59d93-2fe4-11e8-91bf-52543be04c81",
+            "name": "Sunshine Live - Tech House",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "fd0cfcb9-2ad5-11e8-91bf-52543be04c81",
+            "name": "RauteMusik TechHouse",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "514118f5-7fc0-451f-9fac-dfb877376721",
+            "name": "Technolovers – Techhouse",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "0326796d-980b-44c8-8cfc-e8a26ebdefaa",
+            "name": "FG Tech House",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "a0f16337-dc2e-4b33-ad36-1fbef6dcc6d5",
+            "name": "United Music Tech House",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "79dea38e-6c70-401e-9557-4bedf428d7b2",
+            "name": "Prysm Tech House",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "bce5878d-ae5c-4e8b-888c-787b0c66ea24",
+            "name": "Radio Noise Tech House",
+            "countrycode": "RO"
+          },
+          {
+            "stationuuid": "4a0083ec-e094-47a8-845f-cf9a4679f7d3",
+            "name": "ADRENALINE Tech House Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "4b628ed0-0666-4893-9b35-72fa1cbdf377",
+            "name": "LOCA FM TechHouse",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "dd70fa73-7210-41b9-b984-5ae09c3233e4",
+            "name": "Tech House (laut.fm)",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "a28a2833-e6f7-4274-8711-1b8e25afc744",
+            "name": "Anima Amoris Deep Tech House",
+            "countrycode": "RU"
+          }
+        ]
       }
     ]
   },
@@ -4096,7 +4179,7 @@
       {
         "genre": "house",
         "label": "House",
-        "count": 840
+        "count": 852
       },
       {
         "genre": "hiphop",
@@ -4191,7 +4274,7 @@
       {
         "genre": "techno",
         "label": "Techno",
-        "count": 388
+        "count": 389
       },
       {
         "genre": "cumbia",
