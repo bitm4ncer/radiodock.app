@@ -1,0 +1,39 @@
+/* Desktop-footer switch for the panel rubber-snap behaviour. Same 32px
+   round control as the surface / theme pills; neutral rather than red so it
+   reads as a mode switch, not as an alert. */
+.snap-toggle--pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--overlay-hard);
+  border-radius: 999px;
+  color: var(--text-muted);
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.snap-toggle--pill svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.snap-toggle--pill:hover {
+  color: var(--text);
+  border-color: var(--text-muted);
+  background: var(--overlay-soft);
+}
+
+.snap-toggle--pill[aria-pressed="true"] {
+  color: var(--text);
+}
+
+.snap-toggle--pill:focus-visible {
+  outline: 2px solid var(--text-muted);
+  outline-offset: 2px;
+}

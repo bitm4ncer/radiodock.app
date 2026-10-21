@@ -19,6 +19,38 @@ const SNAP_DURATION = 280;
 const SNAP_OVERSHOOT = 10; // px along the travel vector; ~4-5px past target
 const MAX_ITERATIONS = 8;
 
+const SNAP_PREF_KEY = 'radiodock-snap';
+
+function readSnapEnabled() {
+  try {
+    return globalThis.localStorage?.getItem(SNAP_PREF_KEY) !== 'off';
+  } catch {
+    return true;
+  }
+}
+
+let snapEnabled = readSnapEnabled();
+
+export function isSnapEnabled() {
+  return snapEnabled;
+}
+
+export function setSnapEnabled(enabled) {
+  const next = enabled !== false;
+  if (next === snapEnabled) return;
+  snapEnabled = next;
+  try {
+    globalThis.localStorage?.setItem(SNAP_PREF_KEY, next ? 'on' : 'off');
+  } catch {}
+  if (!next) {
+    for (const el of surfaces.keys()) cancelSnap(el);
+  }
+  if (typeof document !== 'undefined') {
+    document.documentElement.classList.toggle('snap-disabled', !next);
+    document.dispatchEvent(new CustomEvent('snapchange', { detail: { enabled: next } }));
+  }
+}
+
 export function registerSnapSurface(el, adapter = null) {
   if (el) surfaces.set(el, adapter || null);
 }
@@ -44,6 +76,7 @@ export function cancelSnap(el) {
  */
 export function snapPanel(el, { x, y, setPosition } = {}) {
   if (!el || typeof setPosition !== 'function') return { x, y };
+  if (!snapEnabled) return { x, y };
 
   const rect = el.getBoundingClientRect();
   const width = rect.width;
