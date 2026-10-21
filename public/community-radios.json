@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportDate": "2026-10-21T00:12:08.095Z",
+  "exportDate": "2026-10-21T01:11:39.109Z",
   "listName": "Community Radios",
   "stations": [
     {
@@ -698,6 +698,134 @@
       "id": "3bee72bd-0de4-448e-ae23-2e962923643f",
       "name": "Radio Buena Vida",
       "url": "https://s4.radio.co/s69b281ac0/listen"
+    },
+    {
+      "countrycode": "US",
+      "favicon": "https://www.wmpg.org/wp-content/themes/wmpg/library/images/apple-icon-touch.png",
+      "homepage": "https://www.wmpg.org/",
+      "id": "7c84c634-ab44-450b-90fa-90457690eff3",
+      "name": "WMPG",
+      "url": "http://quarrel.str3am.com:7270/"
+    },
+    {
+      "countrycode": "AU",
+      "favicon": "http://fbiradio.com/favicon/apple-touch-icon.png",
+      "homepage": "http://fbiradio.com/",
+      "id": "3d913c40-3ef9-4a82-9f88-687e59193e35",
+      "name": "2FBI \"FBi Radio\" 94.5 FM Sydney, NSW",
+      "url": "https://streamer.fbiradio.com/stream"
+    },
+    {
+      "countrycode": "NO",
+      "favicon": "https://api.community-radio-index.com/media/logos/14245968-0d6b-4029-9f9d-18ee6bce2fe7.png",
+      "homepage": "https://verslib.re",
+      "id": "ed437175-67ea-4fb3-8e15-703794b1ac11",
+      "name": "Vers Libre",
+      "url": "https://ch01.cdn.eurozet.pl/CHICOV.mp3"
+    },
+    {
+      "countrycode": "",
+      "favicon": "https://internetradioprotocol.org/logos/zabrij.png",
+      "homepage": "https://www.zabrijradio.org",
+      "id": "244b3bb9-1497-4f94-8dd3-2d8f7a1344fa",
+      "name": "Zabrij Radio",
+      "url": "https://zabrij-radio.radiocult.fm/stream"
+    },
+    {
+      "countrycode": "KE",
+      "favicon": "https://api.community-radio-index.com/media/logos/8038486f-d677-4fe0-9305-b2003ca52788.png",
+      "homepage": "https://calotropis.xyz",
+      "id": "3717842d-e18c-4699-9539-796e620fbf05",
+      "name": "Calotropis",
+      "url": "https://radio.calotropis.xyz:8000/radio.mp3"
+    },
+    {
+      "countrycode": "",
+      "favicon": "https://api.community-radio-index.com/media/logos/2659561e-d072-4aa3-85a2-c959d7cfbad1.png",
+      "homepage": "https://bvlbancharadio.net/",
+      "id": "70272aef-71c4-42af-bf88-0cf658ee94d3",
+      "name": "Bvlbancha Liberation Radio",
+      "url": "http://cast6.asurahosting.com:7236/stream?type=http&nocache=242"
+    },
+    {
+      "countrycode": "NL",
+      "favicon": "https://www.intergalactic.fm/themes/custom/ifm/favicon.ico",
+      "homepage": "https://www.intergalactic.fm/",
+      "id": "29d848b8-5401-4170-aa95-84eecd3c211b",
+      "name": "Intergalactic FM | CBS TV",
+      "url": "https://intergalactic.tv/live/smil:tv.smil/playlist.m3u8"
+    },
+    {
+      "countrycode": "FR",
+      "favicon": "http://www.radiogalere.org/favicon.ico",
+      "homepage": "http://www.radiogalere.org/",
+      "id": "96109b22-0601-11e8-ae97-52543be04c81",
+      "name": "Radio Galère",
+      "url": "http://www.radiogalere.org:8080/galere.mp3"
+    },
+    {
+      "countrycode": "AT",
+      "favicon": "https://helsinki.at/wp-content/uploads/cropped-logo-ohr-192x192.png",
+      "homepage": "http://helsinki.at/",
+      "id": "9614b499-0601-11e8-ae97-52543be04c81",
+      "name": "Radio Helsinki 92,6 MHz (160 kbps)",
+      "url": "http://live.helsinki.at:8088/live160.mp3"
+    },
+    {
+      "countrycode": "RS",
+      "favicon": "https://station-images-prod.radio-assets.com/300/radioaparat.png",
+      "homepage": "https://radioaparat.rs/",
+      "id": "19fa202f-4045-4bce-a544-588e3683a0f9",
+      "name": "Radio Aparat",
+      "url": "https://stream4.rcast.net/72355/"
+    },
+    {
+      "countrycode": "FR",
+      "favicon": "https://stationstation.fr/assets/icons/apple-touch-icon.png",
+      "homepage": "https://stationstation.fr/",
+      "id": "70fd37a9-f2ed-4037-ba64-da69141abf3e",
+      "name": "Station Station",
+      "url": "http://libretime.stationstation.fr:8000/main"
+    },
+    {
+      "countrycode": "FR",
+      "favicon": "https://www.rinse.fm/favicon/apple-touch-icon.png",
+      "homepage": "https://www.rinse.fm/channels/france/",
+      "id": "6b5b7e02-c21a-4fdc-ab01-53d775502f6d",
+      "name": "Rinse France",
+      "url": "https://radio10.pro-fhi.net/radio/9041/stream"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://extra.resonance.fm/favicon.ico",
+      "homepage": "https://extra.resonance.fm/",
+      "id": "d9e327ff-2c59-4145-83a9-67f7b33a1ab2",
+      "name": "Resonance Extra",
+      "url": "https://stream.resonance.fm/resonance-extra"
+    },
+    {
+      "countrycode": "PL",
+      "favicon": "https://radiokapital.pl/static/favicons/ms-icon-150x150.png",
+      "homepage": "https://radiokapital.pl/",
+      "id": "b7154644-7519-4c14-8891-023c23387e4f",
+      "name": "Kapitał",
+      "url": "https://radiokapitalpl.out.airtime.pro/radiokapitalpl_a"
+    },
+    {
+      "countrycode": "DE",
+      "favicon": "https://api.community-radio-index.com/media/logos/214bb816-cf3c-4e75-bdfc-9711decfbcd2.png",
+      "homepage": "https://rbl.media/",
+      "id": "86b931f3-e8e7-43b8-bd60-2baff4749e37",
+      "name": "RBL Berlin",
+      "url": "https://rblmedia-a4a44e62.radiocult.fm/stream"
+    },
+    {
+      "countrycode": "GB",
+      "favicon": "https://radioradio.fm/grafika/logo1a.png",
+      "homepage": "https://radioradio.fm/",
+      "id": "033b3a5b-93cc-46d2-b7f4-0c381fb800e8",
+      "name": "Radio Radio",
+      "url": "https://c16.radioboss.fm:18014/stream"
     }
   ]
 }
