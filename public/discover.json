@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T02:23:07.174Z",
+  "generatedAt": "2026-10-21T03:02:13.014Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2422,6 +2422,256 @@
             "stationuuid": "961ac635-0601-11e8-ae97-52543be04c81",
             "name": "Radio Swiss Pop",
             "countrycode": "CH"
+          },
+          {
+            "stationuuid": "fdbdc2b0-c184-437b-8643-9a5bfa45c253",
+            "name": "BBC Radio 1",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "3606ef8c-cd58-4440-8c47-dbf1e0cacdac",
+            "name": "BBC Radio 2 (128k)",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "1c6dcd6f-88c6-4fd4-8191-078435168e85",
+            "name": "BBC Radio 6 Music",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "96200095-0601-11e8-ae97-52543be04c81",
+            "name": "Capital FM London",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "9606ceae-0601-11e8-ae97-52543be04c81",
+            "name": "Radio Caroline",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "c4077677-dc2f-11e9-a8ba-52543be04c81",
+            "name": "Heart 80s",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "d0a1da9f-46b3-11e9-aa55-52543be04c81",
+            "name": "Today FM",
+            "countrycode": "IE"
+          },
+          {
+            "stationuuid": "206f93c5-5f3c-4ba1-82c2-19a42582fcc2",
+            "name": "FM4 | ORF",
+            "countrycode": "AT"
+          },
+          {
+            "stationuuid": "e723f7f8-0db1-4bc5-a64c-64d8377f9f9a",
+            "name": "ORF Hitradio Ö3 | HQ",
+            "countrycode": "AT"
+          },
+          {
+            "stationuuid": "961f1da4-0601-11e8-ae97-52543be04c81",
+            "name": "SRF 3",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "960553a5-0601-11e8-ae97-52543be04c81",
+            "name": "Radio Eins",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "240d28b9-7858-48d2-a816-9cf8e1875fe8",
+            "name": "SWR3",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "963fb390-0601-11e8-ae97-52543be04c81",
+            "name": "Radio Nova",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "76b129aa-45cc-46cf-b6b2-1fde08a2c8f9",
+            "name": "FIP Pop",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "960d9241-0601-11e8-ae97-52543be04c81",
+            "name": "RMF FM",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "9619ea14-0601-11e8-ae97-52543be04c81",
+            "name": "Radio 105 Network",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "961a5a75-0601-11e8-ae97-52543be04c81",
+            "name": "RMC Radio Monte Carlo",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "b81c57c3-eb05-47ac-a0ea-eb01a6960cc4",
+            "name": "LOS 40 Principales España",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "5e45745b-7337-4299-bb93-6b99fafbc2b2",
+            "name": "Q music Nederland",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "962e7e22-0601-11e8-ae97-52543be04c81",
+            "name": "SLAM!",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "960ed37d-0601-11e8-ae97-52543be04c81",
+            "name": "Kiss 98 FM",
+            "countrycode": "CZ"
+          },
+          {
+            "stationuuid": "960efe59-0601-11e8-ae97-52543be04c81",
+            "name": "Fun Radio",
+            "countrycode": "SK"
+          },
+          {
+            "stationuuid": "960e7334-0601-11e8-ae97-52543be04c81",
+            "name": "Petőfi Rádió",
+            "countrycode": "HU"
+          },
+          {
+            "stationuuid": "960e0117-0601-11e8-ae97-52543be04c81",
+            "name": "SomaFM PopTron (128k MP3)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "960be1b7-0601-11e8-ae97-52543be04c81",
+            "name": "181.FM - Beatles",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "6a7508a9-27ab-11e8-91bf-52543be04c81",
+            "name": "KEXP 90.3 Seattle, WA",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "325a61dc-fe34-48c6-ae82-1467b710f07b",
+            "name": "KCRW 88.9 FM - Live",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "bb03737b-2116-42c3-ae23-81de72bbf729",
+            "name": "LOS40 Colombia",
+            "countrycode": "CO"
+          },
+          {
+            "stationuuid": "36492a90-efa9-11e8-a471-52543be04c81",
+            "name": "Vibra Bogotá 104.9 FM",
+            "countrycode": "CO"
+          },
+          {
+            "stationuuid": "0c773186-a382-4978-8e01-5650d325132d",
+            "name": "Radio Oxígeno",
+            "countrycode": "PE"
+          },
+          {
+            "stationuuid": "cfdebe47-26c0-442f-88d5-e6f63148c635",
+            "name": "Studio 92 (92.5 FM Lima)",
+            "countrycode": "PE"
+          },
+          {
+            "stationuuid": "960c11f3-0601-11e8-ae97-52543be04c81",
+            "name": "Rock and Pop",
+            "countrycode": "CL"
+          },
+          {
+            "stationuuid": "de04e00e-51c3-4f65-96ce-7d6aab2c55fd",
+            "name": "Sonar 105.3 FM",
+            "countrycode": "CL"
+          },
+          {
+            "stationuuid": "960c154f-0601-11e8-ae97-52543be04c81",
+            "name": "XHEXA \"Exa FM\" 104.9 FM Mexico City, DF",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "61156199-ece3-413e-ac39-7b2483513ab2",
+            "name": "Radio Mix FM",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "1c3b70d9-39d5-49d5-a81a-77833667a88b",
+            "name": "I-Radio Jakarta",
+            "countrycode": "ID"
+          },
+          {
+            "stationuuid": "6b36ba4f-6d29-4272-b3c0-9aeeb64e61ec",
+            "name": "Mirchi Top 20",
+            "countrycode": "IN"
+          },
+          {
+            "stationuuid": "7078d270-62b8-49c3-a729-ad325d60d29c",
+            "name": "SBS PopAsia",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "37d1f4fb-0812-432d-af30-e91ca28ae05c",
+            "name": "Big B Radio - Jpop",
+            "countrycode": "JP"
+          },
+          {
+            "stationuuid": "7a72aa80-3902-4d73-a548-db81ac780240",
+            "name": "Big B Radio - Kpop",
+            "countrycode": "KR"
+          },
+          {
+            "stationuuid": "84ac5af8-3bff-4e68-8294-84a43a950d07",
+            "name": "Yes 933",
+            "countrycode": "SG"
+          },
+          {
+            "stationuuid": "f2d01650-b84f-4d85-aa3f-4c085bf211ff",
+            "name": "Hits 1 Algérie",
+            "countrycode": "DZ"
+          },
+          {
+            "stationuuid": "39215908-b5f6-40d9-875c-57248dfe314a",
+            "name": "Amr Diab Radio",
+            "countrycode": "EG"
+          },
+          {
+            "stationuuid": "4c1ec953-fcf5-4bf1-b03b-4be73ad4cb3f",
+            "name": "Clouds FM",
+            "countrycode": "TZ"
+          },
+          {
+            "stationuuid": "8e17bd51-765e-4103-916a-69a4ed56ac9a",
+            "name": "NRG Radio",
+            "countrycode": "KE"
+          },
+          {
+            "stationuuid": "9614225b-0601-11e8-ae97-52543be04c81",
+            "name": "Jacaranda FM",
+            "countrycode": "ZA"
+          },
+          {
+            "stationuuid": "8407749b-aa65-4aee-b503-bd6e196bea9d",
+            "name": "Galgalatz 91.8 FM",
+            "countrycode": "IL"
+          },
+          {
+            "stationuuid": "fb1fd397-78fd-11ea-8a3b-52543be04c81",
+            "name": "Power POP",
+            "countrycode": "TR"
+          },
+          {
+            "stationuuid": "a5ddc968-6a3e-4a63-9be7-37584f99ef99",
+            "name": "Island FM Whitsundays 88.0MHz Airlie Beach Central Queensland",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "8ade45f1-f163-11e9-a96c-52543be04c81",
+            "name": "Pure Hits Australian Made",
+            "countrycode": "AU"
           }
         ]
       }
