@@ -49,6 +49,7 @@ import { mountAddPanel } from './ui/add-panel.js';
 import { mountChangelog, CHANGELOG_REVISION } from './ui/changelog.js';
 import { startLiveSync, stopLiveSync, pushWithStatus as syncPushWithStatus, getSyncToken, extractTokenFromInput, pullFromServer, applyImportPayload, markSyncDirty } from './data/sync.js';
 import { track, identifySession, trackStationPlay } from './analytics/umami.js';
+import { buildListItemEvent } from './analytics/stations-events.js';
 import { attachListenHeartbeat } from './analytics/listen-heartbeat.js';
 import { attachListenSession } from './analytics/listen-session.js';
 import { attachStreamOutcome } from './analytics/stream-outcome.js';
@@ -317,19 +318,22 @@ function scheduleSearchTrack(payload) {
 // Shared add/remove flow for the player heart and Stations rows. Keeping
 // this in one place makes both surfaces update the active list, the player
 // heart, sync and the row flags consistently.
-async function toggleStationInActiveList(station) {
+async function toggleStationInActiveList(station, source = 'list') {
   if (!station) return;
   const target = getActiveEditableList();
   if (!target) return;
   const has = target.stations.some((s) => s.id === station.id);
+  const listKind = target.id === listsApi.COMMUNITY_LIST_ID ? 'community' : 'user';
   try {
     if (has) {
       await listsApi.removeStationFromList(target.id, station.id);
+      track(...buildListItemEvent({ action: 'remove', uuid: station.stationuuid, listId: target.id, listKind, source }));
       target.stations = target.stations.filter((s) => s.id !== station.id);
       toast(`Removed from "${target.name}"`);
       scheduleSyncPush();
     } else {
       await listsApi.addStationToList(target.id, station);
+      track(...buildListItemEvent({ action: 'add', uuid: station.stationuuid, listId: target.id, listKind, source }));
       target.stations = [...target.stations, station];
       toast(`Added to "${target.name}"`);
       scheduleSyncPush();
@@ -368,6 +372,13 @@ const search = mountSearch({
       else listDropdown.setLists(allListsForDropdown());
       search.refreshAddedFlags();
       track('station-add', { country: station.countrycode ?? '' });
+      track(...buildListItemEvent({
+        action: 'add',
+        uuid: station.stationuuid,
+        listId: targetList.id,
+        listKind: targetList.id === listsApi.COMMUNITY_LIST_ID ? 'community' : 'user',
+        source: 'hero',
+      }));
       scheduleSyncPush();
       toast(`Added to "${targetList.name}"`);
     } catch (err) {
@@ -401,7 +412,7 @@ const stations = mountStationsPanel({
       trackStationPlay(station, 'stations');
       player.playStation(station);
     },
-    onAdd: (station) => toggleStationInActiveList(station),
+    onAdd: (station) => toggleStationInActiveList(station, 'stations'),
     onMove: async (station, listId) => {
       const from = getActiveEditableList();
       if (!station || !from || from.id === listId) return;
@@ -1270,7 +1281,7 @@ stationList.onReorder(async (orderedIds) => {
 
 // --- Save-to-current-list heart on player card ---
 playerCard.onFavoriteClick(async (station) => {
-  await toggleStationInActiveList(station);
+  await toggleStationInActiveList(station, 'player-card');
 });
 
 // --- List dropdown ---
