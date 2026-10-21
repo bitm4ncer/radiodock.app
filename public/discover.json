@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T20:32:57.154Z",
+  "generatedAt": "2026-10-21T20:33:13.063Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -4629,39 +4629,6 @@
             "stationuuid": "2324adb4-186c-4698-abf1-7103776a7137",
             "name": "Classic Rock 98.1 (CKLO)",
             "countrycode": "CA"
-          }
-        ]
-      },
-      {
-        "slug": "uk-garage",
-        "title": "UK Garage",
-        "source": "radiodock",
-        "featured": false,
-        "stations": [
-          {
-            "stationuuid": "9ade6f14-73bb-4bc8-8234-2e40134966c1",
-            "name": "UKG247",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "462a1756-2a14-49c7-ad7e-7db5054e238c",
-            "name": "UKG Radio",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "91a14ec6-a008-4a12-b6d3-65db918e12e0",
-            "name": "Algorythme UK Garage",
-            "countrycode": "FR"
-          },
-          {
-            "stationuuid": "f239f725-95e8-4196-87d2-032afdf46ade",
-            "name": "UK Garage Радио Рекорд",
-            "countrycode": "RU"
-          },
-          {
-            "stationuuid": "1c759224-cd2a-417c-a777-11e985f67582",
-            "name": "Funky SX",
-            "countrycode": "GB"
           }
         ]
       }
