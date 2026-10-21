@@ -316,19 +316,28 @@ function scheduleSearchTrack(payload) {
 
 // Shared favorite toggle for the player heart, Stations rows and search.
 // Favorites are global: they no longer depend on whichever list is active.
-async function toggleStationInFavorites(station) {
+async function toggleStationInFavorites(station, source = 'list') {
   if (!station) return;
   const target = favoritesList();
   if (!target?.stations) return;
   const has = target.stations.some((s) => s.id === station.id);
+  const listKind = target.id === listsApi.COMMUNITY_LIST_ID ? 'community' : 'user';
   try {
     const updated = has
       ? await listsApi.removeStationFromList(target.id, station.id)
       : await listsApi.addStationToList(target.id, station);
     // Trust the stored list instead of spreading a possibly stale array.
     if (Array.isArray(updated?.stations)) target.stations = updated.stations;
-    toast(has ? `Removed from "${target.name}"` : `Added to "${target.name}"`);
+    const listItemEvent = buildListItemEvent({
+      action: has ? 'remove' : 'add',
+      uuid: station.stationuuid,
+      listId: target.id,
+      listKind,
+      source,
+    });
+    track(listItemEvent.name, listItemEvent.data);
     if (!has) track('station-add', { country: station.countrycode ?? '' });
+    toast(has ? `Removed from "${target.name}"` : `Added to "${target.name}"`);
     scheduleSyncPush();
     updateFavoriteHeart();
     if (state.currentListId === target.id) renderActiveList();
