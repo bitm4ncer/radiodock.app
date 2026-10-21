@@ -13,10 +13,6 @@
      a photographic background. light — lifted to a brighter grey so the
      card still feels frosted on a pale backdrop. */
   .container {
-    /* Match the stations panel instead of staying at the mobile column
-       width. The old 480px cap read as a narrow strip next to the
-       stations window on a desktop-sized preview pane. */
-    max-width: min(720px, calc(100vw - 32px));
     padding: 59px 34px;
     background: #4141415c;
     border-radius: 25px;
