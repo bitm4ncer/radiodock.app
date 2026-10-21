@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T14:42:33.938Z",
+  "generatedAt": "2026-10-21T15:13:19.521Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2954,6 +2954,224 @@
             "stationuuid": "cce43ad3-73c5-4aaa-b4af-2754277a40fd",
             "name": "Totally Radio - Pop (MP3)",
             "countrycode": "AU"
+          }
+        ]
+      },
+      {
+        "slug": "trance-psy",
+        "title": "Trance / Psy",
+        "source": "radiodock",
+        "featured": true,
+        "stations": [
+          {
+            "stationuuid": "b5455fcb-e07e-11e9-a8ba-52543be04c81",
+            "name": "Trance Athena",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "447ad370-b609-46ed-9352-510659855a5c",
+            "name": "Afterhours FM (AH.FM)",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "52b3c152-251b-48d7-ae51-d635906ec41d",
+            "name": "TranceBase.FM",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "dcbbb866-0116-11ea-bbf2-52543be04c81",
+            "name": "Psyndora Psytrance",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "39e49a9c-c692-4642-8a84-1201680bb566",
+            "name": "The Sound Of Trance",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "962a61bf-0601-11e8-ae97-52543be04c81",
+            "name": "1.FM - Amsterdam Trance Radio",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "bb3117fb-0513-4251-9135-ba9cdc730d41",
+            "name": "90s90s Trance",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "0afd1a87-483f-44f9-9705-1abde80b88ee",
+            "name": "DiscoverTrance Radio",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "47651599-e323-4375-a9bf-aaae945e243e",
+            "name": "Trance Is Star Radio",
+            "countrycode": "UA"
+          },
+          {
+            "stationuuid": "8f1e8acf-2ce6-4542-a423-bc29ea514e4a",
+            "name": "RauteMusik Trance",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "344dbd28-0acc-4621-a3da-a7ddde668130",
+            "name": "sunshine live - Trance",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "57a27605-e80a-499c-b1a2-aca15a4ce92e",
+            "name": "Technolovers Trance",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "9ef2da84-5133-4446-989c-0b02b0f565ab",
+            "name": "Progressive Trance Mix",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "9608b0b0-0601-11e8-ae97-52543be04c81",
+            "name": "PulsRadio Trance",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9611ffbc-0601-11e8-ae97-52543be04c81",
+            "name": "PlayTrance Radio - Main Channel",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "79f786a8-0f1b-494c-a965-1fd4f90bfb73",
+            "name": "TrancePulse Dublin",
+            "countrycode": "IE"
+          },
+          {
+            "stationuuid": "9bf9c505-cc99-42d0-9c98-8dcd1b29e395",
+            "name": "1Mix Radio Trance",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "b322cb7b-6f84-45f4-a3c8-fd7b4ea42f67",
+            "name": "Radioparty Vocal Trance",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "c06274a2-7487-43a1-93e5-17aea602e4cc",
+            "name": "Radioparty Trance Party",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "d57d8bb4-e208-4892-bf6b-bcf6546aa2c8",
+            "name": "BEAT 100.9 FM",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "fc7c995c-6aa6-4627-9051-958fefa36c28",
+            "name": "HIT FM Trance Hits",
+            "countrycode": "MD"
+          },
+          {
+            "stationuuid": "9aa4137a-02ee-4752-ba6b-04cea24547d7",
+            "name": "Radio Record Trancemission",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "2110348b-a6b3-44cf-9597-0caa38fe70ec",
+            "name": "Record Trance Classics",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "51b7f8ff-bbe9-4c74-8f53-0cda9f16eaec",
+            "name": "DFM - Vocal Trance",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "473808f6-d74c-4256-b3eb-857dbd139afa",
+            "name": "DFM Armin van Buuren",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "09902861-999f-4a6e-915b-3692401aee84",
+            "name": "Radio Record Trancehouse",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "2cbba83f-f6ac-488f-8eef-9e675ea57905",
+            "name": "Radio Caprice Dream Trance",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "c65df5f7-d497-4650-9c72-beceea02e87b",
+            "name": "Sunshine Live Vocal Trance",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "fef391bf-48e0-4bb2-a076-8cbaf2e78281",
+            "name": "ADRN Trance",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "ccdcd51a-9616-459e-9330-aff08ee9a6b3",
+            "name": "ADRN Uplifting Trance",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "0bc37c5d-ff3d-4f46-b2fc-724b9332dcc1",
+            "name": "ADRN Hard Trance",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "0324180d-596a-4b6b-a486-67e606e23d36",
+            "name": "#joint radio Beat Trance",
+            "countrycode": "IL"
+          },
+          {
+            "stationuuid": "7fb7c62b-bdf1-11e8-aaf2-52543be04c81",
+            "name": "RadiOzora",
+            "countrycode": "HU"
+          },
+          {
+            "stationuuid": "65417625-55ad-46e5-969d-6ea8abde558f",
+            "name": "DMT-FM - EU Server 320k",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "05eb782e-e789-4573-9771-27bfa417655c",
+            "name": "psyradio.fm Progressive",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "8dc4bb10-1cac-11e8-a334-52543be04c81",
+            "name": "GoaNight",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "136439ad-86de-44b3-9527-2ce3fb5afd82",
+            "name": "Radio Caprice Forest Psytrance",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "9644ceb7-0601-11e8-ae97-52543be04c81",
+            "name": "laut.fm Psytrancelicious",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "962a8356-0601-11e8-ae97-52543be04c81",
+            "name": "1.FM - BOM Psytrance Radio",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "068e9825-246f-4a6e-b146-9e4df1359e97",
+            "name": "Technolovers Psytrance",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "ca151a81-ce20-4dd4-b6df-66f5c52a559c",
+            "name": "Record Goa Psy",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "cb39f162-3b40-11e8-b74d-52543be04c81",
+            "name": "Toksyna FM PsyTrance",
+            "countrycode": "PL"
           }
         ]
       },
