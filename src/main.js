@@ -57,6 +57,7 @@ import { getAnalyticsOptOut, setAnalyticsOptOut } from './data/analytics-prefs.j
 import { mountNudges } from './ui/nudges.js';
 import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
 import { mountSurfaceToggle } from './ui/surface.js';
+import { mountSnapToggle } from './ui/snap-toggle.js';
 import { detectPlatform, detectStandalone, canPromptInstall, promptInstall } from './platform.js';
 import { attachStreamProber } from './player/stream-prober.js';
 
@@ -188,6 +189,7 @@ subscribeThemeOSChange();
 // first paint, so this only reflects and flips the stored choice.
 mountSurfaceToggle({ root: document.getElementById('mobileMenu') });
 mountSurfaceToggle({ root: document.querySelector('.site-footer-desktop') });
+mountSnapToggle();
 
 // Block pinch-zoom on iOS Safari. The viewport meta `user-scalable=no` and
 // `maximum-scale=1` are unreliable on iOS 10+ (Safari ignores them for
