@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T15:43:52.375Z",
+  "generatedAt": "2026-10-21T16:12:55.863Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -3068,16 +3068,11 @@
         ]
       },
       {
-        "slug": "dubtechno-minimal",
-        "title": "Dubtechno / Minimal",
+        "slug": "dubtechno",
+        "title": "Dubtechno",
         "source": "radiodock",
         "featured": false,
         "stations": [
-          {
-            "stationuuid": "63f00576-2ed9-41f7-bef5-e3ed27ed90d2",
-            "name": "Mabu Beatz Dub Techno",
-            "countrycode": "DE"
-          },
           {
             "stationuuid": "050ed957-00a4-4522-ad75-6867ff427c65",
             "name": "dubtechno247station",
@@ -3089,69 +3084,9 @@
             "countrycode": "GB"
           },
           {
-            "stationuuid": "a7955208-a64e-4430-b41c-62de37b14562",
-            "name": "Radio Caprice – Dub Techno",
-            "countrycode": "RU"
-          },
-          {
             "stationuuid": "8cfc1295-8f6f-4414-a581-015d231470ec",
             "name": "Anima Amoris Dub Techno",
             "countrycode": "RU"
-          },
-          {
-            "stationuuid": "230fde18-874e-421e-88cc-ac654926782a",
-            "name": "RADCAP: Ambient Dub",
-            "countrycode": "RU"
-          },
-          {
-            "stationuuid": "f7a27449-af1b-470e-aa50-bc5f1df79f4e",
-            "name": "ROminimal Radio",
-            "countrycode": "RO"
-          },
-          {
-            "stationuuid": "e45d2913-88fc-4c43-adef-661753e951f9",
-            "name": "MINIMALRADIO.DE",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "48b3a144-bc19-41b4-b271-d5ede950dfcb",
-            "name": "ToXoRs minimalRADIO (320k)",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "99349530-87ed-48a0-9c92-5ce42ccff0de",
-            "name": "MABU Beatz Radio - Minimal",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "01fa3ef0-acf6-4e63-8777-f5bb4957b5ec",
-            "name": "Technolovers – Minimal",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "8694d429-d064-4e1a-b7f0-159b550cf890",
-            "name": "Radio Caprice – Minimal Techno",
-            "countrycode": "RU"
-          },
-          {
-            "stationuuid": "6a73c6d1-5928-4de4-acfa-983b465013b0",
-            "name": "Record Minimal",
-            "countrycode": "RU"
-          },
-          {
-            "stationuuid": "29f2d6bd-7fee-4e56-a9c1-16a0123b5c63",
-            "name": "chronisch_elektronisch-laut-fm",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "10079369-ff61-45fa-8f8e-c01c36aca5ab",
-            "name": "SHAMANU",
-            "countrycode": "RO"
-          },
-          {
-            "stationuuid": "5f374674-a09e-44f4-9700-a2647915bfc8",
-            "name": "Minimal & Deep-tech on MixLive.net",
-            "countrycode": "IE"
           },
           {
             "stationuuid": "2f7cead0-b1fa-4400-a6dd-8ccfc1be3e03",
@@ -3159,19 +3094,14 @@
             "countrycode": "DE"
           },
           {
-            "stationuuid": "b828bae6-3dcf-4cff-9e83-98ea75928930",
-            "name": "Radio Caprice - Dub Techno [1]",
-            "countrycode": "RU"
+            "stationuuid": "63f00576-2ed9-41f7-bef5-e3ed27ed90d2",
+            "name": "Mabu Beatz Dub Techno",
+            "countrycode": "DE"
           },
           {
-            "stationuuid": "bb6b7ad8-f327-11e9-a96c-52543be04c81",
-            "name": "Traxx FM – Tech Minimal",
-            "countrycode": "CH"
-          },
-          {
-            "stationuuid": "19c57c60-bf6f-481b-9197-cb7e4f58c589",
-            "name": "Radio Caprice - Minimal Techno [1]",
-            "countrycode": "RU"
+            "stationuuid": "45683512-dfc3-4338-b46d-60f9d26c63e0",
+            "name": "Dub Ninja",
+            "countrycode": "GB"
           }
         ]
       },
@@ -3429,6 +3359,84 @@
         ]
       },
       {
+        "slug": "minimal",
+        "title": "Minimal",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "f7a27449-af1b-470e-aa50-bc5f1df79f4e",
+            "name": "ROminimal Radio",
+            "countrycode": "RO"
+          },
+          {
+            "stationuuid": "e45d2913-88fc-4c43-adef-661753e951f9",
+            "name": "MINIMALRADIO.DE",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "99349530-87ed-48a0-9c92-5ce42ccff0de",
+            "name": "MABU Beatz Radio - Minimal",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "01fa3ef0-acf6-4e63-8777-f5bb4957b5ec",
+            "name": "Technolovers – Minimal",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "6a73c6d1-5928-4de4-acfa-983b465013b0",
+            "name": "Record Minimal",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "29f2d6bd-7fee-4e56-a9c1-16a0123b5c63",
+            "name": "chronisch_elektronisch-laut-fm",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "10079369-ff61-45fa-8f8e-c01c36aca5ab",
+            "name": "SHAMANU",
+            "countrycode": "RO"
+          },
+          {
+            "stationuuid": "5f374674-a09e-44f4-9700-a2647915bfc8",
+            "name": "Minimal & Deep-tech on MixLive.net",
+            "countrycode": "IE"
+          },
+          {
+            "stationuuid": "bb6b7ad8-f327-11e9-a96c-52543be04c81",
+            "name": "Traxx FM – Tech Minimal",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "b74bb2f0-0c5f-49dc-b9e4-7843c40f6e8b",
+            "name": "Radio Marketescu House & Minimal",
+            "countrycode": "RO"
+          },
+          {
+            "stationuuid": "be802b5d-d62c-4ca7-ad17-7115ad12b81b",
+            "name": "Deep Mix Radio",
+            "countrycode": "PT"
+          },
+          {
+            "stationuuid": "f0df6e39-68b5-4026-9d83-51af63ddfdc6",
+            "name": "UZIC.CH – Techno Minimal",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "4688eb3a-a407-4360-aef6-ac823bbae240",
+            "name": "WSSR Sector Seven Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "1792b3c5-c299-4dd3-97ad-db94a489becd",
+            "name": "Anima Amoris Minimal Deep Techno",
+            "countrycode": "RU"
+          }
+        ]
+      },
+      {
         "slug": "hardcore",
         "title": "Hardcore",
         "source": "radiodock",
@@ -3532,6 +3540,91 @@
           {
             "stationuuid": "87d5a90a-29bb-4bcf-91c8-9fd5c53b44e0",
             "name": "Hardstyle FM",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "960ea1eb-0601-11e8-ae97-52543be04c81",
+            "name": "HardBase.FM",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "962c0681-0601-11e8-ae97-52543be04c81",
+            "name": "Sunshine Live - Hands Up",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "96128025-0601-11e8-ae97-52543be04c81",
+            "name": "Sunshine Live - Hard",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "0beeb085-5116-4f2a-a543-cdcb837f8116",
+            "name": "Technolovers HANDSUP",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "6a74e9a2-e5ac-40d5-9d2d-f956f15b7058",
+            "name": "Technolovers HARDSTYLE",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "c6de7ff5-8c25-4e3a-987d-3e0c7ecb9db9",
+            "name": "Technolovers HARDCORE",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "810c8f16-fc17-4eab-a8ef-908f280eb26a",
+            "name": "RauteMusik HardeR",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "b9201e54-c66a-489b-9db5-f487c0c4bcdf",
+            "name": "Real Hardstyle Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "674e1f9d-4686-4bc0-8fc3-7e1517ed543a",
+            "name": "Q-Dance Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "821a2895-5ca8-430c-b361-f5b665d0efcd",
+            "name": "A.D.M. Hardstyle Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "9369ae3c-5bab-11e9-a622-52543be04c81",
+            "name": "HappyHardcore.com",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "95474386-aaca-4d90-9d5c-3913ea75bce1",
+            "name": "Happy Rave Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "fba2054a-0812-4a8f-b9bf-ab0546c5cccd",
+            "name": "Kniteforce Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "5ede37ba-a332-4607-b0c6-2469318c3649",
+            "name": "Topradio TopBam",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "e8e57947-b7ce-42f4-9e17-b1565017ccb2",
+            "name": "PRIMAL.FM DRESDEN",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "2669339a-2e10-45ff-bcbc-6bbd09185216",
+            "name": "Hardstyle and Hardcore",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "96244e9c-0601-11e8-ae97-52543be04c81",
+            "name": "Hardcore Radio",
             "countrycode": ""
           }
         ]
@@ -3885,7 +3978,7 @@
       {
         "genre": "electronic",
         "label": "Electronic",
-        "count": 1049
+        "count": 1051
       },
       {
         "genre": "public",
@@ -4000,7 +4093,7 @@
       {
         "genre": "techno",
         "label": "Techno",
-        "count": 386
+        "count": 388
       },
       {
         "genre": "cumbia",
