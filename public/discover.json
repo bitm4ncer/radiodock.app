@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T21:11:06.453Z",
+  "generatedAt": "2026-10-21T21:11:13.386Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -4689,6 +4689,11 @@
             "countrycode": "US"
           },
           {
+            "stationuuid": "3f198fb4-b7dc-4232-bc00-3cbac649accb",
+            "name": "House Classics",
+            "countrycode": "NL"
+          },
+          {
             "stationuuid": "f9a4e918-7df8-42ba-862f-21828d7c9b09",
             "name": "Just House Music",
             "countrycode": "GB"
@@ -4717,11 +4722,6 @@
             "stationuuid": "1e9d72a2-8075-11e9-aa30-52543be04c81",
             "name": "Point Blank Radio",
             "countrycode": "GB"
-          },
-          {
-            "stationuuid": "3f198fb4-b7dc-4232-bc00-3cbac649accb",
-            "name": "House Classics",
-            "countrycode": "NL"
           },
           {
             "stationuuid": "fd3c673c-ffe1-4621-8f83-d827b26dc0bc",
