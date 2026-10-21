@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T19:34:22.500Z",
+  "generatedAt": "2026-10-21T19:48:12.896Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -4260,7 +4260,7 @@
       {
         "genre": "edm-dance",
         "label": "Dance & EDM",
-        "count": 1792
+        "count": 1799
       },
       {
         "genre": "christian",
@@ -4300,7 +4300,7 @@
       {
         "genre": "nineties",
         "label": "90s",
-        "count": 899
+        "count": 898
       },
       {
         "genre": "alternative",
@@ -4310,12 +4310,12 @@
       {
         "genre": "house",
         "label": "House",
-        "count": 852
+        "count": 851
       },
       {
         "genre": "hiphop",
         "label": "Hip-Hop",
-        "count": 829
+        "count": 830
       },
       {
         "genre": "folk",
@@ -4375,7 +4375,7 @@
       {
         "genre": "indie",
         "label": "Indie",
-        "count": 502
+        "count": 501
       },
       {
         "genre": "culture",
@@ -4395,7 +4395,7 @@
       {
         "genre": "disco",
         "label": "Disco",
-        "count": 405
+        "count": 413
       },
       {
         "genre": "twothousands",
@@ -4405,7 +4405,7 @@
       {
         "genre": "techno",
         "label": "Techno",
-        "count": 389
+        "count": 388
       },
       {
         "genre": "cumbia",
@@ -4455,7 +4455,7 @@
       {
         "genre": "dnb",
         "label": "Drum & Bass",
-        "count": 193
+        "count": 192
       },
       {
         "genre": "kids",
