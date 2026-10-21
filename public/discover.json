@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T12:58:44.699Z",
+  "generatedAt": "2026-10-21T12:59:25.233Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -3320,6 +3320,114 @@
             "stationuuid": "f7c5d86d-f31d-422b-b138-4c9f0690539b",
             "name": "Full Spectrum Radio",
             "countrycode": "CA"
+          }
+        ]
+      },
+      {
+        "slug": "hardcore",
+        "title": "Hardcore",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "6e06bb6b-c281-40e7-a459-2d7be467af6f",
+            "name": "Hardcore Power Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "dc69301f-c783-4ca1-a4f6-ca37db3ea4f8",
+            "name": "Pure Radio Holland Hardcore",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "aa01e1f5-9bb0-4cc1-a77d-88c3c2e712d4",
+            "name": "FRENCHCORE24FM",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "5399e913-e898-4e39-b518-ffb7850307c4",
+            "name": "HARDCORERADIO.CZ",
+            "countrycode": "CZ"
+          },
+          {
+            "stationuuid": "044fa2d4-c925-46d8-8867-5ca659f14f8a",
+            "name": "MOSCOW MADNESS",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "a969cb8a-28bd-4952-a9c3-5afe1b8c15f0",
+            "name": "Radio Caprice - Gabber",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "0b15fd4c-c08f-4c0a-bcb4-34f8e784230d",
+            "name": "Radio Caprice [Happy / Uk Hardcore / Happy Rave / Happycore]",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "d9cf0033-c96b-4106-9371-936a647f1845",
+            "name": "Sunshine Live - Hardcore",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "27a69f19-4001-4bf4-b602-92511bc1e682",
+            "name": "HPS Bassline",
+            "countrycode": "EE"
+          },
+          {
+            "stationuuid": "d7a59a3c-9287-4b86-9cc5-e7cd781975da",
+            "name": "SUBURBiA Planet Hardcore",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "1e4dfa2a-9492-47cc-a2f4-c7448f229e95",
+            "name": "Hardcore Underground Makina",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "738bfe10-d179-4d7e-bf4e-cc1c89f8c63d",
+            "name": "J Nation",
+            "countrycode": "ID"
+          },
+          {
+            "stationuuid": "10fc8177-339e-4470-b3d1-5346706addeb",
+            "name": "ADRN Happy Hardcore",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "cafe9fc4-a7e6-11e8-a8ed-52543be04c81",
+            "name": "F4biX",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "ed1d2979-fb9a-47b0-9483-d61aa4c42016",
+            "name": "Technolovers Gabber",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "6f74701a-d559-4c46-ae23-c3e3b4d6be5a",
+            "name": "Technolovers Frenchcore",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "77cedc9e-e385-417f-83e9-54c73bdc653a",
+            "name": "Masters of Hardcore Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "22551760-3a87-11ea-8dd7-52543be04c81",
+            "name": "SLAM! HARDSTYLE",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "18a7a98c-1eec-40fa-a854-8299caf92e08",
+            "name": "Radio Record Hardstyle",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "87d5a90a-29bb-4bcf-91c8-9fd5c53b44e0",
+            "name": "Hardstyle FM",
+            "countrycode": ""
           }
         ]
       }
