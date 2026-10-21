@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normaliseDiscover, renderDiscover, renderCollection, collectionCard, featuredLists, pickFeaturedLists, renderDiscoverUnavailable } from '../src/ui/discover-child.js';
+import { normaliseDiscover, renderDiscover, renderCollection, collectionCard, featuredLists, pickFeaturedLists } from '../src/ui/discover-child.js';
 
 test('normaliseDiscover keeps valid curated lists only', () => {
   const data = { curated: { lists: [
@@ -147,12 +147,6 @@ test('renderDiscover places the compact submit CTA in the user section heading',
   assert.ok(linkIndex > headStart);
   assert.ok(linkIndex < gridIndex);
   assert.ok(!html.includes('stations-submit-card'));
-});
-
-test('renderDiscoverUnavailable produces an honest unavailable message', () => {
-  const html = renderDiscoverUnavailable();
-  assert.match(html, /unavailable/i);
-  assert.ok(!html.includes('Loading'));
 });
 
 test('collection cards expose a separate save-as-list button', () => {
