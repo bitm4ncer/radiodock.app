@@ -1127,7 +1127,7 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text);
-  background: transparent;
+  background: var(--bg-dark);
   text-align: left;
   font: inherit;
   cursor: pointer;
