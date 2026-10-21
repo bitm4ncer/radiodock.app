@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T18:15:36.014Z",
+  "generatedAt": "2026-10-21T18:18:37.748Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -518,6 +518,11 @@
         "stationuuid": "033b3a5b-93cc-46d2-b7f4-0c381fb800e8",
         "name": "Radio Radio",
         "countrycode": "GB"
+      },
+      {
+        "stationuuid": "025e6fba-d2eb-45ca-9b9b-ffa08ae49806",
+        "name": "RADIO.D59B",
+        "countrycode": "RS"
       },
       {
         "stationuuid": "de5aaea1-15a8-437f-bd9c-fa65b7f4afc3",
