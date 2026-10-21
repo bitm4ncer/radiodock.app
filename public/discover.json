@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T01:27:02.590Z",
+  "generatedAt": "2026-10-21T01:27:12.757Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -1943,6 +1943,69 @@
         ]
       },
       {
+        "slug": "obscure",
+        "title": "Obscure",
+        "source": "radiodock",
+        "featured": true,
+        "stations": [
+          {
+            "stationuuid": "7b85cb6b-ebb8-11e8-a471-52543be04c81",
+            "name": "R/a/dio",
+            "countrycode": "JP"
+          },
+          {
+            "stationuuid": "50603f9e-7535-4551-901a-7e0f2cc4da4e",
+            "name": "Nightwave Plaza",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "d04248fb-040c-11e9-a1be-52543be04c81",
+            "name": "Kohina",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "ad014c33-6961-11e8-b15b-52543be04c81",
+            "name": "Rainwave Chiptunes",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "26b78408-d833-11e9-a861-52543be04c81",
+            "name": "Doujinstyle Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "5fcea0b1-dd78-49d3-a8f1-41ff3b00124f",
+            "name": "Veneno",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "244b3bb9-1497-4f94-8dd3-2d8f7a1344fa",
+            "name": "Zabrij Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "1943674b-be5d-42bc-b363-646b9086d10c",
+            "name": "Good Times Bad Times",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "8ba9281c-f9d9-442a-b227-11e590a7c396",
+            "name": "Gässjer FM",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "d9e327ff-2c59-4145-83a9-67f7b33a1ab2",
+            "name": "Resonance Extra",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "b7154644-7519-4c14-8891-023c23387e4f",
+            "name": "Kapitał",
+            "countrycode": "PL"
+          }
+        ]
+      },
+      {
         "slug": "bass-rave",
         "title": "Bass / Breaks",
         "source": "radiodock",
@@ -2030,69 +2093,6 @@
             "stationuuid": "5e992e1e-e6ef-11e9-a96c-52543be04c81",
             "name": "France Musique",
             "countrycode": "FR"
-          }
-        ]
-      },
-      {
-        "slug": "obscure",
-        "title": "Obscure",
-        "source": "radiodock",
-        "featured": true,
-        "stations": [
-          {
-            "stationuuid": "7b85cb6b-ebb8-11e8-a471-52543be04c81",
-            "name": "R/a/dio",
-            "countrycode": "JP"
-          },
-          {
-            "stationuuid": "50603f9e-7535-4551-901a-7e0f2cc4da4e",
-            "name": "Nightwave Plaza",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "d04248fb-040c-11e9-a1be-52543be04c81",
-            "name": "Kohina",
-            "countrycode": "FR"
-          },
-          {
-            "stationuuid": "ad014c33-6961-11e8-b15b-52543be04c81",
-            "name": "Rainwave Chiptunes",
-            "countrycode": ""
-          },
-          {
-            "stationuuid": "26b78408-d833-11e9-a861-52543be04c81",
-            "name": "Doujinstyle Radio",
-            "countrycode": ""
-          },
-          {
-            "stationuuid": "5fcea0b1-dd78-49d3-a8f1-41ff3b00124f",
-            "name": "Veneno",
-            "countrycode": "BR"
-          },
-          {
-            "stationuuid": "244b3bb9-1497-4f94-8dd3-2d8f7a1344fa",
-            "name": "Zabrij Radio",
-            "countrycode": ""
-          },
-          {
-            "stationuuid": "1943674b-be5d-42bc-b363-646b9086d10c",
-            "name": "Good Times Bad Times",
-            "countrycode": "NL"
-          },
-          {
-            "stationuuid": "8ba9281c-f9d9-442a-b227-11e590a7c396",
-            "name": "Gässjer FM",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "d9e327ff-2c59-4145-83a9-67f7b33a1ab2",
-            "name": "Resonance Extra",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "b7154644-7519-4c14-8891-023c23387e4f",
-            "name": "Kapitał",
-            "countrycode": "PL"
           }
         ]
       },
