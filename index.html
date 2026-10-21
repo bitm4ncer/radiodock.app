@@ -48,6 +48,12 @@
             document.documentElement.classList.add('theme-light');
             if (meta) meta.content = '#E1E1E1';
           }
+          // Surface depth is a second, orthogonal axis. Read it here so the
+          // 3D material is in place before the first paint.
+          var s = localStorage.getItem('radiodock-surface');
+          var is3d = s === '3d';
+          document.documentElement.classList.toggle('surface-3d', is3d);
+          document.documentElement.dataset.surface = is3d ? '3d' : 'flat';
           // Mark the document as standalone before paint so CSS can flip
           // to the mobile-app layout flash-free. We use the SAME condition
           // as app-mobile.css's `not (display-mode: browser)` arm — that
@@ -298,6 +304,20 @@
             </span>
           </button>
 
+          <button type="button" class="surface-toggle--row" data-action="surface-toggle" aria-pressed="false" aria-label="Switch to 3D surface">
+            <svg class="surface-toggle__icon surface-toggle__icon--flat" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.6" fill="none"/>
+            </svg>
+            <svg class="surface-toggle__icon surface-toggle__icon--3d" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3 3.5 8v8L12 21l8.5-5V8L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="none"/>
+              <path d="M3.5 8 12 13l8.5-5M12 13v8" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="none"/>
+            </svg>
+            <span class="surface-toggle--row__label">Surface</span>
+            <span class="theme-toggle__switch" aria-hidden="true">
+              <span class="theme-toggle__track"></span>
+            </span>
+          </button>
+
           <a class="off-canvas__item off-canvas__item--muted" href="/legal.html" target="_blank" rel="noopener">Legal Notice</a>
         </nav>
       </div>
@@ -513,11 +533,10 @@
           <!-- Subtle "share this list" affordance. Hidden when the active
                list is empty (no point sharing zero stations). -->
           <div class="list-share-row" id="listShareRow">
-            <button type="button" class="share-list-btn" id="shareCurrentListBtn" title="Create a shareable link for this list">
+            <button type="button" class="share-list-btn" id="shareCurrentListBtn" title="Create a shareable link for this list" aria-label="Share this list">
               <svg class="share-list-btn__icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M12 3v12m0-12-4 4m4-4 4 4M5 14v4a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3v-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
               </svg>
-              <span>Share this list</span>
             </button>
           </div>
         </section>
@@ -582,6 +601,15 @@
           <a class="footer-pill footer-pill--sm" href="https://github.com/bitm4ncer/radiodock.app/issues" target="_blank" rel="noopener">Issues</a>
           <a class="footer-pill footer-pill--sm" href="https://ko-fi.com/radiodock" target="_blank" rel="noopener">Donate</a>
           <a class="footer-pill footer-pill--sm" href="/legal.html" target="_blank" rel="noopener">Legal Notice</a>
+          <button type="button" class="surface-toggle--pill" data-action="surface-toggle" aria-pressed="false" aria-label="Switch to 3D surface" title="Switch to 3D surface">
+            <svg class="surface-toggle__icon surface-toggle__icon--flat" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.6" fill="none"/>
+            </svg>
+            <svg class="surface-toggle__icon surface-toggle__icon--3d" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3 3.5 8v8L12 21l8.5-5V8L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="none"/>
+              <path d="M3.5 8 12 13l8.5-5M12 13v8" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </button>
           <button type="button" class="theme-toggle--pill" data-action="theme-toggle" aria-pressed="false" aria-label="Switch theme" title="Switch theme">
             <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="12" cy="12" r="4" fill="currentColor"/>

@@ -37,3 +37,6 @@
    works when the browser reports display-mode: browser for its PWA
    window (Vivaldi does this). */
 @import './app-standalone.css';
+/* Surface depth is opt-in on <html>. Imported last so the material layer
+   can override the flat regime styles without any selector hacks. */
+@import './surface-3d.css';

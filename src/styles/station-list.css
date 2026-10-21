@@ -474,28 +474,26 @@ body.is-playing .station-item.playing:not([data-offline]) .station-item-name::af
   font-size: 14px;
 }
 
-/* "Share this list" affordance below the list. Subtle by default — pill
-   button with muted text and a hairline border — but the red accent on
-   hover makes it readable as a call to action without nagging in the
-   resting state. JS hides the row when the active list has zero stations. */
+/* Small icon-only share key below the list, aligned to the right edge.
+   JS hides the row when the active list has zero stations. */
 .list-share-row {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   margin: 6px 0 2px;
 }
 
 .share-list-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
   background: transparent;
-  border: 1px solid var(--border);
+  border: 1px solid var(--overlay-med);
   border-radius: var(--radius-pill);
   color: var(--text-muted);
   font: inherit;
-  font-size: 12px;
-  font-weight: 500;
   cursor: pointer;
   transition: color 120ms ease, border-color 120ms ease, background 120ms ease;
   -webkit-tap-highlight-color: transparent;
@@ -508,8 +506,8 @@ body.is-playing .station-item.playing:not([data-offline]) .station-item-name::af
 }
 
 .share-list-btn__icon {
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
   flex-shrink: 0;
 }
 

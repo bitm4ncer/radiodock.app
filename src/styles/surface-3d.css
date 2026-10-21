@@ -1,0 +1,1206 @@
+/* Opaque surface system for the opt-in 3D mode.
+   Every panel is a solid material. Only the controls carry the
+   Liquid Glass glow: a bright top rim, a soft outer halo and a
+   glossy highlight. Nothing here is imported by the app yet. */
+
+:root.surface-3d {
+  --g-shell: #1b1b1e;
+  --g-panel: #242428;
+  --g-strong: #202024;
+  --g-control: #2c2c31;
+  --g-control-hover: #36363d;
+  --g-control-active: #232327;
+  --g-selected: #3a3a42;
+  --g-sunken: #151518;
+  --g-border: #3a3a41;
+  --g-border-strong: #55555f;
+  --g-hi: rgba(255, 255, 255, 0.16);
+  --g-lo: rgba(0, 0, 0, 0.42);
+  --g-glow: rgba(255, 255, 255, 0.09);
+  --g-glow-size: 12px;
+  --g-focus-ring: rgba(255, 255, 255, 0.14);
+  --g-key-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+  --g-card-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  --g-shadow: 0 24px 60px rgba(0, 0, 0, 0.35), 0 2px 10px rgba(0, 0, 0, 0.22);
+  --g-shadow-soft: 0 10px 28px rgba(0, 0, 0, 0.24);
+  --g-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0) 48%);
+  --g-gloss: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.02) 46%, rgba(0, 0, 0, 0.05));
+  --g-red-soft: #3a1a21;
+  --g-red-border: rgba(205, 0, 37, 0.55);
+  --g-r-shell: 26px;
+  --g-r-panel: 22px;
+  --g-r-card: 16px;
+}
+
+:root.surface-3d.theme-light {
+  --g-shell: #e6e6e9;
+  --g-panel: #f7f7f9;
+  --g-strong: #efeff2;
+  --g-control: #fcfcfd;
+  --g-control-hover: #ffffff;
+  --g-control-active: #e9e9ee;
+  --g-selected: #dedee4;
+  --g-sunken: #d9d9de;
+  --g-border: #c9c9d0;
+  --g-border-strong: #a9a9b3;
+  --g-hi: rgba(255, 255, 255, 0.95);
+  --g-lo: rgba(20, 20, 30, 0.08);
+  --g-glow: rgba(255, 255, 255, 0.55);
+  --g-glow-size: 8px;
+  --g-focus-ring: rgba(30, 30, 40, 0.1);
+  --g-key-shadow: 0 1px 2px rgba(40, 40, 50, 0.12);
+  --g-card-shadow: 0 10px 30px rgba(40, 40, 50, 0.1);
+  --g-shadow: 0 24px 60px rgba(40, 40, 50, 0.16), 0 2px 10px rgba(40, 40, 50, 0.08);
+  --g-shadow-soft: 0 10px 28px rgba(40, 40, 50, 0.12);
+  --g-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 48%);
+  --g-gloss: linear-gradient(180deg, #ffffff, #f2f2f5 46%, #e8e8ed);
+  --g-red-soft: #f7e3e6;
+  --g-red-border: rgba(205, 0, 37, 0.45);
+}
+
+/* ---- Shell ------------------------------------------------------------ */
+
+:root.surface-3d .container,
+:root.surface-3d .container.is-solid {
+  background-color: var(--g-shell);
+  background-image: var(--g-sheen);
+  border: 0;
+  box-shadow:
+    inset 0 0 0 1px var(--g-border),
+    var(--g-shadow);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root.surface-3d .site-footer-desktop {
+  background-color: var(--g-strong);
+  background-image: var(--g-sheen);
+  border-top: 1px solid var(--g-border);
+  box-shadow: 0 -18px 40px rgba(0, 0, 0, 0.16);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* ---- Floating panels -------------------------------------------------- */
+
+:root.surface-3d .notes-panel,
+:root.surface-3d .stations-panel,
+:root.surface-3d .off-canvas__panel,
+:root.surface-3d .install-section,
+:root.surface-3d .install-info-modal,
+:root.surface-3d .modal-content {
+  background-color: var(--g-panel);
+  background-image: var(--g-sheen);
+  border: 1px solid var(--g-border);
+  box-shadow: var(--g-shadow);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root.surface-3d body.container-solid .notes-panel {
+  background-color: var(--g-panel);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root.surface-3d .notes-flag {
+  background-color: var(--g-control);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  border-right: 0;
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    -3px 0 16px var(--g-glow),
+    var(--g-key-shadow);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root.surface-3d .modal {
+  background: rgba(0, 0, 0, 0.6);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root.surface-3d .toast {
+  background-color: var(--g-control);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  box-shadow: var(--g-shadow-soft);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* ---- One control material --------------------------------------------- */
+
+:root.surface-3d .stations-pill,
+:root.surface-3d .stations-icon-btn,
+:root.surface-3d .filter-btn,
+:root.surface-3d .share-list-btn,
+:root.surface-3d .footer-pill,
+:root.surface-3d .theme-toggle--pill,
+:root.surface-3d .surface-toggle--pill,
+:root.surface-3d .list-header__filter,
+:root.surface-3d .stations-open-btn,
+:root.surface-3d .install-section__btn,
+:root.surface-3d .install-section__sync,
+:root.surface-3d .notes-panel__icon-btn,
+:root.surface-3d .notes-panel__page-picker,
+:root.surface-3d .notes-panel__capture-btn,
+:root.surface-3d .notes-panel__new-note,
+:root.surface-3d .modal-close-btn,
+:root.surface-3d .btn-secondary {
+  background-color: var(--g-control);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    inset 0 -1px 0 var(--g-lo),
+    var(--g-key-shadow),
+    0 0 var(--g-glow-size) var(--g-glow);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root.surface-3d .stations-pill:hover,
+:root.surface-3d .stations-icon-btn:hover,
+:root.surface-3d .filter-btn:hover,
+:root.surface-3d .share-list-btn:hover,
+:root.surface-3d .footer-pill:hover,
+:root.surface-3d .theme-toggle--pill:hover,
+:root.surface-3d .surface-toggle--pill:hover,
+:root.surface-3d .list-header__filter:hover,
+:root.surface-3d .stations-open-btn:hover,
+:root.surface-3d .install-section__btn:hover,
+:root.surface-3d .install-section__sync:hover,
+:root.surface-3d .notes-panel__icon-btn:hover,
+:root.surface-3d .notes-panel__page-picker:hover,
+:root.surface-3d .notes-panel__capture-btn:hover,
+:root.surface-3d .notes-panel__new-note:hover,
+:root.surface-3d .modal-close-btn:hover,
+:root.surface-3d .btn-secondary:hover {
+  background-color: var(--g-control-hover);
+  border-color: var(--g-border-strong);
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    inset 0 -1px 0 var(--g-lo),
+    var(--g-key-shadow),
+    0 0 calc(var(--g-glow-size) + 4px) var(--g-glow);
+}
+
+:root.surface-3d .stations-pill:active,
+:root.surface-3d .stations-icon-btn:active,
+:root.surface-3d .filter-btn:active,
+:root.surface-3d .share-list-btn:active,
+:root.surface-3d .footer-pill:active,
+:root.surface-3d .theme-toggle--pill:active,
+:root.surface-3d .surface-toggle--pill:active,
+:root.surface-3d .list-header__filter:active,
+:root.surface-3d .stations-open-btn:active,
+:root.surface-3d .install-section__btn:active,
+:root.surface-3d .install-section__sync:active,
+:root.surface-3d .notes-panel__icon-btn:active,
+:root.surface-3d .notes-panel__page-picker:active,
+:root.surface-3d .notes-panel__capture-btn:active,
+:root.surface-3d .notes-panel__new-note:active,
+:root.surface-3d .modal-close-btn:active,
+:root.surface-3d .btn-secondary:active {
+  background-color: var(--g-control-active);
+  box-shadow:
+    inset 0 1px 3px var(--g-lo),
+    0 0 6px var(--g-glow);
+  transform: translateY(1px) scale(0.98);
+}
+
+:root.surface-3d .stations-pill.is-active,
+:root.surface-3d .stations-pill[aria-pressed="true"],
+:root.surface-3d .filter-btn.active,
+:root.surface-3d .list-tab.is-active,
+:root.surface-3d .stations-mode button[aria-pressed="true"],
+:root.surface-3d .surface-toggle__opt.is-active,
+:root.surface-3d .surface-toggle--pill[aria-pressed="true"] {
+  background-color: var(--g-selected);
+  border-color: var(--g-border-strong);
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    var(--g-key-shadow),
+    0 0 10px var(--g-glow);
+}
+
+:root.surface-3d .stations-pill,
+:root.surface-3d .stations-icon-btn,
+:root.surface-3d .filter-btn,
+:root.surface-3d .share-list-btn,
+:root.surface-3d .footer-pill,
+:root.surface-3d .theme-toggle--pill,
+:root.surface-3d .surface-toggle--pill,
+:root.surface-3d .list-header__filter,
+:root.surface-3d .notes-panel__icon-btn,
+:root.surface-3d .modal-close-btn {
+  border-radius: 999px;
+}
+
+:root.surface-3d :is(
+  .stations-pill,
+  .stations-icon-btn,
+  .filter-btn,
+  .share-list-btn,
+  .footer-pill,
+  .theme-toggle--pill,
+  .surface-toggle--pill,
+  .list-header__filter,
+  .stations-open-btn,
+  .install-section__sync,
+  .notes-panel__icon-btn,
+  .notes-panel__page-picker,
+  .notes-panel__capture-btn,
+  .notes-panel__new-note,
+  .modal-close-btn,
+  .btn-secondary
+):focus-visible {
+  outline: 2px solid var(--g-border-strong);
+  outline-offset: 2px;
+}
+
+/* ---- Player ----------------------------------------------------------- */
+
+:root.surface-3d .player-section {
+  background: transparent;
+}
+
+:root.surface-3d .player-card {
+  background-color: var(--g-panel);
+  background-image: var(--g-sheen);
+  border: 0;
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    inset 0 0 0 1px var(--g-border),
+    var(--g-card-shadow);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root.surface-3d .player-action-bar {
+  background-color: var(--g-control);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    var(--g-key-shadow);
+}
+
+:root.surface-3d .pab-btn {
+  color: var(--text-muted);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  border-radius: 999px;
+}
+
+:root.surface-3d .pab-btn:hover {
+  color: var(--text);
+  background-color: var(--g-control-hover);
+}
+
+:root.surface-3d .pab-btn:active {
+  color: var(--text);
+  background-color: var(--g-control-active);
+  transform: scale(0.94);
+}
+
+:root.surface-3d .play-pause-btn {
+  background-color: #f1f1f4;
+  background-image:
+    radial-gradient(circle at 50% 16%, #ffffff, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, #fbfbfd, #dcdce2);
+  border: 1px solid #ffffff;
+  color: #232327;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.95),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.1),
+    0 8px 20px rgba(0, 0, 0, 0.22),
+    0 0 20px rgba(255, 255, 255, 0.18);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root.surface-3d .play-pause-btn:hover {
+  background-color: var(--red);
+  background-image:
+    radial-gradient(circle at 50% 16%, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, #e01a3d, #a8001e);
+  border-color: rgba(255, 255, 255, 0.55);
+  color: #ffffff;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.5),
+    0 8px 20px rgba(0, 0, 0, 0.25),
+    0 0 22px rgba(205, 0, 37, 0.45);
+}
+
+:root.surface-3d .station-logo,
+:root.surface-3d .station-item-logo {
+  border-color: var(--g-border);
+  box-shadow: var(--g-key-shadow);
+}
+
+:root.surface-3d .volume-controls {
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+
+:root.surface-3d .volume-dot {
+  background-color: var(--g-sunken);
+  border: 1px solid var(--g-border);
+  box-shadow: inset 0 1px 1px var(--g-lo);
+}
+
+:root.surface-3d .volume-dot.is-filled {
+  background-color: #f0f0f4;
+  border-color: #ffffff;
+  box-shadow:
+    0 0 5px rgba(255, 255, 255, 0.55),
+    0 0 12px rgba(255, 255, 255, 0.2);
+}
+
+:root.surface-3d .volume-mute-btn {
+  color: var(--text-muted);
+}
+
+/* ---- Lists and search ------------------------------------------------- */
+
+:root.surface-3d .favorites-list,
+:root.surface-3d .search-results {
+  background-color: var(--g-panel);
+  border: 0;
+  border-radius: var(--g-r-card);
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    inset 0 0 0 1px var(--g-border),
+    var(--g-key-shadow);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root.surface-3d .station-item,
+:root.surface-3d .search-item {
+  border-bottom-color: var(--g-border);
+}
+
+:root.surface-3d .station-item:hover,
+:root.surface-3d .search-item:hover {
+  background-color: var(--g-control-hover);
+  background-image: none;
+}
+
+:root.surface-3d .station-item.playing {
+  background-color: var(--g-selected);
+  background-image: none;
+}
+
+:root.surface-3d #searchInput {
+  background-color: var(--g-sunken);
+  border: 1px solid var(--g-border);
+  box-shadow:
+    inset 0 1px 2px var(--g-lo),
+    0 1px 0 var(--g-hi);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root.surface-3d #searchInput:focus,
+:root.surface-3d body.search-active #searchInput {
+  border-color: var(--g-border-strong);
+  box-shadow:
+    inset 0 1px 2px var(--g-lo),
+    0 0 0 3px var(--g-focus-ring);
+}
+
+:root.surface-3d .list-dropdown-btn {
+  background-color: var(--g-control);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  border-radius: 999px;
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    var(--g-key-shadow),
+    0 0 var(--g-glow-size) var(--g-glow);
+}
+
+:root.surface-3d .list-dropdown-btn:hover {
+  background-color: var(--g-control-hover);
+  border-color: var(--g-border-strong);
+}
+
+/* ---- Notes ------------------------------------------------------------ */
+
+:root.surface-3d .notes-panel__header,
+:root.surface-3d .notes-panel__search,
+:root.surface-3d .notes-panel__footer {
+  border-color: var(--g-border);
+  background: transparent;
+}
+
+:root.surface-3d .notes-panel__page-picker {
+  border-radius: 999px;
+}
+
+:root.surface-3d .notes-panel__search-input {
+  background-color: var(--g-sunken);
+  border: 1px solid var(--g-border);
+  box-shadow: inset 0 1px 2px var(--g-lo);
+}
+
+:root.surface-3d .notes-panel__search-input:focus {
+  border-color: var(--g-border-strong);
+  box-shadow:
+    inset 0 1px 2px var(--g-lo),
+    0 0 0 3px var(--g-focus-ring);
+}
+
+:root.surface-3d .notes-card {
+  background-color: var(--g-control);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    var(--g-key-shadow);
+}
+
+:root.surface-3d .notes-card:hover {
+  background-color: var(--g-control-hover);
+  border-color: var(--g-border-strong);
+}
+
+:root.surface-3d .notes-panel__record-btn {
+  background-color: var(--g-control);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    var(--g-key-shadow),
+    0 0 var(--g-glow-size) var(--g-glow);
+}
+
+:root.surface-3d .notes-panel__record-dot {
+  box-shadow:
+    0 0 5px rgba(205, 0, 37, 0.8),
+    0 0 12px rgba(205, 0, 37, 0.35);
+}
+
+:root.surface-3d .notes-panel__new-note {
+  border-style: solid;
+}
+
+/* ---- Stations --------------------------------------------------------- */
+
+:root.surface-3d .stations-mode {
+  background-color: var(--g-sunken);
+  border: 1px solid var(--g-border);
+  border-radius: 999px;
+  box-shadow: inset 0 1px 2px var(--g-lo);
+}
+
+:root.surface-3d .stations-mode button {
+  border-radius: 999px;
+  color: var(--text-muted);
+  box-shadow: none;
+}
+
+:root.surface-3d .stations-mode button[aria-pressed="true"] {
+  color: var(--text);
+}
+
+:root.surface-3d .stations-search-input {
+  background-color: var(--g-sunken);
+  border: 1px solid var(--g-border);
+  box-shadow:
+    inset 0 1px 2px var(--g-lo),
+    0 1px 0 var(--g-hi);
+}
+
+:root.surface-3d .stations-search-input:focus {
+  outline: none;
+  border-color: var(--g-border-strong);
+  box-shadow:
+    inset 0 1px 2px var(--g-lo),
+    0 0 0 3px var(--g-focus-ring);
+}
+
+:root.surface-3d .stations-list {
+  background-color: var(--g-strong);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-r-card);
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    var(--g-key-shadow);
+}
+
+:root.surface-3d .stations-collection-card,
+:root.surface-3d .stations-collection-tile {
+  background-color: var(--g-control);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    var(--g-key-shadow);
+}
+
+:root.surface-3d .stations-collection-card:hover,
+:root.surface-3d .stations-collection-tile:hover {
+  background-color: var(--g-control-hover);
+  border-color: var(--g-border-strong);
+}
+
+/* ---- Drawer ----------------------------------------------------------- */
+
+:root.surface-3d .off-canvas__backdrop {
+  background: rgba(0, 0, 0, 0.58);
+}
+
+:root.surface-3d .off-canvas__panel {
+  border-right: 1px solid var(--g-border);
+  box-shadow: 14px 0 40px rgba(0, 0, 0, 0.3);
+}
+
+:root.surface-3d .off-canvas__item {
+  border-radius: 10px;
+}
+
+:root.surface-3d .off-canvas__item:hover {
+  background-color: var(--g-control-hover);
+}
+
+:root.surface-3d .off-canvas__item--cta {
+  background-color: var(--g-red-soft);
+  border: 1px solid var(--g-red-border);
+  box-shadow: inset 0 1px 0 var(--g-hi);
+}
+
+:root.surface-3d .off-canvas__item--cta:hover {
+  background-color: var(--red);
+  border-color: var(--red);
+  color: #ffffff;
+}
+
+:root.surface-3d .off-canvas .theme-toggle--row:hover,
+:root.surface-3d .off-canvas .surface-toggle--row:hover {
+  background-color: var(--g-control-hover);
+}
+
+/* ---- Toggles ---------------------------------------------------------- */
+
+:root.surface-3d .theme-toggle__track {
+  background-color: var(--g-sunken);
+  background-image: none;
+  border: 1px solid var(--g-border);
+  box-shadow:
+    inset 0 1px 2px var(--g-lo),
+    0 1px 0 var(--g-hi);
+}
+
+:root.surface-3d .theme-toggle__track::after {
+  background-color: var(--g-control);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+/* ---- Modals ----------------------------------------------------------- */
+
+:root.surface-3d .modal-content {
+  border-radius: var(--g-r-card);
+}
+
+:root.surface-3d .modal-header {
+  border-bottom-color: var(--g-border);
+}
+
+:root.surface-3d .modal-close-btn {
+  background-color: var(--g-control);
+  border: 1px solid var(--g-border);
+}
+
+:root.surface-3d .btn-primary {
+  background-color: var(--red);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 1px 2px rgba(0, 0, 0, 0.24),
+    0 0 14px rgba(205, 0, 37, 0.25);
+}
+
+:root.surface-3d .btn-primary:hover {
+  background-color: #e0002a;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.24),
+    0 0 20px rgba(205, 0, 37, 0.35);
+}
+
+/* ---- Footer ----------------------------------------------------------- */
+
+:root.surface-3d .footer-pill--cta {
+  border-color: var(--g-red-border);
+  color: var(--text);
+}
+
+:root.surface-3d .footer-pill--cta:hover {
+  border-color: var(--red);
+}
+
+:root.surface-3d .sleep-timer__rail {
+  background-color: var(--g-sunken);
+  border: 1px solid var(--g-border);
+  box-shadow: inset 0 1px 2px var(--g-lo);
+}
+
+:root.surface-3d .sleep-timer__fill {
+  background-color: var(--g-selected);
+  background-image: none;
+}
+
+:root.surface-3d .sleep-timer__handle {
+  background-color: #f4f4f7;
+  background-image: radial-gradient(circle at 38% 26%, #ffffff, #e4e4ea 60%, #c9c9d1);
+  border: 1px solid #ffffff;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 0 8px rgba(255, 255, 255, 0.25);
+}
+
+/* ---- Install ---------------------------------------------------------- */
+
+:root.surface-3d .install-section__head {
+  border-bottom-color: var(--g-border);
+}
+
+:root.surface-3d .install-section__logo {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.28));
+}
+
+:root.surface-3d .install-section__close {
+  background-color: var(--g-control);
+  border: 1px solid var(--g-border);
+  box-shadow: var(--g-key-shadow);
+}
+
+:root.surface-3d .install-section__close:hover {
+  background-color: var(--g-control-hover);
+}
+
+:root.surface-3d .install-section__btn {
+  border-radius: 12px;
+}
+
+:root.surface-3d .install-section__btn.is-current {
+  border-color: var(--g-border-strong);
+}
+
+:root.surface-3d .install-section__sync {
+  width: 100%;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+:root.surface-3d .install-section__foot {
+  border-top-color: var(--g-border);
+}
+
+/* The install card and the notes tab share the top right corner. */
+body:has(.install-section:not(.is-dismissed)) .notes-flag {
+  display: none;
+}
+
+:root.surface-3d .install-info-modal {
+  border-radius: var(--g-r-card);
+}
+
+:root.surface-3d .install-info__primary {
+  background-color: var(--red);
+  color: #ffffff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 0 14px rgba(205, 0, 37, 0.25);
+}
+
+/* ---- Light tuning ----------------------------------------------------- */
+
+:root.surface-3d.theme-light .site-footer-desktop {
+  box-shadow: 0 -18px 40px rgba(40, 40, 50, 0.08);
+}
+
+:root.surface-3d.theme-light .play-pause-btn {
+  background-color: #ffffff;
+  background-image:
+    radial-gradient(circle at 50% 16%, #ffffff, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, #ffffff, #e8e8ee);
+  border-color: #ffffff;
+  color: #26262b;
+  box-shadow:
+    inset 0 1px 2px #ffffff,
+    inset 0 -4px 8px rgba(0, 0, 0, 0.06),
+    0 8px 20px rgba(40, 40, 50, 0.18),
+    0 0 16px rgba(255, 255, 255, 0.8);
+}
+
+:root.surface-3d.theme-light .play-pause-btn:hover {
+  background-color: var(--red);
+  background-image:
+    radial-gradient(circle at 50% 16%, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, #e01a3d, #a8001e);
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #ffffff;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.5),
+    0 8px 20px rgba(40, 40, 50, 0.22),
+    0 0 22px rgba(205, 0, 37, 0.35);
+}
+
+:root.surface-3d.theme-light .volume-dot.is-filled {
+  background-color: #3a3a40;
+  border-color: #2e2e33;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16);
+}
+
+:root.surface-3d.theme-light .sleep-timer__handle {
+  background-color: #ffffff;
+  background-image: radial-gradient(circle at 38% 26%, #ffffff, #f2f2f5 60%, #d8d8de);
+}
+
+:root.surface-3d.theme-light .off-canvas__item--cta:hover {
+  color: #ffffff;
+}
+
+/* ---- Mobile ----------------------------------------------------------- */
+
+@media (max-width: 699px), not (display-mode: browser) {
+  :root.surface-3d,
+  :root.surface-3d body {
+    background-color: var(--g-shell);
+  }
+
+  :root.surface-3d .container,
+  :root.surface-3d .container.is-solid {
+    background-color: var(--g-shell);
+    background-image: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  :root.surface-3d .mobile-topbar {
+    background-color: var(--g-strong);
+    background-image: var(--g-sheen);
+    border-bottom: 1px solid var(--g-border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.16);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  :root.surface-3d .player-section {
+    background-color: var(--g-strong);
+    background-image: var(--g-sheen);
+    border-top: 1px solid var(--g-border);
+    box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.16);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  :root.surface-3d .player-card {
+    background-color: var(--g-panel);
+    background-image: var(--g-sheen);
+  }
+
+  :root.surface-3d .notes-panel.notes-panel--mobile,
+  :root.surface-3d .stations-panel {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  :root.surface-3d .off-canvas__panel {
+    border-radius: 0;
+  }
+}
+
+/* ---- Surface toggle --------------------------------------------------- */
+
+/* The glyph shows the current surface, like the theme row shows the current
+   theme: a flat plate while flat and a cube while 3D. The switch knob sits
+   left while flat and right while 3D. */
+.surface-toggle__icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.surface-toggle__icon--flat {
+  display: block;
+}
+
+.surface-toggle__icon--3d {
+  display: none;
+}
+
+[aria-pressed="true"] .surface-toggle__icon--flat {
+  display: none;
+}
+
+[aria-pressed="true"] .surface-toggle__icon--3d {
+  display: block;
+}
+
+.surface-toggle--pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 999px;
+  color: var(--text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 120ms ease;
+}
+
+.surface-toggle--pill svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.surface-toggle--pill .surface-toggle__icon--flat,
+.surface-toggle--row .surface-toggle__icon--flat {
+  display: block;
+}
+
+.surface-toggle--pill .surface-toggle__icon--3d,
+.surface-toggle--row .surface-toggle__icon--3d {
+  display: none;
+}
+
+.surface-toggle--pill[aria-pressed="true"] .surface-toggle__icon--flat,
+.surface-toggle--row[aria-pressed="true"] .surface-toggle__icon--flat {
+  display: none;
+}
+
+.surface-toggle--pill[aria-pressed="true"] .surface-toggle__icon--3d,
+.surface-toggle--row[aria-pressed="true"] .surface-toggle__icon--3d {
+  display: block;
+}
+
+.surface-toggle--pill[aria-pressed="true"] {
+  color: var(--text);
+}
+
+.surface-toggle--row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  width: 100%;
+  border: 0;
+  background: none;
+  border-radius: 10px;
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.surface-toggle--row:hover {
+  background: var(--bg-list-hover);
+}
+
+.surface-toggle--row__label {
+  flex: 1;
+}
+
+:root:not(.surface-3d) .surface-toggle--pill {
+  background: transparent;
+  border: 1px solid var(--overlay-hard);
+}
+
+/* Background switcher: opaque like every other control. */
+:root.surface-3d .bg-btn,
+:root.surface-3d .bg-menu {
+  background-color: var(--g-control);
+  background-image: var(--g-gloss);
+  border-color: var(--g-border);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    var(--g-key-shadow);
+}
+
+:root.surface-3d .bg-menu {
+  background-color: var(--g-panel);
+}
+
+:root.surface-3d .bg-btn:hover {
+  background-color: var(--g-control-hover);
+}
+
+/* Menus, filters and expandable info panels ---------------------------- */
+
+:root.surface-3d .list-header__filter {
+  width: 32px;
+  height: 32px;
+}
+
+:root.surface-3d .list-dropdown-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  min-height: 32px;
+  padding: 0 12px;
+}
+
+:root.surface-3d .list-tabs__menu-btn {
+  width: 32px;
+  height: 32px;
+}
+
+:root.surface-3d .list-dropdown-menu {
+  background-color: var(--g-panel);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  border-radius: 16px;
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    var(--g-shadow-soft);
+  padding: 6px;
+}
+
+:root.surface-3d .list-item {
+  margin: 1px 0;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+}
+
+:root.surface-3d .list-item:hover {
+  background-color: var(--g-control-hover);
+  background-image: var(--g-gloss);
+  border-color: var(--g-border);
+}
+
+:root.surface-3d .list-item.active {
+  background-color: var(--red);
+  background-image: var(--g-gloss);
+  border-color: var(--g-red-border);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 0 12px rgba(205, 0, 37, 0.18);
+}
+
+:root.surface-3d .list-item.active:hover {
+  background-color: var(--red);
+  border-color: rgba(255, 255, 255, 0.38);
+}
+
+:root.surface-3d .list-actions {
+  border-top-color: var(--g-border);
+  padding: 6px 2px 2px;
+  gap: 4px;
+}
+
+:root.surface-3d .add-list-btn,
+:root.surface-3d .import-list-btn {
+  height: 32px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 10px;
+}
+
+:root.surface-3d .add-list-btn:hover,
+:root.surface-3d .import-list-btn:hover {
+  background-color: var(--g-control);
+  background-image: var(--g-gloss);
+  border-color: var(--g-border);
+  color: var(--text);
+}
+
+:root.surface-3d .list-actions-divider {
+  background-color: var(--g-border);
+}
+
+:root.surface-3d .list-filter__pill {
+  height: 32px;
+  background-color: var(--g-sunken);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  box-shadow:
+    inset 0 1px 2px var(--g-lo),
+    0 1px 0 var(--g-hi);
+}
+
+:root.surface-3d .list-filter__scope {
+  border-radius: 999px;
+}
+
+:root.surface-3d .list-filter__scope:hover {
+  background-color: var(--g-control);
+  color: var(--text);
+}
+
+:root.surface-3d .stations-inline-info {
+  background-color: var(--g-panel);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  border-radius: 16px;
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    var(--g-shadow-soft);
+}
+
+:root.surface-3d .stations-row.is-info-open {
+  background-color: var(--g-panel);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  border-bottom: 0;
+  border-radius: 16px 16px 0 0;
+  box-shadow: inset 0 1px 0 var(--g-hi);
+}
+
+:root.surface-3d .stations-row.is-info-open + .stations-inline-info {
+  margin-top: 0;
+  border: 1px solid var(--g-border);
+  border-top: 0;
+  border-radius: 0 0 16px 16px;
+  box-shadow: none;
+}
+
+:root.surface-3d .stations-collection-tile.is-info-open {
+  background-color: var(--g-panel);
+  background-image: var(--g-gloss);
+}
+
+:root.surface-3d .stations-inline-info-close {
+  background-color: var(--g-control);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    var(--g-key-shadow);
+}
+
+:root.surface-3d .stations-inline-info-close:hover {
+  background-color: var(--g-control-hover);
+  border-color: var(--g-border-strong);
+  color: var(--text);
+}
+
+:root.surface-3d .station-info__tag {
+  background-color: var(--g-control);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  box-shadow: inset 0 1px 0 var(--g-hi);
+}
+
+:root.surface-3d .station-info__social {
+  background-color: var(--g-control);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    var(--g-key-shadow);
+}
+
+:root.surface-3d .station-info__social:hover {
+  background-color: var(--g-control-hover);
+  border-color: var(--g-border-strong);
+  color: var(--text);
+}
+
+:root.surface-3d .station-info__social.is-copied {
+  border-color: var(--g-red-border);
+  color: var(--red);
+}
+
+:root.surface-3d .station-info__edit {
+  background-color: var(--g-control);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  border-radius: 12px;
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    var(--g-key-shadow);
+}
+
+:root.surface-3d .station-info__edit:hover {
+  background-color: var(--g-control-hover);
+  border-color: var(--g-border-strong);
+  color: var(--text);
+}
+
+:root.surface-3d .info-panel--desktop {
+  background-color: var(--g-panel);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  border-radius: 22px;
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    var(--g-shadow);
+}
+
+:root.surface-3d .info-panel__header {
+  border-bottom-color: var(--g-border);
+}
+
+:root.surface-3d .info-panel__icon-btn,
+:root.surface-3d .info-panel__close-float {
+  background-color: var(--g-control);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    var(--g-key-shadow);
+}
+
+:root.surface-3d .info-panel__icon-btn:hover,
+:root.surface-3d .info-panel__close-float:hover {
+  background-color: var(--g-control-hover);
+  border-color: var(--g-border-strong);
+  color: var(--text);
+}
+
+:root.surface-3d .info-panel--sheet {
+  background-color: var(--g-strong);
+  background-image: var(--g-gloss);
+  border-top: 1px solid var(--g-border);
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -18px 50px rgba(0, 0, 0, 0.28);
+}
+
+:root.surface-3d.theme-light .info-panel--sheet {
+  box-shadow: 0 -18px 50px rgba(40, 40, 50, 0.14);
+}
+
+:root.surface-3d .notes-popup-menu {
+  background-color: var(--g-panel);
+  background-image: var(--g-gloss);
+  border: 1px solid var(--g-border);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 var(--g-hi),
+    var(--g-shadow-soft);
+  padding: 6px;
+}
+
+:root.surface-3d .notes-popup-menu button {
+  border-radius: 8px;
+}
+
+:root.surface-3d .notes-popup-menu button:hover {
+  background-color: var(--g-control-hover);
+}
