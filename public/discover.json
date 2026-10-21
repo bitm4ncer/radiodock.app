@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T17:25:30.701Z",
+  "generatedAt": "2026-10-21T18:14:26.276Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -3739,6 +3739,11 @@
             "countrycode": "RU"
           },
           {
+            "stationuuid": "6a73c6d1-5928-4de4-acfa-983b465013b0",
+            "name": "Record Minimal",
+            "countrycode": "RU"
+          },
+          {
             "stationuuid": "21443448-7b21-4831-8134-20c4ab700241",
             "name": "DFM - Tech House",
             "countrycode": "RU"
@@ -3746,11 +3751,6 @@
           {
             "stationuuid": "b77ff005-3b78-495a-b705-828c44a96fac",
             "name": "Радио Рекорд Tech House",
-            "countrycode": "RU"
-          },
-          {
-            "stationuuid": "6a73c6d1-5928-4de4-acfa-983b465013b0",
-            "name": "Record Minimal",
             "countrycode": "RU"
           },
           {
