@@ -631,6 +631,18 @@ html.volume-dragging * {
   stroke: var(--red);
 }
 
+/* The player heart temporarily turns into a plus so a second click can move
+   the station out of Favorites into another list. Keep the glyph neutral. */
+.btn-add-favorite.is-move .heart-icon,
+.btn-add-favorite.is-move.is-favorited .heart-icon {
+  fill: none;
+  stroke: var(--text-muted);
+}
+
+.btn-add-favorite.is-move:hover .heart-icon {
+  stroke: var(--red);
+}
+
 .btn-icon {
   width: 24px;
   height: 24px;
