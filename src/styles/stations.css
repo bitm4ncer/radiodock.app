@@ -1161,7 +1161,8 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
   left: 0;
 }
 
-.stations-mode[hidden] {
+.stations-mode[hidden],
+.stations-filters[hidden] {
   display: none !important;
 }
 

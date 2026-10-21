@@ -4,6 +4,7 @@
 import { stationsRow, updateRowNowPlaying, HEART_ICON, PLUS_ICON } from './stations-row.js';
 import { mountStationsFilters } from './stations-filter.js';
 import { buildBrowseParams, communityParams, mergeRows, searchModeFor, popularParams, searchParams, MAX_ROWS } from './stations-state.js';
+import { EXPLORE_PAGE_SIZE, buildExploreFeed, nextExploreLimit, pickExploreStation } from './stations-explore.js';
 import { escapeHtml, formatCount } from './stations-format.js';
 import { normaliseDiscover, renderDiscover, renderCollection, collectionCard, collectionSaveButton, syncCollectionSaveButton, featuredLists, pickFeaturedLists, renderDiscoverUnavailable } from './discover-child.js';
 import { eligibleLists, pickerHtml } from './playlist-picker.js';
@@ -83,7 +84,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
 
   const state = {
     view: 'stations',
-    mode: 'popular',
+    mode: 'explore',
     query: '',
     letter: 'all',
     country: '',
@@ -108,6 +109,11 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     discover: null,
     collection: null,
     playlistPicker: null,
+    exploreFeed: [],
+    exploreLimit: EXPLORE_PAGE_SIZE,
+    exploreCollections: 0,
+    exploreError: null,
+    stationActionToken: 0,
   };
 
   let isOpen = false;
@@ -125,12 +131,13 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     if (panelSize) applyPanelSize(panelSize.width, panelSize.height);
     if (panelPosition) setPanelPosition(panelPosition.left, panelPosition.top);
   });
-  let previousMode = 'popular';
+  let previousMode = 'explore';
   let previousFocus = null;
   let loadToken = 0;
   let openSettleTimer = null;
   let controller = null;
   let metaPromise = null;
+  let discoverPromise = null;
   let metaApplied = false;
   let filters = null;
   let searchTimer = null;
@@ -162,6 +169,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
         </div>
         <div class="stations-controls">
           <div class="stations-mode" role="group" aria-label="Sort stations">
+            <button type="button" data-mode="explore" aria-pressed="${state.mode === 'explore'}">Explore</button>
             <button type="button" data-mode="popular" aria-pressed="${state.mode === 'popular'}">Popular</button>
             <button type="button" data-mode="az" aria-pressed="${state.mode === 'az'}">A-Z</button>
             <button type="button" data-mode="community" aria-pressed="${state.mode === 'community'}">Community</button>
@@ -222,6 +230,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     });
     const mode = body.querySelector('.stations-mode');
     if (mode) mode.hidden = state.mode === 'search';
+    const filterHost = body.querySelector('#stationsFilters');
+    if (filterHost) filterHost.hidden = state.mode === 'explore';
   }
 
   function renderRail() {
@@ -244,6 +254,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     if (state.mode === 'search' && state.query) {
       return `<strong>${formatCount(state.total)} stations for "${escapeHtml(state.query)}"</strong><button type="button" data-action="clear-search">Clear</button>`;
     }
+    if (state.mode === 'explore') {
+      return `<strong>Explore</strong><span>${formatCount(state.total)} stations from ${formatCount(state.exploreCollections)} collections</span>`;
+    }
     if (state.mode === 'popular') {
       const sub = state.algorithm === 'v2'
         ? 'Ranked by listeners, depth, and repeat listening'
@@ -263,6 +276,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
 
   function loadingHead() {
     if (state.mode === 'search' && state.query) return '<strong>Searching stations…</strong>';
+    if (state.mode === 'explore') return '<strong>Explore</strong><span>Building a mix from all collections</span>';
     if (state.mode === 'popular') return '<strong>Popular this month</strong><span>Loading stations…</span>';
     if (state.mode === 'community') return '<strong>Community Radios</strong><span>Loading stations…</span>';
     if (state.letter === 'all') return '<strong>All stations</strong><span>Loading stations…</span>';
@@ -288,6 +302,16 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       content.innerHTML = `<div class="stations-section-head">${loadingHead()}</div><div class="stations-list">${Array.from({ length: 8 }, () => '<div class="stations-skeleton"></div>').join('')}</div>`;
       return;
     }
+    if (state.mode === 'explore' && state.exploreError === 'unavailable') {
+      content.innerHTML = `
+        <div class="stations-section-head"><strong>Explore is unavailable right now.</strong></div>
+        <div class="stations-error">
+          <p>The collection data could not be loaded.</p>
+          <button type="button" class="stations-pill" data-action="retry-explore">Retry</button>
+          <button type="button" class="stations-pill" data-action="browse-popular">Browse Popular</button>
+        </div>`;
+      return;
+    }
     if (state.error && !state.rows.length) {
       content.innerHTML = `
         <div class="stations-section-head">${sectionHead()}</div>
@@ -309,12 +333,14 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       canAdd,
       alreadyAdded: !!actions.isFavorited?.(station.id),
       priority: index < 10,
+      source: state.mode === 'explore' ? station.collectionTitle : '',
     })).join('');
-    const atCap = state.mode !== 'popular' && state.rows.length >= MAX_ROWS;
-    const endless = state.mode === 'popular' && state.nextOffset != null
+    const atCap = state.mode !== 'popular' && state.mode !== 'explore' && state.rows.length >= MAX_ROWS;
+    const endless = (state.mode === 'popular' && state.nextOffset != null)
+      || (state.mode === 'explore' && state.exploreLimit < state.exploreFeed.length)
       ? '<div class="stations-endless" aria-hidden="true"></div>'
       : '';
-    const more = state.mode === 'popular'
+    const more = state.mode === 'popular' || state.mode === 'explore'
       ? ''
       : state.nextOffset != null && !atCap
         ? '<button type="button" class="stations-load-more" data-action="more">Load more stations</button>'
@@ -364,6 +390,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
 
   function emptyState() {
     const head = `<div class="stations-section-head">${sectionHead()}</div>`;
+    if (state.mode === 'explore') {
+      return `${head}<div class="stations-empty"><p>No stations in the collections yet.</p><button type="button" class="stations-pill" data-action="browse-popular">Browse Popular</button></div>`;
+    }
     if (state.mode === 'popular') {
       const filtered = state.country || state.genre;
       return filtered
@@ -545,12 +574,20 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
         load({ reset: false });
         return;
       }
+      if (name === 'retry-explore') {
+        loadExplore({ reset: true, rebuild: true });
+        return;
+      }
       if (name === 'retry') {
         load({ reset: true });
         return;
       }
       if (name === 'clear-search') {
         clearSearch();
+        return;
+      }
+      if (name === 'browse-popular') {
+        setMode('popular');
         return;
       }
       if (name === 'browse-az') {
@@ -574,6 +611,11 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     const station = state.rows.find((s) => s.id === row.dataset.id);
     if (!station) return;
     const button = evt.target.closest('[data-action]');
+    if (state.mode === 'explore') {
+      const actionName = button?.dataset.action ?? 'play';
+      runStationAction(row, station, actionName, { flash: actionName === 'play' });
+      return;
+    }
     if (button?.dataset.action === 'info') {
       toggleInlineInfo(row, station);
       return;
@@ -620,16 +662,52 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   }
 
   function onContentScroll() {
-    if (state.view !== 'stations' || state.mode !== 'popular') return;
-    if (state.loading || state.nextOffset == null) return;
+    if (state.view !== 'stations' || state.loading) return;
     const content = body.querySelector('#stationsContent');
     if (!content) return;
     const scroller = scrollSurface(content);
     if (!scroller) return;
-    if (scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight < 240) {
+    if (scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight >= 240) return;
+    if (state.mode === 'popular') {
+      if (state.nextOffset == null) return;
       state.offset = state.nextOffset;
       load({ reset: false });
+      return;
     }
+    if (state.mode === 'explore') {
+      if (state.exploreLimit >= state.exploreFeed.length) return;
+      state.restoreScroll = scroller.scrollTop;
+      state.exploreLimit = nextExploreLimit(state.exploreLimit, state.exploreFeed.length);
+      state.rows = state.exploreFeed.slice(0, state.exploreLimit);
+      renderContent();
+    }
+  }
+
+  function restoreExploreFeed() {
+    controller?.abort();
+    loadToken++;
+    state.loading = false;
+    state.tooShort = false;
+    state.error = null;
+    state.exploreError = null;
+    state.query = '';
+    state.letter = 'all';
+    state.offset = 0;
+    state.nextOffset = null;
+    state.letterCounts = null;
+    state.algorithm = null;
+    state.popularMinListeners = null;
+    state.computedAt = null;
+    if (!state.exploreFeed.length) {
+      loadExplore({ reset: true, rebuild: true });
+      return true;
+    }
+    state.rows = state.exploreFeed.slice(0, state.exploreLimit);
+    state.total = state.exploreFeed.length;
+    renderHeader();
+    renderRail();
+    renderContent();
+    return true;
   }
 
   function scheduleSearch() {
@@ -669,7 +747,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
         state.query = '';
         state.letter = 'all';
         state.offset = 0;
-        load({ reset: true });
+        if (next.mode === 'explore') restoreExploreFeed();
+        else load({ reset: true });
       }
       renderHeader();
     }, 300);
@@ -684,6 +763,10 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.query = '';
     state.letter = 'all';
     state.offset = 0;
+    if (state.mode === 'explore') {
+      restoreExploreFeed();
+      return;
+    }
     load({ reset: true });
   }
 
@@ -709,6 +792,12 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.computedAt = null;
     const input = body.querySelector('#stationsSearch');
     if (input) input.value = '';
+    if (mode === 'explore') {
+      filters?.close();
+      restoreExploreFeed();
+      return;
+    }
+    renderHeader();
     load({ reset: true });
   }
 
@@ -732,6 +821,21 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     return metaPromise;
   }
 
+  function ensureDiscover({ force = false } = {}) {
+    if (state.discover && !force) return Promise.resolve(state.discover);
+    if (discoverPromise) return discoverPromise;
+    discoverPromise = (async () => {
+      try {
+        const payload = (await data.loadDiscover?.({})) ?? null;
+        if (payload) state.discover = payload;
+        return payload;
+      } catch {
+        return null;
+      }
+    })().finally(() => { discoverPromise = null; });
+    return discoverPromise;
+  }
+
   async function load({ reset = false } = {}) {
     if (state.tooShort) return;
     if (reset) {
@@ -744,6 +848,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     controller = new AbortController();
     const token = ++loadToken;
     state.loading = true;
+    renderHeader();
     renderContent();
     try {
       await ensureMeta();
@@ -787,8 +892,88 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     }
   }
 
+  async function loadExplore({ reset = false, rebuild = false } = {}) {
+    if (state.mode !== 'explore') return;
+    if (reset) {
+      state.exploreFeed = [];
+      state.exploreLimit = EXPLORE_PAGE_SIZE;
+      state.exploreCollections = 0;
+      state.rows = [];
+      state.total = 0;
+      state.nextOffset = null;
+      state.letterCounts = null;
+      state.error = null;
+      state.exploreError = null;
+      state.restoreScroll = null;
+    }
+    state.error = null;
+    state.exploreError = null;
+    controller?.abort();
+    controller = new AbortController();
+    const token = ++loadToken;
+    state.loading = true;
+    renderHeader();
+    renderContent();
+    try {
+      const payload = await ensureDiscover();
+      if (token !== loadToken) return;
+      if (state.view !== 'stations' || state.mode !== 'explore') return;
+      if (!payload) {
+        state.loading = false;
+        state.exploreError = 'unavailable';
+        renderContent();
+        return;
+      }
+      const lists = normaliseDiscover(payload).lists;
+      if (rebuild || !state.exploreFeed.length) {
+        state.exploreFeed = buildExploreFeed(lists);
+        state.exploreLimit = EXPLORE_PAGE_SIZE;
+        state.exploreCollections = lists.length;
+      }
+      state.rows = state.exploreFeed.slice(0, state.exploreLimit);
+      state.total = state.exploreFeed.length;
+      state.loading = false;
+      state.error = null;
+      state.exploreError = null;
+      state.nextOffset = null;
+      state.letterCounts = null;
+      state.algorithm = null;
+      state.popularMinListeners = null;
+      state.computedAt = null;
+      if (reset) {
+        state.animateRows = true;
+        state.restoreScroll = 0;
+      }
+      renderHeader();
+      renderRail();
+      renderContent();
+    } catch {
+      if (token !== loadToken) return;
+      if (state.view !== 'stations' || state.mode !== 'explore') return;
+      state.loading = false;
+      state.exploreError = 'unavailable';
+      renderContent();
+    }
+  }
+
   async function shuffle() {
     if (state.mode === 'search') return;
+    if (state.mode === 'explore') {
+      const picked = pickExploreStation(state.exploreFeed);
+      if (picked) {
+        const station = await resolveStation(picked.stationuuid);
+        if (station) actions.onPlay?.(station);
+        return;
+      }
+      try {
+        const station = await data.getRandomStation?.({ mode: 'popular' });
+        if (station) actions.onPlay?.(station);
+        else actions.toast?.('No station matches these filters.');
+      } catch {
+        actions.toast?.('No station matches these filters.');
+      }
+      return;
+    }
     try {
       const station = await data.getRandomStation?.({
         mode: state.mode,
@@ -874,9 +1059,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   async function renderFeaturedSection() {
     const host = body.querySelector('#stationsFeatured');
     if (!host) return;
-    if (!state.discover) {
-      try { state.discover = (await data.loadDiscover?.({})) ?? null; } catch { state.discover = null; }
-    }
+    if (!state.discover) await ensureDiscover();
     if (!host.isConnected || state.view !== 'stations') return;
     const pool = featuredLists(normaliseDiscover(state.discover).lists);
     if (!pool.length) {
@@ -954,7 +1137,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.collection = null;
     discoverShell('Discover', 'back', '<div class="stations-empty">Loading collections...</div>');
     await ensureMeta();
-    state.discover = await data.loadDiscover?.({}) ?? null;
+    await ensureDiscover();
     if (state.view !== 'discover') return;
     renderDiscoverView();
   }
@@ -1121,6 +1304,29 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     }
   }
 
+  async function runStationAction(anchor, station, actionName, { flash = false } = {}) {
+    const id = station.id ?? station.stationuuid;
+    const token = ++state.stationActionToken;
+    if (flash) flashElement(anchor);
+    const full = await resolveStation(station.stationuuid ?? id);
+    if (state.stationActionToken !== token) return;
+    if (!full) {
+      anchor.classList.remove('is-flashing');
+      return;
+    }
+    if (actionName === 'play') {
+      if (state.nowPlayingId === full.id) actions.togglePlay?.();
+      else actions.onPlay?.(full);
+    } else if (actionName === 'info') {
+      toggleInlineInfo(anchor, full);
+    } else if (actionName === 'add') {
+      const addButton = anchor.matches?.('[data-action="add"]')
+        ? anchor
+        : anchor.querySelector?.('[data-action="add"]');
+      handleAdd(addButton ?? anchor, full);
+    }
+  }
+
   async function onDiscoverClick(evt) {
     const save = evt.target.closest('[data-action="save-collection"]');
     if (save) {
@@ -1174,9 +1380,13 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.view = 'stations';
     state.collection = null;
     shell();
-    renderAll();
+    if (state.mode === 'explore') {
+      restoreExploreFeed();
+    } else {
+      renderAll();
+      load({ reset: false });
+    }
     body.querySelector('[data-action="close"]')?.focus();
-    load({ reset: false });
   }
 
   function renderAll() {
@@ -1417,12 +1627,35 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
 
   function open({ query = '' } = {}) {
     const firstOpen = !isOpen;
+    const entering = firstOpen || state.view !== 'stations';
+    const trimmed = String(query ?? '').trim();
     previousFocus = document.activeElement;
     state.tooShort = false;
-    if (firstOpen || state.view !== 'stations') {
+    if (entering) {
       state.view = 'stations';
+      state.collection = null;
+      state.mode = 'explore';
+      state.query = '';
+      state.letter = 'all';
+      state.offset = 0;
+      state.error = null;
+      state.exploreError = null;
+      state.exploreFeed = [];
+      state.exploreLimit = EXPLORE_PAGE_SIZE;
+      state.exploreCollections = 0;
+      state.rows = [];
+      state.total = 0;
+      state.nextOffset = null;
+      state.letterCounts = null;
+      state.algorithm = null;
+      state.popularMinListeners = null;
+      state.computedAt = null;
+      state.loading = true;
+      state.restoreScroll = null;
+      state.animateRows = false;
       // A new visit rotates the four featured picks from the whole pool.
       state.featuredSlugs = null;
+      previousMode = 'explore';
       if (firstOpen) {
         isOpen = true;
         panel.classList.add('is-open');
@@ -1438,7 +1671,6 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       });
     }
     state.nowPlayingId = actions.getNowPlayingId?.() ?? state.nowPlayingId;
-    const trimmed = String(query ?? '').trim();
     if (trimmed) {
       previousMode = state.mode === 'search' ? previousMode : state.mode;
       state.mode = 'search';
@@ -1448,6 +1680,10 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       const input = body.querySelector('#stationsSearch');
       if (input) input.value = trimmed;
       load({ reset: true });
+    } else if (entering) {
+      loadExplore({ reset: true, rebuild: true });
+    } else if (state.mode === 'explore') {
+      if (!state.rows.length) loadExplore({ reset: true, rebuild: true });
     } else if (!state.rows.length) {
       load({ reset: true });
     }
@@ -1465,6 +1701,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     openSettleTimer = null;
     isOpen = false;
     loadToken++;
+    state.stationActionToken++;
     controller?.abort();
     state.loading = false;
     state.tooShort = false;
