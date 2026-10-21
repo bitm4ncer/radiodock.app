@@ -6,6 +6,10 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  /* Grids follow the panel width, not the viewport: a narrow resized panel
+     folds its two-column collection grids into one column. */
+  container-type: inline-size;
+  container-name: stations-panel;
   color: var(--text);
   /* Same opaque surface as Notes / Add / Sync (and the solid main panel). */
   background: #141414;
@@ -34,6 +38,48 @@
     opacity 180ms ease,
     translate 240ms cubic-bezier(0.22, 1, 0.36, 1),
     visibility 0s;
+}
+
+/* Bottom-right corner grip. Desktop browser only: the PWA / Electron window
+   uses the full viewport, so there is nothing to resize there. */
+.stations-resize-handle {
+  display: none;
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  z-index: 6;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  opacity: 0.55;
+  cursor: nwse-resize;
+  touch-action: none;
+}
+
+.stations-resize-handle svg {
+  width: 15px;
+  height: 15px;
+}
+
+.stations-resize-handle:hover,
+.stations-panel.is-resizing .stations-resize-handle {
+  opacity: 1;
+  color: var(--text);
+}
+
+.stations-panel.is-resizing {
+  user-select: none;
+}
+
+html.is-standalone .stations-resize-handle,
+body.is-electron .stations-resize-handle {
+  display: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -806,6 +852,10 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
   .stations-drag {
     display: inline-flex;
   }
+
+  .stations-panel.is-open .stations-resize-handle {
+    display: inline-flex;
+  }
 }
 
 @media (min-width: 700px) and (max-width: 899px) {
@@ -1177,6 +1227,17 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
 
 .stations-collection-grid.is-tiles {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* The panel can be resized much narrower than the desktop viewport. Once it
+   drops below the default width, collection grids go single-column so cards
+   keep their labels and counts readable. */
+@container stations-panel (max-width: 640px) {
+  .stations-featured .stations-collection-grid,
+  .stations-collection-grid,
+  .stations-collection-grid.is-tiles {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .stations-collection-card {
