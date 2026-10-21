@@ -284,13 +284,13 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       content.innerHTML = emptyState();
       return;
     }
-    const canAdd = !!actions.canAddToActiveList?.();
+    const canAdd = !!actions.canFavorite?.();
     const rows = state.rows.map((station, index) => stationsRow(station, {
       query: state.mode === 'search' ? state.query : '',
       mode: state.mode,
       algorithm: state.algorithm,
       canAdd,
-      alreadyAdded: !!actions.isAlreadyInActiveList?.(station.id),
+      alreadyAdded: !!actions.isFavorited?.(station.id),
       priority: index < 10,
     })).join('');
     const atCap = state.mode !== 'popular' && state.rows.length >= MAX_ROWS;
@@ -364,7 +364,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     if (!button?.isConnected) return;
     button.innerHTML = HEART_ICON;
     button.classList.remove('is-move');
-    button.setAttribute('aria-label', button.classList.contains('is-added') ? 'Already in list' : 'Add to list');
+    button.setAttribute('aria-label', button.classList.contains('is-added') ? 'Already in favorites' : 'Add to favorites');
   }
 
   function startHeartFlow(button, station) {
@@ -390,7 +390,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       openMoveMenu(button, station);
       return;
     }
-    const wasAdded = !!actions.isAlreadyInActiveList?.(id);
+    const wasAdded = !!actions.isFavorited?.(id);
     clearMoveTimers();
     moveState = null;
     button.classList.remove('heart-pop');
@@ -448,7 +448,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     try { lists = (await data.getUserLists?.()) ?? []; } catch { lists = []; }
     if (!button.isConnected) return;
     closeMoveMenu();
-    const activeId = actions.getActiveList?.()?.id ?? null;
+    const activeId = actions.getFavoriteList?.()?.id ?? null;
     const el = document.createElement('div');
     el.className = 'stations-move-menu';
     el.setAttribute('role', 'menu');
@@ -1329,11 +1329,11 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       body.querySelectorAll('[data-action="add"], [data-action="collection-add"]').forEach((button) => {
         const item = button.closest('[data-id], [data-uuid]');
         const id = item?.dataset.id ?? item?.dataset.uuid;
-        const added = !!actions.isAlreadyInActiveList?.(id);
+        const added = !!actions.isFavorited?.(id);
         button.classList.toggle('is-added', added);
         button.setAttribute('aria-pressed', String(added));
         if (!button.classList.contains('is-move')) {
-          button.setAttribute('aria-label', added ? 'Already in list' : 'Add to list');
+          button.setAttribute('aria-label', added ? 'Already in favorites' : 'Add to favorites');
         }
       });
     },
