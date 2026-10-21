@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T12:11:38.781Z",
+  "generatedAt": "2026-10-21T12:39:53.809Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -1168,26 +1168,6 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "960da3ae-0601-11e8-ae97-52543be04c81",
-            "name": "WORT 89.9 Madison, WI",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "960b5a80-0601-11e8-ae97-52543be04c81",
-            "name": "KBOO 90.7 Portland, OR",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "bc93bbd2-c582-4c05-a156-c5ab29f44034",
-            "name": "WRFG 89.3FM Atlanta, GA",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "62c46a39-ab2a-11e9-88f4-52543be04c81",
-            "name": "WERU Community Radio",
-            "countrycode": "US"
-          },
-          {
             "stationuuid": "b9333c19-5658-42b4-a241-91752b798a3e",
             "name": "WSCA",
             "countrycode": "US"
@@ -1489,11 +1469,6 @@
             "stationuuid": "6762db0c-f054-49ec-bc95-b3345423ab2d",
             "name": "Jazz FM (Ciudad de México) - Online - Independiente - Ciudad de México",
             "countrycode": "MX"
-          },
-          {
-            "stationuuid": "962a36dd-0601-11e8-ae97-52543be04c81",
-            "name": "Radio X",
-            "countrycode": "IT"
           }
         ]
       },
@@ -1566,11 +1541,6 @@
           {
             "stationuuid": "9626fd02-0601-11e8-ae97-52543be04c81",
             "name": "DubTerrain",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "9c100db7-ba97-4e6f-821f-dba1ed08ad52",
-            "name": "Rinse UK",
             "countrycode": "GB"
           },
           {
@@ -1719,21 +1689,6 @@
             "countrycode": "CA"
           },
           {
-            "stationuuid": "961d5912-0601-11e8-ae97-52543be04c81",
-            "name": "WXNA 101.5 Nashville, TN \"Low Power, High Voltage\"",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "c45f70d7-3d98-4f34-8cb8-e91e54212787",
-            "name": "KPFK 90.7 FM Listener Sponsored Pacifica Radio",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "0bb84fe1-e899-11e9-a96c-52543be04c81",
-            "name": "dublab",
-            "countrycode": "US"
-          },
-          {
             "stationuuid": "cef8689a-a858-4400-aaaf-f6e57a633836",
             "name": "Radio Reggae Brasil",
             "countrycode": "BR"
@@ -1749,29 +1704,9 @@
             "countrycode": "AE"
           },
           {
-            "stationuuid": "32f8169a-eaa5-4bd6-b391-122b5419bcd1",
-            "name": "2SER 107.3 FM",
-            "countrycode": "AU"
-          },
-          {
             "stationuuid": "b6673cb9-b6da-48e3-85df-a844a4a06597",
             "name": "RTRFM 92.1",
             "countrycode": "AU"
-          },
-          {
-            "stationuuid": "f821dd0f-72b5-4604-bcc7-2921e46e5dd9",
-            "name": "PBS FM - Melbourne - 106.7 FM (AAC+)",
-            "countrycode": "AU"
-          },
-          {
-            "stationuuid": "b6794d5d-2053-4390-82b5-5dc750972069",
-            "name": "4zzz",
-            "countrycode": "AU"
-          },
-          {
-            "stationuuid": "59b2ab71-7653-4123-ae84-bdbf56fdab6e",
-            "name": "95bFM - FLAC",
-            "countrycode": "NZ"
           },
           {
             "stationuuid": "eef945eb-4890-41bd-96d9-70b792fb3e0a",
@@ -1874,26 +1809,6 @@
           {
             "stationuuid": "4b397571-0d64-4038-b497-dd5d6e7dee86",
             "name": "KPIG-FM ",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "96058344-0601-11e8-ae97-52543be04c81",
-            "name": "WEVL 89.9 Memphis, TN",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "6fd171cd-6f94-4e27-be25-eace7e1151b8",
-            "name": "WTJU 91.1 FM | The University of Virginia, Charlottesville, VA",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "9625b91d-0601-11e8-ae97-52543be04c81",
-            "name": "KRVM 91.9 Eugene, OR",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "62c46a39-ab2a-11e9-88f4-52543be04c81",
-            "name": "WERU Community Radio",
             "countrycode": "US"
           },
           {
@@ -2045,11 +1960,6 @@
         "featured": true,
         "stations": [
           {
-            "stationuuid": "4e952622-185b-4fda-8d3e-a98de4aaa55e",
-            "name": "maracutaia.fm",
-            "countrycode": "BR"
-          },
-          {
             "stationuuid": "29ba74b4-c8cd-45d3-990d-91d08cb5a329",
             "name": "Mad Radio Barcelona",
             "countrycode": "ES"
@@ -2070,11 +1980,6 @@
             "countrycode": "GB"
           },
           {
-            "stationuuid": "1dbdc89f-f0d1-4bf7-8922-266edeb912dd",
-            "name": "Subtle Radio",
-            "countrycode": "GB"
-          },
-          {
             "stationuuid": "b1d72676-8870-47da-91db-a88357b64c51",
             "name": "Dance Revolution",
             "countrycode": "GB"
@@ -2085,14 +1990,74 @@
             "countrycode": "GB"
           },
           {
-            "stationuuid": "d9463f80-ff7b-49cd-a3a2-fae1484d0009",
-            "name": "Club Sabroso Radio",
-            "countrycode": ""
-          },
-          {
             "stationuuid": "963fb135-0601-11e8-ae97-52543be04c81",
             "name": "Radio 90s Eurodance",
             "countrycode": ""
+          },
+          {
+            "stationuuid": "962cc6df-0601-11e8-ae97-52543be04c81",
+            "name": "Dance Wave!",
+            "countrycode": "HU"
+          },
+          {
+            "stationuuid": "961787d1-0601-11e8-ae97-52543be04c81",
+            "name": "Frisky Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "af6f51b1-0ca9-11ea-a87e-52543be04c81",
+            "name": "Intense Radio - We love Dance 256K",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "563f5559-105c-11e9-a80b-52543be04c81",
+            "name": "DFM RUSSIAN DANCE",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "9628632e-0601-11e8-ae97-52543be04c81",
+            "name": "Radio Stereocittà",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "d847db37-5f89-48a5-be32-b10e5406f0e6",
+            "name": "Mixadance FM",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "26edc6b6-d221-4814-a6a9-0dd5d5d365d2",
+            "name": "Pure Ibiza Radio",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "07b51aa7-527e-11ea-be63-52543be04c81",
+            "name": "Radio Studio Più - HQ",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "960f7041-0601-11e8-ae97-52543be04c81",
+            "name": "RMF Dance",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "962c7032-0601-11e8-ae97-52543be04c81",
+            "name": "Italia Dance Music",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "962cd7e3-0601-11e8-ae97-52543be04c81",
+            "name": "European Hit Radio - Dance",
+            "countrycode": "LV"
+          },
+          {
+            "stationuuid": "9629d012-0601-11e8-ae97-52543be04c81",
+            "name": "Kiss FM 87.6, 87.8 & 88.0 Melbourne, VIC",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "962c02bc-0601-11e8-ae97-52543be04c81",
+            "name": "Radio Ibiza",
+            "countrycode": "IT"
           }
         ]
       },
@@ -2126,6 +2091,81 @@
             "stationuuid": "3fb45633-813e-4c6b-b262-e90c3846d10d",
             "name": "Field Recordings | NTS",
             "countrycode": "GB"
+          },
+          {
+            "stationuuid": "961fa288-0601-11e8-ae97-52543be04c81",
+            "name": "Ambient Sleeping Pill",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9609ed67-0601-11e8-ae97-52543be04c81",
+            "name": "Cryosleep",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "960c36e6-0601-11e8-ae97-52543be04c81",
+            "name": "Echoes of Bluemars",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96466522-0601-11e8-ae97-52543be04c81",
+            "name": "Radio Caprice - Drone Ambient",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "fffeaf03-4b5a-46b1-a1f1-575513c346f4",
+            "name": "RADCAP: DRONE AMBIENT",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "1d209449-d62e-442d-bbd6-eb3bcf53ff67",
+            "name": "Radio Caprice Industrial/Dark/Ritual Ambient",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "44b7f191-9478-46b0-a3b5-5a0ea2b2d64e",
+            "name": "ambient.fm",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "dee67cb1-58f4-47b2-ac14-260578106550",
+            "name": "Drone Radio (MRG.fm)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "ab2208bf-6f70-443e-ad11-73f594b2629f",
+            "name": "Planet Ambi HD",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "01110a74-c013-40cd-a9f4-982093ac920d",
+            "name": "Zero Beat Zone (MRG.fm)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "83accca7-b878-419d-a506-3d21ef2f250f",
+            "name": "SomaFM Synphaera Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "0bbf49cc-0e44-4766-87b5-9d4c0aae2d47",
+            "name": "Experimentalgems",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "9a4fe10d-7a27-47ac-bedf-f3253fd3bf9d",
+            "name": "Modular-Station",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "10a9a02e-f52c-4a27-8dd6-4d00996593a4",
+            "name": "The Indie Beat Radio - Ambient Channel",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "fb1add5d-4b7b-45cf-9be4-a1e8df712553",
+            "name": "Ambi Nature Radio",
+            "countrycode": "CH"
           }
         ]
       },
@@ -2164,6 +2204,76 @@
             "stationuuid": "d5468df4-e6d0-11e9-a96c-52543be04c81",
             "name": "Slow Focus | NTS",
             "countrycode": "GB"
+          },
+          {
+            "stationuuid": "96063f25-0601-11e8-ae97-52543be04c81",
+            "name": "Classic FM UK",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "960ac54b-0601-11e8-ae97-52543be04c81",
+            "name": "Your Classical - Relax",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "ce18872f-ed72-4ac7-a93e-07ae3fe7b40b",
+            "name": "Music Lake - Relaxation Music, Meditation, Focus, Chill, Nature Sounds",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "518d02e0-9301-4358-bf25-4ed57372fd2d",
+            "name": "Instrumental Jazz",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "96154a1e-0601-11e8-ae97-52543be04c81",
+            "name": "Total instrumental",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "dfe95eca-06e0-11e9-a80b-52543be04c81",
+            "name": "RMNinstrumental",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "9641edb9-0601-11e8-ae97-52543be04c81",
+            "name": "Concertzender Baroque",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "96077079-0601-11e8-ae97-52543be04c81",
+            "name": "Radio Swiss Classic German",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "960536e6-0601-11e8-ae97-52543be04c81",
+            "name": "MDR Klassik",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "0e2e2f4a-c8aa-11e9-8502-52543be04c81",
+            "name": "Rai Radio Classica Filodiffusione",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "960dc513-0601-11e8-ae97-52543be04c81",
+            "name": "RMF Classic",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "960cf833-0601-11e8-ae97-52543be04c81",
+            "name": "SomaFM Groove Salad (128k MP3)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "04407d31-2cc0-11e8-91bf-52543be04c81",
+            "name": "dinamo.fm sleep",
+            "countrycode": "TR"
+          },
+          {
+            "stationuuid": "4461c574-4215-43b8-aeb1-dfcfc0965b2f",
+            "name": "Radio Record Ambient",
+            "countrycode": "RU"
           }
         ]
       },
@@ -2229,9 +2339,49 @@
             "countrycode": "PL"
           },
           {
-            "stationuuid": "bae70c5c-9f3f-42fc-a83d-6c13920590e0",
-            "name": "Kiosk Radio",
-            "countrycode": "BE"
+            "stationuuid": "6d69c0fb-3cc2-11e8-b74d-52543be04c81",
+            "name": "SomaFM Sonic Universe (128k AAC)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "c2efe617-e1f8-401a-8b61-6f7dfbb56c91",
+            "name": "Experimental/Avant-garde music - Radio Caprice",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "421dc93b-f989-47e1-8a90-e597029473fc",
+            "name": "Classical avant-garde - Radio Caprice",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "96393127-0601-11e8-ae97-52543be04c81",
+            "name": "Concertzender X-Rated",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "31cc09a1-4b26-11e8-9b06-52543be04c81",
+            "name": "Cashmere Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "3a6e96c5-66bb-11e9-af37-52543be04c81",
+            "name": "NEOFOLK",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "cd280bad-abd6-47ab-8847-735b4f6dc937",
+            "name": "SomaFM n5MD (128k AAC)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "85864736-a73e-11e8-abb8-52543be04c81",
+            "name": "Path through the Forest",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "2e1cb65b-967f-4221-8bcb-1baecea7784c",
+            "name": "Avant-Garde Jazz/Free Improvisation - Radio Caprice",
+            "countrycode": ""
           }
         ]
       },
@@ -2270,6 +2420,76 @@
             "stationuuid": "5e992e1e-e6ef-11e9-a96c-52543be04c81",
             "name": "France Musique",
             "countrycode": "FR"
+          },
+          {
+            "stationuuid": "32da2113-229c-11e9-a80b-52543be04c81",
+            "name": "Classic FM",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "9608eb3e-0601-11e8-ae97-52543be04c81",
+            "name": "Rai Radio 3",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "686a0847-a519-460d-b351-831e1a80d516",
+            "name": "Linn Classical",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "9625d0fa-0601-11e8-ae97-52543be04c81",
+            "name": "Concertzender Oude Muziek",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "eb0e95f5-5c36-48dc-9ed0-954039186465",
+            "name": "France Musique La Baroque",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "96225a38-0601-11e8-ae97-52543be04c81",
+            "name": "1.FM - Otto's Baroque Music Radio",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "ffd351fe-219e-4c6e-b14f-9c2e02fbe45e",
+            "name": "Klassik Radio - Live",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "963712bc-0601-11e8-ae97-52543be04c81",
+            "name": "Klassik Radio - Pure Mozart",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "aa6ee95d-e208-4592-a121-047056106596",
+            "name": "Ancient FM",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "c528303b-3f8b-11e9-aa55-52543be04c81",
+            "name": "KLASSIK 1",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "03e68f6d-1ca3-459f-891a-c55d84711646",
+            "name": "BBC Radio 3 (128k)",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "9605f05a-0601-11e8-ae97-52543be04c81",
+            "name": "WDR 3",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "96292f3f-0601-11e8-ae97-52543be04c81",
+            "name": "Radio Caprice - Classical Piano",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "2575e5e6-bf7c-11e9-8502-52543be04c81",
+            "name": "Radio Caprice - Classical Baroque",
+            "countrycode": "RU"
           }
         ]
       },
@@ -2308,6 +2528,76 @@
             "stationuuid": "f226bc65-686a-49f1-b82c-6743612197ba",
             "name": "Starpoint Radio",
             "countrycode": "GB"
+          },
+          {
+            "stationuuid": "9610a807-0601-11e8-ae97-52543be04c81",
+            "name": "Jazz Radio Funk",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "c77c45c4-cf37-414c-ae34-868f7d9cd944",
+            "name": "FUNKY RADIO - Only Funk Music (60's 70's)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96385b07-0601-11e8-ae97-52543be04c81",
+            "name": "Rádio Disco Funk BR",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "962a7066-0601-11e8-ae97-52543be04c81",
+            "name": "1.FM - Disco Ball 70's-80's Radio",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "e005cd19-9e18-11e9-a787-52543be04c81",
+            "name": "RMC Disco Funk",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "33de8eca-ae96-41fd-96e9-d3d3b7d00f39",
+            "name": "80s80s Funk & Soul",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "09998555-2654-4aa2-8a1e-1ea7a4fed978",
+            "name": "54 Funk Soul Dance (laut.fm)",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "43718921-41a0-48f5-9645-c467d19a5095",
+            "name": "_Funky Corner Radio (USA)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96191df4-0601-11e8-ae97-52543be04c81",
+            "name": "181.FM - Soul",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "93cdf24e-7ffe-44e7-95f1-16d88a6ceadf",
+            "name": "Motown Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "120f9ba0-c55a-498a-ae36-58b5c27ac2af",
+            "name": "Funkstar Radio",
+            "countrycode": "CZ"
+          },
+          {
+            "stationuuid": "4df24bb0-2794-498f-bdc0-0c3d6b71ed95",
+            "name": "70 80 Disco Funk ModernSoul e Boogie",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "34695760-5162-41b9-8eb2-4471bce7541e",
+            "name": "The Funky Channel",
+            "countrycode": "BE"
+          },
+          {
+            "stationuuid": "9613f1f2-0601-11e8-ae97-52543be04c81",
+            "name": "Generations Funk",
+            "countrycode": "FR"
           }
         ]
       },
@@ -2328,11 +2618,6 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "12f45ca4-3d96-4937-85e0-a424d36a4d09",
-            "name": "RadioActive",
-            "countrycode": "GR"
-          },
-          {
             "stationuuid": "d271b4e8-a298-4862-9f4b-025c110cedd9",
             "name": "IBIZA CHILLOUT LOUNGE - Ambient, Deep House, Balearic, Smooth Jazz, Acoustic, Chill House, Lo-Fi, Chillwave, Dream Pop, Electro, Tropical House, Sunset Chill, Café del Mar, Soft Electronica, Slow House, Ambient, Relax, Easy Listening, Beach Vibes, Summer",
             "countrycode": "DE"
@@ -2346,6 +2631,81 @@
             "stationuuid": "fb87433e-2095-4c03-b411-ca0a0603ebcd",
             "name": "Hotel Costes",
             "countrycode": "FR"
+          },
+          {
+            "stationuuid": "961fb4b2-0601-11e8-ae97-52543be04c81",
+            "name": "1.FM - Chillout Lounge Radio",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "3fd18c3f-8157-11e9-aa30-52543be04c81",
+            "name": "Café del Mar",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "2b85feeb-2fb3-4144-af8e-d1df0b5d686b",
+            "name": "Absolute Chillout",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "478fd7f4-dc36-11e9-a8ba-52543be04c81",
+            "name": "Smooth Chill",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "17d22fdd-f566-11e9-bbf2-52543be04c81",
+            "name": "Chill FM Romania",
+            "countrycode": "RO"
+          },
+          {
+            "stationuuid": "d69fbc2c-530a-4d40-ac9f-56532356b248",
+            "name": "Chillout Ibiza FM",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "928a3762-2514-11e8-91bf-52543be04c81",
+            "name": "Costa del Mar - Chill Out",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "3098a58b-5e2d-4ed4-8eb9-a38791bcec64",
+            "name": "Yoga Chill",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "07064262-5ef9-44e1-900d-ed752b7433b8",
+            "name": "1.FM - Ambient Psychill",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "701d3a6d-06e0-4d1f-9521-7742e725ba94",
+            "name": "Radio Art - Chillout",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "8b3e9c54-f365-11e8-a471-52543be04c81",
+            "name": "- 0 N - Chillout on Radio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "962683f5-0601-11e8-ae97-52543be04c81",
+            "name": "Sunshine Live - Lounge",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "3653b75c-0116-11ea-bbf2-52543be04c81",
+            "name": "Psyndora Chillout",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "d407234d-18b3-4419-ba07-e19b2c8cb885",
+            "name": "VIP-Radios - Time To Relax",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "a20bf418-2673-11e8-91bf-52543be04c81",
+            "name": "naxi radio - cafe radio",
+            "countrycode": "RS"
           }
         ]
       },
@@ -2682,6 +3042,26 @@
             "stationuuid": "5f374674-a09e-44f4-9700-a2647915bfc8",
             "name": "Minimal & Deep-tech on MixLive.net",
             "countrycode": "IE"
+          },
+          {
+            "stationuuid": "2f7cead0-b1fa-4400-a6dd-8ccfc1be3e03",
+            "name": "Best Of Techno",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "b828bae6-3dcf-4cff-9e83-98ea75928930",
+            "name": "Radio Caprice - Dub Techno [1]",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "bb6b7ad8-f327-11e9-a96c-52543be04c81",
+            "name": "Traxx FM – Tech Minimal",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "19c57c60-bf6f-481b-9197-cb7e4f58c589",
+            "name": "Radio Caprice - Minimal Techno [1]",
+            "countrycode": "RU"
           }
         ]
       }
