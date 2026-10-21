@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T21:13:18.735Z",
+  "generatedAt": "2026-10-21T22:47:12.623Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -5165,6 +5165,44 @@
             "countrycode": ""
           }
         ]
+      },
+      {
+        "slug": "80s-hard-rock",
+        "title": "80s Hard Rock",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "aa9282e9-1821-4b22-8b25-f4fc1b542bcc",
+            "name": "011.fm – House of Hair",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "a3bb290f-da44-48bb-a412-3ec8ecac5396",
+            "name": "BOB Hair Metal",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "05da52cf-0e21-4af7-8aab-1dde7175d611",
+            "name": "Rock Antenne Hair Metal",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "933ba5c8-a4f3-4834-80c8-37d5c383c623",
+            "name": "The Strip - 80's Hair Band Rock",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9189bb75-e1f7-475c-b837-564a172cb178",
+            "name": "Begoodradio 80s Metal",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "ed02a49b-11e2-4de3-b279-279529290257",
+            "name": "Montiel Rock",
+            "countrycode": "BR"
+          }
+        ]
       }
     ]
   },
@@ -5670,7 +5708,7 @@
       {
         "genre": "hard-rock",
         "label": "Hard Rock",
-        "count": 235
+        "count": 240
       },
       {
         "genre": "schlager",
