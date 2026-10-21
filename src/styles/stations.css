@@ -835,8 +835,25 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
     height: 18px;
   }
 
+  /* On phones the panel itself is the scroll surface: the featured lists
+     stay stacked and the station list grows to its full height instead of
+     becoming a tiny nested scroller. */
+  .stations-shell {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .stations-header {
+    position: sticky;
+    top: 0;
+    z-index: 4;
     padding-top: 14px;
+    background: #141414;
+  }
+
+  :root.theme-light .stations-header {
+    background: #d5d5d5;
   }
 
   .stations-list {
@@ -867,7 +884,22 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
   }
 
   .stations-main {
+    flex: 0 0 auto;
     flex-direction: column;
+    overflow: visible;
+  }
+
+  .stations-content,
+  .stations-content:has(> .stations-list) {
+    display: block;
+    flex: 0 0 auto;
+    overflow: visible;
+  }
+
+  .stations-content:has(> .stations-list) > .stations-list {
+    flex: none;
+    max-height: none;
+    overflow: visible;
   }
 
   body.stations-overlay-open {
@@ -1807,32 +1839,6 @@ html.is-standalone .stations-panel:not(.is-open) {
 @media (max-width: 699px) {
   .stations-featured {
     padding: 0 14px 12px;
-  }
-
-  /* On phones the featured lists become a horizontal rail. Stacked cards
-     used to eat most of the panel and left the station list only a few
-     pixels tall, so the page looked unscrollable. */
-  .stations-featured .stations-collection-grid,
-  .stations-featured .stations-collection-grid.is-tiles {
-    display: flex;
-    grid-template-columns: none;
-    gap: 8px;
-    margin: 0 -14px 8px;
-    padding: 0 14px 2px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x proximity;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .stations-featured .stations-collection-grid::-webkit-scrollbar {
-    display: none;
-  }
-
-  .stations-featured .stations-collection-card {
-    flex: 0 0 230px;
-    scroll-snap-align: start;
   }
 }
 

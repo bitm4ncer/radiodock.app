@@ -160,13 +160,14 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     });
     body.querySelector('#stationsContent')?.addEventListener('click', onContentClick);
     body.querySelector('#stationsContent')?.addEventListener('scroll', onContentScroll, { passive: true, capture: true });
+    body.querySelector('.stations-shell')?.addEventListener('scroll', onContentScroll, { passive: true });
     body.querySelector('#stationsRail')?.addEventListener('click', (evt) => {
       const button = evt.target.closest('[data-letter]');
       if (!button || button.disabled) return;
       state.letter = button.dataset.letter;
       state.offset = 0;
       const content = body.querySelector('#stationsContent');
-      listScrollContainer(content)?.scrollTo({ top: 0, behavior: 'smooth' });
+      scrollToContentTop(content, 'smooth');
       load({ reset: true });
     });
     filters?.close();
@@ -305,9 +306,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       <div class="stations-list${state.loading ? ' is-loading' : ''}${animateRows ? ' is-entering' : ''}">${rows}${endless}</div>
       ${more}
     `;
-    const scroller = listScrollContainer(content);
-    if (restoreScroll != null) scroller.scrollTop = restoreScroll;
-    else if (animateRows) scroller.scrollTo({ top: 0, behavior: 'smooth' });
+    const scroller = scrollSurface(content);
+    if (restoreScroll != null && scroller) scroller.scrollTop = restoreScroll;
+    else if (animateRows) scrollToContentTop(content, 'smooth');
     mountLogoBehavior(content);
     applyNowPlaying();
     const entering = content.querySelector('.stations-list.is-entering');
@@ -551,8 +552,34 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     }
   }
 
+  function isMobileLayout() {
+    return matchMedia('(max-width: 699px)').matches;
+  }
+
   function listScrollContainer(content) {
     return content?.querySelector(':scope > .stations-list') ?? content;
+  }
+
+  // Desktop scrolls the inset list; on phones the whole panel is the scroll
+  // surface so the featured lists can stay stacked above the station list.
+  function scrollSurface(content) {
+    if (!content) return null;
+    if (isMobileLayout()) return content.closest('.stations-shell') ?? content;
+    return listScrollContainer(content);
+  }
+
+  function scrollToContentTop(content, behavior = 'auto') {
+    if (!content) return;
+    if (isMobileLayout()) {
+      const shell = content.closest('.stations-shell');
+      if (!shell) return;
+      const header = shell.querySelector('.stations-header');
+      const delta = content.getBoundingClientRect().top - shell.getBoundingClientRect().top;
+      const top = shell.scrollTop + delta - (header?.offsetHeight ?? 0);
+      shell.scrollTo({ top: Math.max(0, top), behavior });
+      return;
+    }
+    listScrollContainer(content)?.scrollTo({ top: 0, behavior });
   }
 
   function onContentScroll() {
@@ -560,7 +587,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     if (state.loading || state.nextOffset == null) return;
     const content = body.querySelector('#stationsContent');
     if (!content) return;
-    const scroller = listScrollContainer(content);
+    const scroller = scrollSurface(content);
+    if (!scroller) return;
     if (scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight < 240) {
       state.offset = state.nextOffset;
       load({ reset: false });
@@ -693,7 +721,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       if (state.view !== 'stations') return;
       const incoming = result?.stations ?? [];
       const content = body.querySelector('#stationsContent');
-      if (!reset) state.restoreScroll = listScrollContainer(content)?.scrollTop ?? null;
+      if (!reset) state.restoreScroll = scrollSurface(content)?.scrollTop ?? null;
       const maxRows = state.mode === 'popular' ? null : MAX_ROWS;
       state.rows = reset ? mergeRows([], incoming, maxRows) : mergeRows(state.rows, incoming, maxRows);
       if (reset) {
