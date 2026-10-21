@@ -844,6 +844,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   }
 
   async function load({ reset = false } = {}) {
+    if (state.mode === 'explore') {
+      return loadExplore({ reset, rebuild: !state.exploreFeed.length });
+    }
     if (state.tooShort) return;
     if (reset) {
       state.offset = 0;
