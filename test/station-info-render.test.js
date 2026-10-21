@@ -39,3 +39,8 @@ test('info body escapes untrusted station text', () => {
   assert.match(html, /&lt;img src=x/);
   assert.match(html, /&lt;b&gt;jazz&lt;\/b&gt;/);
 });
+
+test('a non-http(s) homepage or social URL is not rendered as a link', () => {
+  const html = renderStationInfo({ ...base, homepage: 'javascript:alert(1)', socials: [{ platform: 'instagram', url: 'javascript:alert(2)' }] }, {});
+  assert.ok(!html.includes('javascript:'), 'no javascript: href may be rendered');
+});

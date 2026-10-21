@@ -3,6 +3,7 @@
 
 import { renderLogoSlot, mountLogoBehavior } from './station-logo.js';
 import { trackStationPlay } from '../analytics/umami.js';
+import { isAllowedHttpUrl } from '../data/url-validation.js';
 
 // Volume buckets — 11 steps in 10% increments (one per dot).
 const VOLUME_LEVELS = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
@@ -118,10 +119,13 @@ export function mountPlayerCard({ player }) {
   // one, otherwise the stream's own origin (where the station actually lives).
   function stationLink(station) {
     const home = String(station?.homepage ?? '').trim();
-    if (home) return home;
+    if (home && isAllowedHttpUrl(home)) return home;
     const stream = String(station?.url_resolved || station?.url || '').trim();
     if (!stream) return '';
-    try { return new URL(stream).origin; } catch { return ''; }
+    try {
+      const origin = new URL(stream).origin;
+      return isAllowedHttpUrl(origin) ? origin : '';
+    } catch { return ''; }
   }
 
   function setNowPlaying(text) {

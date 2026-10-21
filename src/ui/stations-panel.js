@@ -5,12 +5,13 @@ import { stationsRow, updateRowNowPlaying, HEART_ICON, PLUS_ICON } from './stati
 import { mountStationsFilters } from './stations-filter.js';
 import { buildBrowseParams, communityParams, mergeRows, searchModeFor, popularParams, searchParams, MAX_ROWS } from './stations-state.js';
 import { escapeHtml, formatCount } from './stations-format.js';
-import { normaliseDiscover, renderDiscover, renderCollection, collectionCard, featuredLists, pickFeaturedLists } from './discover-child.js';
+import { normaliseDiscover, renderDiscover, renderCollection, collectionCard, featuredLists, pickFeaturedLists, renderDiscoverUnavailable } from './discover-child.js';
 import { eligibleLists, pickerHtml } from './playlist-picker.js';
 import { mountLogoBehavior } from './station-logo.js';
 import { createInlineStationInfo } from './station-info-inline.js';
 import * as storage from '../data/storage.js';
 import { registerSnapSurface, snapPanel, cancelSnap } from './panel-snap.js';
+import { resolvePanelSize } from './panel-resize.js';
 
 const LETTERS = ['All', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''), '#'];
 
@@ -26,6 +27,16 @@ function closeIcon() {
 
 function dragHandle() {
   return `<span class="stations-drag" data-role="drag" title="Drag" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg></span>`;
+}
+
+function createResizeHandle() {
+  const handle = document.createElement('button');
+  handle.type = 'button';
+  handle.className = 'stations-resize-handle';
+  handle.title = 'Resize';
+  handle.setAttribute('aria-label', 'Resize stations panel');
+  handle.innerHTML = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M14 6 6 14M14 10l-4 4M14 14h.01"/></svg>';
+  return handle;
 }
 
 function flashElement(el) {
@@ -67,6 +78,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     };
   }
 
+  const resizeHandle = panel.querySelector('.stations-resize-handle') ?? createResizeHandle();
+  if (!resizeHandle.isConnected) panel.appendChild(resizeHandle);
+
   const state = {
     view: 'stations',
     mode: 'popular',
@@ -100,9 +114,16 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   let lastAppRegime = isAppRegime();
   window.addEventListener('resize', () => {
     const next = isAppRegime();
-    if (next === lastAppRegime) return;
+    const regimeChanged = next !== lastAppRegime;
     lastAppRegime = next;
-    if (isOpen) applyPosition();
+    if (!isOpen) return;
+    if (regimeChanged) {
+      applyPosition();
+      return;
+    }
+    if (next) return;
+    if (panelSize) applyPanelSize(panelSize.width, panelSize.height);
+    if (panelPosition) setPanelPosition(panelPosition.left, panelPosition.top);
   });
   let previousMode = 'popular';
   let previousFocus = null;
@@ -114,6 +135,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   let filters = null;
   let searchTimer = null;
   let panelPosition = null;
+  let panelSize = null;
   let inlineInfoEl = null;
   let inlineInfoId = null;
   let moveTimers = [];
@@ -860,6 +882,10 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   function renderDiscoverView() {
     state.view = 'discover';
     state.collection = null;
+    if (!state.discover) {
+      discoverShell('Discover', 'back', renderDiscoverUnavailable());
+      return;
+    }
     const lists = normaliseDiscover(state.discover).lists;
     discoverShell('Discover', 'back', renderDiscover({ lists }));
     applyNowPlaying();
@@ -1111,15 +1137,47 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     panelPosition = { left, top };
   }
 
+  function applyPanelSize(width, height) {
+    const rect = panel.getBoundingClientRect();
+    const inlineLeft = Number.parseFloat(panel.style.left);
+    const inlineTop = Number.parseFloat(panel.style.top);
+    const left = Number.isFinite(inlineLeft) ? inlineLeft : rect.left;
+    const top = Number.isFinite(inlineTop) ? inlineTop : rect.top;
+    const next = resolvePanelSize({
+      startWidth: width,
+      startHeight: height,
+      left,
+      top,
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
+    });
+    panel.style.width = `${next.width}px`;
+    panel.style.height = `${next.height}px`;
+    panel.style.maxHeight = 'none';
+    panelSize = next;
+    return next;
+  }
+
   async function applyPosition() {
     if (isAppRegime()) {
       panel.style.left = '';
       panel.style.top = '';
+      panel.style.width = '';
+      panel.style.height = '';
+      panel.style.maxHeight = '';
       panel.style.transform = '';
       return;
     }
-    if (!panelPosition) {
-      panelPosition = await storage.getPref('stationsPanelPos', null).catch(() => null);
+    if (!panelPosition || !panelSize) {
+      const [savedPosition, savedSize] = await Promise.all([
+        panelPosition ? Promise.resolve(panelPosition) : storage.getPref('stationsPanelPos', null).catch(() => null),
+        panelSize ? Promise.resolve(panelSize) : storage.getPref('stationsPanelSize', null).catch(() => null),
+      ]);
+      panelPosition = panelPosition ?? savedPosition;
+      panelSize = panelSize ?? savedSize;
+    }
+    if (panelSize?.width && panelSize?.height) {
+      applyPanelSize(panelSize.width, panelSize.height);
     }
     if (!panelPosition) return;
     const width = panel.offsetWidth;
@@ -1172,6 +1230,69 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     document.addEventListener('pointermove', move);
     document.addEventListener('pointerup', up, { once: true });
   }
+
+  function startResize(evt) {
+    if (isAppRegime() || evt.button !== 0) return;
+    evt.preventDefault();
+    clearTimeout(openSettleTimer);
+    openSettleTimer = null;
+    cancelSnap(panel);
+
+    const rect = panel.getBoundingClientRect();
+    // A resize starts from the visual top-left corner. Turning the centred
+    // CSS position into fixed coordinates keeps the handle under the pointer
+    // instead of growing the panel in both directions.
+    panel.style.transform = 'none';
+    panel.style.left = `${rect.left}px`;
+    panel.style.top = `${rect.top}px`;
+    panel.style.width = `${rect.width}px`;
+    panel.style.height = `${rect.height}px`;
+    panel.style.maxHeight = 'none';
+    panelPosition = { left: rect.left, top: rect.top };
+    panelSize = { width: rect.width, height: rect.height };
+
+    const pointerId = evt.pointerId;
+    const startX = evt.clientX;
+    const startY = evt.clientY;
+    panel.classList.add('is-resizing');
+    document.body.style.cursor = 'nwse-resize';
+
+    function move(event) {
+      if (event.pointerId !== pointerId) return;
+      const next = resolvePanelSize({
+        startWidth: rect.width,
+        startHeight: rect.height,
+        deltaX: event.clientX - startX,
+        deltaY: event.clientY - startY,
+        left: rect.left,
+        top: rect.top,
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
+      });
+      panel.style.width = `${next.width}px`;
+      panel.style.height = `${next.height}px`;
+      panelSize = next;
+    }
+
+    function end(event) {
+      if (event && event.pointerId !== pointerId) return;
+      panel.classList.remove('is-resizing');
+      document.body.style.cursor = '';
+      resizeHandle.removeEventListener('pointermove', move);
+      resizeHandle.removeEventListener('pointerup', end);
+      resizeHandle.removeEventListener('pointercancel', end);
+      try { resizeHandle.releasePointerCapture(pointerId); } catch {}
+      if (panelSize) storage.setPref('stationsPanelSize', panelSize).catch(() => {});
+      if (panelPosition) storage.setPref('stationsPanelPos', panelPosition).catch(() => {});
+    }
+
+    try { resizeHandle.setPointerCapture(pointerId); } catch {}
+    resizeHandle.addEventListener('pointermove', move);
+    resizeHandle.addEventListener('pointerup', end);
+    resizeHandle.addEventListener('pointercancel', end);
+  }
+
+  resizeHandle.addEventListener('pointerdown', startResize);
 
   function onKeydown(evt) {
     if (!isOpen) return;

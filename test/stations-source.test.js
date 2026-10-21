@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { createStationsSource } from '../src/data/stations-source.js';
 
 function makeClient(name, impl = {}) {
-  const calls = { search: 0, byuuid: 0 };
+  const calls = { search: 0, byuuid: 0, browse: 0 };
   return {
     calls,
     searchStations: async (opts, transport) => {
@@ -16,6 +16,11 @@ function makeClient(name, impl = {}) {
       calls.byuuid++;
       if (impl.byuuid) return impl.byuuid(uuid, transport);
       return { id: uuid, name: `${name} station` };
+    },
+    browseStations: async (params, transport) => {
+      calls.browse++;
+      if (impl.browse) return impl.browse(params, transport);
+      return { stations: [{ id: `${name}-1`, name: `${name} browse` }], total: 1, offset: 0, limit: 1, nextOffset: null, letterCounts: null };
     },
   };
 }
@@ -137,4 +142,12 @@ test('a user-cancelled request rethrows and does not fall back', async () => {
 
   await assert.rejects(() => src.searchStations({ query: 'x' }, { signal: ctl.signal }));
   assert.equal(fallback.calls.search, 0);
+});
+
+test('browseStations falls back to Radio Browser search on primary error', async () => {
+  const primary = makeClient('primary', { browse: async () => { throw new Error('down'); } });
+  const fallback = makeClient('fallback');
+  const src = createStationsSource({ primary, fallback });
+  const out = await src.browseStations({ q: 'jazz' });
+  assert.equal(out.stations[0].id, 'fallback-1');
 });

@@ -17,6 +17,7 @@ import { renderStationInfo, ICON_CHECK } from './station-info-render.js';
 import { openStationEdit } from './station-edit.js';
 import { detectStandalone } from '../platform.js';
 import { isElectron } from './electron-bridge.js';
+import { registerSnapSurface, snapPanel, cancelSnap } from './panel-snap.js';
 
 // Solid utility glyphs (Heroicons solid) so they read at the same weight as
 // the filled brand marks in the same row.
@@ -138,6 +139,7 @@ export function mountStationInfo() {
 
   function close() {
     if (!isOpen) return;
+    cancelSnap(panel);
     isOpen = false;
     panel.setAttribute('aria-hidden', 'true');
     if (appMode) exitSheet();
@@ -219,11 +221,16 @@ export function mountStationInfo() {
   }
 
   if (!appMode) {
+    // The info panel joins the same snap surface as Notes / Stations / Add /
+    // Sync. Its position stays session-only; the adapter lets a neighbour
+    // insertion move it during the same spring animation.
+    registerSnapSurface(panel, { setPosition: applyDesktopPos });
     const handle = panel.querySelector('[data-role="drag"]');
     let dragging = false, pointerId = null, offX = 0, offY = 0;
     const startDrag = (e) => {
       if (e.button !== 0) return;
       if (e.target.closest('button, a, input, textarea, select')) return;
+      cancelSnap(panel);
       const rect = panel.getBoundingClientRect();
       dragging = true; pointerId = e.pointerId;
       handle.setPointerCapture(pointerId);
@@ -244,6 +251,8 @@ export function mountStationInfo() {
       dragging = false; panel.classList.remove('is-dragging');
       try { handle.releasePointerCapture(pointerId); } catch {}
       pointerId = null;
+      const rect = panel.getBoundingClientRect();
+      snapPanel(panel, { x: rect.left, y: rect.top, setPosition: applyDesktopPos });
     };
     handle.addEventListener('pointerup', end);
     handle.addEventListener('pointercancel', end);

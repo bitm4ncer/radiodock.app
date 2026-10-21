@@ -12,6 +12,8 @@ export const STATIONS_BASE = import.meta.env?.DEV
   ? (import.meta.env.VITE_STATIONS_BASE || 'https://stations.radiodock.app')
   : 'https://stations.radiodock.app';
 
+import { fetchWithTimeout } from './transport.js';
+
 const USER_AGENT_HEADER = 'RadioDock/1.0';
 const DEFAULT_LIMIT = 30;
 const TIMEOUT_MS = 12000;
@@ -21,23 +23,17 @@ const TIMEOUT_MS = 12000;
  * uses the same transport rules against a same-origin file.
  */
 export async function fetchJson(url, { signal, timeoutMs = TIMEOUT_MS } = {}) {
-  const ctl = new AbortController();
-  const timer = setTimeout(() => ctl.abort(), timeoutMs);
-  const onAbort = () => ctl.abort();
-  signal?.addEventListener('abort', onAbort);
-  try {
-    const res = await fetch(url, {
+  const res = await fetchWithTimeout(url, {
+    signal,
+    timeoutMs,
+    init: {
       method: 'GET',
       cache: 'no-store',
-      signal: ctl.signal,
       headers: { Accept: 'application/json', 'User-Agent': USER_AGENT_HEADER },
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
-  } finally {
-    clearTimeout(timer);
-    signal?.removeEventListener('abort', onAbort);
-  }
+    },
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return await res.json();
 }
 
 function buildSearchUrl({ query, filter }) {
@@ -82,35 +78,24 @@ export async function searchStations({ query, filter = 'name' }, { signal } = {}
   if (!q) return [];
 
   const url = buildSearchUrl({ query: q, filter });
-  const ctl = new AbortController();
-  const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
-  const onAbort = () => ctl.abort();
-  signal?.addEventListener('abort', onAbort);
-
-  try {
-    const res = await fetch(url, {
-      method: 'GET',
-      signal: ctl.signal,
-      headers: { Accept: 'application/json', 'User-Agent': USER_AGENT_HEADER },
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    if (!Array.isArray(data)) throw new Error('Unexpected response shape');
-    const seen = new Set();
-    const out = [];
-    for (const rb of data) {
-      const station = normaliseStation(rb);
-      if (!station.id || !station.url) continue;
-      const key = `${station.name.toLowerCase()}|${station.url}`;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      out.push(station);
-    }
-    return out;
-  } finally {
-    clearTimeout(timer);
-    signal?.removeEventListener('abort', onAbort);
+  const res = await fetchWithTimeout(url, {
+    signal,
+    init: { method: 'GET', headers: { Accept: 'application/json', 'User-Agent': USER_AGENT_HEADER } },
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  if (!Array.isArray(data)) throw new Error('Unexpected response shape');
+  const seen = new Set();
+  const out = [];
+  for (const rb of data) {
+    const station = normaliseStation(rb);
+    if (!station.id || !station.url) continue;
+    const key = `${station.name.toLowerCase()}|${station.url}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(station);
   }
+  return out;
 }
 
 /**
@@ -126,28 +111,15 @@ export async function getStationByUuid(uuid, { signal } = {}) {
   if (!id) return null;
 
   const url = `${STATIONS_BASE}/json/stations/byuuid/${encodeURIComponent(id)}`;
-  // Own timeout linked to the caller's signal, so a VPS that accepts the socket
-  // but never responds aborts and lets the source layer fall back to Radio
-  // Browser instead of hanging the info panel forever.
-  const ctl = new AbortController();
-  const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
-  const onAbort = () => ctl.abort();
-  signal?.addEventListener('abort', onAbort);
-  try {
-    const res = await fetch(url, {
-      method: 'GET',
-      signal: ctl.signal,
-      headers: { Accept: 'application/json', 'User-Agent': USER_AGENT_HEADER },
-    });
-    if (res.status === 404) return null;
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    if (!Array.isArray(data) || data.length === 0) return null;
-    return normaliseStation(data[0]);
-  } finally {
-    clearTimeout(timer);
-    signal?.removeEventListener('abort', onAbort);
-  }
+  const res = await fetchWithTimeout(url, {
+    signal,
+    init: { method: 'GET', headers: { Accept: 'application/json', 'User-Agent': USER_AGENT_HEADER } },
+  });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  if (!Array.isArray(data) || data.length === 0) return null;
+  return normaliseStation(data[0]);
 }
 
 /**
@@ -162,24 +134,16 @@ export async function getStationInfo(uuid, { signal } = {}) {
   const id = String(uuid ?? '').trim();
   if (!id) return null;
 
-  const ctl = new AbortController();
-  const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
-  const onAbort = () => ctl.abort();
-  signal?.addEventListener('abort', onAbort);
   try {
-    const res = await fetch(`${STATIONS_BASE}/api/stations/${encodeURIComponent(id)}`, {
-      method: 'GET',
-      signal: ctl.signal,
-      headers: { Accept: 'application/json', 'User-Agent': USER_AGENT_HEADER },
+    const res = await fetchWithTimeout(`${STATIONS_BASE}/api/stations/${encodeURIComponent(id)}`, {
+      signal,
+      init: { method: 'GET', headers: { Accept: 'application/json', 'User-Agent': USER_AGENT_HEADER } },
     });
     if (!res.ok) return null;
     const data = await res.json();
     return data && typeof data === 'object' ? data : null;
   } catch {
     return null;
-  } finally {
-    clearTimeout(timer);
-    signal?.removeEventListener('abort', onAbort);
   }
 }
 

@@ -116,6 +116,10 @@ export function renderDiscover({ lists = [] } = {}) {
   `;
 }
 
+export function renderDiscoverUnavailable() {
+  return '<div class="stations-empty"><p>Discover is unavailable right now. Search and playback still work.</p></div>';
+}
+
 function collectionTile(station) {
   const uuid = station.stationuuid ?? station.uuid ?? station.id ?? '';
   const place = countryLabel(station.countrycode ?? '', station.countrycode ?? '');

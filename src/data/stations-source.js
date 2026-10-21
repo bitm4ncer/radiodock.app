@@ -89,13 +89,45 @@ export function createStationsSource({
     }
   }
 
-  return { searchStations, getStationByUuid };
+  // Browse has no Radio Browser analogue (their API is search/byuuid only), so
+  // when the Stations browse endpoint is down we degrade to a name search and
+  // present it in the same browse shape. This preserves independent playback
+  // and search while Discover falls back to its own unavailable state.
+  async function browseStations(params = {}, transport = {}) {
+    const override = getOverride();
+    const fallbackBrowse = async () => {
+      const derivedQuery = params?.q || params?.letter || '';
+      const stations = await fallback.searchStations({ query: derivedQuery, filter: 'name' }, transport);
+      return {
+        stations,
+        total: stations.length,
+        offset: 0,
+        limit: stations.length,
+        nextOffset: null,
+        letterCounts: null,
+      };
+    };
+
+    if (override === 'radio-browser') return fallbackBrowse();
+    try {
+      return await primary.browseStations(params, transport);
+    } catch (err) {
+      if (transport.signal?.aborted) throw err;
+      if (override === 'radiodock') throw err;
+      tripCooldown();
+      console.warn('Stations API browse failed, falling back to Radio Browser:', err?.message);
+      return fallbackBrowse();
+    }
+  }
+
+  return { searchStations, getStationByUuid, browseStations };
 }
 
 const defaultSource = createStationsSource({ getOverride: () => backendOverride });
 
 export const searchStations = defaultSource.searchStations;
 export const getStationByUuid = defaultSource.getStationByUuid;
+export const browseStations = defaultSource.browseStations;
 
 // Consolidated curated info (socials/city/country/contact). Not wrapped in the
 // primary+fallback dance — it already returns null on miss, and the info panel
