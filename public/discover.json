@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T20:01:30.969Z",
+  "generatedAt": "2026-10-21T20:01:44.207Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -4556,6 +4556,11 @@
             "countrycode": "FR"
           },
           {
+            "stationuuid": "c11e4caf-0344-4ab5-8567-95cfac2f570f",
+            "name": "Metalwar",
+            "countrycode": "GR"
+          },
+          {
             "stationuuid": "961291f5-0601-11e8-ae97-52543be04c81",
             "name": "La Grosse Radio Métal",
             "countrycode": "FR"
@@ -4604,11 +4609,6 @@
             "stationuuid": "4340f942-c877-4b60-9d2e-e628db62f761",
             "name": "Metal Zone Radio",
             "countrycode": "BR"
-          },
-          {
-            "stationuuid": "c11e4caf-0344-4ab5-8567-95cfac2f570f",
-            "name": "Metalwar",
-            "countrycode": "GR"
           },
           {
             "stationuuid": "b05bc526-0822-4a8d-9e86-e0b19f119f30",
