@@ -59,6 +59,10 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     previewProvider: DEFAULT_PROVIDER,
   };
 
+  // Declared before the restore path can call openPanel(): the opening
+  // animation is skipped there, but the variable still has to be initialized.
+  let openSettleTimer = null;
+
   // ---- DOM ----
   const flag = isMobile ? null : buildFlag();
   const panel = buildPanel({ isMobile, showRecord: showPanelRecordButton });
@@ -227,6 +231,23 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
 
   // ============================================================== Open / Close
 
+  function scheduleOpenSettle() {
+    clearTimeout(openSettleTimer);
+    openSettleTimer = setTimeout(() => {
+      openSettleTimer = null;
+      if (!state.open || isMobile) return;
+      const rect = panel.getBoundingClientRect();
+      const target = snapPanel(panel, {
+        x: rect.left,
+        y: rect.top,
+        setPosition: applyPosition,
+      });
+      if (Math.abs(target.x - rect.left) > 0.5 || Math.abs(target.y - rect.top) > 0.5) {
+        setPref(PREF_POS, target).catch(() => {});
+      }
+    }, 260);
+  }
+
   function openPanel({ animate = true } = {}) {
     if (state.open) return;
     // If notes is opened while in tiny-player mode (from the pill's note or
@@ -248,10 +269,15 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
       requestAnimationFrame(() => panel.classList.remove('is-animating'));
     }
     refreshCaptureBtnState();
+    // Let the slide-in finish, then settle the panel into free space exactly
+    // like a drag-and-drop release.
+    if (!isMobile && animate) scheduleOpenSettle();
   }
 
   function closePanel() {
     if (!state.open) return;
+    clearTimeout(openSettleTimer);
+    openSettleTimer = null;
     state.open = false;
     panel.classList.remove('is-open');
     panel.setAttribute('aria-hidden', 'true');
@@ -273,6 +299,8 @@ export async function mountNotesPanel({ player, getLatestMetadata, recorder = nu
     const startDrag = (evt) => {
       if (evt.button !== 0) return;
       if (evt.target.closest('button, a, input, textarea, select')) return;
+      clearTimeout(openSettleTimer);
+      openSettleTimer = null;
       cancelSnap(panel);
       const rect = panel.getBoundingClientRect();
       dragging = true;

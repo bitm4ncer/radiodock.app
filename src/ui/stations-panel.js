@@ -107,6 +107,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   let previousMode = 'popular';
   let previousFocus = null;
   let loadToken = 0;
+  let openSettleTimer = null;
   let controller = null;
   let metaPromise = null;
   let metaApplied = false;
@@ -1133,6 +1134,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   function startDrag(evt) {
     if (isAppRegime() || evt.button !== 0) return;
     if (evt.target.closest('button, input, a')) return;
+    clearTimeout(openSettleTimer);
+    openSettleTimer = null;
     cancelSnap(panel);
     evt.preventDefault();
     const rect = panel.getBoundingClientRect();
@@ -1215,6 +1218,23 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     onKeydown(evt);
   }
 
+  function scheduleOpenSettle() {
+    clearTimeout(openSettleTimer);
+    openSettleTimer = setTimeout(() => {
+      openSettleTimer = null;
+      if (!isOpen || isAppRegime()) return;
+      const rect = panel.getBoundingClientRect();
+      const target = snapPanel(panel, {
+        x: rect.left,
+        y: rect.top,
+        setPosition: setPanelPosition,
+      });
+      if (Math.abs(target.x - rect.left) > 0.5 || Math.abs(target.y - rect.top) > 0.5) {
+        storage.setPref('stationsPanelPos', { left: target.x, top: target.y }).catch(() => {});
+      }
+    }, 300);
+  }
+
   function open({ query = '' } = {}) {
     const firstOpen = !isOpen;
     previousFocus = document.activeElement;
@@ -1232,7 +1252,10 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
         window.dispatchEvent(new CustomEvent('rd:page-open', { detail: { id: 'stations' } }));
       }
       shell();
-      applyPosition();
+      Promise.resolve(applyPosition()).finally(() => {
+        // Settle after the slide-in, using the same rubber snap as a drop.
+        if (isOpen && firstOpen) scheduleOpenSettle();
+      });
     }
     state.nowPlayingId = actions.getNowPlayingId?.() ?? state.nowPlayingId;
     const trimmed = String(query ?? '').trim();
@@ -1258,6 +1281,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
 
   function close() {
     if (!isOpen) return;
+    clearTimeout(openSettleTimer);
+    openSettleTimer = null;
     isOpen = false;
     loadToken++;
     controller?.abort();

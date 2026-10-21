@@ -105,10 +105,9 @@ function animateElement(el, fromX, fromY, toX, toY, setPosition, bump) {
   const dx = toX - fromX;
   const dy = toY - fromY;
   const distance = Math.hypot(dx, dy);
-  if (distance < 0.5) {
-    setPosition(toX, toY);
-    return;
-  }
+  // Already in place. Do not call setPosition here: opening a panel that is
+  // docked by CSS must stay docked when it does not overlap anything.
+  if (distance < 0.5) return;
 
   cancelSnap(el);
   const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
