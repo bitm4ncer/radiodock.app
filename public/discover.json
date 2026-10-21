@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T14:42:33.938Z",
+  "generatedAt": "2026-10-21T21:13:18.735Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -518,6 +518,11 @@
         "stationuuid": "033b3a5b-93cc-46d2-b7f4-0c381fb800e8",
         "name": "Radio Radio",
         "countrycode": "GB"
+      },
+      {
+        "stationuuid": "025e6fba-d2eb-45ca-9b9b-ffa08ae49806",
+        "name": "RADIO.D59B",
+        "countrycode": "RS"
       },
       {
         "stationuuid": "de5aaea1-15a8-437f-bd9c-fa65b7f4afc3",
@@ -1954,116 +1959,8 @@
         ]
       },
       {
-        "slug": "party",
-        "title": "Electronic",
-        "source": "radiodock",
-        "featured": true,
-        "stations": [
-          {
-            "stationuuid": "29ba74b4-c8cd-45d3-990d-91d08cb5a329",
-            "name": "Mad Radio Barcelona",
-            "countrycode": "ES"
-          },
-          {
-            "stationuuid": "5fcea0b1-dd78-49d3-a8f1-41ff3b00124f",
-            "name": "Veneno",
-            "countrycode": "BR"
-          },
-          {
-            "stationuuid": "214f3da4-7795-491e-b5e7-91a18b18d089",
-            "name": "Club Radio",
-            "countrycode": "RO"
-          },
-          {
-            "stationuuid": "9c100db7-ba97-4e6f-821f-dba1ed08ad52",
-            "name": "Rinse UK",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "b1d72676-8870-47da-91db-a88357b64c51",
-            "name": "Dance Revolution",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "bf694cb5-5897-4930-989a-35932c39875b",
-            "name": "Drift Radio",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "963fb135-0601-11e8-ae97-52543be04c81",
-            "name": "Radio 90s Eurodance",
-            "countrycode": ""
-          },
-          {
-            "stationuuid": "962cc6df-0601-11e8-ae97-52543be04c81",
-            "name": "Dance Wave!",
-            "countrycode": "HU"
-          },
-          {
-            "stationuuid": "961787d1-0601-11e8-ae97-52543be04c81",
-            "name": "Frisky Radio",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "af6f51b1-0ca9-11ea-a87e-52543be04c81",
-            "name": "Intense Radio - We love Dance 256K",
-            "countrycode": "NL"
-          },
-          {
-            "stationuuid": "563f5559-105c-11e9-a80b-52543be04c81",
-            "name": "DFM RUSSIAN DANCE",
-            "countrycode": "RU"
-          },
-          {
-            "stationuuid": "9628632e-0601-11e8-ae97-52543be04c81",
-            "name": "Radio Stereocittà",
-            "countrycode": "IT"
-          },
-          {
-            "stationuuid": "d847db37-5f89-48a5-be32-b10e5406f0e6",
-            "name": "Mixadance FM",
-            "countrycode": "RU"
-          },
-          {
-            "stationuuid": "26edc6b6-d221-4814-a6a9-0dd5d5d365d2",
-            "name": "Pure Ibiza Radio",
-            "countrycode": "ES"
-          },
-          {
-            "stationuuid": "07b51aa7-527e-11ea-be63-52543be04c81",
-            "name": "Radio Studio Più - HQ",
-            "countrycode": "IT"
-          },
-          {
-            "stationuuid": "960f7041-0601-11e8-ae97-52543be04c81",
-            "name": "RMF Dance",
-            "countrycode": "PL"
-          },
-          {
-            "stationuuid": "962c7032-0601-11e8-ae97-52543be04c81",
-            "name": "Italia Dance Music",
-            "countrycode": "IT"
-          },
-          {
-            "stationuuid": "962cd7e3-0601-11e8-ae97-52543be04c81",
-            "name": "European Hit Radio - Dance",
-            "countrycode": "LV"
-          },
-          {
-            "stationuuid": "9629d012-0601-11e8-ae97-52543be04c81",
-            "name": "Kiss FM 87.6, 87.8 & 88.0 Melbourne, VIC",
-            "countrycode": "AU"
-          },
-          {
-            "stationuuid": "962c02bc-0601-11e8-ae97-52543be04c81",
-            "name": "Radio Ibiza",
-            "countrycode": "IT"
-          }
-        ]
-      },
-      {
-        "slug": "ambient-drone",
-        "title": "Ambient / Drone",
+        "slug": "ambient",
+        "title": "Ambient",
         "source": "radiodock",
         "featured": false,
         "stations": [
@@ -2083,14 +1980,24 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "961aeb3b-0601-11e8-ae97-52543be04c81",
-            "name": "Ambient Modern",
+            "stationuuid": "83accca7-b878-419d-a506-3d21ef2f250f",
+            "name": "SomaFM Synphaera Radio",
             "countrycode": "US"
           },
           {
-            "stationuuid": "3fb45633-813e-4c6b-b262-e90c3846d10d",
-            "name": "Field Recordings | NTS",
+            "stationuuid": "d5468df4-e6d0-11e9-a96c-52543be04c81",
+            "name": "Slow Focus | NTS",
             "countrycode": "GB"
+          },
+          {
+            "stationuuid": "8e99e319-021a-45ee-b238-876f1ecc60b8",
+            "name": "a.m. ambient",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "961aeb3b-0601-11e8-ae97-52543be04c81",
+            "name": "Ambient Modern",
+            "countrycode": "US"
           },
           {
             "stationuuid": "961fa288-0601-11e8-ae97-52543be04c81",
@@ -2108,19 +2015,24 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "96466522-0601-11e8-ae97-52543be04c81",
-            "name": "Radio Caprice - Drone Ambient",
+            "stationuuid": "04407d31-2cc0-11e8-91bf-52543be04c81",
+            "name": "dinamo.fm sleep",
+            "countrycode": "TR"
+          },
+          {
+            "stationuuid": "4461c574-4215-43b8-aeb1-dfcfc0965b2f",
+            "name": "Radio Record Ambient",
             "countrycode": "RU"
           },
           {
-            "stationuuid": "fffeaf03-4b5a-46b1-a1f1-575513c346f4",
-            "name": "RADCAP: DRONE AMBIENT",
-            "countrycode": "RU"
+            "stationuuid": "c67cc84a-fc19-414d-a57b-41f5deaf428f",
+            "name": "Ambiland",
+            "countrycode": "SI"
           },
           {
-            "stationuuid": "1d209449-d62e-442d-bbd6-eb3bcf53ff67",
-            "name": "Radio Caprice Industrial/Dark/Ritual Ambient",
-            "countrycode": "RU"
+            "stationuuid": "4b0057a5-4885-48a0-bfde-15c964e5dcf9",
+            "name": "AmbientRadio (MRG.fm)",
+            "countrycode": "US"
           },
           {
             "stationuuid": "44b7f191-9478-46b0-a3b5-5a0ea2b2d64e",
@@ -2143,16 +2055,6 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "83accca7-b878-419d-a506-3d21ef2f250f",
-            "name": "SomaFM Synphaera Radio",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "0bbf49cc-0e44-4766-87b5-9d4c0aae2d47",
-            "name": "Experimentalgems",
-            "countrycode": "DE"
-          },
-          {
             "stationuuid": "9a4fe10d-7a27-47ac-bedf-f3253fd3bf9d",
             "name": "Modular-Station",
             "countrycode": "FR"
@@ -2166,113 +2068,93 @@
             "stationuuid": "fb1add5d-4b7b-45cf-9be4-a1e8df712553",
             "name": "Ambi Nature Radio",
             "countrycode": "CH"
+          },
+          {
+            "stationuuid": "d817adf7-63e1-48bc-9778-c6c4ed27c8a8",
+            "name": "ETX.FM - Electronic Listening Music by Exposure Therapy",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "fffeaf03-4b5a-46b1-a1f1-575513c346f4",
+            "name": "RADCAP: DRONE AMBIENT",
+            "countrycode": "RU"
           }
         ]
       },
       {
-        "slug": "working-focus",
-        "title": "Focus",
+        "slug": "noise",
+        "title": "Noise",
         "source": "radiodock",
         "featured": false,
         "stations": [
           {
-            "stationuuid": "961fa288-0601-11e8-ae97-52543be04c81",
-            "name": "Ambient Sleeping Pill",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "8e99e319-021a-45ee-b238-876f1ecc60b8",
-            "name": "a.m. ambient",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "960d3f6f-0601-11e8-ae97-52543be04c81",
-            "name": "SomaFM Space Station Soma (128k AAC)",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "60ede1ca-d7fa-4a36-a047-aec873b9be41",
-            "name": "freeCodeCamp Code Radio",
-            "countrycode": "CA"
-          },
-          {
-            "stationuuid": "1e0ad463-0dbc-4913-b12d-7d0b7300882b",
-            "name": "Sheet Music | NTS",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "d5468df4-e6d0-11e9-a96c-52543be04c81",
-            "name": "Slow Focus | NTS",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "96063f25-0601-11e8-ae97-52543be04c81",
-            "name": "Classic FM UK",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "960ac54b-0601-11e8-ae97-52543be04c81",
-            "name": "Your Classical - Relax",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "ce18872f-ed72-4ac7-a93e-07ae3fe7b40b",
-            "name": "Music Lake - Relaxation Music, Meditation, Focus, Chill, Nature Sounds",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "518d02e0-9301-4358-bf25-4ed57372fd2d",
-            "name": "Instrumental Jazz",
+            "stationuuid": "1d209449-d62e-442d-bbd6-eb3bcf53ff67",
+            "name": "Radio Caprice Industrial/Dark/Ritual Ambient",
             "countrycode": "RU"
           },
           {
-            "stationuuid": "96154a1e-0601-11e8-ae97-52543be04c81",
-            "name": "Total instrumental",
+            "stationuuid": "0bbf49cc-0e44-4766-87b5-9d4c0aae2d47",
+            "name": "Experimentalgems",
             "countrycode": "DE"
           },
           {
-            "stationuuid": "dfe95eca-06e0-11e9-a80b-52543be04c81",
-            "name": "RMNinstrumental",
-            "countrycode": "DE"
+            "stationuuid": "75df05dc-afb6-478b-8caf-98c25dc0dea5",
+            "name": "Power Electronics",
+            "countrycode": "RU"
           },
           {
-            "stationuuid": "9641edb9-0601-11e8-ae97-52543be04c81",
-            "name": "Concertzender Baroque",
+            "stationuuid": "ac497573-a6c5-4505-9086-2a905134abb5",
+            "name": "RadCap - Noise Rock",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "1dda6ddb-db9c-4b4f-ac89-b337dc5af20f",
+            "name": "Dark City Signal",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "f6187277-4921-437f-bb6a-7ffb00a71c79",
+            "name": "laut.fm - Greyarea",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "bb7572df-2619-43fd-9ce1-c2a288671fe2",
+            "name": "Noise Radio",
             "countrycode": "NL"
           },
           {
-            "stationuuid": "96077079-0601-11e8-ae97-52543be04c81",
-            "name": "Radio Swiss Classic German",
-            "countrycode": "CH"
+            "stationuuid": "c19e39ff-a86f-4d55-a4c1-55e9d791f59a",
+            "name": "MDK Space Radio",
+            "countrycode": "MX"
           },
           {
-            "stationuuid": "960536e6-0601-11e8-ae97-52543be04c81",
-            "name": "MDR Klassik",
-            "countrycode": "DE"
+            "stationuuid": "dcc883b6-3083-4ab0-8105-5094054305cd",
+            "name": "Grey Clay Radio",
+            "countrycode": "GB"
           },
           {
-            "stationuuid": "0e2e2f4a-c8aa-11e9-8502-52543be04c81",
-            "name": "Rai Radio Classica Filodiffusione",
-            "countrycode": "IT"
-          },
-          {
-            "stationuuid": "960dc513-0601-11e8-ae97-52543be04c81",
-            "name": "RMF Classic",
-            "countrycode": "PL"
-          },
-          {
-            "stationuuid": "960cf833-0601-11e8-ae97-52543be04c81",
-            "name": "SomaFM Groove Salad (128k MP3)",
+            "stationuuid": "d35f26d3-71b3-4115-8fed-8352e8f6f32e",
+            "name": "SomaFM Doomed (256k MP3)",
             "countrycode": "US"
           },
           {
-            "stationuuid": "04407d31-2cc0-11e8-91bf-52543be04c81",
-            "name": "dinamo.fm sleep",
-            "countrycode": "TR"
+            "stationuuid": "161201f8-ae58-4f44-806b-4f8c8b90c853",
+            "name": "Soundart Radio",
+            "countrycode": "GB"
           },
           {
-            "stationuuid": "4461c574-4215-43b8-aeb1-dfcfc0965b2f",
-            "name": "Radio Record Ambient",
+            "stationuuid": "b442fa34-6f8d-11ea-b1cf-52543be04c81",
+            "name": "p-node",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "559c881b-7555-4845-9d67-7fdae6843faf",
+            "name": "Radio Sphinkta-X",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "19ad483c-32ff-43f0-90f1-bc23a83b7c23",
+            "name": "RadCap - Drone Metal",
             "countrycode": "RU"
           }
         ]
@@ -2289,9 +2171,9 @@
             "countrycode": "JP"
           },
           {
-            "stationuuid": "50603f9e-7535-4551-901a-7e0f2cc4da4e",
-            "name": "Nightwave Plaza",
-            "countrycode": "US"
+            "stationuuid": "31cc09a1-4b26-11e8-9b06-52543be04c81",
+            "name": "Cashmere Radio",
+            "countrycode": ""
           },
           {
             "stationuuid": "d04248fb-040c-11e9-a1be-52543be04c81",
@@ -2324,6 +2206,11 @@
             "countrycode": "NL"
           },
           {
+            "stationuuid": "50603f9e-7535-4551-901a-7e0f2cc4da4e",
+            "name": "Nightwave Plaza",
+            "countrycode": "US"
+          },
+          {
             "stationuuid": "8ba9281c-f9d9-442a-b227-11e590a7c396",
             "name": "Gässjer FM",
             "countrycode": "DE"
@@ -2349,19 +2236,9 @@
             "countrycode": ""
           },
           {
-            "stationuuid": "421dc93b-f989-47e1-8a90-e597029473fc",
-            "name": "Classical avant-garde - Radio Caprice",
-            "countrycode": "RU"
-          },
-          {
             "stationuuid": "96393127-0601-11e8-ae97-52543be04c81",
             "name": "Concertzender X-Rated",
             "countrycode": "NL"
-          },
-          {
-            "stationuuid": "31cc09a1-4b26-11e8-9b06-52543be04c81",
-            "name": "Cashmere Radio",
-            "countrycode": ""
           },
           {
             "stationuuid": "3a6e96c5-66bb-11e9-af37-52543be04c81",
@@ -2374,11 +2251,6 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "85864736-a73e-11e8-abb8-52543be04c81",
-            "name": "Path through the Forest",
-            "countrycode": "DE"
-          },
-          {
             "stationuuid": "2e1cb65b-967f-4221-8bcb-1baecea7784c",
             "name": "Avant-Garde Jazz/Free Improvisation - Radio Caprice",
             "countrycode": ""
@@ -2386,8 +2258,332 @@
         ]
       },
       {
+        "slug": "late-night",
+        "title": "Late Night",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "961173b5-0601-11e8-ae97-52543be04c81",
+            "name": "SomaFM Lush (128k MP3)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "636a1133-b9d5-4412-9e8f-36c37f190176",
+            "name": "Feelings | NTS",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "960c7c81-0601-11e8-ae97-52543be04c81",
+            "name": "SomaFM Secret Agent (128k MP3)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96237848-0601-11e8-ae97-52543be04c81",
+            "name": "Jazz Lounge",
+            "countrycode": "MY"
+          },
+          {
+            "stationuuid": "9610c519-0601-11e8-ae97-52543be04c81",
+            "name": ".977 Smooth Jazz",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "0eb3dbcf-05f7-480e-83f4-7718102a4820",
+            "name": "SmoothJazz.com 128k mp3",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "934d1811-3412-4d2d-86c8-dd1d8fbb51a7",
+            "name": "101 SMOOTH JAZZ MELLOW MIX",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "3e2183ea-6fa4-40ec-93b3-887ce68ae67a",
+            "name": "SMOOTH JAZZ 24/7",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96159295-0601-11e8-ae97-52543be04c81",
+            "name": "Hi On Line Lounge Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "5e532636-ce00-48b3-ace9-b6c8c513fa29",
+            "name": "MonteCarlo Nights",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "f8e5def9-f0c3-4ad5-8f24-56102c7bcd05",
+            "name": "Ella Radio - Late Night Jazz",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "e03fd1f9-274f-4fab-a840-0a7eae474fce",
+            "name": "Late Night Jazz",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "1e0087a0-4b8c-42c1-8a6e-07c86dc2f288",
+            "name": "Radio Art - After Midnight",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "962703d0-0601-11e8-ae97-52543be04c81",
+            "name": "RMC Nights Story",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "9615f34b-0601-11e8-ae97-52543be04c81",
+            "name": "Soulallnighter",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "12e458f2-cf9b-426a-8d18-7cb07c75b07c",
+            "name": "Nightride FM",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "9ca5d25c-f979-48e1-a269-8e71bf74479b",
+            "name": "Night Drive Radio – Synthwave & Retrowave",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "282facce-8ae7-46a5-9e24-a946abe9fc7d",
+            "name": "Lounge.FM - 100% Austria",
+            "countrycode": "AT"
+          },
+          {
+            "stationuuid": "f4722411-69a1-413d-9922-5017d5aef925",
+            "name": "Special-Radio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "2815bbc7-2cbf-11e8-91bf-52543be04c81",
+            "name": "dinamo.fm caffe",
+            "countrycode": "TR"
+          },
+          {
+            "stationuuid": "960dc8d6-0601-11e8-ae97-52543be04c81",
+            "name": "Klassik Radio - Lounge",
+            "countrycode": "DE"
+          }
+        ]
+      },
+      {
+        "slug": "bass-rave",
+        "title": "Bass / Breaks",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "6a79ad48-3c95-472d-bdf0-850c1172cf69",
+            "name": "Infrared.fm",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "11ea7da5-283c-487f-9e66-49e115d7ac9f",
+            "name": "DFM - Breakbeat",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "b591d01a-e72b-4030-a640-a8da10ed73f6",
+            "name": "Breakz.FM",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "4dd48108-a67c-46ef-81bd-528876649a48",
+            "name": "Record Breaks",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "0a026fcc-20dd-4277-b2ad-8113b652221b",
+            "name": "BBZ BREAKBEATZONE",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "edd5f1a1-1bc1-456d-9880-c4604380a0f3",
+            "name": "BreakSpace.FM",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "6215226f-5e96-404b-aa6f-0cf41040b088",
+            "name": "Decibelia FM",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "96453752-0601-11e8-ae97-52543be04c81",
+            "name": "Atm.Fm",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "9d7a91ae-3ecf-49b7-a7fa-71e839b5d74d",
+            "name": "Truskool Breakz",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "1c61e510-1967-43a8-9599-ea91d201a3c2",
+            "name": "DFM Bass House",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "22423370-efbf-4bf2-a301-5bd918cd8ad5",
+            "name": "Technolovers Bass House",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "2820436b-1401-42d5-adf7-9a411d66e40b",
+            "name": "Subline – Bass & Tech House",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "631049dc-60cf-4e27-95c8-8593e03aee20",
+            "name": "Record Bass House",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "6b36f91e-0a61-459c-bd84-853df27c49ed",
+            "name": "RauteMusik Bass",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "bff54c56-1798-4f2e-83bc-ec3c90c732a6",
+            "name": "I Love Bass by HBz",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "5a71d128-cb37-4d62-8b8b-a705e95ad2d8",
+            "name": "Dubplate.fm Dub &Bass",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "29dc48c6-adf5-49bf-a9d7-dfde3e9cfc6d",
+            "name": "UK Bass Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "59a283e1-4a13-11e9-a4d7-52543be04c81",
+            "name": "DFM Trap",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "3511172e-a0f1-4568-9d34-87c3ef0fa608",
+            "name": "Technolovers Trap",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "5378792b-2ad9-4fae-b00f-e431766771c0",
+            "name": "__TRAP__ by rautemusik (rm.fm)",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "0ebe3b8d-3b42-4a08-880d-3d5691058dbe",
+            "name": "Радио Рекорд Trap",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "6e285729-085e-4dc8-8305-531e5f5c11fe",
+            "name": "Record Future Bass",
+            "countrycode": "RU"
+          }
+        ]
+      },
+      {
+        "slug": "dubstep",
+        "title": "Dubstep",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "9e286b3c-5185-11e9-a4d7-52543be04c81",
+            "name": "Sub FM",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "cc91af7c-42ee-11e9-aa55-52543be04c81",
+            "name": "SomaFM Dub Step Beyond (128k AAC)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "d7c66785-7cbd-4c02-ba30-35d5f5e6cbbf",
+            "name": "Sensimedia Dubstep & Bass Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "298371df-ecf9-46b3-90ac-b46fe5af7f61",
+            "name": "EILO Dubstep Radio",
+            "countrycode": "BG"
+          },
+          {
+            "stationuuid": "049e6b50-4604-4fc2-9ef9-aa2c754a0ca3",
+            "name": "Dubstep24h",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "8be21138-e88f-43c4-8deb-00a9020ae38b",
+            "name": "24Dubstep.pl DropZone Radio",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "92fd9109-d768-4b37-8131-8186088c7967",
+            "name": "Low Pressure Zone",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "962a8d6a-0601-11e8-ae97-52543be04c81",
+            "name": "1.FM - Dubstep Forward Radio",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "464b61af-1e0d-11e8-a334-52543be04c81",
+            "name": "Uturn Radio - Dubstep",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "acb9dde0-4c5a-4ffc-bf86-90bd43f0e14e",
+            "name": "Basstime",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "6400750e-3cf9-41b9-8c00-fb8a166940a7",
+            "name": "CLIAMP NCS Dubstep",
+            "countrycode": "NO"
+          },
+          {
+            "stationuuid": "80d5e7e3-8a71-4e2c-ab50-8e464ed5e640",
+            "name": "PARTY VIBE RADIO : DUBSTEP",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "b6188d52-62cb-4bde-945a-46230fadccb8",
+            "name": "Radio Caprice – Riddim Dubstep",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "dcdcb7b4-7c1e-4293-8244-c49379cf2c20",
+            "name": "Radio Caprice – Dark Dubstep",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "0cac8897-2fbf-404e-8ce6-ff3fe1afed73",
+            "name": "Record Dubstep",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "9626fd02-0601-11e8-ae97-52543be04c81",
+            "name": "DubTerrain",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "960e9a99-0601-11e8-ae97-52543be04c81",
+            "name": "Dublovers",
+            "countrycode": "DE"
+          }
+        ]
+      },
+      {
         "slug": "classical",
-        "title": "Classical / Neue Musik",
+        "title": "Classical",
         "source": "radiodock",
         "featured": false,
         "stations": [
@@ -2490,19 +2686,24 @@
             "stationuuid": "2575e5e6-bf7c-11e9-8502-52543be04c81",
             "name": "Radio Caprice - Classical Baroque",
             "countrycode": "RU"
+          },
+          {
+            "stationuuid": "421dc93b-f989-47e1-8a90-e597029473fc",
+            "name": "Classical avant-garde - Radio Caprice",
+            "countrycode": "RU"
           }
         ]
       },
       {
-        "slug": "soul-funk-disco",
-        "title": "Soul / Funk / Disco",
+        "slug": "soul-funk",
+        "title": "Soul / Funk",
         "source": "radiodock",
         "featured": false,
         "stations": [
           {
-            "stationuuid": "a6f07bae-327a-4a76-bd1d-f305c1af35a1",
-            "name": "Totally Wired Radio",
-            "countrycode": "GB"
+            "stationuuid": "9034682c-5121-11e8-a4d1-52543be04c81",
+            "name": "WEFUNK",
+            "countrycode": "CA"
           },
           {
             "stationuuid": "9612102b-0601-11e8-ae97-52543be04c81",
@@ -2510,9 +2711,29 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "9034682c-5121-11e8-a4d1-52543be04c81",
-            "name": "WEFUNK",
-            "countrycode": "CA"
+            "stationuuid": "c77c45c4-cf37-414c-ae34-868f7d9cd944",
+            "name": "FUNKY RADIO - Only Funk Music (60's 70's)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "09998555-2654-4aa2-8a1e-1ea7a4fed978",
+            "name": "54 Funk Soul Dance (laut.fm)",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "120f9ba0-c55a-498a-ae36-58b5c27ac2af",
+            "name": "Funkstar Radio",
+            "countrycode": "CZ"
+          },
+          {
+            "stationuuid": "34695760-5162-41b9-8eb2-4471bce7541e",
+            "name": "The Funky Channel",
+            "countrycode": "BE"
+          },
+          {
+            "stationuuid": "a6f07bae-327a-4a76-bd1d-f305c1af35a1",
+            "name": "Totally Wired Radio",
+            "countrycode": "GB"
           },
           {
             "stationuuid": "c454908c-eb81-11e9-a96c-52543be04c81",
@@ -2535,11 +2756,6 @@
             "countrycode": "FR"
           },
           {
-            "stationuuid": "c77c45c4-cf37-414c-ae34-868f7d9cd944",
-            "name": "FUNKY RADIO - Only Funk Music (60's 70's)",
-            "countrycode": "US"
-          },
-          {
             "stationuuid": "96385b07-0601-11e8-ae97-52543be04c81",
             "name": "Rádio Disco Funk BR",
             "countrycode": "BR"
@@ -2560,11 +2776,6 @@
             "countrycode": "DE"
           },
           {
-            "stationuuid": "09998555-2654-4aa2-8a1e-1ea7a4fed978",
-            "name": "54 Funk Soul Dance (laut.fm)",
-            "countrycode": "DE"
-          },
-          {
             "stationuuid": "43718921-41a0-48f5-9645-c467d19a5095",
             "name": "_Funky Corner Radio (USA)",
             "countrycode": "US"
@@ -2580,19 +2791,9 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "120f9ba0-c55a-498a-ae36-58b5c27ac2af",
-            "name": "Funkstar Radio",
-            "countrycode": "CZ"
-          },
-          {
             "stationuuid": "4df24bb0-2794-498f-bdc0-0c3d6b71ed95",
             "name": "70 80 Disco Funk ModernSoul e Boogie",
             "countrycode": "IT"
-          },
-          {
-            "stationuuid": "34695760-5162-41b9-8eb2-4471bce7541e",
-            "name": "The Funky Channel",
-            "countrycode": "BE"
           },
           {
             "stationuuid": "9613f1f2-0601-11e8-ae97-52543be04c81",
@@ -2603,6 +2804,272 @@
             "stationuuid": "cc4928e9-f513-4c59-b42c-56097b881431",
             "name": "I Like It Oldskool",
             "countrycode": "GB"
+          }
+        ]
+      },
+      {
+        "slug": "punk",
+        "title": "Punk",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "9618c802-0601-11e8-ae97-52543be04c81",
+            "name": "RADIO BOB! BOBs Punk",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "bc5e41ee-51da-454b-993a-56895be3e864",
+            "name": "punk irratia",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "5446f9e0-25d9-4be1-824d-72fba2037554",
+            "name": "REAL PUNK RADIO",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "03beadd2-ce1d-4949-bab4-0dcce1894412",
+            "name": "Punk FM Brasil",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "960ccd8c-0601-11e8-ae97-52543be04c81",
+            "name": "riotradio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "a1f18162-da2b-419e-9e86-72a81e508a40",
+            "name": "Punkrockers Radio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "6c3a79d6-2315-44c8-81df-f8aa5a7458cd",
+            "name": "PunkRockRadio.ca",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "97d05857-6444-42b8-bbbf-e153c9702fe8",
+            "name": "Radio Caprice - Punk Post-Hardcore Emo/Screamo",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "961871fe-0601-11e8-ae97-52543be04c81",
+            "name": "Big R Radio - Grunge FM",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "cda70b2c-e8f0-4d05-9b74-dc26b0a187b1",
+            "name": "The Tube | NTS",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "96120c73-0601-11e8-ae97-52543be04c81",
+            "name": "delta radio Grunge",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "96186d61-0601-11e8-ae97-52543be04c81",
+            "name": "RADIO BOB! BOBs Grunge",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "a6bd5286-2ef4-45f5-bb08-1f2d68c954cf",
+            "name": "Rock Antenne Grunge",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "40819a21-3b7e-11ea-8dd7-52543be04c81",
+            "name": "90s90s Grunge",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "6928b97f-56f2-459e-b7e8-d76997fd9802",
+            "name": " Russian Punk rock",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "960f97db-0601-11e8-ae97-52543be04c81",
+            "name": "Laut.FM Skafari",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "9d02c5d0-0707-422d-8b50-fe139ee74296",
+            "name": "Radio Caprice - PSYCHOBILLY",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "42830d5c-e6fa-4fd3-8c0d-2ecb7688a1e8",
+            "name": "Punk Rock Demonstration",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "960c4c2a-0601-11e8-ae97-52543be04c81",
+            "name": "Rock Antenne - Punk Rock",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "963b7906-0601-11e8-ae97-52543be04c81",
+            "name": "12XU",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "43410501-8008-46a9-aaa2-f0372c023e64",
+            "name": "Louder Than War",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "c79485f1-013e-46ec-a2ef-8eb3cef2d6dd",
+            "name": "Známka Punku",
+            "countrycode": "CZ"
+          },
+          {
+            "stationuuid": "d799ed01-e98b-47f5-9b4f-2307e07feede",
+            "name": "PUNKRATZ",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "6754605b-0bc9-11ea-a87e-52543be04c81",
+            "name": "Subculture 69 Radio (new)",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "eb3041cd-69bc-41bd-b1e0-daf2a88fe190",
+            "name": "Laut.FM - Punk and Disorderly The 80s",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "44088288-7ad1-44a7-8ec5-d8c210099c12",
+            "name": "3Chords allez Ist Punk",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "85479a6a-29c3-446b-9885-7416deacbcd1",
+            "name": "Punk Radio Underground",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "8108c4ad-71c3-11ea-b1cf-52543be04c81",
+            "name": "Наше Радио Панки-ХОЙ!",
+            "countrycode": "RU"
+          }
+        ]
+      },
+      {
+        "slug": "hiphop",
+        "title": "HipHop",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "01b61e49-18bd-486d-b0e1-cb51cbaf9a6d",
+            "name": "Skyrock",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "85c799b3-d91f-4f60-b91a-723e4a04acf5",
+            "name": "90s90s HipHop & Rap",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "96135476-0601-11e8-ae97-52543be04c81",
+            "name": "Generations Rap U.S",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "c550de06-48be-11e8-b1b0-52543be04c81",
+            "name": "Hot 108 JAMZ",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9c3f1676-9445-4d72-b4da-d3a1c4847b91",
+            "name": "Deutschrap",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "960ecc44-0601-11e8-ae97-52543be04c81",
+            "name": "Generations Rap FR Gold",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9614e0a1-0601-11e8-ae97-52543be04c81",
+            "name": "SomaFM Fluid (128k MP3)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "2082b714-38e5-4a66-9629-5440c90d3382",
+            "name": "Rap House | NTS",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "afd853b3-e6d1-11e9-a96c-52543be04c81",
+            "name": "100% Hip Hop | NTS",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "504e3cdf-dc53-11e9-a8ba-52543be04c81",
+            "name": "HIP HOP RADIO",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "c46731e7-4163-4175-8b0d-4c512de020ef",
+            "name": "Old School Hip Hop - Urbanradio.com",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "960f774b-0601-11e8-ae97-52543be04c81",
+            "name": "RMF Hip Hop",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "63c56fba-2e27-4983-a78e-5798aba8d73a",
+            "name": "TRAP RADIO TRAP.radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "ccf16787-7e0f-4b1a-9599-c318a8e0cf02",
+            "name": "Skyrock Klassics",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "483a2e55-2047-11e8-a334-52543be04c81",
+            "name": "bigFM Deutsch Rap",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "96283d73-0601-11e8-ae97-52543be04c81",
+            "name": "Radio 105 - Rap Italia",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "0ee149d6-e190-11e9-a8ba-52543be04c81",
+            "name": "bigFM Oldschool Rap & Hip-Hop",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "460d2683-8054-4845-9690-05962167c9c7",
+            "name": "OLDSCHOOL HIPHOP",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "961e20e5-0601-11e8-ae97-52543be04c81",
+            "name": "NPO FunX Hip Hop",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "0f61c98f-b394-4d61-adcb-827021c29f93",
+            "name": "All Underground Hip Hop Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "b449c3c0-db5f-4f01-a81e-3bc1c769e188",
+            "name": "West Coast – G-Funk & Hip-Hop",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "1769df12-0f89-4ffd-9167-6e39b86c852d",
+            "name": "Générations G-Funk",
+            "countrycode": "FR"
           }
         ]
       },
@@ -2958,16 +3425,493 @@
         ]
       },
       {
-        "slug": "dubtechno-minimal",
-        "title": "Dubtechno / Minimal",
+        "slug": "electro",
+        "title": "Electro",
         "source": "radiodock",
         "featured": false,
         "stations": [
           {
-            "stationuuid": "63f00576-2ed9-41f7-bef5-e3ed27ed90d2",
-            "name": "Mabu Beatz Dub Techno",
+            "stationuuid": "eaa07cbe-f03e-11e9-a96c-52543be04c81",
+            "name": "INTERGALACTIC FM - Cybernetic Broadcasting System",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "30192e4e-48c4-4816-99e3-4112491a1d30",
+            "name": "Crucial Hip Hop and Electro",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "a3dde78a-e48e-437a-a6be-84ad689c8f1e",
+            "name": "Radio Caprice - Electro",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "7cbc6d0d-a1bf-431a-a128-6f67b9da7c6d",
+            "name": "Radio Caprice - Electro Techno [2]",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "6dcb8eb0-9f72-45db-87d1-31c3441d508d",
+            "name": "Evosonic Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "6c6187ff-4866-47d0-a340-38967e9dc237",
+            "name": "ELEKTRA RADIO",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "4d863a83-aac6-4c7b-8e84-054630fd8033",
+            "name": "Sanctuary Radio (Dark Electro Channel)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "370c7623-ec7f-49b8-8bea-06e3a4bfa7c9",
+            "name": "Rhythm 98 WTHM-DB Miami",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "dance",
+        "title": "Dance",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "962a6574-0601-11e8-ae97-52543be04c81",
+            "name": "1.FM - Dance One Radio",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "b7e7bb7b-b41a-11e8-afe1-52543be04c81",
+            "name": "90s90s Dance HQ",
             "countrycode": "DE"
           },
+          {
+            "stationuuid": "96109022-0601-11e8-ae97-52543be04c81",
+            "name": "Sunshine Live - Classics",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "a1c3d110-9136-4564-bd41-5ec1b97c41ac",
+            "name": "Radio Record Megamix",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "25ad253b-bf3f-11e9-8502-52543be04c81",
+            "name": "80s80s Italo Disco",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "a1189085-eed0-414c-b8d8-6652189767dd",
+            "name": "Fantasy Italo Dance",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "4a9cd8e0-1b0d-4c87-91bf-d227e06b23eb",
+            "name": "Italo Disco",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "f2d6592f-8767-4d6d-881d-0fb3103687f1",
+            "name": "MixPerfect Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "0097d700-9a5f-4627-b143-0f6fb2321df9",
+            "name": "Alles Bunt Gemischt",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "a8a90171-eb88-45ec-adc3-df2514c8e0dc",
+            "name": "RMI Euro Disco",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "af16ec64-8e94-11ea-8564-52543be04c81",
+            "name": "Radio 10 Disco Classics",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "4fb411e0-4e84-41b7-b8ec-bb21cbbfbaa4",
+            "name": "Remember4U",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "77c0b127-4805-4c8c-ac78-859ab4fadf17",
+            "name": "Italo Disco USA",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "de990f20-683b-42a7-a69c-0271d08730fb",
+            "name": "R.SA 80er Italo Disco Hits",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "bd003058-619d-443e-ade2-4e95d191dab3",
+            "name": "Club Music Radio - ITALO DISCO",
+            "countrycode": "HR"
+          },
+          {
+            "stationuuid": "95b1c33b-d6bc-44f7-ae5f-3de60a258c89",
+            "name": "DJ Angels Italo Disco Radio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "19deb16a-8c8a-4ec5-ac57-34614dff414e",
+            "name": "Nostalgie Italo Disco ",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "be993828-2a83-4c9c-ab25-8cd993e3e19e",
+            "name": "Fantasy Italo Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "e9577c10-e299-4bb8-9313-c6cc2070c1f3",
+            "name": " # RdMix Italo Disco 80s",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "80cc7186-2384-4e71-bed9-756108581acc",
+            "name": "Blue Space 107,2 FM Athens",
+            "countrycode": "GR"
+          }
+        ]
+      },
+      {
+        "slug": "eurodance",
+        "title": "Eurodance",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "963fb135-0601-11e8-ae97-52543be04c81",
+            "name": "Radio 90s Eurodance",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "60ceaabd-4efd-4f47-b961-0dab6f475731",
+            "name": "EuroDance 90 Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "962c0376-0601-11e8-ae97-52543be04c81",
+            "name": "Sunshine Live - Die 90er",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "962841a9-0601-11e8-ae97-52543be04c81",
+            "name": "Radio 105 – Dance 90",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "b162d016-5628-42cf-8fb1-22866ba5f065",
+            "name": "Play 90's",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "403b6475-cb7b-4a94-97df-1b10c141aef9",
+            "name": "Radio Eurodance Classic",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "77bad355-947b-11e8-a767-52543be04c81",
+            "name": "Laut.FM Eurodance",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "ee6043f7-124d-4f20-b020-c1a77ca8383e",
+            "name": "Technolovers EURODANCE",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "2474b5ce-4888-11e9-80ab-52543be04c81",
+            "name": "Radio Mirage – Euro Dance",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "e58e609b-3712-4136-86cf-5ac872192918",
+            "name": "Eurodance-X-Press",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "5d7eaf84-c541-11e9-8502-52543be04c81",
+            "name": "Day Dee Eurodance",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "898d19cf-11ca-4426-8417-d91aa183d130",
+            "name": "Dance Wave Retro",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "165eab56-4a14-11e9-a4d7-52543be04c81",
+            "name": "DFM Дискач 90-х",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "4a6bc1ff-6d28-471d-88df-60d402f9dc35",
+            "name": "90s90s Eurodance",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "0f902505-76c7-489b-8ddc-03b05b5867ae",
+            "name": "Generation Dance Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "ae5ab591-f05b-4724-98c1-1a383e75d5da",
+            "name": "m2o originals radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "873c2351-6166-4324-9ac5-200a0565ccf3",
+            "name": "Radio Record - Summer Dance",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "777d14b2-f344-11e9-a96c-52543be04c81",
+            "name": "Los 40 Dance",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "079b15e6-da25-4102-92f1-ca6e56b3d31f",
+            "name": "Oxygen Italo Hits",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "e5d0c4bd-16fe-4fd4-96f8-4c7b78ac1c2c",
+            "name": "Italo Sound Radio",
+            "countrycode": ""
+          }
+        ]
+      },
+      {
+        "slug": "trance-psy",
+        "title": "Trance / Psy",
+        "source": "radiodock",
+        "featured": true,
+        "stations": [
+          {
+            "stationuuid": "b5455fcb-e07e-11e9-a8ba-52543be04c81",
+            "name": "Trance Athena",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "447ad370-b609-46ed-9352-510659855a5c",
+            "name": "Afterhours FM (AH.FM)",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "52b3c152-251b-48d7-ae51-d635906ec41d",
+            "name": "TranceBase.FM",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "dcbbb866-0116-11ea-bbf2-52543be04c81",
+            "name": "Psyndora Psytrance",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "39e49a9c-c692-4642-8a84-1201680bb566",
+            "name": "The Sound Of Trance",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "962a61bf-0601-11e8-ae97-52543be04c81",
+            "name": "1.FM - Amsterdam Trance Radio",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "bb3117fb-0513-4251-9135-ba9cdc730d41",
+            "name": "90s90s Trance",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "0afd1a87-483f-44f9-9705-1abde80b88ee",
+            "name": "DiscoverTrance Radio",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "47651599-e323-4375-a9bf-aaae945e243e",
+            "name": "Trance Is Star Radio",
+            "countrycode": "UA"
+          },
+          {
+            "stationuuid": "8f1e8acf-2ce6-4542-a423-bc29ea514e4a",
+            "name": "RauteMusik Trance",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "344dbd28-0acc-4621-a3da-a7ddde668130",
+            "name": "sunshine live - Trance",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "57a27605-e80a-499c-b1a2-aca15a4ce92e",
+            "name": "Technolovers Trance",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "9ef2da84-5133-4446-989c-0b02b0f565ab",
+            "name": "Progressive Trance Mix",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "9608b0b0-0601-11e8-ae97-52543be04c81",
+            "name": "PulsRadio Trance",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9611ffbc-0601-11e8-ae97-52543be04c81",
+            "name": "PlayTrance Radio - Main Channel",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "79f786a8-0f1b-494c-a965-1fd4f90bfb73",
+            "name": "TrancePulse Dublin",
+            "countrycode": "IE"
+          },
+          {
+            "stationuuid": "9bf9c505-cc99-42d0-9c98-8dcd1b29e395",
+            "name": "1Mix Radio Trance",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "b322cb7b-6f84-45f4-a3c8-fd7b4ea42f67",
+            "name": "Radioparty Vocal Trance",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "c06274a2-7487-43a1-93e5-17aea602e4cc",
+            "name": "Radioparty Trance Party",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "d57d8bb4-e208-4892-bf6b-bcf6546aa2c8",
+            "name": "BEAT 100.9 FM",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "fc7c995c-6aa6-4627-9051-958fefa36c28",
+            "name": "HIT FM Trance Hits",
+            "countrycode": "MD"
+          },
+          {
+            "stationuuid": "9aa4137a-02ee-4752-ba6b-04cea24547d7",
+            "name": "Radio Record Trancemission",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "2110348b-a6b3-44cf-9597-0caa38fe70ec",
+            "name": "Record Trance Classics",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "51b7f8ff-bbe9-4c74-8f53-0cda9f16eaec",
+            "name": "DFM - Vocal Trance",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "473808f6-d74c-4256-b3eb-857dbd139afa",
+            "name": "DFM Armin van Buuren",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "09902861-999f-4a6e-915b-3692401aee84",
+            "name": "Radio Record Trancehouse",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "2cbba83f-f6ac-488f-8eef-9e675ea57905",
+            "name": "Radio Caprice Dream Trance",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "c65df5f7-d497-4650-9c72-beceea02e87b",
+            "name": "Sunshine Live Vocal Trance",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "fef391bf-48e0-4bb2-a076-8cbaf2e78281",
+            "name": "ADRN Trance",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "ccdcd51a-9616-459e-9330-aff08ee9a6b3",
+            "name": "ADRN Uplifting Trance",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "0bc37c5d-ff3d-4f46-b2fc-724b9332dcc1",
+            "name": "ADRN Hard Trance",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "0324180d-596a-4b6b-a486-67e606e23d36",
+            "name": "#joint radio Beat Trance",
+            "countrycode": "IL"
+          },
+          {
+            "stationuuid": "7fb7c62b-bdf1-11e8-aaf2-52543be04c81",
+            "name": "RadiOzora",
+            "countrycode": "HU"
+          },
+          {
+            "stationuuid": "65417625-55ad-46e5-969d-6ea8abde558f",
+            "name": "DMT-FM - EU Server 320k",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "05eb782e-e789-4573-9771-27bfa417655c",
+            "name": "psyradio.fm Progressive",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "8dc4bb10-1cac-11e8-a334-52543be04c81",
+            "name": "GoaNight",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "136439ad-86de-44b3-9527-2ce3fb5afd82",
+            "name": "Radio Caprice Forest Psytrance",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "9644ceb7-0601-11e8-ae97-52543be04c81",
+            "name": "laut.fm Psytrancelicious",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "962a8356-0601-11e8-ae97-52543be04c81",
+            "name": "1.FM - BOM Psytrance Radio",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "068e9825-246f-4a6e-b146-9e4df1359e97",
+            "name": "Technolovers Psytrance",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "ca151a81-ce20-4dd4-b6df-66f5c52a559c",
+            "name": "Record Goa Psy",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "cb39f162-3b40-11e8-b74d-52543be04c81",
+            "name": "Toksyna FM PsyTrance",
+            "countrycode": "PL"
+          }
+        ]
+      },
+      {
+        "slug": "dubtechno",
+        "title": "Dubtechno",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
           {
             "stationuuid": "050ed957-00a4-4522-ad75-6867ff427c65",
             "name": "dubtechno247station",
@@ -2979,69 +3923,9 @@
             "countrycode": "GB"
           },
           {
-            "stationuuid": "a7955208-a64e-4430-b41c-62de37b14562",
-            "name": "Radio Caprice – Dub Techno",
-            "countrycode": "RU"
-          },
-          {
             "stationuuid": "8cfc1295-8f6f-4414-a581-015d231470ec",
             "name": "Anima Amoris Dub Techno",
             "countrycode": "RU"
-          },
-          {
-            "stationuuid": "230fde18-874e-421e-88cc-ac654926782a",
-            "name": "RADCAP: Ambient Dub",
-            "countrycode": "RU"
-          },
-          {
-            "stationuuid": "f7a27449-af1b-470e-aa50-bc5f1df79f4e",
-            "name": "ROminimal Radio",
-            "countrycode": "RO"
-          },
-          {
-            "stationuuid": "e45d2913-88fc-4c43-adef-661753e951f9",
-            "name": "MINIMALRADIO.DE",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "48b3a144-bc19-41b4-b271-d5ede950dfcb",
-            "name": "ToXoRs minimalRADIO (320k)",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "99349530-87ed-48a0-9c92-5ce42ccff0de",
-            "name": "MABU Beatz Radio - Minimal",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "01fa3ef0-acf6-4e63-8777-f5bb4957b5ec",
-            "name": "Technolovers – Minimal",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "8694d429-d064-4e1a-b7f0-159b550cf890",
-            "name": "Radio Caprice – Minimal Techno",
-            "countrycode": "RU"
-          },
-          {
-            "stationuuid": "6a73c6d1-5928-4de4-acfa-983b465013b0",
-            "name": "Record Minimal",
-            "countrycode": "RU"
-          },
-          {
-            "stationuuid": "29f2d6bd-7fee-4e56-a9c1-16a0123b5c63",
-            "name": "chronisch_elektronisch-laut-fm",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "10079369-ff61-45fa-8f8e-c01c36aca5ab",
-            "name": "SHAMANU",
-            "countrycode": "RO"
-          },
-          {
-            "stationuuid": "5f374674-a09e-44f4-9700-a2647915bfc8",
-            "name": "Minimal & Deep-tech on MixLive.net",
-            "countrycode": "IE"
           },
           {
             "stationuuid": "2f7cead0-b1fa-4400-a6dd-8ccfc1be3e03",
@@ -3049,67 +3933,32 @@
             "countrycode": "DE"
           },
           {
-            "stationuuid": "b828bae6-3dcf-4cff-9e83-98ea75928930",
-            "name": "Radio Caprice - Dub Techno [1]",
-            "countrycode": "RU"
+            "stationuuid": "63f00576-2ed9-41f7-bef5-e3ed27ed90d2",
+            "name": "Mabu Beatz Dub Techno",
+            "countrycode": "DE"
           },
           {
-            "stationuuid": "bb6b7ad8-f327-11e9-a96c-52543be04c81",
-            "name": "Traxx FM – Tech Minimal",
-            "countrycode": "CH"
-          },
-          {
-            "stationuuid": "19c57c60-bf6f-481b-9197-cb7e4f58c589",
-            "name": "Radio Caprice - Minimal Techno [1]",
-            "countrycode": "RU"
+            "stationuuid": "45683512-dfc3-4338-b46d-60f9d26c63e0",
+            "name": "Dub Ninja",
+            "countrycode": "GB"
           }
         ]
       },
       {
         "slug": "drum-and-bass",
-        "title": "Drum & Bass / Jungle",
+        "title": "Drum & Bass",
         "source": "radiodock",
         "featured": true,
         "stations": [
-          {
-            "stationuuid": "973c30a5-a178-4daf-89c7-272ec6c47456",
-            "name": "Kool FM",
-            "countrycode": "GB"
-          },
           {
             "stationuuid": "b8148b29-09d0-4aa1-8bfe-43d236260170",
             "name": "Liquid DnB",
             "countrycode": "GB"
           },
           {
-            "stationuuid": "2c3eac2c-4588-42d3-9c2e-0c6e99afaf6e",
-            "name": "Eruption Radio",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "0de447a3-bd91-4272-b2ec-8ca7e99472b2",
-            "name": "Underground Bass",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "3dff0ca7-e8d7-4966-a37f-2d754819af6b",
-            "name": "Jungle Planet Radio",
-            "countrycode": "IT"
-          },
-          {
-            "stationuuid": "5e9311c0-d676-4655-b73f-b9b3c8319430",
-            "name": "Strictly Ragga Jungle",
-            "countrycode": "GB"
-          },
-          {
             "stationuuid": "edaa4ad7-bdf3-11e8-aaf2-52543be04c81",
             "name": "DnBRadio.com",
             "countrycode": "US"
-          },
-          {
-            "stationuuid": "bc195601-561a-473a-b3b4-7b80e540811c",
-            "name": "DnBRadio.com - Darkstep Channel (DE Mirror)",
-            "countrycode": "DE"
           },
           {
             "stationuuid": "e2f8a671-835a-4223-ad0f-33ac7aa9ed05",
@@ -3137,9 +3986,9 @@
             "countrycode": "GB"
           },
           {
-            "stationuuid": "0a885695-4f50-4676-8fab-0e7dff0e4fa9",
-            "name": "Flex FM 101.4",
-            "countrycode": "GB"
+            "stationuuid": "bc195601-561a-473a-b3b4-7b80e540811c",
+            "name": "DnBRadio.com - Darkstep Channel (DE Mirror)",
+            "countrycode": "DE"
           },
           {
             "stationuuid": "846085bc-a3bb-4a18-a2b5-f3c62bceffd4",
@@ -3227,18 +4076,8 @@
             "countrycode": "DE"
           },
           {
-            "stationuuid": "960e9a99-0601-11e8-ae97-52543be04c81",
-            "name": "Dublovers",
-            "countrycode": "DE"
-          },
-          {
             "stationuuid": "948dd047-1a0b-42c9-b769-19233dfadc7f",
             "name": "Dutch Delite Drum and Bass",
-            "countrycode": "NL"
-          },
-          {
-            "stationuuid": "be603e71-a49d-445e-a33b-3cb5ca25ce13",
-            "name": "jungletrain.net",
             "countrycode": "NL"
           },
           {
@@ -3249,11 +4088,6 @@
           {
             "stationuuid": "37f9c6db-a491-4893-a1b8-dcf22e73a0c1",
             "name": "Rádio DNB TV",
-            "countrycode": "CZ"
-          },
-          {
-            "stationuuid": "f6bc1537-107b-46a1-9c81-f25839474911",
-            "name": "Sunrise Radio (Czechia)",
             "countrycode": "CZ"
           },
           {
@@ -3270,11 +4104,44 @@
             "stationuuid": "31858a05-51df-4ff4-9d62-4f0a22fad870",
             "name": "DrumandBass.FM",
             "countrycode": "AT"
+          }
+        ]
+      },
+      {
+        "slug": "jungle",
+        "title": "Jungle",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "973c30a5-a178-4daf-89c7-272ec6c47456",
+            "name": "Kool FM",
+            "countrycode": "GB"
           },
           {
-            "stationuuid": "c515129c-3c44-4ffa-b407-ff3158468368",
-            "name": "LiSTNR – Drum & Bass",
-            "countrycode": "AU"
+            "stationuuid": "2c3eac2c-4588-42d3-9c2e-0c6e99afaf6e",
+            "name": "Eruption Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "0de447a3-bd91-4272-b2ec-8ca7e99472b2",
+            "name": "Underground Bass",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "3dff0ca7-e8d7-4966-a37f-2d754819af6b",
+            "name": "Jungle Planet Radio",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "5e9311c0-d676-4655-b73f-b9b3c8319430",
+            "name": "Strictly Ragga Jungle",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "be603e71-a49d-445e-a33b-3cb5ca25ce13",
+            "name": "jungletrain.net",
+            "countrycode": "NL"
           },
           {
             "stationuuid": "1fca6a62-12d1-4b9d-8485-8a8c06b1a790",
@@ -3302,11 +4169,6 @@
             "countrycode": "RU"
           },
           {
-            "stationuuid": "3ac90ab7-34f9-43d3-9f7c-26379a1a68a4",
-            "name": "Jungle Radio",
-            "countrycode": "PH"
-          },
-          {
             "stationuuid": "fc33f2de-34af-4985-8780-a5536b228c00",
             "name": "Radio Transdutor",
             "countrycode": "BR"
@@ -3315,6 +4177,222 @@
             "stationuuid": "f7c5d86d-f31d-422b-b138-4c9f0690539b",
             "name": "Full Spectrum Radio",
             "countrycode": "CA"
+          },
+          {
+            "stationuuid": "21581736-8ad2-4a73-a272-9f56e771839e",
+            "name": "Futuredrumz Jungle Drum & Bass Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "e1a177e9-5947-46a4-8757-0415c9b106bc",
+            "name": "Old Skool Rave Tapes",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "fba2054a-0812-4a8f-b9bf-ab0546c5cccd",
+            "name": "Kniteforce Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "b200fa87-76ec-4afc-9eef-6a609ef9d4b8",
+            "name": "Energy 1058",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "d7a59a3c-9287-4b86-9cc5-e7cd781975da",
+            "name": "SUBURBiA Planet Hardcore",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "138e0496-c5f1-48a0-8cad-764fb23dfec9",
+            "name": "Playback UK",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "4881d7d6-b288-4585-a383-f926f3d017cf",
+            "name": "DNB.BAND",
+            "countrycode": "DE"
+          }
+        ]
+      },
+      {
+        "slug": "minimal",
+        "title": "Minimal",
+        "source": "radiodock",
+        "featured": true,
+        "stations": [
+          {
+            "stationuuid": "f7a27449-af1b-470e-aa50-bc5f1df79f4e",
+            "name": "ROminimal Radio",
+            "countrycode": "RO"
+          },
+          {
+            "stationuuid": "e45d2913-88fc-4c43-adef-661753e951f9",
+            "name": "MINIMALRADIO.DE",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "99349530-87ed-48a0-9c92-5ce42ccff0de",
+            "name": "MABU Beatz Radio - Minimal",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "01fa3ef0-acf6-4e63-8777-f5bb4957b5ec",
+            "name": "Technolovers – Minimal",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "6a73c6d1-5928-4de4-acfa-983b465013b0",
+            "name": "Record Minimal",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "29f2d6bd-7fee-4e56-a9c1-16a0123b5c63",
+            "name": "chronisch_elektronisch-laut-fm",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "10079369-ff61-45fa-8f8e-c01c36aca5ab",
+            "name": "SHAMANU",
+            "countrycode": "RO"
+          },
+          {
+            "stationuuid": "5f374674-a09e-44f4-9700-a2647915bfc8",
+            "name": "Minimal & Deep-tech on MixLive.net",
+            "countrycode": "IE"
+          },
+          {
+            "stationuuid": "bb6b7ad8-f327-11e9-a96c-52543be04c81",
+            "name": "Traxx FM – Tech Minimal",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "b74bb2f0-0c5f-49dc-b9e4-7843c40f6e8b",
+            "name": "Radio Marketescu House & Minimal",
+            "countrycode": "RO"
+          },
+          {
+            "stationuuid": "be802b5d-d62c-4ca7-ad17-7115ad12b81b",
+            "name": "Deep Mix Radio",
+            "countrycode": "PT"
+          },
+          {
+            "stationuuid": "f0df6e39-68b5-4026-9d83-51af63ddfdc6",
+            "name": "UZIC.CH – Techno Minimal",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "4688eb3a-a407-4360-aef6-ac823bbae240",
+            "name": "WSSR Sector Seven Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "1792b3c5-c299-4dd3-97ad-db94a489becd",
+            "name": "Anima Amoris Minimal Deep Techno",
+            "countrycode": "RU"
+          }
+        ]
+      },
+      {
+        "slug": "techno",
+        "title": "Techno",
+        "source": "radiodock",
+        "featured": true,
+        "stations": [
+          {
+            "stationuuid": "9643c506-0601-11e8-ae97-52543be04c81",
+            "name": "FluxFM Techno Underground",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "c26f30d5-3fd2-4353-9601-b668fda28207",
+            "name": "re:union Radio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "58bfb205-fea8-4a9b-aae5-b9737115605e",
+            "name": "techno bunker",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "780f330e-5a1f-4f98-a5ba-cc261ec6a06c",
+            "name": "TEKNO1",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "7ccca232-b731-4060-9baf-c3a1a5b992e7",
+            "name": "Techno.FM (320 kbit)",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "685ec2f1-d235-11e9-a861-52543be04c81",
+            "name": "Schranz.in - Hardtechno",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "e166a702-0de3-4d67-81aa-c949d27970c0",
+            "name": "Planet Frequency Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "e8b71483-aa1f-47f6-9fb6-02bef8153a69",
+            "name": "Radio Techno Zagreb",
+            "countrycode": "HR"
+          },
+          {
+            "stationuuid": "280a4ae0-6946-4db7-8f5f-9cf122cfca1c",
+            "name": "EILO Techno Radio",
+            "countrycode": "BG"
+          },
+          {
+            "stationuuid": "2f7feb09-8e0e-4aae-ad68-d1856aa1ba5d",
+            "name": "Techno Live Sets",
+            "countrycode": "CO"
+          },
+          {
+            "stationuuid": "96643f48-c85c-41d5-b9a0-6c6cd861e87b",
+            "name": "N10.AS",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "cd08ddef-18ae-421c-85a3-971ee8caa5d5",
+            "name": "RES FM",
+            "countrycode": "PT"
+          },
+          {
+            "stationuuid": "f52c28fa-5259-42f2-85ee-471425627da7",
+            "name": "Free Techno",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "6dcb8eb0-9f72-45db-87d1-31c3441d508d",
+            "name": "Evosonic Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "57f6f43b-7af5-449e-a05c-632c03a7ea85",
+            "name": "Ossido",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "9391f9be-cbc1-4c84-8da5-cf7eebefaab2",
+            "name": "Labyrinth | NTS",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "626a21e7-25f4-4c7b-9f8f-5e580c493bfc",
+            "name": "Teknival Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "6fa5c74b-1f5c-11ea-a955-52543be04c81",
+            "name": "1000 Techno",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "ecb854f2-4a6c-43ec-8805-e9e475b190ca",
+            "name": "Ola Radio",
+            "countrycode": ""
           }
         ]
       },
@@ -3422,6 +4500,668 @@
           {
             "stationuuid": "87d5a90a-29bb-4bcf-91c8-9fd5c53b44e0",
             "name": "Hardstyle FM",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "960ea1eb-0601-11e8-ae97-52543be04c81",
+            "name": "HardBase.FM",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "962c0681-0601-11e8-ae97-52543be04c81",
+            "name": "Sunshine Live - Hands Up",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "96128025-0601-11e8-ae97-52543be04c81",
+            "name": "Sunshine Live - Hard",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "0beeb085-5116-4f2a-a543-cdcb837f8116",
+            "name": "Technolovers HANDSUP",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "6a74e9a2-e5ac-40d5-9d2d-f956f15b7058",
+            "name": "Technolovers HARDSTYLE",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "c6de7ff5-8c25-4e3a-987d-3e0c7ecb9db9",
+            "name": "Technolovers HARDCORE",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "810c8f16-fc17-4eab-a8ef-908f280eb26a",
+            "name": "RauteMusik HardeR",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "b9201e54-c66a-489b-9db5-f487c0c4bcdf",
+            "name": "Real Hardstyle Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "674e1f9d-4686-4bc0-8fc3-7e1517ed543a",
+            "name": "Q-Dance Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "821a2895-5ca8-430c-b361-f5b665d0efcd",
+            "name": "A.D.M. Hardstyle Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "9369ae3c-5bab-11e9-a622-52543be04c81",
+            "name": "HappyHardcore.com",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "95474386-aaca-4d90-9d5c-3913ea75bce1",
+            "name": "Happy Rave Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "fba2054a-0812-4a8f-b9bf-ab0546c5cccd",
+            "name": "Kniteforce Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "5ede37ba-a332-4607-b0c6-2469318c3649",
+            "name": "Topradio TopBam",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "e8e57947-b7ce-42f4-9e17-b1565017ccb2",
+            "name": "PRIMAL.FM DRESDEN",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "2669339a-2e10-45ff-bcbc-6bbd09185216",
+            "name": "Hardstyle and Hardcore",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "96244e9c-0601-11e8-ae97-52543be04c81",
+            "name": "Hardcore Radio",
+            "countrycode": ""
+          }
+        ]
+      },
+      {
+        "slug": "tech-house",
+        "title": "Tech House",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "05ffe1bf-578f-4e1a-8388-3932613fd5a6",
+            "name": "NRJ Tech House",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "6a73c6d1-5928-4de4-acfa-983b465013b0",
+            "name": "Record Minimal",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "4b628ed0-0666-4893-9b35-72fa1cbdf377",
+            "name": "LOCA FM TechHouse",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "a0f16337-dc2e-4b33-ad36-1fbef6dcc6d5",
+            "name": "United Music Tech House",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "21443448-7b21-4831-8134-20c4ab700241",
+            "name": "DFM - Tech House",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "b77ff005-3b78-495a-b705-828c44a96fac",
+            "name": "Радио Рекорд Tech House",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "efe59d93-2fe4-11e8-91bf-52543be04c81",
+            "name": "Sunshine Live - Tech House",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "fd0cfcb9-2ad5-11e8-91bf-52543be04c81",
+            "name": "RauteMusik TechHouse",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "514118f5-7fc0-451f-9fac-dfb877376721",
+            "name": "Technolovers – Techhouse",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "0326796d-980b-44c8-8cfc-e8a26ebdefaa",
+            "name": "FG Tech House",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "79dea38e-6c70-401e-9557-4bedf428d7b2",
+            "name": "Prysm Tech House",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "bce5878d-ae5c-4e8b-888c-787b0c66ea24",
+            "name": "Radio Noise Tech House",
+            "countrycode": "RO"
+          },
+          {
+            "stationuuid": "4a0083ec-e094-47a8-845f-cf9a4679f7d3",
+            "name": "ADRENALINE Tech House Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "dd70fa73-7210-41b9-b984-5ae09c3233e4",
+            "name": "Tech House (laut.fm)",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "a28a2833-e6f7-4274-8711-1b8e25afc744",
+            "name": "Anima Amoris Deep Tech House",
+            "countrycode": "RU"
+          }
+        ]
+      },
+      {
+        "slug": "house",
+        "title": "House",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "7f624ac0-0ada-467f-b249-b3643e3ce404",
+            "name": "313 LIVE Detroit",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "95912a6e-9de0-4b3b-b120-c9988d70d4a8",
+            "name": "Chicago House Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "1a421361-eb9f-40e9-9ab1-1a4ca39b90dd",
+            "name": "House FM",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "85668c4c-de87-4d72-abbd-79af985ff5c1",
+            "name": "WGNX RADIO DETROIT",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "3f198fb4-b7dc-4232-bc00-3cbac649accb",
+            "name": "House Classics",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "f9a4e918-7df8-42ba-862f-21828d7c9b09",
+            "name": "Just House Music",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "bb278b88-3836-479d-9ad7-7a3d5c07b001",
+            "name": "Deep Space Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "55495003-c899-48fe-a51a-12c4a381f0db",
+            "name": "Centreforce 883",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "e231378a-e6d1-11e9-a96c-52543be04c81",
+            "name": "4 To The Floor | NTS",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "0bebe5e6-5630-11e9-a4d7-52543be04c81",
+            "name": "MixCult",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "1e9d72a2-8075-11e9-aa30-52543be04c81",
+            "name": "Point Blank Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "fd3c673c-ffe1-4621-8f83-d827b26dc0bc",
+            "name": "Classic House Music",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "a20e7f55-661e-4f4c-b87f-a087c64633f8",
+            "name": "54house.fm Clubstream",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "bd466ab0-e4ff-11e9-a96c-52543be04c81",
+            "name": "GROOVE RADIO",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "0f894e67-7d53-4d60-9aa8-f3b6e208bf1b",
+            "name": "1st-House",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "5e8bf0d1-4c8f-4199-873e-db554f55364f",
+            "name": "NightGrid FM",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "bae70c5c-9f3f-42fc-a83d-6c13920590e0",
+            "name": "Kiosk Radio",
+            "countrycode": "BE"
+          }
+        ]
+      },
+      {
+        "slug": "metal",
+        "title": "Metal",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "75b6b22f-f4b7-43ae-aa73-96a7b47eeb4f",
+            "name": "FIP Metal",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "102fd070-4146-4dd7-afca-88c8c6484b9b",
+            "name": "Metal Devastation Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9e219cbd-9bd0-4950-997d-f17bd8fbe793",
+            "name": "Radio Metal",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "c11e4caf-0344-4ab5-8567-95cfac2f570f",
+            "name": "Metalwar",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "8cc275fb-f527-4cff-9539-58da50df8782",
+            "name": "Andrew Haug Metal Radio",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "961291f5-0601-11e8-ae97-52543be04c81",
+            "name": "La Grosse Radio Métal",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "ee587805-11d2-4d3a-b676-8121e149b0ff",
+            "name": "RPR1. Heavy Metal",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "9618d38b-0601-11e8-ae97-52543be04c81",
+            "name": "RADIO BOB! BOBs Metal",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "960cca40-0601-11e8-ae97-52543be04c81",
+            "name": "Rock Antenne - Heavy Metal",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "259e410c-b516-11e8-afe1-52543be04c81",
+            "name": "METAL ONLY",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "db00c1f9-f3eb-4da5-acf8-90d26e7ab43b",
+            "name": "StarFM From Hell",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "960de41d-0601-11e8-ae97-52543be04c81",
+            "name": "SomaFM Metal Detector",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "37d8c726-c98c-4690-84aa-8f71c715081c",
+            "name": "Metal Express Radio",
+            "countrycode": "NO"
+          },
+          {
+            "stationuuid": "139eec8c-d0b7-4ace-9443-2a6ec74c789f",
+            "name": "Northern Metal Radio",
+            "countrycode": "SE"
+          },
+          {
+            "stationuuid": "4340f942-c877-4b60-9d2e-e628db62f761",
+            "name": "Metal Zone Radio",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "b05bc526-0822-4a8d-9e86-e0b19f119f30",
+            "name": "MetalON - The Heavy",
+            "countrycode": "PT"
+          },
+          {
+            "stationuuid": "d6316691-8619-42ae-8dbb-75dfdd7a7eb5",
+            "name": "Metal Radio",
+            "countrycode": "AT"
+          },
+          {
+            "stationuuid": "1901f7f2-727f-4fb1-b9d8-bf3f50e1419c",
+            "name": "Bear Metal Radio",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "c5405d8b-9d43-4d22-bc8a-40c7b9ca4d54",
+            "name": "LOUD! Metal Radio",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "41e4522c-2cbb-4cb6-9976-fe2182d01bad",
+            "name": "Svartkrog Black Metal Radio",
+            "countrycode": "DE"
+          }
+        ]
+      },
+      {
+        "slug": "classic-rock",
+        "title": "Classic Rock",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "34ca644e-4aa2-4bf0-b0fe-9122e7f97629",
+            "name": "Choice Classic Rock",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "7604a7bf-512b-4fc9-939c-0523fb3ba357",
+            "name": "24-7 Classic Rock",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "962b77a9-0601-11e8-ae97-52543be04c81",
+            "name": "Radio Rock On",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "7ed29a17-550c-4fdd-8cef-2aa0de9a6d4a",
+            "name": "Classic Rock Legends Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "11fc712b-96cb-408d-bc09-57af825ff448",
+            "name": "Big Cactus Classic Rock",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "c5538f75-25d6-11e8-91bf-52543be04c81",
+            "name": "Uturn Radio - Classic Rock",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "82afe796-5b38-443b-bef4-7fcd0cfd7a9c",
+            "name": "Baars Classic Rock",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "9b7f745a-5025-430e-bc79-7226dcaeb35b",
+            "name": "Radio Caroline 259 Gold",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "d9f10aef-3453-4a7a-9ba9-35f5931392a9",
+            "name": "Badrock Classic Rock",
+            "countrycode": "BG"
+          },
+          {
+            "stationuuid": "027645d3-8d81-47e3-afb1-873b5f47e089",
+            "name": "Labgate Classic Rock",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "dec031e0-4419-45d2-9f3e-76e91d876c40",
+            "name": "Planet Rock",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "6dde2d92-4f47-46f1-a7c6-3b3abec3806f",
+            "name": "Absolute Classic Rock",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "8aafbf38-346c-479c-b80c-abd308613d16",
+            "name": "Antyradio Classic Rock",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "1380f2d6-2312-49c0-a618-f44ff83c3f75",
+            "name": "Radio ROKS Classic Rock",
+            "countrycode": "UA"
+          },
+          {
+            "stationuuid": "689824b5-1dd7-464d-a913-8c363337a883",
+            "name": "OUI FM Classic Rock",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9645d9ca-0601-11e8-ae97-52543be04c81",
+            "name": "88.6 Classic Rock",
+            "countrycode": "AT"
+          },
+          {
+            "stationuuid": "9618c8c0-0601-11e8-ae97-52543be04c81",
+            "name": "RADIO BOB! Classic Rock",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "6b2e0fad-6f57-4464-83ae-d68981e11504",
+            "name": "Radio Capital Classic Rock",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "2f1055d0-fa14-46d4-bead-724672ac2a51",
+            "name": "Ultimate Classic Rock",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "2324adb4-186c-4698-abf1-7103776a7137",
+            "name": "Classic Rock 98.1 (CKLO)",
+            "countrycode": "CA"
+          }
+        ]
+      },
+      {
+        "slug": "uk-garage",
+        "title": "UK Garage",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "9ade6f14-73bb-4bc8-8234-2e40134966c1",
+            "name": "UKG247",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "462a1756-2a14-49c7-ad7e-7db5054e238c",
+            "name": "UKG Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "91a14ec6-a008-4a12-b6d3-65db918e12e0",
+            "name": "Algorythme UK Garage",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "f239f725-95e8-4196-87d2-032afdf46ade",
+            "name": "UK Garage Радио Рекорд",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "1c759224-cd2a-417c-a777-11e985f67582",
+            "name": "Funky SX",
+            "countrycode": "GB"
+          }
+        ]
+      },
+      {
+        "slug": "grime",
+        "title": "Grime & UK Rap",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "4d6ddb77-1629-4f79-90cd-bef6b369193c",
+            "name": "E3 Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "a0cdaaf3-4693-4de7-b916-4094ab487074",
+            "name": "Grime Online",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "c478dd38-108e-40cc-b4ed-3b94fee6b6f1",
+            "name": "UK Grime FM",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "d716df3e-37ee-4601-97e3-f041dfb28539",
+            "name": "Radio Caprice - grime",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "dbf8bd04-b31d-4ad7-a59f-5b5680f06e76",
+            "name": "Australian Digital Radio Network - Grime",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "a99650cd-e163-4ed9-82e1-b505159c151c",
+            "name": "Radio Caprice - UK Rap/Hip-Hop",
+            "countrycode": "RU"
+          }
+        ]
+      },
+      {
+        "slug": "black-metal-doom",
+        "title": "Black Metal / Doom",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "117587c0-b66a-437f-b76a-85adcfd146e9",
+            "name": "Black Metal Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "bea27ef5-bbbe-477d-bed3-e31cb6ac39da",
+            "name": "Doomnation Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "a6e7696f-e9bb-4b0e-9bba-728a6e92a150",
+            "name": "True Black Metal Radio",
+            "countrycode": "UA"
+          },
+          {
+            "stationuuid": "6bd67acb-e99e-4673-8270-19d55935be2a",
+            "name": "Mosh Head Black Metal",
+            "countrycode": "ID"
+          },
+          {
+            "stationuuid": "681c6fee-8d61-437b-84a4-f96b8fd3422c",
+            "name": "Ritus",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "17505c58-78c9-400a-a508-9fe880e03ae4",
+            "name": "Blackmetal",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "94e61c2c-a6fb-4ff0-8b3d-1041a3e8e42e",
+            "name": "The Voice Of Doom",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "ff6f6f70-73ed-493d-b782-c98bf388c3ae",
+            "name": "Sludge 427",
+            "countrycode": "DE"
+          }
+        ]
+      },
+      {
+        "slug": "boom-bap",
+        "title": "Boom Bap",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "ec13eabe-7e71-4fa8-a141-1e009f3bb774",
+            "name": "Wiphopbeatz",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "fbab1b31-d094-470f-8993-b55f3ebd94ff",
+            "name": "Feierabendbeatz",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "3fb66ba8-98a1-4d1c-84eb-f6428190d63d",
+            "name": "Burning Wax",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "ac7ede58-162e-4f1e-be01-9acbb0d14be2",
+            "name": "Andockstation",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "963e66a5-0601-11e8-ae97-52543be04c81",
+            "name": "Alte Schule",
+            "countrycode": "DE"
+          }
+        ]
+      },
+      {
+        "slug": "trap-drill",
+        "title": "Trap / Drill",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "8e8c8250-709a-4a2d-b651-28b5bafebb20",
+            "name": "Trap",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "ee243600-1f17-4819-9658-48a525e5bb27",
+            "name": "Best of Trap",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "c513e2b5-270e-4cdf-8df1-ee04efb73b23",
+            "name": "Invalidsquad",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "ebd49ed7-be1f-483c-a27b-b972eee57a9a",
+            "name": "Fatrap FM",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "dea175ee-eb4d-4779-9f9e-fe945ba674ad",
+            "name": "Drill",
             "countrycode": ""
           }
         ]
@@ -3745,7 +5485,7 @@
       {
         "genre": "edm-dance",
         "label": "Dance & EDM",
-        "count": 1792
+        "count": 1799
       },
       {
         "genre": "christian",
@@ -3775,7 +5515,7 @@
       {
         "genre": "electronic",
         "label": "Electronic",
-        "count": 1049
+        "count": 1050
       },
       {
         "genre": "public",
@@ -3785,7 +5525,7 @@
       {
         "genre": "nineties",
         "label": "90s",
-        "count": 899
+        "count": 898
       },
       {
         "genre": "alternative",
@@ -3795,22 +5535,22 @@
       {
         "genre": "house",
         "label": "House",
-        "count": 840
+        "count": 851
       },
       {
         "genre": "hiphop",
         "label": "Hip-Hop",
-        "count": 829
+        "count": 840
+      },
+      {
+        "genre": "classic-rock",
+        "label": "Classic Rock",
+        "count": 821
       },
       {
         "genre": "folk",
         "label": "Folk & Acoustic",
         "count": 820
-      },
-      {
-        "genre": "classic-rock",
-        "label": "Classic Rock",
-        "count": 816
       },
       {
         "genre": "country",
@@ -3843,6 +5583,11 @@
         "count": 563
       },
       {
+        "genre": "metal",
+        "label": "Metal",
+        "count": 540
+      },
+      {
         "genre": "easy",
         "label": "Easy Listening",
         "count": 538
@@ -3853,14 +5598,9 @@
         "count": 530
       },
       {
-        "genre": "metal",
-        "label": "Metal",
-        "count": 529
-      },
-      {
         "genre": "indie",
         "label": "Indie",
-        "count": 502
+        "count": 501
       },
       {
         "genre": "culture",
@@ -3880,7 +5620,7 @@
       {
         "genre": "disco",
         "label": "Disco",
-        "count": 405
+        "count": 413
       },
       {
         "genre": "twothousands",
@@ -3890,7 +5630,7 @@
       {
         "genre": "techno",
         "label": "Techno",
-        "count": 386
+        "count": 388
       },
       {
         "genre": "cumbia",
@@ -3940,7 +5680,7 @@
       {
         "genre": "dnb",
         "label": "Drum & Bass",
-        "count": 193
+        "count": 192
       },
       {
         "genre": "kids",
@@ -3950,7 +5690,7 @@
       {
         "genre": "dubstep",
         "label": "Bass & Dubstep",
-        "count": 160
+        "count": 165
       },
       {
         "genre": "soundtrack",
