@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T20:51:04.679Z",
+  "generatedAt": "2026-10-21T20:51:37.621Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2258,6 +2258,119 @@
         ]
       },
       {
+        "slug": "late-night",
+        "title": "Late Night",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "961173b5-0601-11e8-ae97-52543be04c81",
+            "name": "SomaFM Lush (128k MP3)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "636a1133-b9d5-4412-9e8f-36c37f190176",
+            "name": "Feelings | NTS",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "960c7c81-0601-11e8-ae97-52543be04c81",
+            "name": "SomaFM Secret Agent (128k MP3)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96237848-0601-11e8-ae97-52543be04c81",
+            "name": "Jazz Lounge",
+            "countrycode": "MY"
+          },
+          {
+            "stationuuid": "9610c519-0601-11e8-ae97-52543be04c81",
+            "name": ".977 Smooth Jazz",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "0eb3dbcf-05f7-480e-83f4-7718102a4820",
+            "name": "SmoothJazz.com 128k mp3",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "934d1811-3412-4d2d-86c8-dd1d8fbb51a7",
+            "name": "101 SMOOTH JAZZ MELLOW MIX",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "3e2183ea-6fa4-40ec-93b3-887ce68ae67a",
+            "name": "SMOOTH JAZZ 24/7",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96159295-0601-11e8-ae97-52543be04c81",
+            "name": "Hi On Line Lounge Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "5e532636-ce00-48b3-ace9-b6c8c513fa29",
+            "name": "MonteCarlo Nights",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "f8e5def9-f0c3-4ad5-8f24-56102c7bcd05",
+            "name": "Ella Radio - Late Night Jazz",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "e03fd1f9-274f-4fab-a840-0a7eae474fce",
+            "name": "Late Night Jazz",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "1e0087a0-4b8c-42c1-8a6e-07c86dc2f288",
+            "name": "Radio Art - After Midnight",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "962703d0-0601-11e8-ae97-52543be04c81",
+            "name": "RMC Nights Story",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "9615f34b-0601-11e8-ae97-52543be04c81",
+            "name": "Soulallnighter",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "12e458f2-cf9b-426a-8d18-7cb07c75b07c",
+            "name": "Nightride FM",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "9ca5d25c-f979-48e1-a269-8e71bf74479b",
+            "name": "Night Drive Radio – Synthwave & Retrowave",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "282facce-8ae7-46a5-9e24-a946abe9fc7d",
+            "name": "Lounge.FM - 100% Austria",
+            "countrycode": "AT"
+          },
+          {
+            "stationuuid": "f4722411-69a1-413d-9922-5017d5aef925",
+            "name": "Special-Radio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "2815bbc7-2cbf-11e8-91bf-52543be04c81",
+            "name": "dinamo.fm caffe",
+            "countrycode": "TR"
+          },
+          {
+            "stationuuid": "960dc8d6-0601-11e8-ae97-52543be04c81",
+            "name": "Klassik Radio - Lounge",
+            "countrycode": "DE"
+          }
+        ]
+      },
+      {
         "slug": "bass-rave",
         "title": "Bass / Breaks",
         "source": "radiodock",
@@ -2691,6 +2804,154 @@
             "stationuuid": "cc4928e9-f513-4c59-b42c-56097b881431",
             "name": "I Like It Oldskool",
             "countrycode": "GB"
+          }
+        ]
+      },
+      {
+        "slug": "punk",
+        "title": "Punk",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "9618c802-0601-11e8-ae97-52543be04c81",
+            "name": "RADIO BOB! BOBs Punk",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "bc5e41ee-51da-454b-993a-56895be3e864",
+            "name": "punk irratia",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "5446f9e0-25d9-4be1-824d-72fba2037554",
+            "name": "REAL PUNK RADIO",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "03beadd2-ce1d-4949-bab4-0dcce1894412",
+            "name": "Punk FM Brasil",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "960ccd8c-0601-11e8-ae97-52543be04c81",
+            "name": "riotradio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "a1f18162-da2b-419e-9e86-72a81e508a40",
+            "name": "Punkrockers Radio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "6c3a79d6-2315-44c8-81df-f8aa5a7458cd",
+            "name": "PunkRockRadio.ca",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "97d05857-6444-42b8-bbbf-e153c9702fe8",
+            "name": "Radio Caprice - Punk Post-Hardcore Emo/Screamo",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "961871fe-0601-11e8-ae97-52543be04c81",
+            "name": "Big R Radio - Grunge FM",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "cda70b2c-e8f0-4d05-9b74-dc26b0a187b1",
+            "name": "The Tube | NTS",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "96120c73-0601-11e8-ae97-52543be04c81",
+            "name": "delta radio Grunge",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "96186d61-0601-11e8-ae97-52543be04c81",
+            "name": "RADIO BOB! BOBs Grunge",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "a6bd5286-2ef4-45f5-bb08-1f2d68c954cf",
+            "name": "Rock Antenne Grunge",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "40819a21-3b7e-11ea-8dd7-52543be04c81",
+            "name": "90s90s Grunge",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "6928b97f-56f2-459e-b7e8-d76997fd9802",
+            "name": " Russian Punk rock",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "960f97db-0601-11e8-ae97-52543be04c81",
+            "name": "Laut.FM Skafari",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "9d02c5d0-0707-422d-8b50-fe139ee74296",
+            "name": "Radio Caprice - PSYCHOBILLY",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "42830d5c-e6fa-4fd3-8c0d-2ecb7688a1e8",
+            "name": "Punk Rock Demonstration",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "960c4c2a-0601-11e8-ae97-52543be04c81",
+            "name": "Rock Antenne - Punk Rock",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "963b7906-0601-11e8-ae97-52543be04c81",
+            "name": "12XU",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "43410501-8008-46a9-aaa2-f0372c023e64",
+            "name": "Louder Than War",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "c79485f1-013e-46ec-a2ef-8eb3cef2d6dd",
+            "name": "Známka Punku",
+            "countrycode": "CZ"
+          },
+          {
+            "stationuuid": "d799ed01-e98b-47f5-9b4f-2307e07feede",
+            "name": "PUNKRATZ",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "6754605b-0bc9-11ea-a87e-52543be04c81",
+            "name": "Subculture 69 Radio (new)",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "eb3041cd-69bc-41bd-b1e0-daf2a88fe190",
+            "name": "Laut.FM - Punk and Disorderly The 80s",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "44088288-7ad1-44a7-8ec5-d8c210099c12",
+            "name": "3Chords allez Ist Punk",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "85479a6a-29c3-446b-9885-7416deacbcd1",
+            "name": "Punk Radio Underground",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "8108c4ad-71c3-11ea-b1cf-52543be04c81",
+            "name": "Наше Радио Панки-ХОЙ!",
+            "countrycode": "RU"
           }
         ]
       },
