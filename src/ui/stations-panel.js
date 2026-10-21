@@ -818,6 +818,12 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   function openCollection(slug, { backAction = 'back-discover' } = {}) {
     const list = normaliseDiscover(state.discover).lists.find((item) => item.slug === slug);
     if (!list) return;
+    // Leaving the stations list: stop an in-flight browse request, otherwise
+    // its late response paints Popular into the collection's content slot.
+    controller?.abort();
+    loadToken++;
+    state.loading = false;
+    state.view = 'discover';
     state.collection = list;
     discoverShell(list.title, backAction, renderCollection({ list }));
     applyNowPlaying();
