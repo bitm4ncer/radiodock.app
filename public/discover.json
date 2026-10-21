@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T16:44:21.818Z",
+  "generatedAt": "2026-10-21T16:45:36.871Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2181,6 +2181,11 @@
             "countrycode": "JP"
           },
           {
+            "stationuuid": "31cc09a1-4b26-11e8-9b06-52543be04c81",
+            "name": "Cashmere Radio",
+            "countrycode": ""
+          },
+          {
             "stationuuid": "50603f9e-7535-4551-901a-7e0f2cc4da4e",
             "name": "Nightwave Plaza",
             "countrycode": "US"
@@ -2241,19 +2246,9 @@
             "countrycode": ""
           },
           {
-            "stationuuid": "421dc93b-f989-47e1-8a90-e597029473fc",
-            "name": "Classical avant-garde - Radio Caprice",
-            "countrycode": "RU"
-          },
-          {
             "stationuuid": "96393127-0601-11e8-ae97-52543be04c81",
             "name": "Concertzender X-Rated",
             "countrycode": "NL"
-          },
-          {
-            "stationuuid": "31cc09a1-4b26-11e8-9b06-52543be04c81",
-            "name": "Cashmere Radio",
-            "countrycode": ""
           },
           {
             "stationuuid": "3a6e96c5-66bb-11e9-af37-52543be04c81",
@@ -2376,6 +2371,11 @@
           {
             "stationuuid": "2575e5e6-bf7c-11e9-8502-52543be04c81",
             "name": "Radio Caprice - Classical Baroque",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "421dc93b-f989-47e1-8a90-e597029473fc",
+            "name": "Classical avant-garde - Radio Caprice",
             "countrycode": "RU"
           }
         ]
