@@ -375,6 +375,7 @@
   overflow: hidden;
   background: var(--bg-dark);
   border-radius: var(--radius-sm);
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Popular, A-Z, Community and search results all live in one inset list.
@@ -1806,6 +1807,32 @@ html.is-standalone .stations-panel:not(.is-open) {
 @media (max-width: 699px) {
   .stations-featured {
     padding: 0 14px 12px;
+  }
+
+  /* On phones the featured lists become a horizontal rail. Stacked cards
+     used to eat most of the panel and left the station list only a few
+     pixels tall, so the page looked unscrollable. */
+  .stations-featured .stations-collection-grid,
+  .stations-featured .stations-collection-grid.is-tiles {
+    display: flex;
+    grid-template-columns: none;
+    gap: 8px;
+    margin: 0 -14px 8px;
+    padding: 0 14px 2px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .stations-featured .stations-collection-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .stations-featured .stations-collection-card {
+    flex: 0 0 230px;
+    scroll-snap-align: start;
   }
 }
 
