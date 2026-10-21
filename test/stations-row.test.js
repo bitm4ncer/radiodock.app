@@ -21,6 +21,11 @@ test('row renders name, meta, tags, actions, and rank', () => {
   assert.ok(html.includes('20 plays'));
 });
 
+test('row asks the logo CDN by id even when the station has no favicon', () => {
+  const html = stationsRow(base, {});
+  assert.match(html, /<img[^>]+data-logo-img="1"[^>]+src="[^"]+\/logos\/d1\?size=64"/);
+});
+
 test('row actions use the shared icon button style and always show the favorite heart', () => {
   const enabled = stationsRow(base, { canAdd: true });
   assert.match(enabled, /class="stations-icon-btn stations-row-action[^"]*"[^>]*data-action="add"/);

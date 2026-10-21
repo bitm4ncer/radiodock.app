@@ -30,6 +30,9 @@ export function getLogoUrl(station, size = 64) {
   if (favicon.startsWith('data:')) return favicon;
   const id = station?.id ?? station?.stationuuid ?? '';
   if (!id) return '';
+  // Custom streams live only in this browser, so the CDN has no row for them.
+  // They show initials unless their data: thumbnail was returned above.
+  if (String(id).startsWith('custom-')) return '';
   return `${STATIONS_BASE}/logos/${encodeURIComponent(id)}?size=${size}`;
 }
 

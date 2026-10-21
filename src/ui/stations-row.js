@@ -67,7 +67,7 @@ export function stationsRow(station, { query = '', mode = 'az', algorithm = 'boo
   return `<article class="stations-row${mode === 'popular' ? ' stations-row--popular' : ''}${alreadyAdded ? ' is-added' : ''}" data-id="${id}">
   <button class="stations-row-main" type="button" data-action="play" aria-pressed="false" aria-label="Play ${escapeHtml(station.name)}">
     ${rank}
-    ${renderLogoSlot(station, { imgClass: 'stations-row-logo', initialsClass: 'stations-row-initials', priority })}
+    ${renderLogoSlot(station, { imgClass: 'stations-row-logo', initialsClass: 'stations-row-initials', priority, resolveById: true })}
     <span class="stations-row-info">
       <span class="stations-row-name">${highlightMatches(station.name, query)}</span>
       <span class="stations-row-meta">${meta}</span>
