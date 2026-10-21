@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T16:37:21.893Z",
+  "generatedAt": "2026-10-21T16:42:23.782Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2397,14 +2397,34 @@
             "countrycode": "CA"
           },
           {
-            "stationuuid": "a6f07bae-327a-4a76-bd1d-f305c1af35a1",
-            "name": "Totally Wired Radio",
-            "countrycode": "GB"
-          },
-          {
             "stationuuid": "9612102b-0601-11e8-ae97-52543be04c81",
             "name": "SomaFM Seven Inch Soul (128k MP3)",
             "countrycode": "US"
+          },
+          {
+            "stationuuid": "c77c45c4-cf37-414c-ae34-868f7d9cd944",
+            "name": "FUNKY RADIO - Only Funk Music (60's 70's)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "09998555-2654-4aa2-8a1e-1ea7a4fed978",
+            "name": "54 Funk Soul Dance (laut.fm)",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "120f9ba0-c55a-498a-ae36-58b5c27ac2af",
+            "name": "Funkstar Radio",
+            "countrycode": "CZ"
+          },
+          {
+            "stationuuid": "34695760-5162-41b9-8eb2-4471bce7541e",
+            "name": "The Funky Channel",
+            "countrycode": "BE"
+          },
+          {
+            "stationuuid": "a6f07bae-327a-4a76-bd1d-f305c1af35a1",
+            "name": "Totally Wired Radio",
+            "countrycode": "GB"
           },
           {
             "stationuuid": "c454908c-eb81-11e9-a96c-52543be04c81",
@@ -2427,11 +2447,6 @@
             "countrycode": "FR"
           },
           {
-            "stationuuid": "c77c45c4-cf37-414c-ae34-868f7d9cd944",
-            "name": "FUNKY RADIO - Only Funk Music (60's 70's)",
-            "countrycode": "US"
-          },
-          {
             "stationuuid": "96385b07-0601-11e8-ae97-52543be04c81",
             "name": "Rádio Disco Funk BR",
             "countrycode": "BR"
@@ -2452,11 +2467,6 @@
             "countrycode": "DE"
           },
           {
-            "stationuuid": "09998555-2654-4aa2-8a1e-1ea7a4fed978",
-            "name": "54 Funk Soul Dance (laut.fm)",
-            "countrycode": "DE"
-          },
-          {
             "stationuuid": "43718921-41a0-48f5-9645-c467d19a5095",
             "name": "_Funky Corner Radio (USA)",
             "countrycode": "US"
@@ -2472,19 +2482,9 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "120f9ba0-c55a-498a-ae36-58b5c27ac2af",
-            "name": "Funkstar Radio",
-            "countrycode": "CZ"
-          },
-          {
             "stationuuid": "4df24bb0-2794-498f-bdc0-0c3d6b71ed95",
             "name": "70 80 Disco Funk ModernSoul e Boogie",
             "countrycode": "IT"
-          },
-          {
-            "stationuuid": "34695760-5162-41b9-8eb2-4471bce7541e",
-            "name": "The Funky Channel",
-            "countrycode": "BE"
           },
           {
             "stationuuid": "9613f1f2-0601-11e8-ae97-52543be04c81",
