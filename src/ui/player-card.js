@@ -27,6 +27,10 @@ export function mountPlayerCard({ player }) {
   let currentStation = null;
   let favoriteCallback = null;
   let infoCallback = null;
+  let favoritePlusTimer = null;
+  let favoritePlusSettleTimer = null;
+  const favoriteHeartMarkup = favBtn.innerHTML;
+  const FAVORITE_PLUS_ICON = '<svg class="heart-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
 
   // Now-playing scroll state. Hover devices get the extension's
   // single hover-transition; touch devices get one auto-pass per new
@@ -76,6 +80,7 @@ export function mountPlayerCard({ player }) {
       visitBtn.style.display = 'none';
       infoBtn.style.display = 'none';
       favBtn.style.display = 'none';
+      settleFavoriteHeart();
       if (actionBar) actionBar.style.display = 'none';
       return;
     }
@@ -341,6 +346,52 @@ export function mountPlayerCard({ player }) {
     favoriteCallback?.(currentStation);
   });
 
+  function syncFavoriteLabel() {
+    if (favBtn.classList.contains('is-move')) return;
+    const on = favBtn.classList.contains('is-favorited');
+    const label = on ? 'Remove from favorites' : 'Add to favorites';
+    favBtn.title = label;
+    favBtn.setAttribute('aria-label', label);
+  }
+
+  function clearFavoritePlusTimers() {
+    clearTimeout(favoritePlusTimer);
+    clearTimeout(favoritePlusSettleTimer);
+    favoritePlusTimer = null;
+    favoritePlusSettleTimer = null;
+  }
+
+  function settleFavoriteHeart() {
+    clearFavoritePlusTimers();
+    if (!favBtn) return;
+    favBtn.innerHTML = favoriteHeartMarkup;
+    favBtn.classList.remove('is-move');
+    syncFavoriteLabel();
+  }
+
+  function holdFavoritePlus() {
+    // While the move menu is open the plus must stay put; only closing the
+    // menu settles the heart back to its normal state.
+    clearTimeout(favoritePlusSettleTimer);
+    favoritePlusSettleTimer = null;
+  }
+
+  function startFavoritePlusFlow() {
+    clearFavoritePlusTimers();
+    favoritePlusTimer = setTimeout(() => {
+      favoritePlusTimer = null;
+      if (!favBtn.classList.contains('is-favorited')) return;
+      favBtn.innerHTML = FAVORITE_PLUS_ICON;
+      favBtn.classList.add('is-move');
+      favBtn.setAttribute('aria-label', 'Move to another list');
+      favBtn.title = 'Move to another list';
+    }, 350);
+    favoritePlusSettleTimer = setTimeout(() => {
+      favoritePlusSettleTimer = null;
+      settleFavoriteHeart();
+    }, 2350);
+  }
+
   muteBtn?.addEventListener('click', () => {
     haptic();
     player.toggleMute();
@@ -390,6 +441,17 @@ export function mountPlayerCard({ player }) {
     },
     setFavoriteState(isFavorited) {
       favBtn.classList.toggle('is-favorited', !!isFavorited);
+      if (!isFavorited) settleFavoriteHeart();
+      else syncFavoriteLabel();
+    },
+    startFavoritePlusFlow,
+    holdFavoritePlus,
+    settleFavoriteHeart,
+    isFavoriteMoveActive() {
+      return favBtn.classList.contains('is-move');
+    },
+    getFavoriteButton() {
+      return favBtn;
     },
   };
 }

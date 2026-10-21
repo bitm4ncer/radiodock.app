@@ -317,9 +317,9 @@ function scheduleSearchTrack(payload) {
 // Shared favorite toggle for the player heart, Stations rows and search.
 // Favorites are global: they no longer depend on whichever list is active.
 async function toggleStationInFavorites(station, source = 'list') {
-  if (!station) return;
+  if (!station) return { ok: false, added: false };
   const target = favoritesList();
-  if (!target?.stations) return;
+  if (!target?.stations) return { ok: false, added: false };
   const has = target.stations.some((s) => s.id === station.id);
   const listKind = target.id === listsApi.COMMUNITY_LIST_ID ? 'community' : 'user';
   try {
@@ -344,9 +344,11 @@ async function toggleStationInFavorites(station, source = 'list') {
     else listDropdown.setLists(allListsForDropdown());
     stations?.refreshAddedFlags?.();
     search?.refreshAddedFlags?.();
+    return { ok: true, added: !has };
   } catch (err) {
     console.error('Favorite toggle failed:', err);
     toast(err.message);
+    return { ok: false, added: false };
   }
 }
 
@@ -1260,7 +1262,18 @@ stationList.onReorder(async (orderedIds) => {
 
 // --- Favorite heart on player card: always Favorites, never the active list ---
 playerCard.onFavoriteClick(async (station) => {
-  await toggleStationInFavorites(station);
+  if (!station) return;
+  if (playerCard.isFavoriteMoveActive()) {
+    playerCard.holdFavoritePlus();
+    stations.openMoveMenuFor(
+      playerCard.getFavoriteButton(),
+      station,
+      () => playerCard.settleFavoriteHeart(),
+    );
+    return;
+  }
+  const result = await toggleStationInFavorites(station, 'player-card');
+  if (result?.added) playerCard.startFavoritePlusFlow();
 });
 
 // --- List dropdown ---

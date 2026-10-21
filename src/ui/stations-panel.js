@@ -427,12 +427,13 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
 
   function closeMoveMenu() {
     if (!moveMenu) return;
-    const { el, button } = moveMenu;
+    const { el, button, onSettled } = moveMenu;
     moveMenu = null;
     el.remove();
     document.removeEventListener('pointerdown', onMoveMenuOutside, true);
     document.removeEventListener('keydown', onMoveMenuKey, true);
-    settleHeart(button);
+    if (onSettled) onSettled();
+    else settleHeart(button);
   }
 
   function onMoveMenuOutside(evt) {
@@ -459,7 +460,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     el.style.top = `${top}px`;
   }
 
-  async function openMoveMenu(button, station) {
+  async function openMoveMenu(button, station, onSettled = null) {
     clearMoveTimers();
     let lists = [];
     try { lists = (await data.getUserLists?.()) ?? []; } catch { lists = []; }
@@ -479,7 +480,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     `;
     if (!lists.length) el.insertAdjacentHTML('beforeend', '<p class="stations-move-empty">No lists yet.</p>');
     document.body.appendChild(el);
-    moveMenu = { el, button, station };
+    moveMenu = { el, button, station, onSettled };
     positionMoveMenu(el, button);
     el.addEventListener('click', async (evt) => {
       const item = evt.target.closest('[data-list-id]');
@@ -487,7 +488,6 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       const target = moveMenu;
       await actions.onMove?.(station, item.dataset.listId);
       if (moveMenu === target) closeMoveMenu();
-      settleHeart(button);
     });
     setTimeout(() => {
       document.addEventListener('pointerdown', onMoveMenuOutside, true);
@@ -1430,6 +1430,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     open,
     close,
     isOpen: () => isOpen,
+    openMoveMenuFor(anchor, station, onSettled) {
+      return openMoveMenu(anchor, station, onSettled);
+    },
     focusSearch() {
       body.querySelector('#stationsSearch')?.focus();
     },
