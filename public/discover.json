@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T20:51:37.621Z",
+  "generatedAt": "2026-10-21T20:57:33.597Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2956,8 +2956,8 @@
         ]
       },
       {
-        "slug": "hip-hop",
-        "title": "Hip-Hop",
+        "slug": "hiphop",
+        "title": "HipHop",
         "source": "radiodock",
         "featured": false,
         "stations": [
@@ -5421,14 +5421,14 @@
         "count": 563
       },
       {
+        "genre": "metal",
+        "label": "Metal",
+        "count": 540
+      },
+      {
         "genre": "easy",
         "label": "Easy Listening",
         "count": 538
-      },
-      {
-        "genre": "metal",
-        "label": "Metal",
-        "count": 535
       },
       {
         "genre": "world",
