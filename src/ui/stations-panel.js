@@ -771,6 +771,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
         <button type="button" class="stations-submit-link" data-action="submit-list">Submit your list</button>
       </div>
     `;
+    // Logo slots only swap their initials for artwork once the behavior is
+    // mounted (same as the Discover collection grids).
+    mountLogoBehavior(host);
   }
 
   function onFeaturedClick(evt) {
