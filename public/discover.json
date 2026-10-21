@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T00:09:21.342Z",
+  "generatedAt": "2026-10-21T00:30:51.833Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -438,6 +438,21 @@
         "stationuuid": "3bee72bd-0de4-448e-ae23-2e962923643f",
         "name": "Radio Buena Vida",
         "countrycode": "GB"
+      },
+      {
+        "stationuuid": "7c84c634-ab44-450b-90fa-90457690eff3",
+        "name": "WMPG",
+        "countrycode": "US"
+      },
+      {
+        "stationuuid": "3d913c40-3ef9-4a82-9f88-687e59193e35",
+        "name": "2FBI \"FBi Radio\" 94.5 FM Sydney, NSW",
+        "countrycode": "AU"
+      },
+      {
+        "stationuuid": "ed437175-67ea-4fb3-8e15-703794b1ac11",
+        "name": "Vers Libre",
+        "countrycode": "NO"
       },
       {
         "stationuuid": "de5aaea1-15a8-437f-bd9c-fa65b7f4afc3",
@@ -905,24 +920,9 @@
         "countrycode": "BE"
       },
       {
-        "stationuuid": "ed437175-67ea-4fb3-8e15-703794b1ac11",
-        "name": "Vers Libre",
-        "countrycode": "NO"
-      },
-      {
-        "stationuuid": "7c84c634-ab44-450b-90fa-90457690eff3",
-        "name": "WMPG",
-        "countrycode": "US"
-      },
-      {
         "stationuuid": "07c6cc76-cd1c-4248-bbb5-0744933c775e",
         "name": "Western Front",
         "countrycode": "CA"
-      },
-      {
-        "stationuuid": "3d913c40-3ef9-4a82-9f88-687e59193e35",
-        "name": "2FBI \"FBi Radio\" 94.5 FM Sydney, NSW",
-        "countrycode": "AU"
       }
     ],
     "lists": [
@@ -1560,6 +1560,16 @@
             "stationuuid": "b1d72676-8870-47da-91db-a88357b64c51",
             "name": "Dance Revolution",
             "countrycode": "GB"
+          },
+          {
+            "stationuuid": "9c100db7-ba97-4e6f-821f-dba1ed08ad52",
+            "name": "Rinse UK",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "1dbdc89f-f0d1-4bf7-8922-266edeb912dd",
+            "name": "Subtle Radio",
+            "countrycode": "GB"
           }
         ]
       },
@@ -1679,6 +1689,11 @@
             "stationuuid": "960cc332-0601-11e8-ae97-52543be04c81",
             "name": "Bassdrive",
             "countrycode": "US"
+          },
+          {
+            "stationuuid": "6b5b7e02-c21a-4fdc-ab01-53d775502f6d",
+            "name": "Rinse France",
+            "countrycode": "FR"
           }
         ]
       },
@@ -1800,6 +1815,16 @@
           {
             "stationuuid": "d271b4e8-a298-4862-9f4b-025c110cedd9",
             "name": "IBIZA CHILLOUT LOUNGE - Ambient, Deep House, Balearic, Smooth Jazz, Acoustic, Chill House, Lo-Fi, Chillwave, Dream Pop, Electro, Tropical House, Sunset Chill, Café del Mar, Soft Electronica, Slow House, Ambient, Relax, Easy Listening, Beach Vibes, Summer",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "128d5561-8439-4e2a-9e6c-4e48ad4f0cc0",
+            "name": "Do You Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "49902d2d-672d-4130-b42a-90592d0460c5",
+            "name": "0R - LO-FI || LoFi, Chill, Study, Hip Hop, Relax, Background, Calm, Instrumental, Smooth, Beats, Coffee, Work, Focus, Soft, Chillhop",
             "countrycode": "DE"
           }
         ]
