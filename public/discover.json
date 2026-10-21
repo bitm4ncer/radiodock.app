@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T02:22:31.482Z",
+  "generatedAt": "2026-10-21T02:23:07.174Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -1549,6 +1549,11 @@
             "countrycode": "GB"
           },
           {
+            "stationuuid": "056d990a-7b48-4e95-b91e-ce59ca2701e8",
+            "name": "Galaxy FM 100.2 FM ZZinna!",
+            "countrycode": "UG"
+          },
+          {
             "stationuuid": "a0be6d17-c517-44f7-bc04-0c15bd56e63e",
             "name": "24-7 Reggae",
             "countrycode": "GB"
@@ -1642,11 +1647,6 @@
             "stationuuid": "ddaf5eb3-67df-4e5d-954f-413d68bd8a6f",
             "name": "Radio Caprice - Dub (48 kbps)",
             "countrycode": "RU"
-          },
-          {
-            "stationuuid": "056d990a-7b48-4e95-b91e-ce59ca2701e8",
-            "name": "Galaxy FM 100.2 FM ZZinna!",
-            "countrycode": "UG"
           },
           {
             "stationuuid": "2ad985ec-f235-4e36-b362-b3b993174b40",
