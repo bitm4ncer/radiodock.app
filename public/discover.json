@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T01:25:11.186Z",
+  "generatedAt": "2026-10-21T01:25:43.981Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -1557,7 +1557,7 @@
       },
       {
         "slug": "country-roots",
-        "title": "Country & Roots",
+        "title": "Country",
         "source": "radiodock",
         "featured": false,
         "stations": [
@@ -1868,7 +1868,7 @@
       },
       {
         "slug": "ambient-drone",
-        "title": "Ambient & Drone",
+        "title": "Ambient / Drone",
         "source": "radiodock",
         "featured": false,
         "stations": [
