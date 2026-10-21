@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T19:51:27.686Z",
+  "generatedAt": "2026-10-21T19:52:52.203Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2954,6 +2954,54 @@
             "stationuuid": "cce43ad3-73c5-4aaa-b4af-2754277a40fd",
             "name": "Totally Radio - Pop (MP3)",
             "countrycode": "AU"
+          }
+        ]
+      },
+      {
+        "slug": "electro",
+        "title": "Electro",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "eaa07cbe-f03e-11e9-a96c-52543be04c81",
+            "name": "INTERGALACTIC FM - Cybernetic Broadcasting System",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "30192e4e-48c4-4816-99e3-4112491a1d30",
+            "name": "Crucial Hip Hop and Electro",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "a3dde78a-e48e-437a-a6be-84ad689c8f1e",
+            "name": "Radio Caprice - Electro",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "7cbc6d0d-a1bf-431a-a128-6f67b9da7c6d",
+            "name": "Radio Caprice - Electro Techno [2]",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "6dcb8eb0-9f72-45db-87d1-31c3441d508d",
+            "name": "Evosonic Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "6c6187ff-4866-47d0-a340-38967e9dc237",
+            "name": "ELEKTRA RADIO",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "4d863a83-aac6-4c7b-8e84-054630fd8033",
+            "name": "Sanctuary Radio (Dark Electro Channel)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "370c7623-ec7f-49b8-8bea-06e3a4bfa7c9",
+            "name": "Rhythm 98 WTHM-DB Miami",
+            "countrycode": "US"
           }
         ]
       },
