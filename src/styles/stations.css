@@ -796,7 +796,7 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
   .stations-panel {
     top: 50%;
     left: 50%;
-    width: 680px;
+    width: 720px;
     height: 720px;
     max-height: calc(100vh - 80px);
     transform: translate(-50%, -50%);
