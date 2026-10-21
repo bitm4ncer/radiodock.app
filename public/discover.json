@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T21:09:35.658Z",
+  "generatedAt": "2026-10-21T21:10:15.655Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -5086,6 +5086,39 @@
           {
             "stationuuid": "ff6f6f70-73ed-493d-b782-c98bf388c3ae",
             "name": "Sludge 427",
+            "countrycode": "DE"
+          }
+        ]
+      },
+      {
+        "slug": "boom-bap",
+        "title": "Boom Bap",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "ec13eabe-7e71-4fa8-a141-1e009f3bb774",
+            "name": "Wiphopbeatz",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "fbab1b31-d094-470f-8993-b55f3ebd94ff",
+            "name": "Feierabendbeatz",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "3fb66ba8-98a1-4d1c-84eb-f6428190d63d",
+            "name": "Burning Wax",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "ac7ede58-162e-4f1e-be01-9acbb0d14be2",
+            "name": "Andockstation",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "963e66a5-0601-11e8-ae97-52543be04c81",
+            "name": "Alte Schule",
             "countrycode": "DE"
           }
         ]
