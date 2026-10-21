@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T20:14:37.512Z",
+  "generatedAt": "2026-10-21T20:29:25.151Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -1959,8 +1959,8 @@
         ]
       },
       {
-        "slug": "ambient-drone",
-        "title": "Ambient / Drone",
+        "slug": "ambient",
+        "title": "Ambient",
         "source": "radiodock",
         "featured": false,
         "stations": [
@@ -1980,14 +1980,24 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "961aeb3b-0601-11e8-ae97-52543be04c81",
-            "name": "Ambient Modern",
+            "stationuuid": "83accca7-b878-419d-a506-3d21ef2f250f",
+            "name": "SomaFM Synphaera Radio",
             "countrycode": "US"
           },
           {
-            "stationuuid": "3fb45633-813e-4c6b-b262-e90c3846d10d",
-            "name": "Field Recordings | NTS",
+            "stationuuid": "d5468df4-e6d0-11e9-a96c-52543be04c81",
+            "name": "Slow Focus | NTS",
             "countrycode": "GB"
+          },
+          {
+            "stationuuid": "8e99e319-021a-45ee-b238-876f1ecc60b8",
+            "name": "a.m. ambient",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "961aeb3b-0601-11e8-ae97-52543be04c81",
+            "name": "Ambient Modern",
+            "countrycode": "US"
           },
           {
             "stationuuid": "961fa288-0601-11e8-ae97-52543be04c81",
@@ -2005,19 +2015,24 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "96466522-0601-11e8-ae97-52543be04c81",
-            "name": "Radio Caprice - Drone Ambient",
+            "stationuuid": "04407d31-2cc0-11e8-91bf-52543be04c81",
+            "name": "dinamo.fm sleep",
+            "countrycode": "TR"
+          },
+          {
+            "stationuuid": "4461c574-4215-43b8-aeb1-dfcfc0965b2f",
+            "name": "Radio Record Ambient",
             "countrycode": "RU"
           },
           {
-            "stationuuid": "fffeaf03-4b5a-46b1-a1f1-575513c346f4",
-            "name": "RADCAP: DRONE AMBIENT",
-            "countrycode": "RU"
+            "stationuuid": "c67cc84a-fc19-414d-a57b-41f5deaf428f",
+            "name": "Ambiland",
+            "countrycode": "SI"
           },
           {
-            "stationuuid": "1d209449-d62e-442d-bbd6-eb3bcf53ff67",
-            "name": "Radio Caprice Industrial/Dark/Ritual Ambient",
-            "countrycode": "RU"
+            "stationuuid": "4b0057a5-4885-48a0-bfde-15c964e5dcf9",
+            "name": "AmbientRadio (MRG.fm)",
+            "countrycode": "US"
           },
           {
             "stationuuid": "44b7f191-9478-46b0-a3b5-5a0ea2b2d64e",
@@ -2040,16 +2055,6 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "83accca7-b878-419d-a506-3d21ef2f250f",
-            "name": "SomaFM Synphaera Radio",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "0bbf49cc-0e44-4766-87b5-9d4c0aae2d47",
-            "name": "Experimentalgems",
-            "countrycode": "DE"
-          },
-          {
             "stationuuid": "9a4fe10d-7a27-47ac-bedf-f3253fd3bf9d",
             "name": "Modular-Station",
             "countrycode": "FR"
@@ -2063,113 +2068,15 @@
             "stationuuid": "fb1add5d-4b7b-45cf-9be4-a1e8df712553",
             "name": "Ambi Nature Radio",
             "countrycode": "CH"
-          }
-        ]
-      },
-      {
-        "slug": "working-focus",
-        "title": "Focus",
-        "source": "radiodock",
-        "featured": false,
-        "stations": [
+          },
           {
-            "stationuuid": "961fa288-0601-11e8-ae97-52543be04c81",
-            "name": "Ambient Sleeping Pill",
+            "stationuuid": "d817adf7-63e1-48bc-9778-c6c4ed27c8a8",
+            "name": "ETX.FM - Electronic Listening Music by Exposure Therapy",
             "countrycode": "US"
           },
           {
-            "stationuuid": "8e99e319-021a-45ee-b238-876f1ecc60b8",
-            "name": "a.m. ambient",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "960d3f6f-0601-11e8-ae97-52543be04c81",
-            "name": "SomaFM Space Station Soma (128k AAC)",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "60ede1ca-d7fa-4a36-a047-aec873b9be41",
-            "name": "freeCodeCamp Code Radio",
-            "countrycode": "CA"
-          },
-          {
-            "stationuuid": "1e0ad463-0dbc-4913-b12d-7d0b7300882b",
-            "name": "Sheet Music | NTS",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "d5468df4-e6d0-11e9-a96c-52543be04c81",
-            "name": "Slow Focus | NTS",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "96063f25-0601-11e8-ae97-52543be04c81",
-            "name": "Classic FM UK",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "960ac54b-0601-11e8-ae97-52543be04c81",
-            "name": "Your Classical - Relax",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "ce18872f-ed72-4ac7-a93e-07ae3fe7b40b",
-            "name": "Music Lake - Relaxation Music, Meditation, Focus, Chill, Nature Sounds",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "518d02e0-9301-4358-bf25-4ed57372fd2d",
-            "name": "Instrumental Jazz",
-            "countrycode": "RU"
-          },
-          {
-            "stationuuid": "96154a1e-0601-11e8-ae97-52543be04c81",
-            "name": "Total instrumental",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "dfe95eca-06e0-11e9-a80b-52543be04c81",
-            "name": "RMNinstrumental",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "9641edb9-0601-11e8-ae97-52543be04c81",
-            "name": "Concertzender Baroque",
-            "countrycode": "NL"
-          },
-          {
-            "stationuuid": "96077079-0601-11e8-ae97-52543be04c81",
-            "name": "Radio Swiss Classic German",
-            "countrycode": "CH"
-          },
-          {
-            "stationuuid": "960536e6-0601-11e8-ae97-52543be04c81",
-            "name": "MDR Klassik",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "0e2e2f4a-c8aa-11e9-8502-52543be04c81",
-            "name": "Rai Radio Classica Filodiffusione",
-            "countrycode": "IT"
-          },
-          {
-            "stationuuid": "960dc513-0601-11e8-ae97-52543be04c81",
-            "name": "RMF Classic",
-            "countrycode": "PL"
-          },
-          {
-            "stationuuid": "960cf833-0601-11e8-ae97-52543be04c81",
-            "name": "SomaFM Groove Salad (128k MP3)",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "04407d31-2cc0-11e8-91bf-52543be04c81",
-            "name": "dinamo.fm sleep",
-            "countrycode": "TR"
-          },
-          {
-            "stationuuid": "4461c574-4215-43b8-aeb1-dfcfc0965b2f",
-            "name": "Radio Record Ambient",
+            "stationuuid": "fffeaf03-4b5a-46b1-a1f1-575513c346f4",
+            "name": "RADCAP: DRONE AMBIENT",
             "countrycode": "RU"
           }
         ]
@@ -2359,34 +2266,9 @@
             "countrycode": "GB"
           },
           {
-            "stationuuid": "91a14ec6-a008-4a12-b6d3-65db918e12e0",
-            "name": "Algorythme UK Garage",
-            "countrycode": "FR"
-          },
-          {
-            "stationuuid": "9ade6f14-73bb-4bc8-8234-2e40134966c1",
-            "name": "UKG247",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "462a1756-2a14-49c7-ad7e-7db5054e238c",
-            "name": "UKG Radio",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "1c759224-cd2a-417c-a777-11e985f67582",
-            "name": "Funky SX",
-            "countrycode": "GB"
-          },
-          {
             "stationuuid": "29dc48c6-adf5-49bf-a9d7-dfde3e9cfc6d",
             "name": "UK Bass Radio",
             "countrycode": "GB"
-          },
-          {
-            "stationuuid": "d716df3e-37ee-4601-97e3-f041dfb28539",
-            "name": "Radio Caprice - grime",
-            "countrycode": "RU"
           },
           {
             "stationuuid": "59a283e1-4a13-11e9-a4d7-52543be04c81",
@@ -4749,6 +4631,24 @@
             "countrycode": "CA"
           }
         ]
+      },
+      {
+        "slug": "grime",
+        "title": "Grime",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "d716df3e-37ee-4601-97e3-f041dfb28539",
+            "name": "Radio Caprice - grime",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "dbf8bd04-b31d-4ad7-a59f-5b5680f06e76",
+            "name": "Australian Digital Radio Network - Grime",
+            "countrycode": "AU"
+          }
+        ]
       }
     ]
   },
@@ -5099,7 +4999,7 @@
       {
         "genre": "electronic",
         "label": "Electronic",
-        "count": 1051
+        "count": 1050
       },
       {
         "genre": "public",
@@ -5124,7 +5024,7 @@
       {
         "genre": "hiphop",
         "label": "Hip-Hop",
-        "count": 830
+        "count": 831
       },
       {
         "genre": "classic-rock",
@@ -5274,7 +5174,7 @@
       {
         "genre": "dubstep",
         "label": "Bass & Dubstep",
-        "count": 160
+        "count": 161
       },
       {
         "genre": "soundtrack",
