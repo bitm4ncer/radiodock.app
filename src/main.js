@@ -760,9 +760,9 @@ document.body.addEventListener('click', (evt) => {
 window.addEventListener('appinstalled', () => track('pwa-installed'));
 
 // Ko-fi donate outbound link. Several link instances live in the DOM (mobile
-// drawer + desktop footer + install badge + onboarding nudge); delegating from
-// body covers them all without per-element wiring. The link's container
-// disambiguates which surface the click came from.
+// drawer + desktop footer + donate card); delegating from body covers them all
+// without per-element wiring. The link's container disambiguates the surface,
+// and the card carries the copy variant that earned the click.
 document.body.addEventListener('click', (evt) => {
   const link = evt.target.closest('a[href*="ko-fi.com"]');
   if (!link) return;
@@ -773,7 +773,8 @@ document.body.addEventListener('click', (evt) => {
       : link.closest('.nudge')
         ? 'nudge'
         : 'footer';
-  track('donate-click', { source });
+  const variant = link.dataset.donateVariant;
+  track('donate-click', variant ? { source, variant } : { source });
 });
 
 // Only one full-page surface (Notes / Sync / About / Log / Stations) is open at a

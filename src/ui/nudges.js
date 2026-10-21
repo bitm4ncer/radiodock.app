@@ -1,6 +1,7 @@
 // Nudge system: dezente, engagement-gated cards (Share, Donate). One module
-// owns usage tracking, eligibility, and rendering. Nudges appear at most once
-// per session and only after the user has shown they like the app.
+// owns usage tracking, eligibility, and rendering. Only one card is visible at
+// a time; the donate card may replace an open share card once its own trigger
+// matures, so a 5-minute share ask never buries the 30-minute donate ask.
 //
 // Persistence goes through the prefs store (IDB-safe; degrades silently when
 // IDB is blocked). No localStorage.
@@ -8,9 +9,19 @@
 import * as storage from '../data/storage.js';
 import { track } from '../analytics/umami.js';
 
+const DAY_MS = 86400_000;
+
 // --- Tunables (all thresholds + URLs in one place) ---
 const SHARE_LISTEN_MINUTES = 5;
-const SUPPORT_DAY_COUNT = 3;
+const DONATE_FIRST_MINUTES = 30;
+const DONATE_REPEAT_DAYS = 7;
+const DONATE_REPEAT_ACTIVE_DAYS = 3;
+const DONATE_REPEAT_ACTIVE_DAYS_MOBILE = 2;
+const DONATE_MAX_PER_30_DAYS = 4;
+const DONATE_AUTOHIDE_MS = 20_000;
+const DONATE_SNOOZE_CLICK_DAYS = 30;
+const DONATE_SNOOZE_DISMISS_DAYS = 60;
+const DONATE_DISMISSALS_BEFORE_SNOOZE = 3;
 const DONATE_URL = 'https://ko-fi.com/radiodock';
 const APP_SHARE_URL = 'https://radiodock.app';
 
@@ -44,12 +55,21 @@ async function trackUsageDay() {
 }
 
 async function getNudgeState() {
+  const now = Date.now();
+  const shownAt = await storage.getPref('donateCardShownAt', []);
   return {
-    shareListenMin: await storage.getPref('nudgeShareListenMin', 0),
-    dayCount: await storage.getPref('usageDayCount', 0),
-    listenedEver: await storage.getPref('usageListenedEver', false),
+    shareListenMin: Number(await storage.getPref('nudgeShareListenMin', 0)) || 0,
+    dayCount: Number(await storage.getPref('usageDayCount', 0)) || 0,
     shareSeen: await storage.getPref('nudgeShareSeen', false),
-    supportSeen: await storage.getPref('nudgeSupportSeen', false),
+    donateShowCount: Number(await storage.getPref('donateCardShowCount', 0)) || 0,
+    donateLastAt: Number(await storage.getPref('donateCardLastAt', 0)) || 0,
+    donateDaysAtLast: Number(await storage.getPref('donateCardDaysAtLast', 0)) || 0,
+    // Kept short: the 30-day cap is a rolling window, not a lifetime count.
+    donateRecentShows: (Array.isArray(shownAt) ? shownAt : [])
+      .map(Number)
+      .filter((t) => Number.isFinite(t) && now - t < 30 * DAY_MS),
+    donateSnoozeUntil: Number(await storage.getPref('donateCardSnoozeUntil', 0)) || 0,
+    donateDismissCount: Number(await storage.getPref('donateCardDismissCount', 0)) || 0,
   };
 }
 
@@ -125,49 +145,121 @@ const REGISTRY = {
       });
     },
   },
-  support: {
-    id: 'support',
-    content: {
-      icon: HEART_ICON,
-      headline: "You're a power user!",
-      body: 'RadioDock is free & ad-free. If it is part of your day, you can help keep the server alive.',
-    },
-    mountActions(el) {
-      // No local listener: the delegated Ko-fi handler in main.js records every
-      // outbound click as donate-click with its source.
-      el.innerHTML = `<a class="nudge__btn nudge__btn--primary" href="${DONATE_URL}" target="_blank" rel="noopener" data-donate>Donate</a>`;
-    },
-  },
 };
 
-function selectNudge(state) {
-  // Priority: share (softer ask) before support. One per session upstream.
+// Sequential rotation, not random: each card should feel like the next step,
+// not a slot machine. Variant 4 therefore lands on the most engaged users, so
+// read it as a tone shift rather than a clean A/B bucket.
+const DONATE_VARIANTS = [
+  {
+    headline: 'RadioDock is free and ad-free.',
+    body: 'Support the Project.',
+  },
+  {
+    headline: 'Welcome back!',
+    body: 'If you enjoy RadioDock, consider donating, it stays free and ad-free.',
+  },
+  {
+    headline: 'You seem to enjoy the app!',
+    body: 'If RadioDock is part of your day, a few euros help keep it free.',
+  },
+  {
+    headline: "You're a power user!",
+    body: "Have an idea to improve RadioDock? I'd love to hear it. "
+      + 'If you want to support a solo developer, a small donation means a lot.',
+    email: 'kontakt@jannesbecherer.de',
+  },
+];
+
+// First show is earned by listening; repeats are earned by coming back. The
+// active-day counter staggers naturally: daily users see roughly one card a
+// week, 3x/week users about every ten days, weekly users about every three.
+function donateEligible(state, banner) {
+  const now = Date.now();
+  if (now < state.donateSnoozeUntil) return false;
+  if (state.donateRecentShows.length >= DONATE_MAX_PER_30_DAYS) return false;
+  if (!state.donateShowCount) {
+    if (state.shareListenMin < DONATE_FIRST_MINUTES) return false;
+    // The mobile banner is more intrusive than the desktop float: never put it
+    // in someone's very first session.
+    return !banner || state.dayCount >= 2;
+  }
+  if (now - state.donateLastAt < DONATE_REPEAT_DAYS * DAY_MS) return false;
+  const activeDays = state.dayCount - state.donateDaysAtLast;
+  return activeDays >= (banner ? DONATE_REPEAT_ACTIVE_DAYS_MOBILE : DONATE_REPEAT_ACTIVE_DAYS);
+}
+
+function selectNudge(state, banner) {
+  // Share is the softer ask and stays first; once it has been shown, the donate
+  // card takes over as soon as its own trigger matures.
   if (state.shareListenMin >= SHARE_LISTEN_MINUTES && !state.shareSeen) return 'share';
-  if (state.dayCount >= SUPPORT_DAY_COUNT && state.listenedEver && !state.supportSeen) return 'support';
+  if (donateEligible(state, banner)) return 'donate';
   return null;
 }
 
 async function markSeen(id) {
   if (id === 'share') await storage.setPref('nudgeShareSeen', true);
-  else if (id === 'support') await storage.setPref('nudgeSupportSeen', true);
 }
 
-let shownThisSession = false;
+async function recordDonateShow(state, banner, variantIndex) {
+  const now = Date.now();
+  const recent = [...state.donateRecentShows, now].filter((t) => now - t < 30 * DAY_MS);
+  await storage.setPref('donateCardShownAt', recent);
+  await storage.setPref('donateCardShowCount', state.donateShowCount + 1);
+  await storage.setPref('donateCardLastAt', now);
+  await storage.setPref('donateCardDaysAtLast', state.dayCount);
+  track('donate-card-shown', {
+    variant: String(variantIndex + 1),
+    surface: banner ? 'mobile' : 'desktop',
+    trigger: state.donateShowCount === 0 ? 'first' : 'repeat',
+  });
+}
+
+const shownThisSession = new Set();
+let evaluating = false;
 
 async function evaluateNudges() {
-  if (shownThisSession) return;
   // The tiny pill is the whole window — a nudge would paint around it instead
-  // of anywhere sensible. Defer rather than drop: returning before markSeen
-  // keeps the once-ever flag unspent, so the card is still owed and shows on
-  // the next evaluation (every audible minute, and immediately on expand).
+  // of anywhere sensible. Defer rather than drop: no seen flag is spent, so the
+  // card is still owed and shows on the next evaluation (every audible minute,
+  // and immediately on expand).
   if (document.body.classList.contains('is-tiny-player')) return;
-  const state = await getNudgeState();
-  const id = selectNudge(state);
-  if (!id) return;
-  shownThisSession = true;
-  await markSeen(id); // seen once = never again, even if the user ignores it
-  track('nudge-shown', { id });
-  showNudgeCard(REGISTRY[id]);
+  if (evaluating) return;
+  evaluating = true;
+  try {
+    // A tab left open across midnight must still count the new day, otherwise
+    // the repeat cadence only advances when the app is reloaded.
+    await trackUsageDay();
+    const banner = isBannerRegime();
+    const state = await getNudgeState();
+    const id = selectNudge(state, banner);
+    if (!id || shownThisSession.has(id)) return;
+
+    const existing = document.getElementById('nudgeCard');
+    if (existing) {
+      const current = existing.dataset.nudgeId;
+      if (current === id) return;
+      // The share card may yield to the donate card once the longer trigger
+      // matures. Anything else waits its turn.
+      if (!(current === 'share' && id === 'donate')) return;
+      existing.__nudgeDestroy?.();
+      existing.remove();
+    }
+    shownThisSession.add(id);
+
+    if (id === 'share') {
+      await markSeen('share');
+      track('nudge-shown', { id });
+      showNudgeCard(REGISTRY.share, { banner });
+      return;
+    }
+
+    const variantIndex = state.donateShowCount % DONATE_VARIANTS.length;
+    await recordDonateShow(state, banner, variantIndex);
+    showDonateCard(DONATE_VARIANTS[variantIndex], banner, variantIndex, state);
+  } finally {
+    evaluating = false;
+  }
 }
 
 // A nudge shows in one of two regimes. Banner regime (mobile + Electron
@@ -178,82 +270,201 @@ function isBannerRegime() {
     || window.matchMedia('(max-width: 699px)').matches;
 }
 
-function showNudgeCard(def) {
-  document.getElementById('nudgeCard')?.remove();
-  const banner = isBannerRegime();
+async function bumpDonateDismissals(state) {
+  const count = state.donateDismissCount + 1;
+  if (count >= DONATE_DISMISSALS_BEFORE_SNOOZE) {
+    await storage.setPref('donateCardSnoozeUntil', Date.now() + DONATE_SNOOZE_DISMISS_DAYS * DAY_MS);
+    await storage.setPref('donateCardDismissCount', 0);
+  } else {
+    await storage.setPref('donateCardDismissCount', count);
+  }
+}
+
+function showDonateCard(content, banner, variantIndex, state) {
+  return showNudgeCard({
+    id: 'donate',
+    className: 'nudge--donate',
+    stacked: true,
+    content: { icon: HEART_ICON, ...content },
+    autoHideMs: DONATE_AUTOHIDE_MS,
+    mountActions(el, dismiss) {
+      const email = content.email
+        ? `<a class="nudge__btn nudge__btn--ghost" href="mailto:${content.email}">Email me</a>`
+        : '';
+      el.innerHTML = `${email}<a class="nudge__btn nudge__btn--primary" href="${DONATE_URL}" `
+        + `target="_blank" rel="noopener" data-donate data-donate-variant="${variantIndex + 1}">Donate</a>`;
+      el.querySelector('[data-donate]').addEventListener('click', () => {
+        // The click itself is tracked by the delegated handler in main.js. Here
+        // we only buy the donor some quiet, since Ko-fi cannot tell us who paid.
+        void storage.setPref('donateCardSnoozeUntil', Date.now() + DONATE_SNOOZE_CLICK_DAYS * DAY_MS);
+        void storage.setPref('donateCardDismissCount', 0);
+        dismiss('donate');
+      });
+    },
+    onDismiss(reason) {
+      if (reason === 'close') void bumpDonateDismissals(state);
+    },
+  }, { banner, variant: variantIndex + 1 });
+}
+
+function showNudgeCard(def, { banner = isBannerRegime(), variant = null } = {}) {
+  const previous = document.getElementById('nudgeCard');
+  previous?.__nudgeDestroy?.();
+  previous?.remove();
 
   const el = document.createElement('section');
-  el.className = `nudge ${banner ? 'nudge--banner' : 'nudge--float'} is-entering`;
+  el.className = `nudge ${banner ? 'nudge--banner' : 'nudge--float'} is-entering${def.className ? ` ${def.className}` : ''}`;
   el.id = 'nudgeCard';
+  el.dataset.nudgeId = def.id;
   el.setAttribute('role', 'complementary');
-  el.innerHTML = `
-    <button type="button" class="nudge__close" aria-label="Dismiss">${CLOSE_ICON}</button>
-    <span class="nudge__icon" aria-hidden="true">${def.content.icon}</span>
-    <div class="nudge__text">
-      <span class="nudge__headline">${def.content.headline}</span>
-      <span class="nudge__body">${def.content.body}</span>
-    </div>
-    <div class="nudge__actions"></div>
-  `;
+  const head = `<span class="nudge__headline">${def.content.headline}</span>`;
+  const body = `<span class="nudge__body">${def.content.body}</span>`;
+  // Donate is a stacked note: heart + headline, full-width body, actions below.
+  // Keeping the button out of the text column lets the copy use the full card
+  // width; share still uses the compact icon/text/actions row.
+  el.innerHTML = def.stacked
+    ? `
+      <button type="button" class="nudge__close" aria-label="Dismiss">${CLOSE_ICON}</button>
+      <div class="nudge__head">
+        <span class="nudge__icon" aria-hidden="true">${def.content.icon}</span>
+        ${head}
+      </div>
+      ${body}
+      <div class="nudge__actions"></div>
+    `
+    : `
+      <button type="button" class="nudge__close" aria-label="Dismiss">${CLOSE_ICON}</button>
+      <span class="nudge__icon" aria-hidden="true">${def.content.icon}</span>
+      <div class="nudge__text">
+        ${head}
+        ${body}
+      </div>
+      <div class="nudge__actions"></div>
+    `;
 
   if (banner) {
     const anchor = document.querySelector('.mobile-lists');
-    anchor?.parentNode.insertBefore(el, anchor);
+    if (anchor) anchor.parentNode.insertBefore(el, anchor);
+    else document.body.append(el);
   } else {
     document.body.append(el);
   }
 
-  def.mountActions(el.querySelector('.nudge__actions'));
+  let hideTimer = null;
+  const clearHideTimer = () => {
+    if (hideTimer) clearTimeout(hideTimer);
+    hideTimer = null;
+  };
+  let dismissed = false;
 
-  const dismiss = () => {
+  const destroy = () => {
+    clearHideTimer();
+    document.removeEventListener('visibilitychange', onVisibility);
+  };
+
+  const dismiss = (reason = 'close') => {
+    if (dismissed) return;
+    dismissed = true;
+    destroy();
+    if (def.id === 'donate') {
+      // A click is not a rejection; only close/timeout are dismissals.
+      if (reason !== 'donate') track('donate-card-dismissed', { variant: String(variant), reason });
+    } else {
+      track('nudge-dismissed', { id: def.id });
+    }
+    def.onDismiss?.(reason);
     el.classList.add('is-dismissed');
-    track('nudge-dismissed', { id: def.id });
     setTimeout(() => el.remove(), 300);
   };
-  el.querySelector('.nudge__close').addEventListener('click', dismiss);
+
+  def.mountActions(el.querySelector('.nudge__actions'), dismiss);
+
+  const startHideTimer = () => {
+    if (!def.autoHideMs || dismissed) return;
+    clearHideTimer();
+    hideTimer = setTimeout(() => dismiss('timeout'), def.autoHideMs);
+  };
+  const pauseHideTimer = clearHideTimer;
+  const resumeHideTimer = () => {
+    if (document.visibilityState === 'visible') startHideTimer();
+  };
+  el.addEventListener('mouseenter', pauseHideTimer);
+  el.addEventListener('mouseleave', resumeHideTimer);
+  el.addEventListener('focusin', pauseHideTimer);
+  el.addEventListener('focusout', (e) => {
+    if (!el.contains(e.relatedTarget)) resumeHideTimer();
+  });
+  function onVisibility() {
+    if (document.visibilityState === 'visible') resumeHideTimer();
+    else pauseHideTimer();
+  }
+  document.addEventListener('visibilitychange', onVisibility);
+  if (document.visibilityState === 'visible') startHideTimer();
+
+  el.querySelector('.nudge__close').addEventListener('click', () => dismiss('close'));
 
   // Commit the entering state, then flip it off next frame so the CSS
   // transition runs. setTimeout (not RAF) so it still fires in a hidden tab.
   void el.offsetHeight;
   setTimeout(() => el.classList.remove('is-entering'), 20);
 
-  return { dismiss };
+  el.__nudgeDestroy = destroy;
+  return { dismiss, destroy };
 }
 
 // Manual test affordance. `__nudgeDebug.reset()` clears all nudge prefs;
-// forceShare/forceSupport seed just enough state to make that card eligible,
+// forceShare/forceDonate seed just enough state to make that card eligible,
 // then re-run selection (clearing the session guard so it can show again).
 function installDebugHooks() {
   window.__nudgeDebug = {
     async state() { return getNudgeState(); },
     async evaluate() { return evaluateNudges(); },
-    resetSession() { shownThisSession = false; },
+    resetSession() { shownThisSession.clear(); },
     async reset() {
       for (const k of ['nudgeShareListenMin', 'nudgeShareSeen', 'nudgeSupportSeen',
+        'donateCardShownAt', 'donateCardShowCount', 'donateCardLastAt',
+        'donateCardDaysAtLast', 'donateCardSnoozeUntil', 'donateCardDismissCount',
         'usageListenedEver', 'usageDayCount', 'usageLastDay']) {
         await storage.removePref(k);
       }
-      shownThisSession = false;
-      document.getElementById('nudgeCard')?.remove();
+      shownThisSession.clear();
+      const card = document.getElementById('nudgeCard');
+      card?.__nudgeDestroy?.();
+      card?.remove();
     },
     async forceShare() {
       await storage.setPref('nudgeShareListenMin', SHARE_LISTEN_MINUTES);
       await storage.setPref('nudgeShareSeen', false);
-      shownThisSession = false;
+      shownThisSession.clear();
       await evaluateNudges();
     },
-    async forceSupport() {
-      await storage.setPref('usageDayCount', SUPPORT_DAY_COUNT);
-      await storage.setPref('usageListenedEver', true);
-      await storage.setPref('nudgeSupportSeen', false);
-      shownThisSession = false;
+    async forceDonate() {
+      // Share must be out of the way, otherwise selectNudge() keeps offering
+      // the softer card first.
+      await this.forceDonateVariant(1);
+    },
+    async forceDonateVariant(n) {
+      const variant = Math.min(DONATE_VARIANTS.length, Math.max(1, Number(n) || 1));
+      await storage.setPref('nudgeShareSeen', true);
+      await storage.setPref('nudgeShareListenMin', DONATE_FIRST_MINUTES);
+      await storage.setPref('usageDayCount', Math.max(3, await storage.getPref('usageDayCount', 0)));
+      await storage.setPref('donateCardShownAt', []);
+      await storage.setPref('donateCardShowCount', variant - 1);
+      await storage.setPref('donateCardLastAt', 0);
+      await storage.setPref('donateCardDaysAtLast', 0);
+      await storage.setPref('donateCardSnoozeUntil', 0);
+      await storage.setPref('donateCardDismissCount', 0);
+      const card = document.getElementById('nudgeCard');
+      card?.__nudgeDestroy?.();
+      card?.remove();
+      shownThisSession.clear();
       await evaluateNudges();
     },
   };
 }
 
 export function mountNudges({ player }) {
-  trackUsageDay().then(evaluateNudges);
+  evaluateNudges();
   attachAudibleAccumulator(player, () => { evaluateNudges(); });
   // Expanding out of the pill is the first moment a deferred nudge has room, so
   // show it there rather than making the user wait for the next audible minute.

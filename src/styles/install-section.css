@@ -198,19 +198,12 @@
   }
 }
 
-/* Foot section: Sync devices + Donate sit side by side, split evenly. Its
-   own section, set off from the downloads above by a divider (mirrors the
-   .install-section__downloads border-top). minmax(0, 1fr) — not plain 1fr —
-   so the columns stay equal instead of the wider Sync content forcing the
-   Donate tile to shrink and ellipsise. */
+/* Foot section: Sync devices spans the full width. Donate moved to its own
+   engagement-gated card; it is not an install action. */
 .install-section__foot {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 8px;
   margin-top: 14px;
   padding-top: 12px;
   border-top: 1px solid var(--border);
-  align-items: stretch;
 }
 .install-section__foot > * {
   min-width: 0;
