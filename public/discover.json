@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T18:18:37.748Z",
+  "generatedAt": "2026-10-21T18:56:43.587Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2846,6 +2846,114 @@
             "stationuuid": "cce43ad3-73c5-4aaa-b4af-2754277a40fd",
             "name": "Totally Radio - Pop (MP3)",
             "countrycode": "AU"
+          }
+        ]
+      },
+      {
+        "slug": "eurodance",
+        "title": "Eurodance",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "963fb135-0601-11e8-ae97-52543be04c81",
+            "name": "Radio 90s Eurodance",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "60ceaabd-4efd-4f47-b961-0dab6f475731",
+            "name": "EuroDance 90 Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "962c0376-0601-11e8-ae97-52543be04c81",
+            "name": "Sunshine Live - Die 90er",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "962841a9-0601-11e8-ae97-52543be04c81",
+            "name": "Radio 105 – Dance 90",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "b162d016-5628-42cf-8fb1-22866ba5f065",
+            "name": "Play 90's",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "403b6475-cb7b-4a94-97df-1b10c141aef9",
+            "name": "Radio Eurodance Classic",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "77bad355-947b-11e8-a767-52543be04c81",
+            "name": "Laut.FM Eurodance",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "ee6043f7-124d-4f20-b020-c1a77ca8383e",
+            "name": "Technolovers EURODANCE",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "2474b5ce-4888-11e9-80ab-52543be04c81",
+            "name": "Radio Mirage – Euro Dance",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "e58e609b-3712-4136-86cf-5ac872192918",
+            "name": "Eurodance-X-Press",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "5d7eaf84-c541-11e9-8502-52543be04c81",
+            "name": "Day Dee Eurodance",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "898d19cf-11ca-4426-8417-d91aa183d130",
+            "name": "Dance Wave Retro",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "165eab56-4a14-11e9-a4d7-52543be04c81",
+            "name": "DFM Дискач 90-х",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "4a6bc1ff-6d28-471d-88df-60d402f9dc35",
+            "name": "90s90s Eurodance",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "0f902505-76c7-489b-8ddc-03b05b5867ae",
+            "name": "Generation Dance Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "ae5ab591-f05b-4724-98c1-1a383e75d5da",
+            "name": "m2o originals radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "873c2351-6166-4324-9ac5-200a0565ccf3",
+            "name": "Radio Record - Summer Dance",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "777d14b2-f344-11e9-a96c-52543be04c81",
+            "name": "Los 40 Dance",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "079b15e6-da25-4102-92f1-ca6e56b3d31f",
+            "name": "Oxygen Italo Hits",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "e5d0c4bd-16fe-4fd4-96f8-4c7b78ac1c2c",
+            "name": "Italo Sound Radio",
+            "countrycode": ""
           }
         ]
       },
