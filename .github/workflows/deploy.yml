@@ -55,5 +55,11 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/checkout@v4
+
       - id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Submit URLs to IndexNow
+        continue-on-error: true
+        run: node scripts/indexnow.mjs
