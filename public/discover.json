@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T20:05:34.504Z",
+  "generatedAt": "2026-10-21T20:14:37.512Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -3745,11 +3745,6 @@
             "countrycode": "CA"
           },
           {
-            "stationuuid": "bc195601-561a-473a-b3b4-7b80e540811c",
-            "name": "DnBRadio.com - Darkstep Channel (DE Mirror)",
-            "countrycode": "DE"
-          },
-          {
             "stationuuid": "64712b5f-a8c3-48cd-a8d2-2f19c94b3473",
             "name": "DnB Liquified",
             "countrycode": "GB"
@@ -3758,6 +3753,11 @@
             "stationuuid": "dff24996-4ee2-4ba3-b000-20d8be9490ef",
             "name": "DnB station",
             "countrycode": "GB"
+          },
+          {
+            "stationuuid": "bc195601-561a-473a-b3b4-7b80e540811c",
+            "name": "DnBRadio.com - Darkstep Channel (DE Mirror)",
+            "countrycode": "DE"
           },
           {
             "stationuuid": "846085bc-a3bb-4a18-a2b5-f3c62bceffd4",
@@ -4641,6 +4641,114 @@
             "countrycode": "DE"
           }
         ]
+      },
+      {
+        "slug": "classic-rock",
+        "title": "Classic Rock",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "34ca644e-4aa2-4bf0-b0fe-9122e7f97629",
+            "name": "Choice Classic Rock",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "7604a7bf-512b-4fc9-939c-0523fb3ba357",
+            "name": "24-7 Classic Rock",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "962b77a9-0601-11e8-ae97-52543be04c81",
+            "name": "Radio Rock On",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "7ed29a17-550c-4fdd-8cef-2aa0de9a6d4a",
+            "name": "Classic Rock Legends Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "11fc712b-96cb-408d-bc09-57af825ff448",
+            "name": "Big Cactus Classic Rock",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "c5538f75-25d6-11e8-91bf-52543be04c81",
+            "name": "Uturn Radio - Classic Rock",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "82afe796-5b38-443b-bef4-7fcd0cfd7a9c",
+            "name": "Baars Classic Rock",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "9b7f745a-5025-430e-bc79-7226dcaeb35b",
+            "name": "Radio Caroline 259 Gold",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "d9f10aef-3453-4a7a-9ba9-35f5931392a9",
+            "name": "Badrock Classic Rock",
+            "countrycode": "BG"
+          },
+          {
+            "stationuuid": "027645d3-8d81-47e3-afb1-873b5f47e089",
+            "name": "Labgate Classic Rock",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "dec031e0-4419-45d2-9f3e-76e91d876c40",
+            "name": "Planet Rock",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "6dde2d92-4f47-46f1-a7c6-3b3abec3806f",
+            "name": "Absolute Classic Rock",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "8aafbf38-346c-479c-b80c-abd308613d16",
+            "name": "Antyradio Classic Rock",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "1380f2d6-2312-49c0-a618-f44ff83c3f75",
+            "name": "Radio ROKS Classic Rock",
+            "countrycode": "UA"
+          },
+          {
+            "stationuuid": "689824b5-1dd7-464d-a913-8c363337a883",
+            "name": "OUI FM Classic Rock",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9645d9ca-0601-11e8-ae97-52543be04c81",
+            "name": "88.6 Classic Rock",
+            "countrycode": "AT"
+          },
+          {
+            "stationuuid": "9618c8c0-0601-11e8-ae97-52543be04c81",
+            "name": "RADIO BOB! Classic Rock",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "6b2e0fad-6f57-4464-83ae-d68981e11504",
+            "name": "Radio Capital Classic Rock",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "2f1055d0-fa14-46d4-bead-724672ac2a51",
+            "name": "Ultimate Classic Rock",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "2324adb4-186c-4698-abf1-7103776a7137",
+            "name": "Classic Rock 98.1 (CKLO)",
+            "countrycode": "CA"
+          }
+        ]
       }
     ]
   },
@@ -5019,14 +5127,14 @@
         "count": 830
       },
       {
+        "genre": "classic-rock",
+        "label": "Classic Rock",
+        "count": 821
+      },
+      {
         "genre": "folk",
         "label": "Folk & Acoustic",
         "count": 820
-      },
-      {
-        "genre": "classic-rock",
-        "label": "Classic Rock",
-        "count": 816
       },
       {
         "genre": "country",
