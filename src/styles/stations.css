@@ -1,13 +1,5 @@
 /* Stations page: browse, search and the Discover child page. */
 
-.stations-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 89;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(2px);
-}
-
 .stations-panel {
   position: fixed;
   z-index: 90;
@@ -1200,10 +1192,6 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
 }
 
 @media (max-width: 699px) {
-  .stations-backdrop {
-    display: none;
-  }
-
   .stations-discover {
     padding: 4px 14px 20px;
   }
@@ -1226,10 +1214,6 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
     width: 18px;
     height: 18px;
   }
-}
-
-html.is-standalone .stations-backdrop {
-  display: none;
 }
 
 html.is-standalone .stations-panel {

@@ -366,7 +366,6 @@ const search = mountSearch({
 const stations = mountStationsPanel({
   elements: {
     panel: document.getElementById('stationsPanel'),
-    backdrop: document.getElementById('stationsBackdrop'),
     body: document.getElementById('stationsBody'),
   },
   data: {

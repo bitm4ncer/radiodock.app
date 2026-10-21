@@ -43,7 +43,6 @@ function discoverIcon() {
 
 export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = {}) {
   const panel = elements.panel ?? document.getElementById('stationsPanel');
-  const backdrop = elements.backdrop ?? document.getElementById('stationsBackdrop');
   const body = elements.body ?? document.getElementById('stationsBody');
 
   if (!panel || !body) {
@@ -1139,7 +1138,6 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
         isOpen = true;
         panel.classList.add('is-open');
         panel.setAttribute('aria-hidden', 'false');
-        if (backdrop) backdrop.hidden = false;
         document.body.classList.add('stations-overlay-open');
         document.addEventListener('keydown', onDocumentKeydown);
         window.dispatchEvent(new CustomEvent('rd:page-open', { detail: { id: 'stations' } }));
@@ -1184,18 +1182,12 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     document.removeEventListener('keydown', onDocumentKeydown);
     panel.classList.remove('is-open');
     panel.setAttribute('aria-hidden', 'true');
-    if (backdrop) {
-      window.setTimeout(() => {
-        if (!isOpen) backdrop.hidden = true;
-      }, 240);
-    }
     document.body.classList.remove('stations-overlay-open');
     if (previousFocus?.focus) previousFocus.focus();
   }
 
   panel.addEventListener('pointerdown', startDrag);
   panel.addEventListener('keydown', onKeydown);
-  backdrop?.addEventListener('click', close);
 
   return {
     open,
