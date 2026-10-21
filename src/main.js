@@ -355,6 +355,73 @@ async function toggleStationInFavorites(station, source = 'list') {
   }
 }
 
+// Collections only ship ids, names and countries. Resolve the playable stream
+// fields before turning one into a regular personal list.
+async function hydrateCollectionStations(collection) {
+  const entries = Array.isArray(collection?.stations) ? collection.stations : [];
+  const hydrated = new Array(entries.length);
+  let cursor = 0;
+  async function worker() {
+    while (cursor < entries.length) {
+      const index = cursor;
+      cursor += 1;
+      const entry = entries[index];
+      const uuid = entry?.stationuuid ?? entry?.uuid ?? entry?.id;
+      if (!uuid) continue;
+      if (entry.url || entry.url_resolved) {
+        hydrated[index] = { ...entry, id: entry.id ?? uuid, url: entry.url ?? entry.url_resolved };
+        continue;
+      }
+      try {
+        const full = await getStationByUuid(uuid);
+        if (full?.url || full?.url_resolved) {
+          hydrated[index] = { ...full, id: full.id ?? uuid, url: full.url ?? full.url_resolved };
+        }
+      } catch {
+        // A missing station should not abort the whole collection.
+      }
+    }
+  }
+  const workers = Array.from({ length: Math.min(6, entries.length) }, () => worker());
+  await Promise.all(workers);
+  return { stations: hydrated.filter(Boolean), total: entries.length };
+}
+
+async function saveCollectionAsList(collection) {
+  if (!collection?.slug) return { ok: false };
+  const collectionId = listsApi.collectionListId(collection.slug);
+  const existing = state.userLists?.find((list) => list.id === collectionId);
+  if (existing) {
+    toast(`Already in your lists as "${existing.name}"`);
+    return { ok: true, already: true, list: existing };
+  }
+  try {
+    const { stations: collectionStations, total } = await hydrateCollectionStations(collection);
+    const { list, already } = await listsApi.createListFromCollection({
+      title: collection.title,
+      slug: collection.slug,
+      stations: collectionStations,
+    });
+    state.userLists = await listsApi.getUserLists();
+    renderActiveList();
+    scheduleSyncPush();
+    track('list-create');
+    if (already) toast(`Already in your lists as "${list.name}"`);
+    else {
+      const missing = total - list.stations.length;
+      toast(missing
+        ? `Saved "${list.name}" with ${list.stations.length} of ${total} stations (${missing} unavailable)`
+        : `Saved "${list.name}" with ${list.stations.length} stations`);
+    }
+    stations?.refreshCollectionSaveFlags?.();
+    return { ok: true, list, already };
+  } catch (err) {
+    console.error('Collection save failed:', err);
+    toast(err.message || 'Could not save this collection.');
+    return { ok: false };
+  }
+}
+
 const search = mountSearch({
   onSearch: async ({ query, filter }, transport) => {
     let backend = null;
@@ -431,6 +498,8 @@ const stations = mountStationsPanel({
     canFavorite: () => true,
     getNowPlayingId: () => player.getCurrentStation()?.id ?? null,
     togglePlay: () => playerCard.togglePlayPause(),
+    onSaveCollection: (collection) => saveCollectionAsList(collection),
+    isCollectionSaved: (slug) => !!state.userLists?.some((list) => list.id === listsApi.collectionListId(slug)),
     toast,
   },
 });
