@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T01:40:06.513Z",
+  "generatedAt": "2026-10-21T02:13:57.360Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -1509,18 +1509,13 @@
             "countrycode": "JM"
           },
           {
+            "stationuuid": "9626fd02-0601-11e8-ae97-52543be04c81",
+            "name": "DubTerrain",
+            "countrycode": "GB"
+          },
+          {
             "stationuuid": "bd420687-5a01-4a74-86a8-eb9a161deaf3",
             "name": "Irie FM",
-            "countrycode": "JM"
-          },
-          {
-            "stationuuid": "cf445b4e-9fd4-41d4-918a-389280401cd3",
-            "name": "Fyah 105",
-            "countrycode": "JM"
-          },
-          {
-            "stationuuid": "9620041f-0601-11e8-ae97-52543be04c81",
-            "name": "Mello Radio 88 FM",
             "countrycode": "JM"
           },
           {
@@ -1531,11 +1526,6 @@
           {
             "stationuuid": "d9d78c50-3766-4e74-8f67-1cd7d878f2f4",
             "name": "ghetto vibes radio",
-            "countrycode": "JM"
-          },
-          {
-            "stationuuid": "1723d615-c2e6-4fbf-b440-cead098ee0d6",
-            "name": "UnityXM",
             "countrycode": "JM"
           },
           {
@@ -1551,11 +1541,6 @@
           {
             "stationuuid": "a0be6d17-c517-44f7-bc04-0c15bd56e63e",
             "name": "24-7 Reggae",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "9626fd02-0601-11e8-ae97-52543be04c81",
-            "name": "DubTerrain",
             "countrycode": "GB"
           },
           {
