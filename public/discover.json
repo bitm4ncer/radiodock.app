@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T19:54:33.839Z",
+  "generatedAt": "2026-10-21T19:55:03.391Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -3238,6 +3238,114 @@
             "stationuuid": "370c7623-ec7f-49b8-8bea-06e3a4bfa7c9",
             "name": "Rhythm 98 WTHM-DB Miami",
             "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "dance",
+        "title": "Dance",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "962a6574-0601-11e8-ae97-52543be04c81",
+            "name": "1.FM - Dance One Radio",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "b7e7bb7b-b41a-11e8-afe1-52543be04c81",
+            "name": "90s90s Dance HQ",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "96109022-0601-11e8-ae97-52543be04c81",
+            "name": "Sunshine Live - Classics",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "a1c3d110-9136-4564-bd41-5ec1b97c41ac",
+            "name": "Radio Record Megamix",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "25ad253b-bf3f-11e9-8502-52543be04c81",
+            "name": "80s80s Italo Disco",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "a1189085-eed0-414c-b8d8-6652189767dd",
+            "name": "Fantasy Italo Dance",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "4a9cd8e0-1b0d-4c87-91bf-d227e06b23eb",
+            "name": "Italo Disco",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "f2d6592f-8767-4d6d-881d-0fb3103687f1",
+            "name": "MixPerfect Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "0097d700-9a5f-4627-b143-0f6fb2321df9",
+            "name": "Alles Bunt Gemischt",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "a8a90171-eb88-45ec-adc3-df2514c8e0dc",
+            "name": "RMI Euro Disco",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "af16ec64-8e94-11ea-8564-52543be04c81",
+            "name": "Radio 10 Disco Classics",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "4fb411e0-4e84-41b7-b8ec-bb21cbbfbaa4",
+            "name": "Remember4U",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "77c0b127-4805-4c8c-ac78-859ab4fadf17",
+            "name": "Italo Disco USA",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "de990f20-683b-42a7-a69c-0271d08730fb",
+            "name": "R.SA 80er Italo Disco Hits",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "bd003058-619d-443e-ade2-4e95d191dab3",
+            "name": "Club Music Radio - ITALO DISCO",
+            "countrycode": "HR"
+          },
+          {
+            "stationuuid": "95b1c33b-d6bc-44f7-ae5f-3de60a258c89",
+            "name": "DJ Angels Italo Disco Radio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "19deb16a-8c8a-4ec5-ac57-34614dff414e",
+            "name": "Nostalgie Italo Disco ",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "be993828-2a83-4c9c-ab25-8cd993e3e19e",
+            "name": "Fantasy Italo Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "e9577c10-e299-4bb8-9313-c6cc2070c1f3",
+            "name": " # RdMix Italo Disco 80s",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "80cc7186-2384-4e71-bed9-756108581acc",
+            "name": "Blue Space 107,2 FM Athens",
+            "countrycode": "GR"
           }
         ]
       },
