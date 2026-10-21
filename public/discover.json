@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T20:57:33.597Z",
+  "generatedAt": "2026-10-21T21:00:33.038Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -5001,6 +5001,54 @@
             "stationuuid": "1c759224-cd2a-417c-a777-11e985f67582",
             "name": "Funky SX",
             "countrycode": "GB"
+          }
+        ]
+      },
+      {
+        "slug": "black-metal-doom",
+        "title": "Black Metal / Doom",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "117587c0-b66a-437f-b76a-85adcfd146e9",
+            "name": "Black Metal Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "bea27ef5-bbbe-477d-bed3-e31cb6ac39da",
+            "name": "Doomnation Radio",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "a6e7696f-e9bb-4b0e-9bba-728a6e92a150",
+            "name": "True Black Metal Radio",
+            "countrycode": "UA"
+          },
+          {
+            "stationuuid": "6bd67acb-e99e-4673-8270-19d55935be2a",
+            "name": "Mosh Head Black Metal",
+            "countrycode": "ID"
+          },
+          {
+            "stationuuid": "681c6fee-8d61-437b-84a4-f96b8fd3422c",
+            "name": "Ritus",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "17505c58-78c9-400a-a508-9fe880e03ae4",
+            "name": "Blackmetal",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "94e61c2c-a6fb-4ff0-8b3d-1041a3e8e42e",
+            "name": "The Voice Of Doom",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "ff6f6f70-73ed-493d-b782-c98bf388c3ae",
+            "name": "Sludge 427",
+            "countrycode": "DE"
           }
         ]
       }
