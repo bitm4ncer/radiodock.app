@@ -21,16 +21,10 @@
     background: #9393935c;
   }
 
-  /* Solid-panel mode (Toggle next to the drag handle). Opaque background
-     + zero blur — for users who find the frosted-glass treatment
-     distracting against a photographic background. Use blur(0px)
-     saturate(100%) instead of `none` so the 800 ms transition declared on
-     `.container` can interpolate cleanly; animating to/from `none` snaps
-     instead of fading. */
+  /* The main panel is always solid: the old frosted-glass toggle is gone,
+     so there is no blur left to animate. */
   .container.is-solid {
     background: #141414;
-    backdrop-filter: blur(0px) saturate(100%);
-    -webkit-backdrop-filter: blur(0px) saturate(100%);
   }
   :root.theme-light .container.is-solid {
     background: #d5d5d5;

@@ -127,20 +127,12 @@
    compositor tries to share layers. */
 @media (min-width: 700px) and (display-mode: browser) {
   .container {
-    backdrop-filter: blur(14px) saturate(140%);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
     isolation: isolate;
-    will-change: backdrop-filter;
     transform: translateZ(0);
-    /* 800 ms cross-fade between the frosted-glass and the solid-panel
-       presentation when the user toggles the solid switch. background-color
-       and backdrop-filter (+ -webkit-) all animate together so the swap
-       reads as a single smooth dissolve, not a layered pop. */
-    transition: padding 260ms cubic-bezier(0.2, 0.7, 0.2, 1),
-                gap 260ms ease,
-                background-color 800ms cubic-bezier(0.4, 0, 0.2, 1),
-                backdrop-filter 800ms cubic-bezier(0.4, 0, 0.2, 1),
-                -webkit-backdrop-filter 800ms cubic-bezier(0.4, 0, 0.2, 1);
+    /* The panel is always solid and the old frosted-glass toggle (and its
+       blur) is gone. Animating the background or padding made minimize /
+       expand feel sluggish; the pill switch is instant now. */
+    transition: none;
   }
 }
 
@@ -528,6 +520,11 @@ body.viz-active .toast {
    the country/domain line is gone and a chevron tab on the top edge
    expands it. Electron/standalone keep their existing layouts. */
 html:not(.is-standalone) body:not(.is-electron) .container.is-minimized {
+  /* The tiny-player pill is 348px wide: its 384px window minus the 18px
+     side padding on each side. Keep exactly that width; the height follows
+     from the same card content. */
+  width: 348px;
+  max-width: calc(100vw - 24px);
   padding: 0 !important;
   gap: 0;
   overflow: visible;
@@ -536,6 +533,13 @@ html:not(.is-standalone) body:not(.is-electron) .container.is-minimized {
   box-shadow: none !important;
   -webkit-backdrop-filter: none !important;
   backdrop-filter: none !important;
+}
+
+/* No collapse animation while minimized: the pill switch must be instant. */
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .favorites-section,
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .search-section,
+html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .install-section {
+  transition: none;
 }
 
 html:not(.is-standalone) body:not(.is-electron) .container.is-minimized .player-section {
