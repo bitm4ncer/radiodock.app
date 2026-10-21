@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T12:05:37.328Z",
+  "generatedAt": "2026-10-21T12:11:38.781Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2604,19 +2604,9 @@
         "featured": false,
         "stations": [
           {
-            "stationuuid": "0bebe5e6-5630-11e9-a4d7-52543be04c81",
-            "name": "MixCult",
-            "countrycode": "RU"
-          },
-          {
             "stationuuid": "63f00576-2ed9-41f7-bef5-e3ed27ed90d2",
             "name": "Mabu Beatz Dub Techno",
             "countrycode": "DE"
-          },
-          {
-            "stationuuid": "0698d428-45f1-4cbc-a910-577a2c434944",
-            "name": "dr_dick's dub shack",
-            "countrycode": "BM"
           },
           {
             "stationuuid": "050ed957-00a4-4522-ad75-6867ff427c65",
@@ -2626,11 +2616,6 @@
           {
             "stationuuid": "690e7bc2-b96c-400c-951d-d1226a9e7103",
             "name": "The Void – Underground Music Radio",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "2dd9ec68-b0e7-47c8-bc52-86579a8de0af",
-            "name": "ARP Radio",
             "countrycode": "GB"
           },
           {
@@ -2647,16 +2632,6 @@
             "stationuuid": "230fde18-874e-421e-88cc-ac654926782a",
             "name": "RADCAP: Ambient Dub",
             "countrycode": "RU"
-          },
-          {
-            "stationuuid": "2f7cead0-b1fa-4400-a6dd-8ccfc1be3e03",
-            "name": "Best Of Techno",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "38ac4075-2723-11e8-91bf-52543be04c81",
-            "name": "Nightline Radio",
-            "countrycode": "DE"
           },
           {
             "stationuuid": "f7a27449-af1b-470e-aa50-bc5f1df79f4e",
@@ -2679,11 +2654,6 @@
             "countrycode": "DE"
           },
           {
-            "stationuuid": "bb6b7ad8-f327-11e9-a96c-52543be04c81",
-            "name": "Traxx FM – Tech Minimal",
-            "countrycode": "CH"
-          },
-          {
             "stationuuid": "01fa3ef0-acf6-4e63-8777-f5bb4957b5ec",
             "name": "Technolovers – Minimal",
             "countrycode": "DE"
@@ -2694,34 +2664,9 @@
             "countrycode": "RU"
           },
           {
-            "stationuuid": "09a7100d-b923-4300-96fe-9ab3327f7c80",
-            "name": "Radio Caprice - Minimal Tech House [2]",
-            "countrycode": "RU"
-          },
-          {
             "stationuuid": "6a73c6d1-5928-4de4-acfa-983b465013b0",
             "name": "Record Minimal",
             "countrycode": "RU"
-          },
-          {
-            "stationuuid": "f0df6e39-68b5-4026-9d83-51af63ddfdc6",
-            "name": "UZIC.CH – Techno Minimal",
-            "countrycode": "CH"
-          },
-          {
-            "stationuuid": "4688eb3a-a407-4360-aef6-ac823bbae240",
-            "name": "WSSR Sector Seven Radio",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "7f29690c-2cc0-11e8-91bf-52543be04c81",
-            "name": "dinamo.fm locodyno",
-            "countrycode": "TR"
-          },
-          {
-            "stationuuid": "2100610c-13c2-4536-879f-6a88ccb07dc8",
-            "name": "Technolovers – Techno",
-            "countrycode": "DE"
           },
           {
             "stationuuid": "29f2d6bd-7fee-4e56-a9c1-16a0123b5c63",
@@ -2737,31 +2682,6 @@
             "stationuuid": "5f374674-a09e-44f4-9700-a2647915bfc8",
             "name": "Minimal & Deep-tech on MixLive.net",
             "countrycode": "IE"
-          },
-          {
-            "stationuuid": "57f6f43b-7af5-449e-a05c-632c03a7ea85",
-            "name": "Ossido",
-            "countrycode": "IT"
-          },
-          {
-            "stationuuid": "bf8616aa-c0bc-4595-8801-09d3564773cc",
-            "name": "16Bit.FM I.D.E.A.",
-            "countrycode": "RU"
-          },
-          {
-            "stationuuid": "18ab1514-a53b-4f44-936e-f8583a68b5aa",
-            "name": "RauteMusik Techno",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "963fbb20-0601-11e8-ae97-52543be04c81",
-            "name": "LCLHST R1",
-            "countrycode": "BS"
-          },
-          {
-            "stationuuid": "0de74b76-2414-11e8-91bf-52543be04c81",
-            "name": "Thegooshradio Monochrome",
-            "countrycode": "US"
           }
         ]
       }
