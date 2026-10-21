@@ -87,6 +87,7 @@ export function mountPlayerCard({ player }) {
       imgClass: 'station-logo',
       initialsClass: 'station-initials',
       size: 'lg',
+      resolveById: true,
     });
 
     const link = stationLink(station);
