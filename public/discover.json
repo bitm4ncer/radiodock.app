@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T01:14:56.143Z",
+  "generatedAt": "2026-10-21T01:24:15.385Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -1556,6 +1556,264 @@
         ]
       },
       {
+        "slug": "country-roots",
+        "title": "Country & Roots",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "96107c68-0601-11e8-ae97-52543be04c81",
+            "name": "WSM 650 Nashville, TN",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96c148b5-7023-11ea-b1cf-52543be04c81",
+            "name": "WSM Route 650 Americana",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "f4896119-5e73-42be-8c07-bc1e7e79e815",
+            "name": "HPR1: Traditional Classic Country",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "dd6dfb85-5d3e-11e8-b0ce-52543be04c81",
+            "name": "Music City Roadhouse",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "cff15c5d-86f0-4c0b-8f0e-897ef382a97c",
+            "name": "East Tenneessee’s FM",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "960d4889-0601-11e8-ae97-52543be04c81",
+            "name": "181.FM - Highway 181",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "e24d321a-729f-4015-903a-ba3486b793f6",
+            "name": "Boss Country Radio | The Greatest Country Music Legends Of All Time",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "962a66fd-0601-11e8-ae97-52543be04c81",
+            "name": "1.FM - Classic Country Radio",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "9648c332-0601-11e8-ae97-52543be04c81",
+            "name": "Best Net Radio - Country Oldies",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "8c8387f4-7377-47ba-ba38-5e51e7f8e539",
+            "name": "Legends Classic Country",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9644e7d0-0601-11e8-ae97-52543be04c81",
+            "name": "KKXA \"KXA 1520\" & 101.1 Everett, WA",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "15f11859-6dcf-11ea-b1cf-52543be04c81",
+            "name": "99.3 WCON My Country",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "b4f70221-40e1-11e8-b74d-52543be04c81",
+            "name": "CFCW  \"840 CFCW\" Edmonton / Camrose AB",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "c220f289-1eb3-42cb-b583-707de31a8307",
+            "name": "Honkytonk Hootenanny",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "66963034-c303-47d4-ba04-93aa14dfa6ec",
+            "name": "WNCW",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "b6e184ab-0ea7-4268-9901-7ad5ca80457e",
+            "name": "WPAQ 740AM 106.7FM Voice of the Blue Ridge",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "f694cac6-628d-4253-8938-2abf32ab4719",
+            "name": "WETS Americana",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "4b397571-0d64-4038-b497-dd5d6e7dee86",
+            "name": "KPIG-FM ",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "96058344-0601-11e8-ae97-52543be04c81",
+            "name": "WEVL 89.9 Memphis, TN",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "6fd171cd-6f94-4e27-be25-eace7e1151b8",
+            "name": "WTJU 91.1 FM | The University of Virginia, Charlottesville, VA",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9625b91d-0601-11e8-ae97-52543be04c81",
+            "name": "KRVM 91.9 Eugene, OR",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "62c46a39-ab2a-11e9-88f4-52543be04c81",
+            "name": "WERU Community Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9608a481-2a40-424d-8f55-b8be24710776",
+            "name": "KRFC",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "d30c38d2-0817-4016-932a-1c60d9f99925",
+            "name": "Radio Free Americana [64kbps AAC+]",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "655def6d-734f-4ef7-972a-6abc56763162",
+            "name": "Bluegrass Country",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9f96edb3-1c4b-4373-b56a-be368cb1e368",
+            "name": "Folk Alley FreshGrass",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "21e82b22-9da7-11e9-a787-52543be04c81",
+            "name": "KOKE 99.3 & 98.5 FM - Austin, TX",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "4405c47b-9db5-11e9-a787-52543be04c81",
+            "name": "KORA 98.3 The Texas Country Original",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "e50b50ba-8ddb-4322-a471-5d4449376c55",
+            "name": "KNBT Radio New Braunfels",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "a746c820-ddaa-4760-b53c-db268386b34e",
+            "name": "Radio Free Texas",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "84dc85c2-6264-408a-ab83-99bdfb68f0c4",
+            "name": "KFWR 95.9 The Ranch",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "357e3ed4-b13a-11e8-afe1-52543be04c81",
+            "name": "The Outlaw",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "0af543e7-f8a6-4f0e-afde-bd5fe4420520",
+            "name": "Outlaw Country Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "b83aa19f-a899-4095-bf56-37e7d2750bfb",
+            "name": "Shotgun Radio 97-1",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "b6c6d93d-6ac5-4d1e-9a1e-3e28b9a69ffa",
+            "name": "Sun Country 97.7 FM (High River, CFXO-FM)",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "69cdf0f5-ed69-4bf2-be17-719a17c5681f",
+            "name": "Gritty Rock Radio",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "a3c23572-a610-11e9-a787-52543be04c81",
+            "name": "Radio Caprice - Southern Rock",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "d53d6545-0b7a-420d-9c8d-822d119f1d86",
+            "name": "Swamp Radio Miami WADS-DB",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "61a5cdcd-d883-4f6f-8c05-fb2c74ba6f43",
+            "name": "WLNX Pine Licks",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "1c6ee6e2-bbe4-44bc-b9e4-290ddf0bf4b7",
+            "name": "93.3 FM WXRH",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "961b27de-0601-11e8-ae97-52543be04c81",
+            "name": "Allegheny Mountain Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "ffe33802-6417-11e9-a622-52543be04c81",
+            "name": "SomaFM Boot Liquor (320k MP3)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "3cb76cc7-fa20-4c22-b33c-5268a2437e38",
+            "name": "ABC Country HLS",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "ce3b71f3-526e-48ee-ae8e-3bd94ea00adf",
+            "name": "KIX Country (MP3)",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "4e7766f3-dcd1-48a1-b721-e38f10f8d7ac",
+            "name": "CountryLine Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "bcd91fa9-7242-4443-96dc-aefe52e6798b",
+            "name": "Irish Country Music Radio",
+            "countrycode": "IE"
+          },
+          {
+            "stationuuid": "a438e66d-2ba7-46b4-89c9-01bc4204e161",
+            "name": "Grolloo Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "960d1692-0601-11e8-ae97-52543be04c81",
+            "name": "Country 108",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "fe4b3646-7164-11e8-83fa-52543be04c81",
+            "name": "Country Rocks Radio",
+            "countrycode": "SE"
+          },
+          {
+            "stationuuid": "960ece9a-0601-11e8-ae97-52543be04c81",
+            "name": "Country Radio",
+            "countrycode": "CZ"
+          }
+        ]
+      },
+      {
         "slug": "party",
         "title": "Electronic",
         "source": "radiodock",
@@ -1570,6 +1828,11 @@
             "stationuuid": "29ba74b4-c8cd-45d3-990d-91d08cb5a329",
             "name": "Mad Radio Barcelona",
             "countrycode": "ES"
+          },
+          {
+            "stationuuid": "5fcea0b1-dd78-49d3-a8f1-41ff3b00124f",
+            "name": "Veneno",
+            "countrycode": "BR"
           },
           {
             "stationuuid": "214f3da4-7795-491e-b5e7-91a18b18d089",
@@ -1600,11 +1863,6 @@
             "stationuuid": "d9463f80-ff7b-49cd-a3a2-fae1484d0009",
             "name": " Club Sabroso Radio",
             "countrycode": "DO"
-          },
-          {
-            "stationuuid": "5fcea0b1-dd78-49d3-a8f1-41ff3b00124f",
-            "name": "Veneno",
-            "countrycode": "BR"
           }
         ]
       },
@@ -1911,264 +2169,6 @@
             "stationuuid": "fb87433e-2095-4c03-b411-ca0a0603ebcd",
             "name": "Hotel Costes",
             "countrycode": "FR"
-          }
-        ]
-      },
-      {
-        "slug": "country-roots",
-        "title": "Country & Roots",
-        "source": "radiodock",
-        "featured": false,
-        "stations": [
-          {
-            "stationuuid": "96107c68-0601-11e8-ae97-52543be04c81",
-            "name": "WSM 650 Nashville, TN",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "96c148b5-7023-11ea-b1cf-52543be04c81",
-            "name": "WSM Route 650 Americana",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "dd6dfb85-5d3e-11e8-b0ce-52543be04c81",
-            "name": "Music City Roadhouse",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "960d4889-0601-11e8-ae97-52543be04c81",
-            "name": "181.FM - Highway 181",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "e24d321a-729f-4015-903a-ba3486b793f6",
-            "name": "Boss Country Radio | The Greatest Country Music Legends Of All Time",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "962a66fd-0601-11e8-ae97-52543be04c81",
-            "name": "1.FM - Classic Country Radio",
-            "countrycode": "CH"
-          },
-          {
-            "stationuuid": "f4896119-5e73-42be-8c07-bc1e7e79e815",
-            "name": "HPR1: Traditional Classic Country",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "9648c332-0601-11e8-ae97-52543be04c81",
-            "name": "Best Net Radio - Country Oldies",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "8c8387f4-7377-47ba-ba38-5e51e7f8e539",
-            "name": "Legends Classic Country",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "9644e7d0-0601-11e8-ae97-52543be04c81",
-            "name": "KKXA \"KXA 1520\" & 101.1 Everett, WA",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "15f11859-6dcf-11ea-b1cf-52543be04c81",
-            "name": "99.3 WCON My Country",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "b4f70221-40e1-11e8-b74d-52543be04c81",
-            "name": "CFCW  \"840 CFCW\" Edmonton / Camrose AB",
-            "countrycode": "CA"
-          },
-          {
-            "stationuuid": "c220f289-1eb3-42cb-b583-707de31a8307",
-            "name": "Honkytonk Hootenanny",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "cff15c5d-86f0-4c0b-8f0e-897ef382a97c",
-            "name": "East Tenneessee’s FM",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "66963034-c303-47d4-ba04-93aa14dfa6ec",
-            "name": "WNCW",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "b6e184ab-0ea7-4268-9901-7ad5ca80457e",
-            "name": "WPAQ 740AM 106.7FM Voice of the Blue Ridge",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "f694cac6-628d-4253-8938-2abf32ab4719",
-            "name": "WETS Americana",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "4b397571-0d64-4038-b497-dd5d6e7dee86",
-            "name": "KPIG-FM ",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "96058344-0601-11e8-ae97-52543be04c81",
-            "name": "WEVL 89.9 Memphis, TN",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "6fd171cd-6f94-4e27-be25-eace7e1151b8",
-            "name": "WTJU 91.1 FM | The University of Virginia, Charlottesville, VA",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "9625b91d-0601-11e8-ae97-52543be04c81",
-            "name": "KRVM 91.9 Eugene, OR",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "62c46a39-ab2a-11e9-88f4-52543be04c81",
-            "name": "WERU Community Radio",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "9608a481-2a40-424d-8f55-b8be24710776",
-            "name": "KRFC",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "d30c38d2-0817-4016-932a-1c60d9f99925",
-            "name": "Radio Free Americana [64kbps AAC+]",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "655def6d-734f-4ef7-972a-6abc56763162",
-            "name": "Bluegrass Country",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "9f96edb3-1c4b-4373-b56a-be368cb1e368",
-            "name": "Folk Alley FreshGrass",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "21e82b22-9da7-11e9-a787-52543be04c81",
-            "name": "KOKE 99.3 & 98.5 FM - Austin, TX",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "4405c47b-9db5-11e9-a787-52543be04c81",
-            "name": "KORA 98.3 The Texas Country Original",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "e50b50ba-8ddb-4322-a471-5d4449376c55",
-            "name": "KNBT Radio New Braunfels",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "a746c820-ddaa-4760-b53c-db268386b34e",
-            "name": "Radio Free Texas",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "84dc85c2-6264-408a-ab83-99bdfb68f0c4",
-            "name": "KFWR 95.9 The Ranch",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "357e3ed4-b13a-11e8-afe1-52543be04c81",
-            "name": "The Outlaw",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "0af543e7-f8a6-4f0e-afde-bd5fe4420520",
-            "name": "Outlaw Country Radio",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "b83aa19f-a899-4095-bf56-37e7d2750bfb",
-            "name": "Shotgun Radio 97-1",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "b6c6d93d-6ac5-4d1e-9a1e-3e28b9a69ffa",
-            "name": "Sun Country 97.7 FM (High River, CFXO-FM)",
-            "countrycode": "CA"
-          },
-          {
-            "stationuuid": "69cdf0f5-ed69-4bf2-be17-719a17c5681f",
-            "name": "Gritty Rock Radio",
-            "countrycode": "CA"
-          },
-          {
-            "stationuuid": "a3c23572-a610-11e9-a787-52543be04c81",
-            "name": "Radio Caprice - Southern Rock",
-            "countrycode": ""
-          },
-          {
-            "stationuuid": "d53d6545-0b7a-420d-9c8d-822d119f1d86",
-            "name": "Swamp Radio Miami WADS-DB",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "61a5cdcd-d883-4f6f-8c05-fb2c74ba6f43",
-            "name": "WLNX Pine Licks",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "1c6ee6e2-bbe4-44bc-b9e4-290ddf0bf4b7",
-            "name": "93.3 FM WXRH",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "961b27de-0601-11e8-ae97-52543be04c81",
-            "name": "Allegheny Mountain Radio",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "ffe33802-6417-11e9-a622-52543be04c81",
-            "name": "SomaFM Boot Liquor (320k MP3)",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "3cb76cc7-fa20-4c22-b33c-5268a2437e38",
-            "name": "ABC Country HLS",
-            "countrycode": "AU"
-          },
-          {
-            "stationuuid": "ce3b71f3-526e-48ee-ae8e-3bd94ea00adf",
-            "name": "KIX Country (MP3)",
-            "countrycode": "AU"
-          },
-          {
-            "stationuuid": "4e7766f3-dcd1-48a1-b721-e38f10f8d7ac",
-            "name": "CountryLine Radio",
-            "countrycode": "GB"
-          },
-          {
-            "stationuuid": "bcd91fa9-7242-4443-96dc-aefe52e6798b",
-            "name": "Irish Country Music Radio",
-            "countrycode": "IE"
-          },
-          {
-            "stationuuid": "a438e66d-2ba7-46b4-89c9-01bc4204e161",
-            "name": "Grolloo Radio",
-            "countrycode": "NL"
-          },
-          {
-            "stationuuid": "960d1692-0601-11e8-ae97-52543be04c81",
-            "name": "Country 108",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "fe4b3646-7164-11e8-83fa-52543be04c81",
-            "name": "Country Rocks Radio",
-            "countrycode": "SE"
-          },
-          {
-            "stationuuid": "960ece9a-0601-11e8-ae97-52543be04c81",
-            "name": "Country Radio",
-            "countrycode": "CZ"
           }
         ]
       },
