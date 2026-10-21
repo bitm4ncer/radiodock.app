@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T16:45:36.871Z",
+  "generatedAt": "2026-10-21T16:45:46.975Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2186,11 +2186,6 @@
             "countrycode": ""
           },
           {
-            "stationuuid": "50603f9e-7535-4551-901a-7e0f2cc4da4e",
-            "name": "Nightwave Plaza",
-            "countrycode": "US"
-          },
-          {
             "stationuuid": "d04248fb-040c-11e9-a1be-52543be04c81",
             "name": "Kohina",
             "countrycode": "FR"
@@ -2219,6 +2214,11 @@
             "stationuuid": "1943674b-be5d-42bc-b363-646b9086d10c",
             "name": "Good Times Bad Times",
             "countrycode": "NL"
+          },
+          {
+            "stationuuid": "50603f9e-7535-4551-901a-7e0f2cc4da4e",
+            "name": "Nightwave Plaza",
+            "countrycode": "US"
           },
           {
             "stationuuid": "8ba9281c-f9d9-442a-b227-11e590a7c396",
