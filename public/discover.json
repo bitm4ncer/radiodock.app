@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T20:38:36.139Z",
+  "generatedAt": "2026-10-21T20:38:48.669Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -4629,19 +4629,6 @@
             "stationuuid": "2324adb4-186c-4698-abf1-7103776a7137",
             "name": "Classic Rock 98.1 (CKLO)",
             "countrycode": "CA"
-          }
-        ]
-      },
-      {
-        "slug": "like",
-        "title": "Like",
-        "source": "radiodock",
-        "featured": false,
-        "stations": [
-          {
-            "stationuuid": "7be6c8fb-2c5c-477d-b503-5d650fc8a3a7",
-            "name": "Culture Failure",
-            "countrycode": "US"
           }
         ]
       }
