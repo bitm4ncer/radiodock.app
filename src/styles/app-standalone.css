@@ -177,7 +177,6 @@ html.is-standalone .bg-gallery,
 html.is-standalone .bg-create,
 html.is-standalone .bg-mesh-handles,
 html.is-standalone .notes-flag,
-html.is-standalone .container-solid-toggle,
 html.is-standalone .player-card-drag-handle,
 html.is-standalone .player-card-minimize-btn {
   display: none !important;

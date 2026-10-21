@@ -18,8 +18,7 @@
   .bg-gallery,
   .bg-create,
   .bg-mesh-handles,
-  .notes-flag,
-  .container-solid-toggle {
+  .notes-flag {
     display: none !important;
   }
 }

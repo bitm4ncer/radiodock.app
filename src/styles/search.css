@@ -370,8 +370,8 @@ body.is-tiny-player .search-section,
 body.is-tiny-player .list-filter,
 body.is-tiny-player .list-header__filter,
 body.is-tiny-player .info-panel,
-/* .tool-btn covers every floating container tool — drag handle, solid toggle,
-   minimize, visualizer trigger. They act on the desktop container card and are
+/* .tool-btn covers every floating container tool - drag handle, minimize,
+   visualizer trigger. They act on the desktop container card and are
    meaningless (and in the way) once it is a pill. */
 body.is-tiny-player .tool-btn,
 /* nudges.js already defers showing a nudge while tiny; this covers the other

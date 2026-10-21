@@ -87,33 +87,16 @@
 
 .player-card-minimize-btn { top: var(--space-3); right: var(--space-3); }
 .player-card-drag-handle  { top: var(--space-3); right: calc(var(--space-3) + 36px); cursor: grab; }
-.container-solid-toggle   { top: var(--space-3); right: calc(var(--space-3) + 72px); }
-.viz-trigger-btn          { top: var(--space-3); right: calc(var(--space-3) + 108px); }
+.viz-trigger-btn          { top: var(--space-3); right: calc(var(--space-3) + 72px); }
 
 .player-card-drag-handle.is-dragging { cursor: grabbing; }
-
-/* Solid toggle icon is consistently dimmer than the rest of the strip —
-   it's a settings affordance, not a primary control, so it shouldn't
-   compete visually with drag/minimize. JS swaps the icon from outlined
-   to filled to convey state; the colour stays the same in both states. */
-.container-solid-toggle,
-.container-solid-toggle:hover,
-.container-solid-toggle.is-active {
-  color: rgba(255, 255, 255, 0.45);
-}
-:root.theme-light .container-solid-toggle,
-:root.theme-light .container-solid-toggle:hover,
-:root.theme-light .container-solid-toggle.is-active {
-  color: rgba(0, 0, 0, 0.45);
-}
 
 /* On desktop the .container has 59px top padding (the tinted card). Nudge
    the strip down so it sits comfortably inside the tinted card. */
 @media (min-width: 700px) and (display-mode: browser) {
   .player-card-minimize-btn { top: 18px; right: 18px; }
   .player-card-drag-handle  { top: 18px; right: 54px; }
-  .container-solid-toggle   { top: 18px; right: 90px; }
-  .viz-trigger-btn          { top: 18px; right: 126px; }
+  .viz-trigger-btn          { top: 18px; right: 90px; }
 }
 
 /* Container hosts the absolutely-positioned tool buttons; needs to act as
@@ -211,8 +194,7 @@
 @media (min-width: 700px) and (display-mode: browser) {
   .container.is-minimized .player-card-minimize-btn { top: 8px; right: 16px; }
   .container.is-minimized .player-card-drag-handle  { top: 8px; right: 52px; }
-  .container.is-minimized .container-solid-toggle   { top: 8px; right: 88px; }
-  .container.is-minimized .viz-trigger-btn          { top: 8px; right: 124px; }
+  .container.is-minimized .viz-trigger-btn          { top: 8px; right: 88px; }
 }
 
 /* Hide the volume strip / volume dots when minimized — extra chrome the

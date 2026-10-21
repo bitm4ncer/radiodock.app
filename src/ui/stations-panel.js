@@ -23,6 +23,10 @@ function closeIcon() {
   return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
 }
 
+function dragHandle() {
+  return `<span class="stations-drag" data-role="drag" title="Drag" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg></span>`;
+}
+
 function flashElement(el) {
   if (!el) return;
   el.classList.remove('is-flashing');
@@ -111,6 +115,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     body.innerHTML = `
       <div class="stations-shell">
         <header class="stations-header stations-header--browse">
+          ${dragHandle()}
           <div class="stations-header-copy">
             
             <h2 class="stations-title" id="stationsTitle">Stations</h2>
@@ -725,6 +730,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     body.innerHTML = `
       <div class="stations-shell">
         <header class="stations-header">
+          ${dragHandle()}
           <button type="button" class="stations-icon-btn" data-action="${backAction}" aria-label="Back">←</button>
           <div class="stations-header-copy">
             <p class="stations-kicker">Stations</p>
@@ -1056,6 +1062,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   function startDrag(evt) {
     if (isAppRegime() || evt.button !== 0) return;
     if (evt.target.closest('button, input, a')) return;
+    evt.preventDefault();
     const rect = panel.getBoundingClientRect();
     const offsetX = evt.clientX - rect.left;
     const offsetY = evt.clientY - rect.top;
@@ -1186,7 +1193,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     if (previousFocus?.focus) previousFocus.focus();
   }
 
-  panel.addEventListener('pointerdown', startDrag);
+  panel.addEventListener('pointerdown', (evt) => {
+    if (evt.target.closest('[data-role="drag"]')) startDrag(evt);
+  });
   panel.addEventListener('keydown', onKeydown);
 
   return {
