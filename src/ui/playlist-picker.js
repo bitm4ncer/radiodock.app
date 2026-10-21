@@ -33,15 +33,23 @@ function listStep(lists) {
   `;
 }
 
-function formStep(selected, title, note, error, submitting) {
+function formStep(selected, title, note, submitterName, submitterContact, error, submitting) {
   const value = title || selected.name;
   return `
     <button type="button" class="stations-playlist-back" data-playlist-back>← Back to lists</button>
-    <p class="stations-playlist-help">Only the title and station UUIDs are sent. Your submission will be reviewed and published here.</p>
+    <p class="stations-playlist-help">Your name and the station list are sent for review. Email or contact is optional and only used to reach you about this submission.</p>
     <form class="stations-playlist-form" data-playlist-form>
       <label class="stations-playlist-field">
         <span>Playlist title</span>
         <input id="playlistTitle" name="title" maxlength="60" value="${escapeHtml(value)}" required />
+      </label>
+      <label class="stations-playlist-field">
+        <span>Your name</span>
+        <input id="playlistSubmitterName" name="submitterName" maxlength="60" value="${escapeHtml(submitterName)}" required />
+      </label>
+      <label class="stations-playlist-field">
+        <span>Email or contact <em>optional</em></span>
+        <input id="playlistSubmitterContact" name="submitterContact" maxlength="120" value="${escapeHtml(submitterContact)}" placeholder="So the editors can reach you about this list." />
       </label>
       <label class="stations-playlist-field">
         <span>Note <em>optional</em></span>
@@ -67,6 +75,8 @@ export function pickerHtml({
   selected = null,
   title = '',
   note = '',
+  submitterName = '',
+  submitterContact = '',
   error = '',
   submitting = false,
   success = false,
@@ -75,7 +85,7 @@ export function pickerHtml({
   let body = '';
   if (success) body = successStep();
   else if (loading) body = '<p class="stations-playlist-help">Loading your lists…</p>';
-  else if (selected) body = formStep(selected, title, note, error, submitting);
+  else if (selected) body = formStep(selected, title, note, submitterName, submitterContact, error, submitting);
   else body = listStep(lists);
 
   return `

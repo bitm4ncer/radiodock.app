@@ -853,6 +853,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       selected: null,
       title: '',
       note: '',
+      submitterName: '',
+      submitterContact: '',
       error: '',
       submitting: false,
       success: false,
@@ -912,15 +914,30 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     if (!picker?.selected || picker.submitting) return;
     const title = body.querySelector('#playlistTitle')?.value.trim() ?? '';
     const note = body.querySelector('#playlistNote')?.value.trim() ?? '';
+    const submitterName = body.querySelector('#playlistSubmitterName')?.value.trim() ?? '';
+    const submitterContact = body.querySelector('#playlistSubmitterContact')?.value.trim() ?? '';
     if (title.length < 2 || title.length > 60) {
       picker.title = title;
       picker.note = note;
+      picker.submitterName = submitterName;
+      picker.submitterContact = submitterContact;
       picker.error = 'Title must be 2 to 60 characters.';
+      renderPlaylistPicker();
+      return;
+    }
+    if (submitterName.length < 2 || submitterName.length > 60) {
+      picker.title = title;
+      picker.note = note;
+      picker.submitterName = submitterName;
+      picker.submitterContact = submitterContact;
+      picker.error = 'Your name must be 2 to 60 characters.';
       renderPlaylistPicker();
       return;
     }
     picker.title = title;
     picker.note = note;
+    picker.submitterName = submitterName;
+    picker.submitterContact = submitterContact;
     picker.submitting = true;
     picker.error = '';
     renderPlaylistPicker();
@@ -928,6 +945,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       await data.submitPlaylist?.({
         title,
         note,
+        submitterName,
+        submitterContact,
         stationUuids: picker.selected.stations.map((station) => station.id),
       });
       if (!state.playlistPicker) return;

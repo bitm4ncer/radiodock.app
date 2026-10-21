@@ -17,6 +17,8 @@ test('submitPlaylist posts a title, note and station UUID snapshot', async () =>
       title: 'Morning Jazz',
       note: 'A calm start',
       stationUuids: ['a', 'b'],
+      submitterName: 'Ann',
+      submitterContact: 'ann@example.com',
     });
     assert.equal(result.id, 7);
     assert.equal(calls.length, 1);
@@ -26,6 +28,8 @@ test('submitPlaylist posts a title, note and station UUID snapshot', async () =>
       title: 'Morning Jazz',
       note: 'A calm start',
       stationUuids: ['a', 'b'],
+      submitterName: 'Ann',
+      submitterContact: 'ann@example.com',
     });
   } finally {
     globalThis.fetch = original;

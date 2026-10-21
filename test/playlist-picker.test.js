@@ -31,6 +31,16 @@ test('pickerHtml escapes the selected title and shows the form', () => {
   assert.match(html, /Submit for review/);
 });
 
+test('pickerHtml asks for a required name and an optional contact', () => {
+  const html = pickerHtml({
+    selected: { id: 'favorites', name: 'Favorites', stations: [{ id: 'a' }] },
+  });
+  assert.match(html, /id="playlistSubmitterName"[^>]*required/);
+  assert.match(html, /id="playlistSubmitterContact"/);
+  assert.match(html, /Email or contact/);
+  assert.match(html, /Your name and the station list are sent/);
+});
+
 test('pickerHtml shows an honest empty state when nothing is shareable', () => {
   const html = pickerHtml({ lists: [] });
   assert.match(html, /no shareable lists/i);

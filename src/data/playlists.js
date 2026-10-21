@@ -11,10 +11,11 @@ export class PlaylistSubmitError extends Error {
 }
 
 /**
- * Submit a snapshot of a local list for editorial review. Only the title, an
- * optional note and station UUIDs leave the device.
+ * Submit a snapshot of a local list for editorial review. The title, note,
+ * station UUIDs, your name and an optional contact leave the device; the
+ * contact is only used to reach you about this submission, never published.
  */
-export async function submitPlaylist({ title, note = '', stationUuids = [] }, { timeoutMs = TIMEOUT_MS } = {}) {
+export async function submitPlaylist({ title, note = '', stationUuids = [], submitterName = '', submitterContact = '' }, { timeoutMs = TIMEOUT_MS } = {}) {
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), timeoutMs);
   try {
@@ -22,7 +23,7 @@ export async function submitPlaylist({ title, note = '', stationUuids = [] }, { 
       method: 'POST',
       signal: ctl.signal,
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({ title, note, stationUuids }),
+      body: JSON.stringify({ title, note, stationUuids, submitterName, submitterContact }),
     });
 
     let data = null;
