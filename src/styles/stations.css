@@ -820,7 +820,10 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
   .stations-panel {
     top: var(--app-page-top, 0px);
     right: 0;
-    bottom: var(--app-page-bottom, 0px);
+    /* The panel runs behind the fixed player bar, which stays on top. The
+       shell reserves the bar's height so the last rows can still scroll clear
+       of it. */
+    bottom: 0;
     left: 0;
     width: auto;
     height: auto;
@@ -828,6 +831,10 @@ body.is-playing .stations-collection-tile.is-playing .stations-collection-tile-i
     border: 0;
     border-radius: 0;
     translate: 0 100%;
+  }
+
+  .stations-shell {
+    padding-bottom: var(--app-page-bottom, 0px);
   }
 
   .stations-icon-btn svg {
@@ -1668,7 +1675,9 @@ html.is-standalone .stations-panel:not(.is-open) {
     width: 100%;
     max-height: 82%;
     border-radius: 20px 20px 0 0;
-    padding-bottom: calc(18px + env(safe-area-inset-bottom));
+    /* The sheet background runs behind the player; this padding keeps its
+       content and submit button clear of the bar. */
+    padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px) + var(--app-page-bottom, 0px));
   }
 }
 
