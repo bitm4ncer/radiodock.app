@@ -86,6 +86,7 @@ export const CLOUD_GENRE_VECTORS = {
   'deutsche-news': { family: 'spoken', energy: 28, electronic: 44, era: 25 },
   'deep-house': { family: 'house', energy: 42, electronic: 88, era: 62 },
   reggaeton: { family: 'latin', energy: 78, electronic: 48, era: 78 },
+  'trip-hop': { family: 'trip-hop', energy: 34, electronic: 52, era: 55 },
 };
 
 export const CLOUD_GENRE_EDGES = [
@@ -191,6 +192,10 @@ export const CLOUD_GENRE_EDGES = [
   ['ndw', 'pop'],
   ['country-roots', 'folk-americana'],
   ['80s-hard-rock', 'psychedelic-rock'],
+  ['trip-hop', 'hiphop'],
+  ['trip-hop', 'chill'],
+  ['trip-hop', 'ambient'],
+  ['trip-hop', 'dubby'],
 ];
 
 function clamp(value, minimum, maximum) {
