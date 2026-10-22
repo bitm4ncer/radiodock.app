@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T23:22:56.247Z",
+  "generatedAt": "2026-10-22T00:33:56.632Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2695,30 +2695,15 @@
         ]
       },
       {
-        "slug": "soul-funk",
-        "title": "Soul / Funk",
+        "slug": "soul-disco",
+        "title": "Soul / Disco",
         "source": "radiodock",
         "featured": false,
         "stations": [
           {
-            "stationuuid": "9034682c-5121-11e8-a4d1-52543be04c81",
-            "name": "WEFUNK",
-            "countrycode": "CA"
-          },
-          {
             "stationuuid": "9612102b-0601-11e8-ae97-52543be04c81",
             "name": "SomaFM Seven Inch Soul (128k MP3)",
             "countrycode": "US"
-          },
-          {
-            "stationuuid": "c77c45c4-cf37-414c-ae34-868f7d9cd944",
-            "name": "FUNKY RADIO - Only Funk Music (60's 70's)",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "09998555-2654-4aa2-8a1e-1ea7a4fed978",
-            "name": "54 Funk Soul Dance (laut.fm)",
-            "countrycode": "DE"
           },
           {
             "stationuuid": "120f9ba0-c55a-498a-ae36-58b5c27ac2af",
@@ -2749,11 +2734,6 @@
             "stationuuid": "f226bc65-686a-49f1-b82c-6743612197ba",
             "name": "Starpoint Radio",
             "countrycode": "GB"
-          },
-          {
-            "stationuuid": "9610a807-0601-11e8-ae97-52543be04c81",
-            "name": "Jazz Radio Funk",
-            "countrycode": "FR"
           },
           {
             "stationuuid": "96385b07-0601-11e8-ae97-52543be04c81",
@@ -2794,16 +2774,6 @@
             "stationuuid": "4df24bb0-2794-498f-bdc0-0c3d6b71ed95",
             "name": "70 80 Disco Funk ModernSoul e Boogie",
             "countrycode": "IT"
-          },
-          {
-            "stationuuid": "9613f1f2-0601-11e8-ae97-52543be04c81",
-            "name": "Generations Funk",
-            "countrycode": "FR"
-          },
-          {
-            "stationuuid": "cc4928e9-f513-4c59-b42c-56097b881431",
-            "name": "I Like It Oldskool",
-            "countrycode": "GB"
           }
         ]
       },
@@ -5776,7 +5746,7 @@
       {
         "genre": "rock",
         "label": "Rock",
-        "count": 3217
+        "count": 3224
       },
       {
         "genre": "hits",
@@ -5956,7 +5926,7 @@
       {
         "genre": "funk",
         "label": "Funk",
-        "count": 331
+        "count": 333
       },
       {
         "genre": "blues",
