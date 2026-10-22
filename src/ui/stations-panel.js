@@ -2,6 +2,8 @@
 // panel lifecycle. Main.js wires the data clients and play/list actions.
 
 import { stationsRow, updateRowNowPlaying, HEART_ICON, PLUS_ICON } from './stations-row.js';
+import { track } from '../analytics/umami.js';
+import { searchEventData } from '../analytics/stations-events.js';
 import { mountStationsFilters } from './stations-filter.js';
 import { buildBrowseParams, communityParams, mergeRows, searchModeFor, popularParams, searchParams, MAX_ROWS } from './stations-state.js';
 import { EXPLORE_PAGE_SIZE, buildExploreFeed, nextExploreLimit, pickExploreStation } from './stations-explore.js';
@@ -204,6 +206,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       const button = evt.target.closest('[data-letter]');
       if (!button || button.disabled) return;
       state.letter = button.dataset.letter;
+      track('stations-filter', { filter: 'letter', value: state.letter });
       state.offset = 0;
       const content = body.querySelector('#stationsContent');
       scrollToContentTop(content, 'smooth');
@@ -214,6 +217,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       root: body.querySelector('#stationsFilters'),
       getMeta: () => state.meta,
       onChange: (next) => {
+        if (next.country !== state.country) track('stations-filter', { filter: 'country', value: next.country || 'all' });
+        if (next.genre !== state.genre) track('stations-filter', { filter: 'genre', value: next.genre || 'all' });
         state.country = next.country;
         state.genre = next.genre;
         state.offset = 0;
@@ -381,6 +386,19 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       tile.classList.toggle('is-playing', tile.dataset.uuid === id);
     });
     state.cloud?.setNowPlaying(id);
+  }
+
+  function refreshAddedFlags() {
+    body.querySelectorAll('[data-action="add"], [data-action="collection-add"]').forEach((button) => {
+      const item = button.closest('[data-id], [data-uuid]');
+      const id = item?.dataset.id ?? item?.dataset.uuid;
+      const added = !!actions.isFavorited?.(id);
+      button.classList.toggle('is-added', added);
+      button.setAttribute('aria-pressed', String(added));
+      if (!button.classList.contains('is-move')) {
+        button.setAttribute('aria-label', added ? 'Already in favorites' : 'Add to favorites');
+      }
+    });
   }
 
   function refreshAddedFlags() {
@@ -749,7 +767,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
         state.query = next.query;
         state.letter = 'all';
         state.offset = 0;
-        load({ reset: true });
+        Promise.resolve(load({ reset: true })).then(() => {
+          track('stations-search', searchEventData(next.query, state.total));
+        });
       } else if (state.mode === 'search') {
         state.mode = next.mode;
         state.query = '';
@@ -789,6 +809,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
 
   function setMode(mode) {
     if (mode === state.mode && !state.query) return;
+    track('stations-mode', { mode });
     previousMode = mode;
     state.tooShort = false;
     state.mode = mode;
@@ -1788,6 +1809,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   }
 
   function open({ query = '' } = {}) {
+    track('stations-panel-open', { source: String(query ?? '').trim() ? 'deeplink' : 'nav' });
     const firstOpen = !isOpen;
     const entering = firstOpen || state.view !== 'stations';
     const trimmed = String(query ?? '').trim();

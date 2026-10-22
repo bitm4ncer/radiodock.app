@@ -58,7 +58,8 @@ import { mountNudges } from './ui/nudges.js';
 import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
 import { mountSurfaceToggle } from './ui/surface.js';
 import { mountSnapToggle } from './ui/snap-toggle.js';
-import { mountStationsTip } from './ui/stations-tip.js';
+import { mountQuickTour } from './ui/quick-tour.js';
+import { mountMobileTourBadge } from './ui/mobile-tour-badge.js';
 import { detectPlatform, detectStandalone, canPromptInstall, promptInstall } from './platform.js';
 import { attachStreamProber } from './player/stream-prober.js';
 
@@ -191,7 +192,8 @@ subscribeThemeOSChange();
 mountSurfaceToggle({ root: document.getElementById('mobileMenu') });
 mountSurfaceToggle({ root: document.querySelector('.site-footer-desktop') });
 mountSnapToggle();
-mountStationsTip();
+mountQuickTour();
+mountMobileTourBadge();
 
 // Block pinch-zoom on iOS Safari. The viewport meta `user-scalable=no` and
 // `maximum-scale=1` are unreliable on iOS 10+ (Safari ignores them for
@@ -439,7 +441,7 @@ const search = mountSearch({
     player.playStation(station);
   },
   onSubmit: (query) => stations.open({ query }),
-  onAdd: (station) => toggleStationInFavorites(station),
+  onAdd: (station) => toggleStationInFavorites(station, 'hero'),
   isFavorited: (stationId) => {
     const list = favoritesList();
     return !!list?.stations?.some((s) => s.id === stationId);
@@ -467,7 +469,7 @@ const stations = mountStationsPanel({
       trackStationPlay(station, 'stations');
       player.playStation(station);
     },
-    onAdd: (station) => toggleStationInFavorites(station),
+    onAdd: (station) => toggleStationInFavorites(station, 'stations'),
     onMove: async (station, listId) => {
       const from = favoritesList();
       if (!station || !from || from.id === listId) return;

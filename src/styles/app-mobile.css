@@ -99,6 +99,7 @@
     gap: 0;
     background: var(--bg);
     border-top: 1px solid var(--border);
+    border-radius: 50px 50px 0 0;
     padding: 8px 12px calc(12px + env(safe-area-inset-bottom));
   }
 

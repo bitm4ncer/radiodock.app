@@ -213,11 +213,10 @@ export function searchDiscover(lists = [], query = '') {
 }
 
 function renderToolbar({ view, query }) {
-  const active = ['small', 'large', 'cloud'].includes(view) ? view : 'small';
+  const active = ['small', 'large'].includes(view) ? view : 'small';
   const items = [
     { id: 'small', label: 'Small', icon: GRID_ICON },
     { id: 'large', label: 'Large', icon: ROWS_ICON },
-    { id: 'cloud', label: 'Cloud', icon: ORBIT_ICON },
   ];
   const value = String(query ?? '');
   return `

@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-21T21:13:18.735Z",
+  "generatedAt": "2026-10-22T01:14:09.704Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -536,7 +536,7 @@
       },
       {
         "stationuuid": "399ca326-0f67-4015-a51b-d7ba2bd4ebbe",
-        "name": "KEXP",
+        "name": "KEXP 90.3",
         "countrycode": "US"
       },
       {
@@ -2695,40 +2695,15 @@
         ]
       },
       {
-        "slug": "soul-funk",
-        "title": "Soul / Funk",
+        "slug": "soul",
+        "title": "Soul",
         "source": "radiodock",
         "featured": false,
         "stations": [
           {
-            "stationuuid": "9034682c-5121-11e8-a4d1-52543be04c81",
-            "name": "WEFUNK",
-            "countrycode": "CA"
-          },
-          {
             "stationuuid": "9612102b-0601-11e8-ae97-52543be04c81",
             "name": "SomaFM Seven Inch Soul (128k MP3)",
             "countrycode": "US"
-          },
-          {
-            "stationuuid": "c77c45c4-cf37-414c-ae34-868f7d9cd944",
-            "name": "FUNKY RADIO - Only Funk Music (60's 70's)",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "09998555-2654-4aa2-8a1e-1ea7a4fed978",
-            "name": "54 Funk Soul Dance (laut.fm)",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "120f9ba0-c55a-498a-ae36-58b5c27ac2af",
-            "name": "Funkstar Radio",
-            "countrycode": "CZ"
-          },
-          {
-            "stationuuid": "34695760-5162-41b9-8eb2-4471bce7541e",
-            "name": "The Funky Channel",
-            "countrycode": "BE"
           },
           {
             "stationuuid": "a6f07bae-327a-4a76-bd1d-f305c1af35a1",
@@ -2751,59 +2726,14 @@
             "countrycode": "GB"
           },
           {
-            "stationuuid": "9610a807-0601-11e8-ae97-52543be04c81",
-            "name": "Jazz Radio Funk",
-            "countrycode": "FR"
-          },
-          {
-            "stationuuid": "96385b07-0601-11e8-ae97-52543be04c81",
-            "name": "Rádio Disco Funk BR",
-            "countrycode": "BR"
-          },
-          {
-            "stationuuid": "962a7066-0601-11e8-ae97-52543be04c81",
-            "name": "1.FM - Disco Ball 70's-80's Radio",
-            "countrycode": "CH"
-          },
-          {
-            "stationuuid": "e005cd19-9e18-11e9-a787-52543be04c81",
-            "name": "RMC Disco Funk",
-            "countrycode": "IT"
-          },
-          {
             "stationuuid": "33de8eca-ae96-41fd-96e9-d3d3b7d00f39",
             "name": "80s80s Funk & Soul",
             "countrycode": "DE"
           },
           {
-            "stationuuid": "43718921-41a0-48f5-9645-c467d19a5095",
-            "name": "_Funky Corner Radio (USA)",
-            "countrycode": "US"
-          },
-          {
             "stationuuid": "96191df4-0601-11e8-ae97-52543be04c81",
             "name": "181.FM - Soul",
             "countrycode": "US"
-          },
-          {
-            "stationuuid": "93cdf24e-7ffe-44e7-95f1-16d88a6ceadf",
-            "name": "Motown Radio",
-            "countrycode": "US"
-          },
-          {
-            "stationuuid": "4df24bb0-2794-498f-bdc0-0c3d6b71ed95",
-            "name": "70 80 Disco Funk ModernSoul e Boogie",
-            "countrycode": "IT"
-          },
-          {
-            "stationuuid": "9613f1f2-0601-11e8-ae97-52543be04c81",
-            "name": "Generations Funk",
-            "countrycode": "FR"
-          },
-          {
-            "stationuuid": "cc4928e9-f513-4c59-b42c-56097b881431",
-            "name": "I Like It Oldskool",
-            "countrycode": "GB"
           }
         ]
       },
@@ -5165,6 +5095,721 @@
             "countrycode": ""
           }
         ]
+      },
+      {
+        "slug": "blues",
+        "title": "Blues",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "a648882e-b8d3-422a-9a79-307ccab8c406",
+            "name": "24/7 Blues Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "6f3f2d9c-ea04-4490-86df-a68b64170e3d",
+            "name": "BMFR - Blues Music Fan Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "25f74e5f-195c-454f-9878-51b344976730",
+            "name": "Clasic Radio_Blues",
+            "countrycode": "RO"
+          },
+          {
+            "stationuuid": "b2d960e0-c643-4472-9429-ff02a5925372",
+            "name": "Hotmix Blues",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "2bc6b472-2dac-47d9-8c77-5bd8ed18af74",
+            "name": "K-SUN66 - The Bridge",
+            "countrycode": "DZ"
+          }
+        ]
+      },
+      {
+        "slug": "80s-hard-rock",
+        "title": "80s Hard Rock",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "aa9282e9-1821-4b22-8b25-f4fc1b542bcc",
+            "name": "011.fm – House of Hair",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "a3bb290f-da44-48bb-a412-3ec8ecac5396",
+            "name": "BOB Hair Metal",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "05da52cf-0e21-4af7-8aab-1dde7175d611",
+            "name": "Rock Antenne Hair Metal",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "933ba5c8-a4f3-4834-80c8-37d5c383c623",
+            "name": "The Strip - 80's Hair Band Rock",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9189bb75-e1f7-475c-b837-564a172cb178",
+            "name": "Begoodradio 80s Metal",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "ed02a49b-11e2-4de3-b279-279529290257",
+            "name": "Montiel Rock",
+            "countrycode": "BR"
+          }
+        ]
+      },
+      {
+        "slug": "indie-alternative",
+        "title": "Indie / Alternative",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "399ca326-0f67-4015-a51b-d7ba2bd4ebbe",
+            "name": "KEXP 90.3",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9a7a93aa-244a-4a94-8676-c43fc38d0be7",
+            "name": "The Current",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "80e56153-1af2-43eb-8352-424524f804ed",
+            "name": "Indie88",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "69e80c6d-8a40-4138-8946-20a7b0a0460c",
+            "name": "KINK",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "6650bb57-12aa-41d3-8ae4-ed5dcf0909cd",
+            "name": "8Radio",
+            "countrycode": "IE"
+          },
+          {
+            "stationuuid": "e36a33c7-4071-42b2-9a39-f20ac137ebe1",
+            "name": "917xfm",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "96394224-0601-11e8-ae97-52543be04c81",
+            "name": "SomaFM Indie Pop Rocks!",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "f70bcf50-89b6-429e-98c1-4a5e662b867d",
+            "name": "WXPN 88.5",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "56a468c9-3eca-4079-a758-b4051e1afb2b",
+            "name": "KXT 91.7",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "folk-americana",
+        "title": "Folk / Americana",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "000dd66a-275b-4fa4-99d7-8812f40ed46f",
+            "name": "American Roots Radio",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "960862ef-0601-11e8-ae97-52543be04c81",
+            "name": "Radio Heartland",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "d16a3175-44c0-4cf7-9b1c-863b4d3fbd27",
+            "name": "WUMB Contemporary Folk",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "442fad00-5089-4616-a981-5ab4d8ee4539",
+            "name": "Folk Music Notebook",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "6372f18f-9798-4d4e-83c4-b0307f941331",
+            "name": "Radio Bristol WBCM 100.1 FM",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "88ec6e1f-f720-432f-a3eb-5cd504d51f07",
+            "name": "The Bluegrass Jamboree",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "6dbcf88e-c7b5-4cde-93ad-66d0782f98f7",
+            "name": "WNRV The Ridge",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "5aa2d2b0-bb71-44c4-ae56-33ededbf059f",
+            "name": "Dark Hollow Radio",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "oldies-decades",
+        "title": "Oldies / Decades",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "29e6919f-076d-4643-82df-a8bbaa6263a6",
+            "name": "Rockin50s Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "3ef9711b-5b2f-47d1-a0aa-430adc8086f7",
+            "name": "Radio Firebirds",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "9bfec0d1-4f47-11e9-a4d7-52543be04c81",
+            "name": "Doo Wop Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "2662ea1d-38ce-4285-ac43-b9c005005cb3",
+            "name": "Wayback Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "fe4dc8a9-b2a0-4660-8aa4-c66428854c5c",
+            "name": "Pop Gold Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "b421583d-b66d-49da-8980-f912448af8a7",
+            "name": "Flower Power Radio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "ccc9f19c-59ab-4808-b29d-285e470ef626",
+            "name": "Ultimate Oldies Radio",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "rnb",
+        "title": "R&B",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "23b89519-7c6c-4f20-b133-659a56a716d4",
+            "name": "NRJ Classic RNB",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "58590ae8-2457-11e8-91bf-52543be04c81",
+            "name": "Allzic Radio R&B",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "c509f463-0b09-4b39-9ecc-96b6a77e3a71",
+            "name": "egoRNB",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "b3fb8244-cfe6-437f-99df-dbcce3c520ca",
+            "name": "Hotmix RnB",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "a4c3f7e9-4b16-4566-8dc5-7f9b45faaca1",
+            "name": "90s90s Soul & RnB",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "189fcc22-07cc-44bd-ab08-2e3cf703dfde",
+            "name": "egoSOUL",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "9d2aa97e-2e00-11e9-a35e-52543be04c81",
+            "name": "Jazz Radio Nouveautés Soul",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "cfc37572-caa4-4172-bc5f-f9b32e35b365",
+            "name": "The Quiet Storm Station",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "latin",
+        "title": "Latin",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "ea4df68f-5d85-4185-884c-9fbaf1e1fdc9",
+            "name": "Your Latin Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "9e6c1b64-5395-4e2c-b71d-59a324fd266d",
+            "name": "Colombia Salsa Dura",
+            "countrycode": "CO"
+          },
+          {
+            "stationuuid": "659f5596-51a8-4e3a-802e-ef5e6ceb61d0",
+            "name": "Cumbias Inmortales Radio",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "8add5ff7-bdd5-4b46-9ce3-58fc9bb135f0",
+            "name": "Tropical 100 Merengue",
+            "countrycode": "DO"
+          },
+          {
+            "stationuuid": "d1b4a4ee-e101-4191-aecb-05ec78bb92d3",
+            "name": "Latina Bachata",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9617b9cb-0601-11e8-ae97-52543be04c81",
+            "name": "Latina Reggaeton",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "0c069c3d-d05a-48cf-9676-707f63b3d1ed",
+            "name": "Tumbado al 100",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "b31425e7-8988-433b-8162-ba66af7e1c45",
+            "name": "Panamericana Latino Refrescante",
+            "countrycode": "PE"
+          }
+        ]
+      },
+      {
+        "slug": "psychedelic-rock",
+        "title": "Psychedelic Rock",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "0e0f2961-5c53-4c52-af70-eebe1b2af496",
+            "name": "24-7 Psychedelic Rock",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "98dbeb09-d208-4597-8f0e-18a4b5b9c446",
+            "name": "Psychedelicized Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "dbb28050-c9f4-4f1a-a450-9410dac95ced",
+            "name": "Krautrockworld",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "737269d6-fa3e-493c-a5cc-883df75a327e",
+            "name": "Venenos Psicodélicos",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "70133397-5845-4524-bcda-701da75f46fa",
+            "name": "HEADY",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "dae9c0a5-809a-4a8f-a3fe-4b916a3044d9",
+            "name": "COSMIC FUZZ FM",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "7abc4c3f-2149-4032-94c8-0f46b91c24d5",
+            "name": "Radio Haspe",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "d288325b-a5ed-42c4-820b-f7b99ab39bd1",
+            "name": "Psychedelic Secret Radio",
+            "countrycode": "GB"
+          }
+        ]
+      },
+      {
+        "slug": "funk",
+        "title": "Funk",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "c77c45c4-cf37-414c-ae34-868f7d9cd944",
+            "name": "FUNKY RADIO - Only Funk Music",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "4e38ad9f-7c54-4b84-a372-84a4f5383e02",
+            "name": "FUNKEDUP Radio ",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "2e7b84a9-beea-4fce-92f0-6c74d1f7f414",
+            "name": "Philly Funk Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9613f1f2-0601-11e8-ae97-52543be04c81",
+            "name": "Generations Funk",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "bec4ce52-9a00-45b6-a1df-0cb9d57e8e52",
+            "name": "M40 Funk",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "e5cf6171-d3aa-4212-9417-1d69cf218b3a",
+            "name": "Radio GMusic - Planet Funk",
+            "countrycode": "RO"
+          },
+          {
+            "stationuuid": "b0523b55-79ff-4318-8716-78f2d4f1882a",
+            "name": "Nostalgie Funk ",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9610a807-0601-11e8-ae97-52543be04c81",
+            "name": "Jazz Radio Funk",
+            "countrycode": "FR"
+          }
+        ]
+      },
+      {
+        "slug": "ndw",
+        "title": "NDW",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "7f06cacb-f36f-11e8-a471-52543be04c81",
+            "name": "1A NDW",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "b4198bb3-fc7e-4dc5-9a5b-2f0ad8b7e67a",
+            "name": "Antenne Bayern NDW",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "36fbac9c-0768-4749-b355-c43d4a092432",
+            "name": "RPR1. NDW",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "a491d74d-e2d9-4a9a-91cc-e934220ac02d",
+            "name": "0nlineradio NEUE DEUTSCHE WELLE",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "56e9e4e3-4128-48a0-bcba-445c6f77e29b",
+            "name": "laut.fm NDW",
+            "countrycode": "DE"
+          }
+        ]
+      },
+      {
+        "slug": "gothic-industrial",
+        "title": "Gothic / Industrial",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "a37504f8-b6f2-4c0f-9acc-6de46e4c0397",
+            "name": "Radio Arcane",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "c2f56cc5-f369-11e8-a471-52543be04c81",
+            "name": "- 0 N - Gothic on Radio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "2d588fa4-a7f2-11e9-88f4-52543be04c81",
+            "name": "Blackspot",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "6dd54f08-b850-4a6f-8296-77b82e7d3c09",
+            "name": "Bloodlit Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "325cca45-da7d-40d4-bb77-897b7a122d52",
+            "name": "Iceradio Germany",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "4a688cc7-b7ae-11e9-acb2-52543be04c81",
+            "name": "DARK ZERO RADIO",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "046cb924-4b2d-4aeb-85e4-3b5d0365238f",
+            "name": "DARKCLUB-RADIO",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "9d1c6172-13d1-407a-98b0-e7b2c19ff161",
+            "name": "HTD Radio - Hit the Dark",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "6fb9b247-db50-4f5d-bfe1-694d08083ca0",
+            "name": "80s80s EBM",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "80bdfdeb-66bb-11e9-af37-52543be04c81",
+            "name": "EBM",
+            "countrycode": "DE"
+          }
+        ]
+      },
+      {
+        "slug": "disco",
+        "title": "Disco",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "d43f5fc2-0ca7-4e2b-a5d0-66b44604e47f",
+            "name": "The Disco Palace",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "01b3760e-106d-4fdb-9196-6f746e82cd5b",
+            "name": "The Disco Paradise",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "2a028cf9-06a3-42b2-8548-08a5317a5b9d",
+            "name": "Disco Factory FM",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "3521e06d-4265-4415-8882-3aacad9b80e9",
+            "name": "Disco Classic Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "3f30c1af-de22-43f9-af05-9cdae5fc71e4",
+            "name": "The Lynx Disco Classics",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "ef93618c-686d-45fb-908e-8da696365f8b",
+            "name": "Diva Radio Disco",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "71b53021-25a1-44bd-a4e0-92d60c51140c",
+            "name": "Disco Diamond Radio",
+            "countrycode": "HU"
+          },
+          {
+            "stationuuid": "02e2ed92-126e-4af8-be9a-f1f2cfe2564d",
+            "name": "Radio Zone Italo Disco",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "2816ef39-ba7d-42fc-9f81-443c386ac3dc",
+            "name": "24-7 Disco",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "8c76958a-2cbf-11e8-91bf-52543be04c81",
+            "name": "dinamo.fm discotheque",
+            "countrycode": "TR"
+          },
+          {
+            "stationuuid": "120f9ba0-c55a-498a-ae36-58b5c27ac2af",
+            "name": "Funkstar Radio",
+            "countrycode": "CZ"
+          },
+          {
+            "stationuuid": "4df24bb0-2794-498f-bdc0-0c3d6b71ed95",
+            "name": "70 80 Disco Funk ModernSoul e Boogie",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "43718921-41a0-48f5-9645-c467d19a5095",
+            "name": "_Funky Corner Radio (USA)",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "soundtracks-game",
+        "title": "Soundtracks / Game Music",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "85675e8a-2ccb-4c2a-913b-79cd39d69667",
+            "name": "Soundtrack Radio Station",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "fa9cdf67-3a94-11e9-9b4e-52543be04c81",
+            "name": "- 0 N - Movies on Radio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "1760de51-61a1-406d-b100-e56227ba0e0a",
+            "name": "Cinema Radio",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "4a2147a0-f04f-471a-a7c6-d8fc4d2b0bf4",
+            "name": "RMF Muzyka Filmowa",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "da9a3558-135c-466c-a8bc-4eca5433ff0c",
+            "name": "Hearme Movie Soundtracks",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "387753d6-20d0-4aaf-839c-2342b5ba9616",
+            "name": "Radio Gameplay",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "4a76321b-05a7-4d25-b412-2c7312d91f1c",
+            "name": "Gamesboro Radio - Video Game Music 24/7",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "f80640a2-bee2-4fde-a81d-118d655ff045",
+            "name": "Shoot'em Up Radio",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "61248197-fd51-4f3c-a93b-d1a1f3cd41a4",
+            "name": "Radio PARALAX",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "197e37b1-57ee-436c-a5d7-587716508893",
+            "name": "24/7 Chiptune Radio",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "brazilian",
+        "title": "Brazilian",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "9dea5101-aa15-414e-8dfd-6c29b68e0f59",
+            "name": "Alpha MPB",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "f50d93d5-590c-11e8-b0ce-52543be04c81",
+            "name": "Rádio Batuta MPB",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "db197ac4-8190-45d7-bb30-47a9bb6e990a",
+            "name": "ApaBossaJazz",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "be6f9eeb-e053-48f3-b460-2572349694e0",
+            "name": "Geração Samba e Pagode",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "d2ef310d-58d8-481b-a195-0a94645a518d",
+            "name": "Rádio Referência do Samba",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "f39f6d0e-a534-4d21-9352-e35e3bdddd48",
+            "name": "Hunter.FM Pagode",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "6742e028-f7c7-4353-898d-5caef4773c04",
+            "name": "Geração Sertanejo Universitário",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "270b7ac8-1cf8-443c-a023-1187e98cb8ce",
+            "name": "91.1 FM Sertaneja",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "d0eddde0-9105-4af6-a61b-9679ed8ba96d",
+            "name": "97 FM Natal",
+            "countrycode": "BR"
+          }
+        ]
+      },
+      {
+        "slug": "deutsche-schlager",
+        "title": "Deutsche Schlager",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "5f154f50-472f-11e9-aa55-52543be04c81",
+            "name": "1000 Goldschlager",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "b7835e9e-f36c-11e8-a471-52543be04c81",
+            "name": "1A Schlager Gold",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "9a5f5377-bf9d-11e9-8502-52543be04c81",
+            "name": "0N Schlager Gold",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "5061f15e-f36c-11e8-a471-52543be04c81",
+            "name": "1A Schlager Kult",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "23495167-bf9e-11e9-8502-52543be04c81",
+            "name": "0N Schlager Kult",
+            "countrycode": "DE"
+          }
+        ]
       }
     ]
   },
@@ -5465,7 +6110,7 @@
       {
         "genre": "rock",
         "label": "Rock",
-        "count": 3217
+        "count": 3224
       },
       {
         "genre": "hits",
@@ -5475,7 +6120,7 @@
       {
         "genre": "oldies",
         "label": "Oldies",
-        "count": 1824
+        "count": 1829
       },
       {
         "genre": "talk",
@@ -5495,7 +6140,7 @@
       {
         "genre": "synthpop",
         "label": "80s & New Wave",
-        "count": 1295
+        "count": 1296
       },
       {
         "genre": "community",
@@ -5530,7 +6175,7 @@
       {
         "genre": "alternative",
         "label": "Alternative",
-        "count": 882
+        "count": 892
       },
       {
         "genre": "house",
@@ -5543,14 +6188,14 @@
         "count": 840
       },
       {
+        "genre": "folk",
+        "label": "Folk & Acoustic",
+        "count": 824
+      },
+      {
         "genre": "classic-rock",
         "label": "Classic Rock",
         "count": 821
-      },
-      {
-        "genre": "folk",
-        "label": "Folk & Acoustic",
-        "count": 820
       },
       {
         "genre": "country",
@@ -5560,7 +6205,7 @@
       {
         "genre": "rnb",
         "label": "R&B & Soul",
-        "count": 698
+        "count": 700
       },
       {
         "genre": "sports",
@@ -5570,7 +6215,7 @@
       {
         "genre": "latin",
         "label": "Latin",
-        "count": 664
+        "count": 678
       },
       {
         "genre": "chillout",
@@ -5600,7 +6245,7 @@
       {
         "genre": "indie",
         "label": "Indie",
-        "count": 501
+        "count": 507
       },
       {
         "genre": "culture",
@@ -5610,7 +6255,7 @@
       {
         "genre": "salsa",
         "label": "Salsa & Tropical",
-        "count": 450
+        "count": 451
       },
       {
         "genre": "ambient",
@@ -5620,7 +6265,7 @@
       {
         "genre": "disco",
         "label": "Disco",
-        "count": 413
+        "count": 422
       },
       {
         "genre": "twothousands",
@@ -5645,7 +6290,7 @@
       {
         "genre": "funk",
         "label": "Funk",
-        "count": 331
+        "count": 333
       },
       {
         "genre": "blues",
@@ -5670,12 +6315,12 @@
       {
         "genre": "hard-rock",
         "label": "Hard Rock",
-        "count": 235
+        "count": 240
       },
       {
         "genre": "schlager",
         "label": "Schlager & Volksmusik",
-        "count": 221
+        "count": 222
       },
       {
         "genre": "dnb",
@@ -5695,7 +6340,7 @@
       {
         "genre": "soundtrack",
         "label": "Soundtrack & Score",
-        "count": 130
+        "count": 136
       },
       {
         "genre": "holiday",

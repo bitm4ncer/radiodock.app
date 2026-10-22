@@ -166,7 +166,6 @@ test('renderDiscoverUnavailable produces an honest unavailable message', () => {
   assert.match(html, /unavailable/i);
   assert.ok(!html.includes('Loading'));
 });
-
 test('collection cards expose a separate save-as-list button', () => {
   const html = collectionCard(
     { slug: 'news', title: 'News', stations: [{ stationuuid: 'a', name: 'A' }] },
@@ -190,7 +189,7 @@ test('saved collections render a checked save button', () => {
   assert.match(save, /aria-label="Collection saved as a list"/);
 });
 
-test('renders the discover toolbar with search and three views', () => {
+test('renders the discover toolbar with search and two views', () => {
   const html = renderDiscoverToolbar({ view: 'large', query: 'jazz' });
   assert.match(html, /stations-discover-toolbar/);
   assert.match(html, /type="search"/);
@@ -198,8 +197,8 @@ test('renders the discover toolbar with search and three views', () => {
   assert.match(html, /aria-label="Collection view"/);
   assert.match(html, /data-view="large"[^>]*aria-pressed="true"/);
   assert.match(html, /data-view="small"[^>]*aria-pressed="false"/);
-  assert.match(html, /data-view="cloud"[^>]*aria-pressed="false"/);
-  assert.equal((html.match(/data-view=/g) ?? []).length, 3);
+  assert.doesNotMatch(html, /data-view="cloud"/);
+  assert.equal((html.match(/data-view=/g) ?? []).length, 2);
 });
 
 test('renderDiscover keeps the toolbar and results container', () => {

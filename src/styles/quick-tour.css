@@ -1,0 +1,246 @@
+/* First-run tours: a light bubble over the real control, with a quiet outline
+   instead of a full-screen backdrop. */
+.quick-tour-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  pointer-events: none;
+}
+
+.quick-tour__pulse {
+  position: fixed;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+  animation: quick-tour-pulse 1.9s ease-out infinite;
+}
+
+.quick-tour__pulse[hidden] {
+  display: none;
+}
+
+@keyframes quick-tour-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.24); }
+  70% { box-shadow: 0 0 0 9px rgba(255, 255, 255, 0); }
+  100% { box-shadow: 0 0 0 9px rgba(255, 255, 255, 0); }
+}
+
+.quick-tour__bubble {
+  position: fixed;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 300px;
+  max-width: calc(100vw - 24px);
+  padding: 15px 16px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 12px;
+  color: #161616;
+  background: #ededed;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.42);
+  pointer-events: auto;
+}
+
+.quick-tour__bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: var(--tour-arrow-x, 50%);
+  width: 9px;
+  height: 9px;
+  background: #ededed;
+  border-right: 1px solid rgba(0, 0, 0, 0.14);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+  transform: rotate(45deg);
+}
+
+.quick-tour__bubble[data-side="below"]::after {
+  top: -5px;
+  bottom: auto;
+  border-right: 0;
+  border-bottom: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.14);
+  border-left: 1px solid rgba(0, 0, 0, 0.14);
+}
+
+.quick-tour__bubble[data-side="right"]::after {
+  top: var(--tour-arrow-y, 50%);
+  bottom: auto;
+  left: -5px;
+  border: 0;
+}
+
+.quick-tour__bubble[data-side="left"]::after {
+  top: var(--tour-arrow-y, 50%);
+  right: -5px;
+  bottom: auto;
+  left: auto;
+  border: 0;
+}
+
+.quick-tour__bubble.is-outside {
+  width: 270px;
+}
+
+.quick-tour__bubble.is-centered {
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%);
+}
+
+.quick-tour__bubble.is-centered::after {
+  display: none;
+}
+
+.quick-tour__bubble:focus {
+  outline: none;
+}
+
+.quick-tour__bubble.is-stepping {
+  animation: quick-tour-in 170ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes quick-tour-in {
+  from { opacity: 0; translate: 0 4px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+.quick-tour__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: rgba(22, 22, 22, 0.58);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+
+.quick-tour__title {
+  margin: 7px 0 4px;
+  color: #161616;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.quick-tour__body {
+  margin: 0;
+  color: rgba(22, 22, 22, 0.78);
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.quick-tour__dots {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 12px;
+}
+
+.quick-tour__dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(22, 22, 22, 0.25);
+  transition: width 140ms ease, background 140ms ease;
+}
+
+.quick-tour__dot.is-current {
+  width: 12px;
+  background: #161616;
+}
+
+.quick-tour__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 13px;
+}
+
+.quick-tour__nav {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.quick-tour__skip,
+.quick-tour__back,
+.quick-tour__next {
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.quick-tour__skip {
+  padding: 6px 2px;
+  color: rgba(22, 22, 22, 0.58);
+  background: transparent;
+}
+
+.quick-tour__skip:hover {
+  color: #161616;
+}
+
+.quick-tour__back {
+  padding: 6px 10px;
+  color: #161616;
+  background: rgba(22, 22, 22, 0.08);
+}
+
+.quick-tour__back:hover {
+  background: rgba(22, 22, 22, 0.14);
+}
+
+.quick-tour__next {
+  padding: 7px 13px;
+  color: #ededed;
+  background: #161616;
+}
+
+.quick-tour__next:hover {
+  background: #000;
+}
+
+.quick-tour__skip:focus-visible,
+.quick-tour__back:focus-visible,
+.quick-tour__next:focus-visible {
+  outline: 2px solid rgba(22, 22, 22, 0.5);
+  outline-offset: 2px;
+}
+
+/* The action bar normally appears only after a station starts. Show it during
+   the welcome tour so identify, record and capture are visible from day one. */
+body.tour-show-actions #playerActionBar {
+  display: flex !important;
+}
+
+/* The install card shares the right edge with the Notes flag and normally
+   hides it. For the diary steps the flag is the target, so bring it back
+   without dismissing the install card. */
+body.tour-force-notes-flag .notes-flag {
+  display: flex !important;
+}
+
+/* Keep the footer open while its tour is running; otherwise moving from the
+   bottom edge towards a bubble would hide the controls being explained. */
+body.tour-footer-open .site-footer-desktop {
+  transform: translateY(0) !important;
+  pointer-events: auto !important;
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quick-tour__pulse,
+  .quick-tour__bubble.is-stepping {
+    animation: none;
+  }
+
+  .quick-tour__dot {
+    transition: none;
+  }
+}
