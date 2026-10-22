@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-22T00:33:56.632Z",
+  "generatedAt": "2026-10-22T00:40:19.627Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -5444,6 +5444,54 @@
             "stationuuid": "b31425e7-8988-433b-8162-ba66af7e1c45",
             "name": "Panamericana Latino Refrescante",
             "countrycode": "PE"
+          }
+        ]
+      },
+      {
+        "slug": "funk",
+        "title": "Funk",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "c77c45c4-cf37-414c-ae34-868f7d9cd944",
+            "name": "FUNKY RADIO - Only Funk Music",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "4e38ad9f-7c54-4b84-a372-84a4f5383e02",
+            "name": "FUNKEDUP Radio ",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "2e7b84a9-beea-4fce-92f0-6c74d1f7f414",
+            "name": "Philly Funk Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9613f1f2-0601-11e8-ae97-52543be04c81",
+            "name": "Generations Funk",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "bec4ce52-9a00-45b6-a1df-0cb9d57e8e52",
+            "name": "M40 Funk",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "e5cf6171-d3aa-4212-9417-1d69cf218b3a",
+            "name": "Radio GMusic - Planet Funk",
+            "countrycode": "RO"
+          },
+          {
+            "stationuuid": "b0523b55-79ff-4318-8716-78f2d4f1882a",
+            "name": "Nostalgie Funk ",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9610a807-0601-11e8-ae97-52543be04c81",
+            "name": "Jazz Radio Funk",
+            "countrycode": "FR"
           }
         ]
       }
