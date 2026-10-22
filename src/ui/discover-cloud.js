@@ -390,6 +390,22 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     svg.style.top = `${model.bounds.minY}px`;
     svg.style.width = `${model.bounds.width}px`;
     svg.style.height = `${model.bounds.height}px`;
+    const defs = document.createElementNS(svgNS, 'defs');
+    const gradient = document.createElementNS(svgNS, 'linearGradient');
+    gradient.setAttribute('id', 'stationsCloudLinkGradient');
+    gradient.setAttribute('gradientUnits', 'userSpaceOnUse');
+    gradient.setAttribute('x1', '0');
+    gradient.setAttribute('y1', '0');
+    gradient.setAttribute('x2', String(model.bounds.width));
+    gradient.setAttribute('y2', String(model.bounds.height));
+    for (const [offset, variable] of [[0, '--cloud-link-a'], [0.52, '--cloud-link-b'], [1, '--cloud-link-c']]) {
+      const stop = document.createElementNS(svgNS, 'stop');
+      stop.setAttribute('offset', `${offset * 100}%`);
+      stop.setAttribute('stop-color', `var(${variable})`);
+      gradient.append(stop);
+    }
+    defs.append(gradient);
+    svg.append(defs);
   }
   function edgePath(first, second) {
     const dx = second.x - first.x;
@@ -397,12 +413,11 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     const distance = Math.max(0.0001, Math.hypot(dx, dy));
     const ux = dx / distance;
     const uy = dy / distance;
-    const startGap = Math.min(first.radius + 6, distance * 0.45);
-    const endGap = Math.min(second.radius + 6, distance * 0.45);
-    const x1 = first.x + ux * startGap - model.bounds.minX;
-    const y1 = first.y + uy * startGap - model.bounds.minY;
-    const x2 = second.x - ux * endGap - model.bounds.minX;
-    const y2 = second.y - uy * endGap - model.bounds.minY;
+    const gap = 4;
+    const x1 = first.x + ux * gap - model.bounds.minX;
+    const y1 = first.y + uy * gap - model.bounds.minY;
+    const x2 = second.x - ux * gap - model.bounds.minX;
+    const y2 = second.y - uy * gap - model.bounds.minY;
     const chord = Math.max(0.0001, Math.hypot(x2 - x1, y2 - y1));
     const handle = Math.min(chord * 0.42, 240);
     const bend = Math.min(chord * 0.16, 64);
@@ -424,7 +439,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     path.setAttribute('class', 'stations-cloud-link');
     path.setAttribute('d', edgePath(first, second));
     path.setAttribute('vector-effect', 'non-scaling-stroke');
-    path.style.strokeWidth = (1.8 + Math.min(1.2, Math.min(first.count, second.count) / 75)).toFixed(2);
+    path.style.strokeWidth = (2.6 + Math.min(1.2, Math.min(first.count, second.count) / 55)).toFixed(2);
     path.dataset.a = edge.a;
     path.dataset.b = edge.b;
     svg.append(path);
@@ -444,6 +459,67 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
 
   world.append(svg);
 
+  function miniPosition(node, station, stationIndex, count) {
+    const key = String(station?.stationuuid ?? station?.uuid ?? station?.id ?? station?.name ?? stationIndex);
+    let hash = 2166136261;
+    for (let i = 0; i < key.length; i += 1) {
+      hash ^= key.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+    const jitter = ((hash >>> 0) % 997) / 997;
+    const angle = stationIndex * GOLDEN_ANGLE + jitter * 0.8;
+    const maxRadius = node.radius * 0.78;
+    const radius = Math.sqrt((stationIndex + 0.55) / count) * maxRadius + (jitter - 0.5) * maxRadius * 0.12;
+    return {
+      x: Math.cos(angle) * radius,
+      y: Math.sin(angle) * radius,
+      size: clamp(node.radius * 0.24, 16, 34),
+    };
+  }
+
+  function ensureMiniCloud(node, button) {
+    const bubble = button.querySelector('.stations-cloud-bubble');
+    let layer = bubble?.querySelector('.stations-cloud-mini-layer');
+    if (layer) return layer;
+    if (!bubble || !node.stations?.length) return null;
+    layer = document.createElement('span');
+    layer.className = 'stations-cloud-mini-layer is-preparing';
+    layer.setAttribute('aria-hidden', 'true');
+    const count = node.stations.length;
+    const previewCount = node.preview.length;
+    node.stations.slice(previewCount).forEach((station, offset) => {
+      const stationIndex = previewCount + offset;
+      const position = miniPosition(node, station, stationIndex, count);
+      const logo = logoElement(station, {
+        imgClass: 'stations-cloud-mini-logo',
+        initialsClass: 'stations-cloud-mini-initials',
+        size: 'sm',
+        resolveById: true,
+        priority: false,
+      });
+      if (!logo) return;
+      const uuid = String(station?.stationuuid ?? station?.uuid ?? station?.id ?? '');
+      if (uuid) logo.dataset.uuid = uuid;
+      logo.style.left = `calc(50% + ${position.x}px)`;
+      logo.style.top = `calc(50% + ${position.y}px)`;
+      logo.style.width = `${position.size}px`;
+      logo.style.height = `${position.size}px`;
+      logo.style.setProperty('--mini-order', String(offset));
+      layer.append(logo);
+    });
+    bubble.append(layer);
+    hydrateLogos(layer);
+    requestAnimationFrame(() => {
+      if (layer.isConnected) layer.classList.remove('is-preparing');
+    });
+    return layer;
+  }
+
+  function expandNode(node, button) {
+    ensureMiniCloud(node, button);
+    button.classList.add('is-expanded');
+  }
+
   model.nodes.forEach((node, index) => {
     const nodeEl = document.createElement('button');
     nodeEl.type = 'button';
@@ -458,9 +534,13 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
 
     const bubble = document.createElement('span');
     bubble.className = 'stations-cloud-bubble';
+    const previewOrbit = document.createElement('span');
+    previewOrbit.className = 'stations-cloud-preview-orbit';
     const orbit = document.createElement('span');
     orbit.className = 'stations-cloud-orbit';
-    node.preview.forEach((preview) => {
+    const hub = document.createElement('span');
+    hub.className = 'stations-cloud-hub';
+    node.preview.forEach((preview, previewIndex) => {
       const logo = logoElement(preview.station, {
         imgClass: 'stations-cloud-logo',
         initialsClass: 'stations-cloud-initials',
@@ -469,13 +549,18 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
         priority: index < 8,
       });
       if (!logo) return;
-      logo.style.left = `calc(50% + ${preview.x}px)`;
-      logo.style.top = `calc(50% + ${preview.y}px)`;
-      logo.style.width = `${preview.size}px`;
-      logo.style.height = `${preview.size}px`;
+      const uuid = String(preview.station?.stationuuid ?? preview.station?.uuid ?? preview.station?.id ?? '');
+      if (uuid) logo.dataset.uuid = uuid;
+      const target = miniPosition(node, preview.station, previewIndex, node.stations.length);
+      logo.style.setProperty('--orbit-left', `calc(50% + ${preview.x}px)`);
+      logo.style.setProperty('--orbit-top', `calc(50% + ${preview.y}px)`);
+      logo.style.setProperty('--orbit-size', `${preview.size}px`);
+      logo.style.setProperty('--mini-left', `calc(50% + ${target.x}px)`);
+      logo.style.setProperty('--mini-top', `calc(50% + ${target.y}px)`);
+      logo.style.setProperty('--mini-size', `${target.size}px`);
       orbit.append(logo);
     });
-    bubble.append(orbit);
+    bubble.append(previewOrbit, orbit, hub);
 
     const label = document.createElement('span');
     label.className = 'stations-cloud-label';
@@ -495,12 +580,24 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       }
       openCollection(node.slug);
     });
-    nodeEl.addEventListener('pointerenter', () => activateNode(node.slug));
-    nodeEl.addEventListener('pointerleave', () => activateNode(null));
-    nodeEl.addEventListener('focus', () => {
-      if (nodeEl.matches(':focus-visible')) activateNode(node.slug);
+    nodeEl.addEventListener('pointerenter', () => {
+      activateNode(node.slug);
+      expandNode(node, nodeEl);
     });
-    nodeEl.addEventListener('blur', () => activateNode(null));
+    nodeEl.addEventListener('pointerleave', () => {
+      activateNode(null);
+      nodeEl.classList.remove('is-expanded');
+    });
+    nodeEl.addEventListener('focus', () => {
+      if (nodeEl.matches(':focus-visible')) {
+        activateNode(node.slug);
+        expandNode(node, nodeEl);
+      }
+    });
+    nodeEl.addEventListener('blur', () => {
+      activateNode(null);
+      nodeEl.classList.remove('is-expanded');
+    });
     world.append(nodeEl);
     nodeElements.set(node.slug, nodeEl);
   });
@@ -1096,11 +1193,20 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     highlightTimer = null;
     clearCollectionNote();
     if (!ring) return;
+    for (const item of ring.migratedLogos ?? []) {
+      const { logo, parent, styles } = item;
+      logo.classList.remove('stations-cloud-ring-logo');
+      if (parent?.isConnected) parent.append(logo);
+      for (const property of ['left', 'top', 'width', 'height']) {
+        if (styles[property]) logo.style[property] = styles[property];
+        else logo.style.removeProperty(property);
+      }
+    }
     ring.element.remove();
     ring = null;
     stage.classList.remove('is-ring-open');
     for (const element of nodeElements.values()) {
-      element.classList.remove('is-active', 'is-related', 'is-dimmed', 'is-open');
+      element.classList.remove('is-active', 'is-related', 'is-dimmed', 'is-open', 'is-expanded');
       element.removeAttribute('aria-hidden');
       element.removeAttribute('tabindex');
     }
@@ -1189,6 +1295,13 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     hideTooltip();
     const node = model.nodeBySlug.get(slug);
     if (!node) return;
+    const nodeEl = nodeElements.get(slug);
+    if (nodeEl) ensureMiniCloud(node, nodeEl);
+    const cloudLogos = new Map();
+    nodeEl?.querySelectorAll('.stations-cloud-orbit .logo-slot, .stations-cloud-mini-layer .logo-slot').forEach((logo) => {
+      const uuid = logo.dataset.uuid;
+      if (uuid && !cloudLogos.has(uuid)) cloudLogos.set(uuid, logo);
+    });
     const fit = fitTarget();
     if (fit.scale > 0 && (fitScale <= 0 || camera.scale < fit.scale * 0.5)) {
       fitScale = fit.scale;
@@ -1201,7 +1314,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     stage.classList.add('is-ring-open');
     for (const [key, element] of nodeElements) {
       const selected = key === slug;
-      element.classList.remove('is-active', 'is-related');
+      element.classList.remove('is-active', 'is-related', 'is-expanded');
       element.classList.toggle('is-dimmed', !selected);
       element.classList.toggle('is-open', selected);
       element.setAttribute('aria-hidden', 'true');
@@ -1230,6 +1343,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     element.style.left = `${node.x}px`;
     element.style.top = `${node.y}px`;
     const stationEls = new Map();
+    const migratedLogos = [];
 
     points.forEach((point, index) => {
       const station = node.stations[point.index];
@@ -1244,16 +1358,36 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       stationEl.style.top = `${point.y}px`;
       stationEl.style.width = `${size / ringScale}px`;
       stationEl.style.height = `${size / ringScale}px`;
+      stationEl.style.setProperty('--ring-order', String(index));
       const country = String(station.countrycode ?? '').trim().toUpperCase();
       stationEl.setAttribute('aria-label', `${station.name ?? 'Station'}${country ? `, ${country}` : ''}`);
-      const logo = logoElement(station, {
-        imgClass: 'stations-cloud-logo',
-        initialsClass: 'stations-cloud-initials',
-        size: 'sm',
-        resolveById: true,
-        priority: index < 8,
-      });
-      if (logo) stationEl.append(logo);
+      const moved = cloudLogos.get(uuid);
+      if (moved) {
+        migratedLogos.push({
+          logo: moved,
+          parent: moved.parentElement,
+          styles: {
+            left: moved.style.left,
+            top: moved.style.top,
+            width: moved.style.width,
+            height: moved.style.height,
+          },
+        });
+        moved.classList.add('stations-cloud-ring-logo');
+        for (const property of ['left', 'top', 'width', 'height', 'scale', 'opacity', 'transition', 'transition-delay']) {
+          moved.style.removeProperty(property);
+        }
+        stationEl.append(moved);
+      } else {
+        const logo = logoElement(station, {
+          imgClass: 'stations-cloud-logo',
+          initialsClass: 'stations-cloud-initials',
+          size: 'sm',
+          resolveById: true,
+          priority: index < 8,
+        });
+        if (logo) stationEl.append(logo);
+      }
       stationEl.addEventListener('pointerenter', () => showTooltip(station, stationEl));
       stationEl.addEventListener('pointerleave', hideTooltip);
       stationEl.addEventListener('focus', () => showTooltip(station, stationEl));
@@ -1283,7 +1417,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     world.append(element);
     hydrateLogos(element);
 
-    ring = { slug, node, element, label, current, stationEls, ringScale, size, points };
+    ring = { slug, node, element, label, current, stationEls, ringScale, size, points, migratedLogos };
     renderCollectionNote(node);
     if (nowPlayingId) setNowPlaying(nowPlayingId);
     flyTo({

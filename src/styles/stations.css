@@ -10,6 +10,7 @@
      folds its two-column collection grids into one column. */
   container-type: inline-size;
   container-name: stations-panel;
+  --stations-panel-bg: #141414;
   color: var(--text);
   /* Same opaque surface as Notes / Add / Sync (and the solid main panel). */
   background: #141414;
@@ -26,6 +27,7 @@
 }
 
 :root.theme-light .stations-panel {
+  --stations-panel-bg: #d5d5d5;
   background: #d5d5d5;
 }
 
@@ -2479,6 +2481,10 @@ html.is-standalone .stations-panel:not(.is-open) {
   padding-bottom: 0;
 }
 
+.stations-discover.is-cloud .stations-discover-toolbar {
+  background: var(--stations-panel-bg);
+}
+
 .stations-discover.is-cloud .stations-discover-results {
   flex: 1;
   min-height: 0;
@@ -2492,9 +2498,14 @@ html.is-standalone .stations-panel:not(.is-open) {
 }
 
 .stations-cloud-stage {
+  --cloud-link-a: var(--text-muted);
+  --cloud-link-b: var(--text);
+  --cloud-link-c: var(--text-muted);
   position: absolute;
-  inset: 0;
+  inset: 0 0 12px;
   overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   cursor: grab;
   touch-action: none;
   user-select: none;
@@ -2514,6 +2525,7 @@ html.is-standalone .stations-panel:not(.is-open) {
   position: absolute;
   left: 0;
   top: 0;
+  z-index: 1;
   width: 0;
   height: 0;
   overflow: visible;
@@ -2529,18 +2541,19 @@ html.is-standalone .stations-panel:not(.is-open) {
 
 .stations-cloud-link {
   fill: none;
-  stroke: var(--text-muted);
-  stroke-width: 1.8;
+  stroke: url(#stationsCloudLinkGradient);
+  stroke-width: 2.6;
+  stroke-dasharray: 5 5;
   stroke-linecap: round;
   stroke-linejoin: round;
-  opacity: 0.46;
+  opacity: 0.58;
   transition: stroke 0.2s ease, opacity 0.2s ease;
   vector-effect: non-scaling-stroke;
 }
 
 .stations-cloud-link.is-active {
   stroke: var(--text);
-  opacity: 0.88;
+  opacity: 0.92;
 }
 
 .stations-cloud-link.is-dimmed {
@@ -2562,14 +2575,98 @@ html.is-standalone .stations-panel:not(.is-open) {
 .stations-cloud-bubble {
   position: absolute;
   inset: 0;
-  overflow: hidden;
+  overflow: visible;
   border: 0;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  background: transparent;
   box-shadow: none;
-  transition: background 0.2s ease, opacity 0.2s ease, translate 0.2s ease;
+  transition: filter 0.2s ease, opacity 0.2s ease, translate 0.2s ease;
   animation: stations-cloud-float 9s ease-in-out infinite alternate;
   animation-delay: var(--float-delay, 0s);
+}
+
+.stations-cloud-preview-orbit,
+.stations-cloud-orbit {
+  transition: opacity 0.2s ease;
+}
+
+.stations-cloud-orbit .logo-slot {
+  left: var(--orbit-left);
+  top: var(--orbit-top);
+  width: var(--orbit-size);
+  height: var(--orbit-size);
+  transition: left 0.24s cubic-bezier(0.22, 1, 0.36, 1), top 0.24s cubic-bezier(0.22, 1, 0.36, 1), width 0.24s cubic-bezier(0.22, 1, 0.36, 1), height 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+}
+
+.stations-cloud-mini-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.stations-cloud-node.is-expanded .stations-cloud-preview-orbit,
+.stations-cloud-node:hover .stations-cloud-preview-orbit,
+.stations-cloud-node:focus-visible .stations-cloud-preview-orbit {
+  opacity: 0;
+}
+
+.stations-cloud-node.is-expanded .stations-cloud-orbit,
+.stations-cloud-node:hover .stations-cloud-orbit,
+.stations-cloud-node:focus-visible .stations-cloud-orbit {
+  z-index: 4;
+}
+
+.stations-cloud-node.is-expanded .stations-cloud-orbit .logo-slot,
+.stations-cloud-node:hover .stations-cloud-orbit .logo-slot,
+.stations-cloud-node:focus-visible .stations-cloud-orbit .logo-slot {
+  left: var(--mini-left);
+  top: var(--mini-top);
+  width: var(--mini-size);
+  height: var(--mini-size);
+}
+
+.stations-cloud-mini-layer .logo-slot {
+  position: absolute;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--logo-chip-bg);
+  opacity: 0;
+  scale: 0.15;
+  translate: -50% -50%;
+  transition: opacity 0.2s ease, scale 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: 0ms;
+}
+
+.stations-cloud-mini-layer.is-preparing .logo-slot {
+  opacity: 0 !important;
+  scale: 0.15 !important;
+  transition: none !important;
+}
+
+.stations-cloud-node.is-expanded .stations-cloud-mini-layer .logo-slot,
+.stations-cloud-node:hover .stations-cloud-mini-layer .logo-slot,
+.stations-cloud-node:focus-visible .stations-cloud-mini-layer .logo-slot {
+  opacity: 1;
+  scale: 1;
+  transition-delay: calc(80ms + var(--mini-order, 0) * 9ms);
+}
+
+.stations-cloud-mini-logo {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.stations-cloud-mini-initials {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 6px;
 }
 
 .stations-cloud-node.is-related .stations-cloud-bubble {
@@ -2582,21 +2679,45 @@ html.is-standalone .stations-panel:not(.is-open) {
 
 .stations-cloud-node:hover .stations-cloud-bubble,
 .stations-cloud-node:focus-visible .stations-cloud-bubble {
-  background: color-mix(in srgb, var(--surface) 88%, transparent);
-  box-shadow: none;
+  filter: brightness(1.12);
   animation: none;
   translate: 0 -3px;
+}
+
+.stations-cloud-preview-orbit {
+  position: absolute;
+  inset: 29%;
+  z-index: 1;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  pointer-events: none;
 }
 
 .stations-cloud-orbit {
   position: absolute;
   inset: 0;
+  z-index: 2;
   border-radius: 50%;
+  pointer-events: none;
+}
+
+.stations-cloud-hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 4;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--bg) 62%, transparent);
+  translate: -50% -50%;
   pointer-events: none;
 }
 
 .stations-cloud-bubble .logo-slot {
   position: absolute;
+  z-index: 3;
   translate: -50% -50%;
   overflow: hidden;
   border: 0;
@@ -2630,7 +2751,7 @@ html.is-standalone .stations-panel:not(.is-open) {
   translate: -50% 0;
   color: var(--text);
   text-align: center;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+  text-shadow: 0 1px 4px var(--bg);
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
@@ -2716,6 +2837,8 @@ html.is-standalone .stations-panel:not(.is-open) {
   pointer-events: auto;
   cursor: pointer;
   transition: box-shadow 0.2s ease;
+  animation: stations-cloud-ring-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(min(var(--ring-order, 0), 14) * 10ms);
 }
 
 .stations-cloud-station .logo-slot {
@@ -2724,6 +2847,27 @@ html.is-standalone .stations-panel:not(.is-open) {
   overflow: hidden;
   border-radius: 50%;
   background: var(--logo-chip-bg);
+}
+
+.stations-cloud-ring-logo {
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  scale: 1 !important;
+  opacity: 1 !important;
+  transition: none !important;
+}
+
+@keyframes stations-cloud-ring-in {
+  from {
+    opacity: 0;
+    scale: 0.62;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
 }
 
 .stations-cloud-station .logo-img {

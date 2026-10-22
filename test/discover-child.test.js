@@ -189,7 +189,7 @@ test('saved collections render a checked save button', () => {
   assert.match(save, /aria-label="Collection saved as a list"/);
 });
 
-test('renders the discover toolbar with search and two views', () => {
+test('renders the discover toolbar with search and three views', () => {
   const html = renderDiscoverToolbar({ view: 'large', query: 'jazz' });
   assert.match(html, /stations-discover-toolbar/);
   assert.match(html, /type="search"/);
@@ -197,8 +197,13 @@ test('renders the discover toolbar with search and two views', () => {
   assert.match(html, /aria-label="Collection view"/);
   assert.match(html, /data-view="large"[^>]*aria-pressed="true"/);
   assert.match(html, /data-view="small"[^>]*aria-pressed="false"/);
-  assert.doesNotMatch(html, /data-view="cloud"/);
-  assert.equal((html.match(/data-view=/g) ?? []).length, 2);
+  assert.match(html, /data-view="cloud"[^>]*aria-pressed="false"/);
+  assert.equal((html.match(/data-view=/g) ?? []).length, 3);
+});
+
+test('marks the cloud view active when selected', () => {
+  const html = renderDiscoverToolbar({ view: 'cloud' });
+  assert.match(html, /data-view="cloud"[^>]*aria-pressed="true"/);
 });
 
 test('renderDiscover keeps the toolbar and results container', () => {

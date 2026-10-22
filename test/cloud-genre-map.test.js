@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import {
   CLOUD_AXIS_PRESETS,
   CLOUD_GENRE_EDGES,
@@ -14,6 +15,14 @@ function edgeKey(edge) {
 
 test('keeps vectors for at least the original collections', () => {
   assert.ok(Object.keys(CLOUD_GENRE_VECTORS).length >= 35);
+});
+
+test('covers every collection currently published in discover.json', () => {
+  const payload = JSON.parse(readFileSync(new URL('../public/discover.json', import.meta.url), 'utf8'));
+  const missing = payload.curated.lists
+    .map((list) => list.slug)
+    .filter((slug) => !CLOUD_GENRE_VECTORS[slug]);
+  assert.deepEqual(missing, []);
 });
 
 test('every vector has bounded axes and a family', () => {
@@ -67,13 +76,18 @@ test('uses only known, undirected, unique genre edges', () => {
   for (const expected of [
     'black-metal-doom|metal',
     'classic-rock|metal',
-    'classic-rock|soul-funk',
+    'blues|classic-rock',
+    '80s-hard-rock|classic-rock',
     'news|pop',
     'grime|hiphop',
     'grime|trap-drill',
     'noise|techno',
     'drum-and-bass|hardcore',
     'hardcore|jungle',
+    'funk|soul',
+    'pop|rnb',
+    'latin|reggaeton',
+    'deep-house|house',
   ]) {
     assert.equal(keys.has(expected), true, `${expected} is missing`);
   }

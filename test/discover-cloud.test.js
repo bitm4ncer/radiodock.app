@@ -91,9 +91,9 @@ test('bounds include 180 world units of padding', () => {
 
 test('edges use the curated genre graph and are deduplicated', () => {
   const slugs = [
-    'black-metal-doom', 'metal', 'punk', 'hardcore', 'classic-rock', 'soul-funk',
-    'news', 'pop', 'dubby', 'hiphop', 'grime', 'trap-drill', 'noise', 'techno',
-    'drum-and-bass', 'jungle',
+    'black-metal-doom', 'metal', 'punk', 'hardcore', 'classic-rock', 'blues',
+    'soul', 'funk', 'news', 'pop', 'dubby', 'hiphop', 'grime', 'trap-drill',
+    'noise', 'techno', 'drum-and-bass', 'jungle',
   ];
   const model = buildCloudModel(slugs.map((slug) => list(slug, 5)));
   const keys = new Set(model.edges.map((edge) => (
@@ -104,7 +104,8 @@ test('edges use the curated genre graph and are deduplicated', () => {
   for (const expected of [
     'black-metal-doom|metal',
     'classic-rock|metal',
-    'classic-rock|soul-funk',
+    'blues|classic-rock',
+    'funk|soul',
     'news|pop',
     'grime|hiphop',
     'grime|trap-drill',
