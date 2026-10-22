@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildCloudModel, ringLayout, matchCloud } from '../src/ui/discover-cloud.js';
+import { CLOUD_AXIS_PRESETS, CLOUD_GENRE_VECTORS } from '../src/ui/cloud-genre-map.js';
+import { COLLECTION_NOTES } from '../src/ui/collection-notes.js';
 
 function station(uuid, countrycode = 'US') {
   return { stationuuid: uuid, name: 'Station ' + uuid, countrycode };
@@ -21,6 +23,12 @@ test('builds one node per list', () => {
   assert.equal(model.nodeBySlug.get('jazz').count, 10);
 });
 
+test('carries editorial notes into the cloud model', () => {
+  const node = buildCloudModel([list('jungle', 3)]).nodes[0];
+  assert.equal(node.info.short, COLLECTION_NOTES.jungle.short);
+  assert.equal(node.info.long, COLLECTION_NOTES.jungle.long);
+});
+
 test('preview uses five to eight stations or all when fewer', () => {
   const ten = buildCloudModel([list('ten', 10)]).nodes[0];
   const four = buildCloudModel([list('four', 4)]).nodes[0];
@@ -30,13 +38,22 @@ test('preview uses five to eight stations or all when fewer', () => {
   assert.equal(zero.nodes.length, 0);
 });
 
-test('uses the documented radius formula and clamps', () => {
-  const ten = buildCloudModel([list('ten', 10)]).nodes[0];
-  const thousand = buildCloudModel([list('thousand', 1000)]).nodes[0];
+test('scales bubble radius with the station count', () => {
+  const model = buildCloudModel([list('small', 5), list('mid', 20), list('large', 55)]);
+  const small = model.nodeBySlug.get('small');
+  const mid = model.nodeBySlug.get('mid');
+  const large = model.nodeBySlug.get('large');
+  assert.equal(small.radius, 80);
+  assert.equal(large.radius, 190);
+  assert.ok(mid.radius > small.radius && mid.radius < large.radius);
+  assert.ok(large.radius > small.radius * 2);
+});
+
+test('clamps radius for tiny and huge collections', () => {
   const one = buildCloudModel([list('one', 1)]).nodes[0];
-  assert.ok(Math.abs(ten.radius - (72 + Math.sqrt(10) * 7)) < 0.001);
-  assert.equal(thousand.radius, 140);
+  const thousand = buildCloudModel([list('thousand', 1000)]).nodes[0];
   assert.equal(one.radius, 80);
+  assert.equal(thousand.radius, 190);
 });
 
 test('is deterministic for the same input', () => {
@@ -60,33 +77,80 @@ test('does not overlap bubbles', () => {
   }
 });
 
-test('bounds include 240 world units of padding', () => {
+test('bounds include 180 world units of padding', () => {
   const model = buildCloudModel([list('jazz', 10), list('news', 8)]);
   const minX = Math.min(...model.nodes.map((node) => node.x - node.radius));
   const maxX = Math.max(...model.nodes.map((node) => node.x + node.radius));
   const minY = Math.min(...model.nodes.map((node) => node.y - node.radius));
   const maxY = Math.max(...model.nodes.map((node) => node.y + node.radius));
-  assert.ok(model.bounds.minX <= minX - 240 + 0.001);
-  assert.ok(model.bounds.maxX >= maxX + 240 - 0.001);
-  assert.ok(model.bounds.minY <= minY - 240 + 0.001);
-  assert.ok(model.bounds.maxY >= maxY + 240 - 0.001);
+  assert.ok(model.bounds.minX <= minX - 180 + 0.001);
+  assert.ok(model.bounds.maxX >= maxX + 180 - 0.001);
+  assert.ok(model.bounds.minY <= minY - 180 + 0.001);
+  assert.ok(model.bounds.maxY >= maxY + 180 - 0.001);
 });
 
-test('edges connect similar countries and are deduplicated', () => {
-  const model = buildCloudModel([
-    list('jazz', 10, ['US', 'GB']),
-    list('news', 10, ['US', 'GB']),
-    list('ambient', 10, ['DE']),
-    list('punk', 10, ['DE']),
-    list('silent', 10, ['']),
-  ]);
-  const jazzNews = model.edges.filter((edge) => (
-    (edge.a === 'jazz' && edge.b === 'news') || (edge.a === 'news' && edge.b === 'jazz')
-  ));
-  assert.equal(jazzNews.length, 1);
+test('edges use the curated genre graph and are deduplicated', () => {
+  const slugs = [
+    'black-metal-doom', 'metal', 'punk', 'hardcore', 'classic-rock', 'soul-funk',
+    'news', 'pop', 'dubby', 'hiphop', 'grime', 'trap-drill', 'noise', 'techno',
+    'drum-and-bass', 'jungle',
+  ];
+  const model = buildCloudModel(slugs.map((slug) => list(slug, 5)));
+  const keys = new Set(model.edges.map((edge) => (
+    edge.a < edge.b ? `${edge.a}|${edge.b}` : `${edge.b}|${edge.a}`
+  )));
   assert.equal(model.edges.some((edge) => edge.a === edge.b), false);
-  assert.equal(new Set(model.edges.map((edge) => `${edge.a}|${edge.b}`)).size, model.edges.length);
-  assert.deepEqual(model.edges.filter((edge) => edge.a === 'silent' || edge.b === 'silent'), []);
+  assert.equal(keys.size, model.edges.length);
+  for (const expected of [
+    'black-metal-doom|metal',
+    'classic-rock|metal',
+    'classic-rock|soul-funk',
+    'news|pop',
+    'grime|hiphop',
+    'grime|trap-drill',
+    'noise|techno',
+    'drum-and-bass|hardcore',
+    'hardcore|jungle',
+  ]) {
+    assert.equal(keys.has(expected), true, `${expected} is missing`);
+  }
+  assert.equal(keys.has('dubby|news'), false);
+  assert.equal(keys.has('hardcore|punk'), false);
+});
+
+test('keeps semantic positions and layouts for every axis preset', () => {
+  const model = buildCloudModel([list('metal', 10), list('pop', 10), list('news', 10)]);
+  const metal = model.nodeBySlug.get('metal');
+  const pop = model.nodeBySlug.get('pop');
+  const news = model.nodeBySlug.get('news');
+  for (const preset of Object.keys(CLOUD_AXIS_PRESETS)) {
+    assert.ok(metal.layouts[preset], `metal has no ${preset} layout`);
+    assert.ok(pop.layouts[preset], `pop has no ${preset} layout`);
+    assert.ok(news.layouts[preset], `news has no ${preset} layout`);
+  }
+  assert.ok(metal.y < pop.y, 'metal should sit above pop on the energy axis');
+  assert.ok(news.x < pop.x, 'news should sit left of pop on the electronic axis');
+  assert.deepEqual(metal.vector, CLOUD_GENRE_VECTORS.metal);
+});
+
+test('does not overlap in any axis preset', () => {
+  const slugs = Object.keys(CLOUD_GENRE_VECTORS);
+  const model = buildCloudModel(slugs.map((slug, index) => list(slug, 5 + (index % 40))));
+  for (const preset of Object.keys(CLOUD_AXIS_PRESETS)) {
+    for (let i = 0; i < model.nodes.length; i += 1) {
+      for (let j = i + 1; j < model.nodes.length; j += 1) {
+        const a = model.nodes[i];
+        const b = model.nodes[j];
+        const first = a.layouts[preset];
+        const second = b.layouts[preset];
+        const distance = Math.hypot(first.x - second.x, first.y - second.y);
+        assert.ok(
+          distance >= a.radius + b.radius + 20 - 0.001,
+          `${a.slug} and ${b.slug} overlap in ${preset}`,
+        );
+      }
+    }
+  }
 });
 
 test('ringLayout uses one, two, or three rings', () => {

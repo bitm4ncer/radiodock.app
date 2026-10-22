@@ -267,6 +267,47 @@ test('large cards keep the save button visible', () => {
   assert.match(html, /stations-collection-large-actions[\s\S]*stations-collection-save/);
 });
 
+test('large cards add country mix, station preview, and an open CTA', () => {
+  const list = {
+    slug: 'mix',
+    title: 'Mix',
+    source: 'radiodock',
+    featured: true,
+    stations: [
+      { stationuuid: 'a', name: 'Alpha', countrycode: 'GB' },
+      { stationuuid: 'b', name: 'Beta', countrycode: 'US' },
+      { stationuuid: 'c', name: 'Gamma', countrycode: 'GB' },
+      { stationuuid: 'd', name: 'Delta', countrycode: 'DE' },
+    ],
+  };
+  const html = renderDiscover({ lists: [list], view: 'large' });
+  assert.match(html, /Featured collection/);
+  assert.match(html, /4 stations · 3 countries/);
+  assert.match(html, /GB 2/);
+  assert.match(html, /Alpha, Beta, Gamma/);
+  assert.match(html, /\+ 1 more/);
+  assert.match(html, /stations-collection-large-open[^>]*data-collection="mix"/);
+  assert.match(html, /Open collection/);
+});
+
+test('expanded large cards include the collection note', () => {
+  const jungle = {
+    slug: 'jungle',
+    title: 'Jungle',
+    source: 'radiodock',
+    featured: false,
+    stations: [
+      { stationuuid: 'j1', name: 'Jungle One', countrycode: 'GB' },
+      { stationuuid: 'j2', name: 'Jungle Two', countrycode: 'GB' },
+    ],
+  };
+  const expanded = renderDiscover({ lists: [jungle], view: 'large', expandedSlug: 'jungle' });
+  assert.match(expanded, /stations-collection-large-note/);
+  assert.match(expanded, /By 1994, London pirate radio/);
+  const collapsed = renderDiscover({ lists: [jungle], view: 'large' });
+  assert.doesNotMatch(collapsed, /stations-collection-large-note/);
+});
+
 test('large expanded card renders every station', () => {
   const news = {
     slug: 'news',

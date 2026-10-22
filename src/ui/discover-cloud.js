@@ -1,92 +1,90 @@
 import { renderLogoSlot } from './station-logo.js';
 import { formatCount } from './stations-format.js';
+import {
+  CLOUD_AXIS_PRESETS,
+  CLOUD_GENRE_EDGES,
+  CLOUD_GENRE_VECTORS,
+  projectVector,
+} from './cloud-genre-map.js';
+import { collectionNoteFor } from './collection-notes.js';
 
-const PADDING = 240;
-const CLEARANCE = 20;
+const PADDING = 180;
+const CLEARANCE = 36;
 const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
-
-function hashString(value) {
-  let hash = 2166136261;
-  for (let index = 0; index < value.length; index += 1) {
-    hash ^= value.charCodeAt(index);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function jitter(slug, axis) {
-  const hash = hashString(`${slug}:${axis}`);
-  return (hash % 24001) / 1000 - 12;
-}
+const RELAX_ITERATIONS = 340;
+const REPULSION_RADIUS = 460;
+const REPULSION_STRENGTH = 2.4;
+const ANCHOR_PULL = 0.008;
+const RADIUS_MIN = 80;
+const RADIUS_MAX = 190;
+const RADIUS_COUNT_MIN = 5;
+const RADIUS_COUNT_MAX = 55;
+const INITIAL_ZOOM = 3.2;
 
 function clamp(value, minimum, maximum) {
   return Math.min(maximum, Math.max(minimum, value));
 }
 
-function jaccard(first, second) {
-  if (!first.size || !second.size) return 0;
-  let intersection = 0;
-  for (const value of first) {
-    if (second.has(value)) intersection += 1;
-  }
-  const union = first.size + second.size - intersection;
-  return union ? intersection / union : 0;
+function fallbackVector(index) {
+  const angle = index * GOLDEN_ANGLE;
+  const distance = 34 * Math.sqrt(index + 0.5);
+  return {
+    family: 'other',
+    energy: clamp(50 + Math.sin(angle) * distance, 6, 94),
+    electronic: clamp(50 + Math.cos(angle) * distance, 6, 94),
+    era: clamp(50 + Math.sin(angle + 2.1) * distance * 0.7, 6, 94),
+  };
 }
 
-function normaliseList(list) {
-  if (!list || typeof list !== 'object') return null;
-  const slug = typeof list.slug === 'string' ? list.slug.trim() : '';
-  const title = typeof list.title === 'string' ? list.title.trim() : '';
-  if (!slug || !title || !Array.isArray(list.stations) || !list.stations.length) return null;
-  return { slug, title, stations: list.stations };
-}
-
-export function buildCloudModel(lists = []) {
-  const nodes = [];
-  for (const raw of Array.isArray(lists) ? lists : []) {
-    const list = normaliseList(raw);
-    if (!list) continue;
-    const count = list.stations.length;
-    const radius = Math.min(140, Math.max(80, 72 + Math.sqrt(count) * 7));
-    const previewCount = Math.min(8, Math.max(5, count));
-    const previewStations = list.stations.slice(0, previewCount);
-    const preview = previewStations.map((station, index) => {
-      const angle = (index / previewStations.length) * Math.PI * 2 - Math.PI / 2;
-      return {
-        station,
-        x: Math.cos(angle) * radius * 0.42,
-        y: Math.sin(angle) * radius * 0.42,
-        size: clamp(radius * 0.32, 16, 34),
-      };
-    });
-    nodes.push({
-      slug: list.slug,
-      title: list.title,
-      count,
-      stations: list.stations,
-      preview,
-      radius,
-      x: 0,
-      y: 0,
-    });
-  }
-
-  nodes.forEach((node, index) => {
-    const angle = index * GOLDEN_ANGLE;
-    const distance = 165 * Math.sqrt(index + 0.5);
-    node.x = Math.cos(angle) * distance + jitter(node.slug, 'x');
-    node.y = Math.sin(angle) * distance + jitter(node.slug, 'y');
-  });
-
-  for (let iteration = 0; iteration < 220; iteration += 1) {
-    for (let first = 0; first < nodes.length; first += 1) {
-      for (let second = first + 1; second < nodes.length; second += 1) {
-        const a = nodes[first];
-        const b = nodes[second];
+function relaxLayout(nodes, preset) {
+  const anchors = nodes.map((node) => projectVector(node.vector, preset));
+  const points = anchors.map((point) => ({ x: point.x, y: point.y }));
+  for (let iteration = 0; iteration < RELAX_ITERATIONS; iteration += 1) {
+    for (let first = 0; first < points.length; first += 1) {
+      for (let second = first + 1; second < points.length; second += 1) {
+        const a = points[first];
+        const b = points[second];
         let dx = b.x - a.x;
         let dy = b.y - a.y;
         let distance = Math.hypot(dx, dy);
-        const minimum = a.radius + b.radius + CLEARANCE;
+        if (distance < 0.0001) {
+          dx = 0.0001;
+          dy = 0.0001;
+          distance = Math.hypot(dx, dy);
+        }
+        const nx = dx / distance;
+        const ny = dy / distance;
+        if (distance < REPULSION_RADIUS) {
+          const push = (1 - distance / REPULSION_RADIUS) * REPULSION_STRENGTH;
+          a.x -= nx * push;
+          a.y -= ny * push;
+          b.x += nx * push;
+          b.y += ny * push;
+        }
+        const minimum = nodes[first].radius + nodes[second].radius + CLEARANCE;
+        if (distance < minimum) {
+          const push = (minimum - distance) / 2 + 0.001;
+          a.x -= nx * push;
+          a.y -= ny * push;
+          b.x += nx * push;
+          b.y += ny * push;
+        }
+      }
+    }
+    for (let index = 0; index < points.length; index += 1) {
+      points[index].x += (anchors[index].x - points[index].x) * ANCHOR_PULL;
+      points[index].y += (anchors[index].y - points[index].y) * ANCHOR_PULL;
+    }
+  }
+  for (let iteration = 0; iteration < 80; iteration += 1) {
+    for (let first = 0; first < points.length; first += 1) {
+      for (let second = first + 1; second < points.length; second += 1) {
+        const a = points[first];
+        const b = points[second];
+        let dx = b.x - a.x;
+        let dy = b.y - a.y;
+        let distance = Math.hypot(dx, dy);
+        const minimum = nodes[first].radius + nodes[second].radius + CLEARANCE;
         if (distance >= minimum) continue;
         if (distance < 0.0001) {
           dx = 0.0001;
@@ -103,52 +101,98 @@ export function buildCloudModel(lists = []) {
       }
     }
   }
+  return points;
+}
 
-  if (nodes.length) {
-    const centerX = nodes.reduce((sum, node) => sum + node.x, 0) / nodes.length;
-    const centerY = nodes.reduce((sum, node) => sum + node.y, 0) / nodes.length;
-    for (const node of nodes) {
-      node.x -= centerX;
-      node.y -= centerY;
-    }
+function normaliseList(list) {
+  if (!list || typeof list !== 'object') return null;
+  const slug = typeof list.slug === 'string' ? list.slug.trim() : '';
+  const title = typeof list.title === 'string' ? list.title.trim() : '';
+  if (!slug || !title || !Array.isArray(list.stations) || !list.stations.length) return null;
+  return { slug, title, stations: list.stations, info: list.info ?? null };
+}
+
+function radiusForCount(count) {
+  const span = Math.sqrt(RADIUS_COUNT_MAX) - Math.sqrt(RADIUS_COUNT_MIN);
+  const progress = (Math.sqrt(count) - Math.sqrt(RADIUS_COUNT_MIN)) / span;
+  return RADIUS_MIN + Math.min(1, Math.max(0, progress)) * (RADIUS_MAX - RADIUS_MIN);
+}
+
+function nodeTier(count) {
+  if (count >= 40) return 'is-major';
+  if (count >= 20) return 'is-mid';
+  return 'is-minor';
+}
+
+export function buildCloudModel(lists = []) {
+  const nodes = [];
+  for (const raw of Array.isArray(lists) ? lists : []) {
+    const list = normaliseList(raw);
+    if (!list) continue;
+    const count = list.stations.length;
+    const radius = radiusForCount(count);
+    const previewCount = Math.min(8, Math.max(5, count));
+    const previewStations = list.stations.slice(0, previewCount);
+    const preview = previewStations.map((station, index) => {
+      const angle = (index / previewStations.length) * Math.PI * 2 - Math.PI / 2;
+      return {
+        station,
+        x: Math.cos(angle) * radius * 0.42,
+        y: Math.sin(angle) * radius * 0.42,
+        size: clamp(radius * 0.32, 16, 54),
+      };
+    });
+    const vector = CLOUD_GENRE_VECTORS[list.slug] ?? fallbackVector(nodes.length);
+    nodes.push({
+      slug: list.slug,
+      title: list.title,
+      count,
+      stations: list.stations,
+      preview,
+      radius,
+      vector,
+      family: vector.family,
+      info: collectionNoteFor(list),
+      layouts: {},
+      x: 0,
+      y: 0,
+    });
+  }
+
+  for (const preset of Object.values(CLOUD_AXIS_PRESETS)) {
+    const points = relaxLayout(nodes, preset);
+    nodes.forEach((node, index) => {
+      node.layouts[preset.key] = points[index];
+    });
+  }
+
+  const initial = CLOUD_AXIS_PRESETS.vibe;
+  for (const node of nodes) {
+    node.x = node.layouts[initial.key].x;
+    node.y = node.layouts[initial.key].y;
   }
 
   const nodeBySlug = new Map();
   const stationByUuid = new Map();
-  const countrySets = [];
   for (const node of nodes) {
     nodeBySlug.set(node.slug, node);
-    const countries = new Set();
     for (const station of node.stations) {
       const uuid = station?.stationuuid ?? station?.uuid ?? station?.id;
       if (uuid && !stationByUuid.has(uuid)) stationByUuid.set(uuid, { station, node });
-      const country = String(station?.countrycode ?? '').trim().toUpperCase();
-      if (country) countries.add(country);
     }
-    countrySets.push(countries);
   }
 
   const edges = [];
   const edgeKeys = new Set();
-  for (let first = 0; first < nodes.length; first += 1) {
-    const candidates = [];
-    for (let second = 0; second < nodes.length; second += 1) {
-      if (first === second) continue;
-      const similarity = jaccard(countrySets[first], countrySets[second]);
-      if (similarity > 0) candidates.push({ second, similarity });
-    }
-    candidates.sort((a, b) => (
-      b.similarity - a.similarity
-      || (nodes[a.second].slug < nodes[b.second].slug ? -1 : nodes[a.second].slug > nodes[b.second].slug ? 1 : 0)
-    ));
-    for (const candidate of candidates.slice(0, 2)) {
-      const a = nodes[first].slug;
-      const b = nodes[candidate.second].slug;
-      const key = a < b ? `${a}|${b}` : `${b}|${a}`;
-      if (edgeKeys.has(key)) continue;
-      edgeKeys.add(key);
-      edges.push(a < b ? { a, b } : { a: b, b: a });
-    }
+  const presentSlugs = new Set(nodes.map((node) => node.slug));
+  for (const [first, second] of CLOUD_GENRE_EDGES) {
+    if (first === second || !presentSlugs.has(first) || !presentSlugs.has(second)) continue;
+    const a = first < second ? first : second;
+    const b = first < second ? second : first;
+    const key = `${a}|${b}`;
+    if (edgeKeys.has(key)) continue;
+    edgeKeys.add(key);
+    edges.push({ a, b });
   }
 
   if (!nodes.length) {
@@ -161,10 +205,16 @@ export function buildCloudModel(lists = []) {
     };
   }
 
-  const minX = Math.min(...nodes.map((node) => node.x - node.radius));
-  const maxX = Math.max(...nodes.map((node) => node.x + node.radius));
-  const minY = Math.min(...nodes.map((node) => node.y - node.radius));
-  const maxY = Math.max(...nodes.map((node) => node.y + node.radius));
+  const points = [];
+  for (const node of nodes) {
+    for (const layout of Object.values(node.layouts)) {
+      points.push({ x: layout.x, y: layout.y, radius: node.radius });
+    }
+  }
+  const minX = Math.min(...points.map((point) => point.x - point.radius));
+  const maxX = Math.max(...points.map((point) => point.x + point.radius));
+  const minY = Math.min(...points.map((point) => point.y - point.radius));
+  const maxY = Math.max(...points.map((point) => point.y + point.radius));
   const bounds = {
     minX: minX - PADDING,
     minY: minY - PADDING,
@@ -280,11 +330,19 @@ function hydrateLogos(root) {
 
 export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPlay = async () => false } = {}) {
   const model = buildCloudModel(lists);
+  const neighbors = new Map();
+  for (const edge of model.edges) {
+    if (!neighbors.has(edge.a)) neighbors.set(edge.a, new Set());
+    if (!neighbors.has(edge.b)) neighbors.set(edge.b, new Set());
+    neighbors.get(edge.a).add(edge.b);
+    neighbors.get(edge.b).add(edge.a);
+  }
   let destroyed = false;
   let fitScale = 0;
   let camera = { scale: 1, tx: 0, ty: 0 };
   let overviewCamera = null;
   let ring = null;
+  let noteEl = null;
   let resultsEl = null;
   let tooltip = null;
   let highlightTimer = null;
@@ -292,6 +350,17 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   let fitTimer = null;
   const flashTimers = new Set();
   let cameraFrame = 0;
+  let axis = CLOUD_AXIS_PRESETS.vibe.key;
+  let axisFrame = 0;
+  let labelFrame = 0;
+  let axisControl = null;
+  let axisX = null;
+  let axisY = null;
+  let axisXStart = null;
+  let axisXEnd = null;
+  let axisYStart = null;
+  let axisYEnd = null;
+  const axisButtons = new Map();
   let suppressClick = false;
   let dragMoved = false;
   let dragStart = null;
@@ -322,42 +391,63 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     svg.style.width = `${model.bounds.width}px`;
     svg.style.height = `${model.bounds.height}px`;
   }
+  function edgePath(first, second) {
+    const dx = second.x - first.x;
+    const dy = second.y - first.y;
+    const distance = Math.max(0.0001, Math.hypot(dx, dy));
+    const ux = dx / distance;
+    const uy = dy / distance;
+    const startGap = Math.min(first.radius + 6, distance * 0.45);
+    const endGap = Math.min(second.radius + 6, distance * 0.45);
+    const x1 = first.x + ux * startGap - model.bounds.minX;
+    const y1 = first.y + uy * startGap - model.bounds.minY;
+    const x2 = second.x - ux * endGap - model.bounds.minX;
+    const y2 = second.y - uy * endGap - model.bounds.minY;
+    const chord = Math.max(0.0001, Math.hypot(x2 - x1, y2 - y1));
+    const handle = Math.min(chord * 0.42, 240);
+    const bend = Math.min(chord * 0.16, 64);
+    const nx = -uy;
+    const ny = ux;
+    const c1x = x1 + ux * handle + nx * bend;
+    const c1y = y1 + uy * handle + ny * bend;
+    const c2x = x2 - ux * handle - nx * bend;
+    const c2y = y2 - uy * handle - ny * bend;
+    return `M ${x1} ${y1} C ${c1x} ${c1y} ${c2x} ${c2y} ${x2} ${y2}`;
+  }
+
   const linkElements = [];
   for (const edge of model.edges) {
     const first = model.nodeBySlug.get(edge.a);
     const second = model.nodeBySlug.get(edge.b);
     if (!first || !second) continue;
-    const x1 = first.x - model.bounds.minX;
-    const y1 = first.y - model.bounds.minY;
-    const x2 = second.x - model.bounds.minX;
-    const y2 = second.y - model.bounds.minY;
-    const midX = (x1 + x2) / 2 + (y2 - y1) * 0.08;
-    const midY = (y1 + y2) / 2 - (x2 - x1) * 0.08;
     const path = document.createElementNS(svgNS, 'path');
     path.setAttribute('class', 'stations-cloud-link');
-    path.setAttribute('d', `M ${x1} ${y1} Q ${midX} ${midY} ${x2} ${y2}`);
+    path.setAttribute('d', edgePath(first, second));
     path.setAttribute('vector-effect', 'non-scaling-stroke');
+    path.style.strokeWidth = (1.8 + Math.min(1.2, Math.min(first.count, second.count) / 75)).toFixed(2);
     path.dataset.a = edge.a;
     path.dataset.b = edge.b;
     svg.append(path);
     linkElements.push(path);
   }
 
+  function updateLinkPaths() {
+    for (const path of linkElements) {
+      const first = model.nodeBySlug.get(path.dataset.a);
+      const second = model.nodeBySlug.get(path.dataset.b);
+      if (first && second) path.setAttribute('d', edgePath(first, second));
+    }
+  }
+
   const nodeElements = new Map();
   const labelElements = [];
-  const labelSlugs = new Set(
-    [...model.nodes]
-      .sort((a, b) => b.count - a.count || (a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0))
-      .slice(0, 12)
-      .map((node) => node.slug),
-  );
 
   world.append(svg);
 
   model.nodes.forEach((node, index) => {
     const nodeEl = document.createElement('button');
     nodeEl.type = 'button';
-    nodeEl.className = 'stations-cloud-node';
+    nodeEl.className = `stations-cloud-node ${nodeTier(node.count)}`;
     nodeEl.dataset.slug = node.slug;
     nodeEl.setAttribute('aria-label', `${node.title}, ${formatCount(node.count)} stations`);
     nodeEl.style.left = `${node.x - node.radius}px`;
@@ -365,7 +455,6 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     nodeEl.style.width = `${node.radius * 2}px`;
     nodeEl.style.height = `${node.radius * 2}px`;
     nodeEl.style.setProperty('--float-delay', `-${(index % 8) * 0.9}s`);
-    if (labelSlugs.has(node.slug)) nodeEl.classList.add('is-label-visible');
 
     const bubble = document.createElement('span');
     bubble.className = 'stations-cloud-bubble';
@@ -443,8 +532,8 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   zoomReset.type = 'button';
   zoomReset.dataset.cloudZoom = 'reset';
   zoomReset.textContent = '↺';
-  zoomReset.setAttribute('aria-label', 'Reset view');
-  zoomReset.title = 'Reset view';
+  zoomReset.setAttribute('aria-label', 'Fit all collections');
+  zoomReset.title = 'Fit all collections';
   zoomIn.addEventListener('click', (evt) => {
     evt.stopPropagation();
     const rect = stage.getBoundingClientRect();
@@ -460,6 +549,40 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     reset();
   });
   controls.append(zoomIn, zoomOut, zoomReset);
+
+  axisControl = document.createElement('div');
+  axisControl.className = 'stations-cloud-axes';
+  axisControl.setAttribute('role', 'group');
+  axisControl.setAttribute('aria-label', 'Cloud axes');
+  for (const preset of Object.values(CLOUD_AXIS_PRESETS)) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.dataset.cloudAxis = preset.key;
+    button.textContent = preset.label;
+    button.setAttribute('aria-pressed', String(preset.key === axis));
+    button.title = `${preset.xLabels[0]} to ${preset.xLabels[1]}, ${preset.yLabels[0]} to ${preset.yLabels[1]}`;
+    button.addEventListener('click', (evt) => {
+      evt.stopPropagation();
+      setAxis(preset.key);
+    });
+    axisControl.append(button);
+    axisButtons.set(preset.key, button);
+  }
+
+  axisX = document.createElement('div');
+  axisX.className = 'stations-cloud-axis stations-cloud-axis--x';
+  axisX.setAttribute('aria-hidden', 'true');
+  axisXStart = document.createElement('span');
+  axisXEnd = document.createElement('span');
+  axisX.append(axisXStart, axisXEnd);
+
+  axisY = document.createElement('div');
+  axisY.className = 'stations-cloud-axis stations-cloud-axis--y';
+  axisY.setAttribute('aria-hidden', 'true');
+  axisYStart = document.createElement('span');
+  axisYEnd = document.createElement('span');
+  axisY.append(axisYEnd, axisYStart);
+  updateAxisLabels();
 
   const hint = document.createElement('div');
   hint.className = 'stations-cloud-hint';
@@ -478,7 +601,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   tooltip.className = 'stations-cloud-tooltip';
   tooltip.hidden = true;
 
-  stage.append(back, world, controls, hint, tooltip);
+  stage.append(back, world, axisControl, axisX, axisY, controls, hint, tooltip);
   if (!model.nodes.length) {
     const empty = document.createElement('div');
     empty.className = 'stations-cloud-empty';
@@ -492,7 +615,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     const width = Math.max(1, stage.clientWidth || host.clientWidth || 1);
     const height = Math.max(1, stage.clientHeight || host.clientHeight || 1);
     if (!model.nodes.length) return { scale: 1, tx: 0, ty: 0 };
-    const scale = Math.max(0.0001, Math.min(width / model.bounds.width, height / model.bounds.height) * 0.84);
+    const scale = Math.max(0.0001, Math.min(width / model.bounds.width, height / model.bounds.height) * 0.92);
     return {
       scale,
       tx: width / 2 - (model.bounds.minX + model.bounds.width / 2) * scale,
@@ -511,14 +634,224 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     const labelScale = Math.min(8, 1 / scale);
     for (const label of labelElements) label.style.transform = `scale(${labelScale})`;
     if (ring?.label) ring.label.style.transform = `scale(${labelScale})`;
-    stage.classList.toggle('is-zoomed', fitScale > 0 && scale >= fitScale * 1.15);
+    stage.classList.toggle('is-zoomed', fitScale > 0 && scale >= fitScale * 1.8);
   }
 
-  function fitCamera() {
+  function applyLabelSide(label, side, gap) {
+    label.style.left = '50%';
+    label.style.right = 'auto';
+    label.style.top = `calc(100% + ${gap}px)`;
+    label.style.bottom = 'auto';
+    label.style.translate = '-50% 0';
+    label.style.transformOrigin = 'top center';
+    label.style.textAlign = 'center';
+    if (side === 'above') {
+      label.style.top = 'auto';
+      label.style.bottom = `calc(100% + ${gap}px)`;
+      label.style.transformOrigin = 'bottom center';
+    } else if (side === 'right') {
+      label.style.left = `calc(100% + ${gap}px)`;
+      label.style.top = '50%';
+      label.style.translate = '0 -50%';
+      label.style.transformOrigin = 'left center';
+      label.style.textAlign = 'left';
+    } else if (side === 'left') {
+      label.style.left = 'auto';
+      label.style.right = `calc(100% + ${gap}px)`;
+      label.style.top = '50%';
+      label.style.translate = '0 -50%';
+      label.style.transformOrigin = 'right center';
+      label.style.textAlign = 'right';
+    }
+  }
+
+  function overlapArea(rect, others) {
+    let area = 0;
+    for (const other of others) {
+      const width = Math.min(rect.right, other.right) - Math.max(rect.left, other.left);
+      const height = Math.min(rect.bottom, other.bottom) - Math.max(rect.top, other.top);
+      if (width > 0 && height > 0) area += width * height;
+    }
+    return area;
+  }
+
+  function layoutOverviewLabels() {
+    if (destroyed) return;
+    const stageRect = stage.getBoundingClientRect();
+    const keepOut = [axisControl, controls, hint, back, axisX, axisY]
+      .filter((element) => element && !element.hidden)
+      .map((element) => element.getBoundingClientRect())
+      .filter((rect) => rect.width > 0 && rect.height > 0)
+      .map((rect) => ({ left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom }));
+    const placed = [...keepOut];
+    const nodes = [...model.nodes].sort((a, b) => (
+      b.count - a.count || (a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0)
+    ));
+    let fallbackCount = 0;
+    for (const node of nodes) {
+      const element = nodeElements.get(node.slug);
+      const label = element?.querySelector('.stations-cloud-label');
+      if (!label) continue;
+      const nodeRect = element.getBoundingClientRect();
+      const measured = label.getBoundingClientRect();
+      const width = Math.max(1, measured.width);
+      const height = Math.max(1, measured.height);
+      const centerX = nodeRect.left + nodeRect.width / 2;
+      const centerY = nodeRect.top + nodeRect.height / 2;
+      const sides = [
+        { side: 'below', gap: 6, x: centerX - width / 2, y: nodeRect.bottom + 6 },
+        { side: 'above', gap: 6, x: centerX - width / 2, y: nodeRect.top - 6 - height },
+        { side: 'right', gap: 6, x: nodeRect.right + 6, y: centerY - height / 2 },
+        { side: 'left', gap: 6, x: nodeRect.left - 6 - width, y: centerY - height / 2 },
+        { side: 'below', gap: 24, x: centerX - width / 2, y: nodeRect.bottom + 24 },
+        { side: 'above', gap: 24, x: centerX - width / 2, y: nodeRect.top - 24 - height },
+        { side: 'right', gap: 24, x: nodeRect.right + 24, y: centerY - height / 2 },
+        { side: 'left', gap: 24, x: nodeRect.left - 24 - width, y: centerY - height / 2 },
+      ];
+      const candidates = sides.map((candidate) => {
+        const rect = {
+          left: candidate.x,
+          right: candidate.x + width,
+          top: candidate.y,
+          bottom: candidate.y + height,
+        };
+        const inside = (
+          rect.left >= stageRect.left + 3
+          && rect.right <= stageRect.right - 3
+          && rect.top >= stageRect.top + 3
+          && rect.bottom <= stageRect.bottom - 3
+        );
+        const overlaps = placed.filter((other) => (
+          rect.left < other.right + 4
+          && rect.right > other.left - 4
+          && rect.top < other.bottom + 4
+          && rect.bottom > other.top - 4
+        )).length;
+        return { ...candidate, rect, inside, overlaps, area: overlapArea(rect, placed) };
+      });
+      const best = candidates.find((candidate) => candidate.inside && candidate.overlaps === 0)
+        ?? candidates.slice().sort((a, b) => (
+          Number(b.inside) - Number(a.inside)
+          || a.overlaps - b.overlaps
+          || a.area - b.area
+          || a.gap - b.gap
+        ))[0];
+      applyLabelSide(label, best.side, best.gap);
+      element.classList.add('is-label-visible');
+      placed.push(best.rect);
+      if (!best.inside || best.overlaps > 0) fallbackCount += 1;
+    }
+    stage.dataset.cloudLabels = String(nodes.length);
+    stage.dataset.cloudLabelFallbacks = String(fallbackCount);
+  }
+
+  function scheduleLabelLayout() {
+    cancelAnimationFrame(labelFrame);
+    labelFrame = requestAnimationFrame(() => {
+      labelFrame = 0;
+      layoutOverviewLabels();
+    });
+  }
+
+  function fitCamera({ spread = false } = {}) {
     const target = fitTarget();
     fitScale = target.scale;
-    camera = { ...target };
+    if (spread && model.nodes.length) {
+      const width = Math.max(1, stage.clientWidth || host.clientWidth || 1);
+      const height = Math.max(1, stage.clientHeight || host.clientHeight || 1);
+      const scale = clampScale(fitScale * INITIAL_ZOOM);
+      camera = {
+        scale,
+        tx: width / 2 - (model.bounds.minX + model.bounds.width / 2) * scale,
+        ty: height / 2 - (model.bounds.minY + model.bounds.height / 2) * scale,
+      };
+    } else {
+      camera = { ...target };
+    }
     applyCamera();
+    scheduleLabelLayout();
+  }
+
+  function updateAxisLabels() {
+    const preset = CLOUD_AXIS_PRESETS[axis];
+    if (!preset) return;
+    axisXStart.textContent = preset.xLabels[0];
+    axisXEnd.textContent = preset.xLabels[1];
+    axisYStart.textContent = preset.yLabels[0];
+    axisYEnd.textContent = preset.yLabels[1];
+  }
+
+  function snapAxis(key) {
+    for (const node of model.nodes) {
+      const layout = node.layouts[key];
+      if (!layout) continue;
+      node.x = layout.x;
+      node.y = layout.y;
+      const element = nodeElements.get(node.slug);
+      if (element) {
+        element.style.left = `${node.x - node.radius}px`;
+        element.style.top = `${node.y - node.radius}px`;
+      }
+    }
+    updateLinkPaths();
+    scheduleLabelLayout();
+  }
+
+  function finishAxis() {
+    if (!axisFrame) return;
+    cancelAnimationFrame(axisFrame);
+    axisFrame = 0;
+    snapAxis(axis);
+  }
+
+  function animateAxis(fromKey, toKey) {
+    cancelAnimationFrame(axisFrame);
+    axisFrame = 0;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const from = model.nodes.map((node) => {
+      const layout = node.layouts[fromKey];
+      return layout ? { x: layout.x, y: layout.y } : { x: node.x, y: node.y };
+    });
+    const to = model.nodes.map((node) => node.layouts[toKey] ?? { x: node.x, y: node.y });
+    if (reduced) {
+      snapAxis(toKey);
+      return;
+    }
+    const started = performance.now();
+    const duration = 460;
+    const step = (now) => {
+      if (destroyed) return;
+      const progress = Math.min(1, (now - started) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      model.nodes.forEach((node, index) => {
+        node.x = from[index].x + (to[index].x - from[index].x) * eased;
+        node.y = from[index].y + (to[index].y - from[index].y) * eased;
+        const element = nodeElements.get(node.slug);
+        if (element) {
+          element.style.left = `${node.x - node.radius}px`;
+          element.style.top = `${node.y - node.radius}px`;
+        }
+      });
+      updateLinkPaths();
+      if (progress < 1) {
+        axisFrame = requestAnimationFrame(step);
+      } else {
+        axisFrame = 0;
+        snapAxis(toKey);
+      }
+    };
+    axisFrame = requestAnimationFrame(step);
+  }
+
+  function setAxis(key) {
+    if (destroyed || ring || key === axis || !CLOUD_AXIS_PRESETS[key]) return;
+    const previous = axis;
+    axis = key;
+    for (const [buttonKey, button] of axisButtons) {
+      button.setAttribute('aria-pressed', String(buttonKey === axis));
+    }
+    updateAxisLabels();
+    animateAxis(previous, key);
   }
 
   function flyTo(target, { animate = true } = {}) {
@@ -531,6 +864,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     if (!animate || reduced) {
       camera = next;
       applyCamera();
+      scheduleLabelLayout();
       return;
     }
     cancelAnimationFrame(cameraFrame);
@@ -547,8 +881,12 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
         ty: start.ty + (next.ty - start.ty) * eased,
       };
       applyCamera();
-      if (progress < 1) cameraFrame = requestAnimationFrame(step);
-      else cameraFrame = 0;
+      if (progress < 1) {
+        cameraFrame = requestAnimationFrame(step);
+      } else {
+        cameraFrame = 0;
+        scheduleLabelLayout();
+      }
     };
     cameraFrame = requestAnimationFrame(step);
   }
@@ -568,14 +906,14 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   }
 
   function onWheel(evt) {
-    if (evt.target.closest('.stations-cloud-results')) return;
+    if (evt.target.closest('.stations-cloud-results, .stations-cloud-note-panel')) return;
     evt.preventDefault();
     zoomAt(evt.clientX, evt.clientY, Math.exp(-evt.deltaY * 0.0015));
   }
 
   function onPointerDown(evt) {
     if (evt.button != null && evt.button !== 0) return;
-    if (evt.target.closest('.stations-cloud-results, .stations-cloud-controls, .stations-cloud-back')) return;
+    if (evt.target.closest('.stations-cloud-results, .stations-cloud-note-panel, .stations-cloud-controls, .stations-cloud-axes, .stations-cloud-back')) return;
     pointers.set(evt.pointerId, { x: evt.clientX, y: evt.clientY });
     if (pointers.size === 1) {
       dragStart = { x: evt.clientX, y: evt.clientY };
@@ -669,16 +1007,19 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       return;
     }
     if (!ring) return;
-    if (evt.target.closest('.stations-cloud-node, .stations-cloud-station, .stations-cloud-controls, .stations-cloud-back, .stations-cloud-results, .stations-cloud-tooltip')) return;
+    if (evt.target.closest('.stations-cloud-node, .stations-cloud-station, .stations-cloud-controls, .stations-cloud-axes, .stations-cloud-axis, .stations-cloud-back, .stations-cloud-results, .stations-cloud-note-panel, .stations-cloud-tooltip')) return;
     closeRing();
   }
 
   function activateNode(slug) {
     if (stage.classList.contains('is-ring-open')) return;
+    const related = slug ? neighbors.get(slug) ?? new Set() : null;
     for (const [key, element] of nodeElements) {
       const active = key === slug;
+      const isRelated = !!related?.has(key);
       element.classList.toggle('is-active', active);
-      element.classList.toggle('is-dimmed', !!slug && !active);
+      element.classList.toggle('is-related', isRelated);
+      element.classList.toggle('is-dimmed', !!slug && !active && !isRelated);
     }
     for (const path of linkElements) {
       const active = !!slug && (path.dataset.a === slug || path.dataset.b === slug);
@@ -706,20 +1047,69 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     if (resultsEl) resultsEl.hidden = true;
   }
 
+  function clearCollectionNote() {
+    noteEl?.remove();
+    noteEl = null;
+  }
+
+  function renderCollectionNote(node) {
+    clearCollectionNote();
+    if (!node?.info?.short) return;
+    const panel = document.createElement('div');
+    panel.className = 'stations-cloud-note-panel';
+    panel.setAttribute('role', 'region');
+    panel.setAttribute('aria-label', `About ${node.title}`);
+    const kicker = document.createElement('span');
+    kicker.className = 'stations-cloud-note-kicker';
+    kicker.textContent = 'Collection note';
+    const title = document.createElement('strong');
+    title.className = 'stations-cloud-note-title';
+    title.textContent = node.title;
+    const text = document.createElement('p');
+    text.className = 'stations-cloud-note-text';
+    text.id = 'stationsCloudNoteText';
+    text.textContent = node.info.long ?? node.info.short;
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'stations-cloud-note-toggle';
+    toggle.textContent = 'Expand';
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-controls', text.id);
+    toggle.addEventListener('click', (evt) => {
+      evt.stopPropagation();
+      const expanded = panel.classList.toggle('is-expanded');
+      toggle.textContent = expanded ? 'Collapse' : 'Expand';
+      toggle.setAttribute('aria-expanded', String(expanded));
+      if (!expanded) panel.scrollTop = 0;
+    });
+    panel.append(kicker, title, text, toggle);
+    stage.append(panel);
+    noteEl = panel;
+    requestAnimationFrame(() => {
+      if (!panel.isConnected) return;
+      toggle.hidden = text.scrollHeight <= text.clientHeight + 1;
+    });
+  }
+
   function clearRing() {
     clearTimeout(highlightTimer);
     highlightTimer = null;
+    clearCollectionNote();
     if (!ring) return;
     ring.element.remove();
     ring = null;
     stage.classList.remove('is-ring-open');
     for (const element of nodeElements.values()) {
-      element.classList.remove('is-dimmed', 'is-open');
+      element.classList.remove('is-active', 'is-related', 'is-dimmed', 'is-open');
       element.removeAttribute('aria-hidden');
       element.removeAttribute('tabindex');
     }
     for (const path of linkElements) path.classList.remove('is-dimmed');
     for (const button of controls.querySelectorAll('button')) {
+      button.removeAttribute('aria-hidden');
+      button.removeAttribute('tabindex');
+    }
+    for (const button of axisButtons.values()) {
       button.removeAttribute('aria-hidden');
       button.removeAttribute('tabindex');
     }
@@ -795,6 +1185,8 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
 
   function openCollection(slug) {
     if (destroyed) return;
+    finishAxis();
+    hideTooltip();
     const node = model.nodeBySlug.get(slug);
     if (!node) return;
     const fit = fitTarget();
@@ -809,6 +1201,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     stage.classList.add('is-ring-open');
     for (const [key, element] of nodeElements) {
       const selected = key === slug;
+      element.classList.remove('is-active', 'is-related');
       element.classList.toggle('is-dimmed', !selected);
       element.classList.toggle('is-open', selected);
       element.setAttribute('aria-hidden', 'true');
@@ -816,6 +1209,10 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     }
     for (const path of linkElements) path.classList.add('is-dimmed');
     for (const button of controls.querySelectorAll('button')) {
+      button.setAttribute('aria-hidden', 'true');
+      button.tabIndex = -1;
+    }
+    for (const button of axisButtons.values()) {
       button.setAttribute('aria-hidden', 'true');
       button.tabIndex = -1;
     }
@@ -887,6 +1284,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     hydrateLogos(element);
 
     ring = { slug, node, element, label, current, stationEls, ringScale, size, points };
+    renderCollectionNote(node);
     if (nowPlayingId) setNowPlaying(nowPlayingId);
     flyTo({
       scale: ringScale,
@@ -898,6 +1296,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
 
   function reset() {
     if (destroyed) return;
+    finishAxis();
     clearRing();
     overviewCamera = null;
     hideResults();
@@ -1027,7 +1426,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       applyCamera();
       return;
     }
-    fitCamera();
+    fitCamera({ spread: true });
   }
 
   function destroy() {
@@ -1035,6 +1434,11 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     destroyed = true;
     cancelAnimationFrame(cameraFrame);
     cameraFrame = 0;
+    cancelAnimationFrame(axisFrame);
+    axisFrame = 0;
+    cancelAnimationFrame(labelFrame);
+    labelFrame = 0;
+    axisButtons.clear();
     clearTimeout(highlightTimer);
     highlightTimer = null;
     clearTimeout(suppressTimer);
@@ -1054,6 +1458,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     stage.removeEventListener('click', onStageClick);
     pointers.clear();
     ring = null;
+    noteEl = null;
     resultsEl = null;
     tooltip = null;
     host.innerHTML = '';
@@ -1070,7 +1475,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
 
   resizeObserver = new ResizeObserver(handleResize);
   resizeObserver.observe(stage);
-  if (model.nodes.length) fitCamera();
+  if (model.nodes.length) fitCamera({ spread: true });
   else {
     camera = { scale: 1, tx: 0, ty: 0 };
     applyCamera();
@@ -1078,7 +1483,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   if (nowPlayingId) setNowPlaying(nowPlayingId);
   fitTimer = setTimeout(() => {
     fitTimer = null;
-    if (!destroyed && !ring) fitCamera();
+    if (!destroyed && !ring) fitCamera({ spread: true });
   }, 0);
 
   return {

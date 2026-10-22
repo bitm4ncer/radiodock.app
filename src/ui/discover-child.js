@@ -4,6 +4,7 @@
 import { renderLogoSlot } from './station-logo.js';
 import { stationsRow, HEART_ICON, PLUS_ICON } from './stations-row.js';
 import { escapeHtml, countryLabel, formatCount } from './stations-format.js';
+import { collectionNoteFor } from './collection-notes.js';
 
 export function normaliseDiscover(data) {
   const raw = Array.isArray(data?.curated?.lists) ? data.curated.lists : [];
@@ -29,13 +30,36 @@ export function normaliseDiscover(data) {
 }
 
 function pluralCount(count, singular) {
-  return `${formatCount(count)} ${singular}${count === 1 ? '' : 's'}`;
+  const plural = singular === 'country' ? 'countries' : `${singular}s`;
+  return `${formatCount(count)} ${count === 1 ? singular : plural}`;
 }
 
 function logoStack(stations = [], { limit = 5, large = false } = {}) {
   return `<span class="stations-logo-stack${large ? ' is-large' : ''}">${stations.slice(0, limit)
     .map((station) => renderLogoSlot(station, { imgClass: 'stations-stack-logo', initialsClass: 'stations-stack-initials', size: 'sm', resolveById: true, priority: true }))
     .join('')}</span>`;
+}
+
+function countryCounts(stations = []) {
+  const counts = new Map();
+  for (const station of stations) {
+    const code = String(station?.countrycode ?? '').trim().toUpperCase();
+    if (!code) continue;
+    counts.set(code, (counts.get(code) ?? 0) + 1);
+  }
+  return [...counts.entries()].sort((first, second) => (
+    second[1] - first[1] || first[0].localeCompare(second[0])
+  ));
+}
+
+function stationPreview(stations = [], limit = 3) {
+  const names = stations
+    .map((station) => String(station?.name ?? '').trim())
+    .filter(Boolean);
+  if (!names.length) return 'No station names yet';
+  const shown = names.slice(0, limit).map(escapeHtml).join(', ');
+  const more = names.length - limit;
+  return `${shown}${more > 0 ? ` <span class="stations-collection-large-more">+ ${formatCount(more)} more</span>` : ''}`;
 }
 
 const CHECK_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.4 4.4L19 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -84,16 +108,24 @@ export function renderLargeCollectionCard(list, { saved = false, saving = false,
   const slug = escapeHtml(list.slug);
   const title = escapeHtml(list.title);
   const label = expanded ? `Hide stations in ${title}` : `Show all stations in ${title}`;
+  const isUser = user || list.source === 'user';
+  const note = collectionNoteFor(list);
+  const countries = countryCounts(list.stations);
+  const countryChips = countries.slice(0, 3).map(([code, count]) => (
+    `<span class="stations-collection-large-country" title="${escapeHtml(countryLabel(code, code))}">${escapeHtml(code)} ${formatCount(count)}</span>`
+  )).join('');
+  const kicker = isUser ? 'Community collection' : list.featured ? 'Featured collection' : 'Curated collection';
+  const countLine = `${pluralCount(list.stations.length, 'station')}${countries.length ? ` · ${pluralCount(countries.length, 'country')}` : ''}`;
   return `
     <div class="stations-collection-card-wrap" data-large-slug="${slug}">
-      <div class="stations-collection-card is-large${user ? ' is-user' : ''}">
+      <div class="stations-collection-card is-large${isUser ? ' is-user' : ''}">
         <div class="stations-collection-large-head">
           <button type="button" class="stations-collection-large-main" data-collection="${slug}">
-            <span class="stations-collection-card-top">${logoStack(list.stations, { limit: 8, large: true })}</span>
+            <span class="stations-collection-card-top">${logoStack(list.stations, { limit: 6, large: true })}</span>
             <span class="stations-collection-large-copy">
-              ${user ? '<span class="stations-collection-card-kicker">Community collection</span>' : ''}
+              <span class="stations-collection-card-kicker">${escapeHtml(kicker)}</span>
               <strong>${title}</strong>
-              <span class="stations-collection-card-count">${pluralCount(list.stations.length, 'station')}</span>
+              <span class="stations-collection-card-count">${countLine}</span>
             </span>
           </button>
           <div class="stations-collection-large-actions">
@@ -101,8 +133,25 @@ export function renderLargeCollectionCard(list, { saved = false, saving = false,
             <button type="button" class="stations-collection-more" data-action="toggle-collection" data-slug="${slug}" aria-expanded="${expanded ? 'true' : 'false'}" aria-label="${label}">...</button>
           </div>
         </div>
+        <div class="stations-collection-large-detail">
+          <div class="stations-collection-large-row">
+            <span class="stations-collection-large-label">Countries</span>
+            <span class="stations-collection-large-countries">${countryChips || '<span class="stations-collection-large-country">No country data</span>'}</span>
+          </div>
+          <div class="stations-collection-large-row">
+            <span class="stations-collection-large-label">Includes</span>
+            <span class="stations-collection-large-preview">${stationPreview(list.stations)}</span>
+          </div>
+        </div>
+        <div class="stations-collection-large-foot">
+          <span class="stations-collection-large-source">${escapeHtml(isUser ? 'Community collection' : 'Curated by RadioDock')}</span>
+          <button type="button" class="stations-collection-large-open" data-collection="${slug}" aria-label="Open ${title}">Open collection <span aria-hidden="true">→</span></button>
+        </div>
         ${expanded
-          ? `<div class="stations-collection-large-stations"><div class="stations-collection-grid is-tiles">${list.stations.map(collectionTile).join('')}</div></div>`
+          ? `<div class="stations-collection-large-stations">
+              ${note?.long ? `<p class="stations-collection-large-note">${escapeHtml(note.long)}</p>` : ''}
+              <div class="stations-collection-grid is-tiles">${list.stations.map(collectionTile).join('')}</div>
+            </div>`
           : ''}
       </div>
     </div>
