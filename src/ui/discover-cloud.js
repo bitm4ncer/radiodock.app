@@ -288,6 +288,9 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   let resultsEl = null;
   let tooltip = null;
   let highlightTimer = null;
+  let suppressTimer = null;
+  let fitTimer = null;
+  const flashTimers = new Set();
   let cameraFrame = 0;
   let suppressClick = false;
   let dragMoved = false;
@@ -405,7 +408,9 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     });
     nodeEl.addEventListener('pointerenter', () => activateNode(node.slug));
     nodeEl.addEventListener('pointerleave', () => activateNode(null));
-    nodeEl.addEventListener('focus', () => activateNode(node.slug));
+    nodeEl.addEventListener('focus', () => {
+      if (nodeEl.matches(':focus-visible')) activateNode(node.slug);
+    });
     nodeEl.addEventListener('blur', () => activateNode(null));
     world.append(nodeEl);
     nodeElements.set(node.slug, nodeEl);
@@ -466,20 +471,21 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   resultsEl.className = 'stations-cloud-results';
   resultsEl.setAttribute('role', 'region');
   resultsEl.setAttribute('aria-label', 'Cloud search results');
+  resultsEl.setAttribute('aria-live', 'polite');
   resultsEl.hidden = true;
 
   tooltip = document.createElement('div');
   tooltip.className = 'stations-cloud-tooltip';
   tooltip.hidden = true;
 
-  stage.append(back, world, controls, hint, resultsEl, tooltip);
+  stage.append(back, world, controls, hint, tooltip);
   if (!model.nodes.length) {
     const empty = document.createElement('div');
     empty.className = 'stations-cloud-empty';
     empty.textContent = 'No collections to show yet.';
     stage.append(empty);
   }
-  host.append(stage);
+  host.append(resultsEl, stage);
   hydrateLogos(stage);
 
   function fitTarget() {
@@ -562,6 +568,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   }
 
   function onWheel(evt) {
+    if (evt.target.closest('.stations-cloud-results')) return;
     evt.preventDefault();
     zoomAt(evt.clientX, evt.clientY, Math.exp(-evt.deltaY * 0.0015));
   }
@@ -640,7 +647,11 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     if (pointers.size === 0) {
       if (dragMoved) {
         suppressClick = true;
-        setTimeout(() => { suppressClick = false; }, 0);
+        clearTimeout(suppressTimer);
+        suppressTimer = setTimeout(() => {
+          suppressClick = false;
+          suppressTimer = null;
+        }, 0);
       }
       stage.classList.remove('is-dragging');
       dragStart = null;
@@ -739,7 +750,11 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       target.classList.remove('is-flashing');
       void target.offsetWidth;
       target.classList.add('is-flashing');
-      setTimeout(() => target.classList.remove('is-flashing'), 500);
+      const timer = setTimeout(() => {
+        target.classList.remove('is-flashing');
+        flashTimers.delete(timer);
+      }, 500);
+      flashTimers.add(timer);
     }
     let result;
     try {
@@ -1022,6 +1037,12 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     cameraFrame = 0;
     clearTimeout(highlightTimer);
     highlightTimer = null;
+    clearTimeout(suppressTimer);
+    suppressTimer = null;
+    clearTimeout(fitTimer);
+    fitTimer = null;
+    flashTimers.forEach(clearTimeout);
+    flashTimers.clear();
     document.removeEventListener('keydown', onDocumentKeydown, true);
     resizeObserver?.disconnect();
     resizeObserver = null;
@@ -1055,7 +1076,8 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     applyCamera();
   }
   if (nowPlayingId) setNowPlaying(nowPlayingId);
-  setTimeout(() => {
+  fitTimer = setTimeout(() => {
+    fitTimer = null;
     if (!destroyed && !ring) fitCamera();
   }, 0);
 

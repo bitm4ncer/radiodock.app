@@ -5,6 +5,7 @@ import { stationsRow, updateRowNowPlaying, HEART_ICON, PLUS_ICON } from './stati
 import { mountStationsFilters } from './stations-filter.js';
 import { buildBrowseParams, communityParams, mergeRows, searchModeFor, popularParams, searchParams, MAX_ROWS } from './stations-state.js';
 import { EXPLORE_PAGE_SIZE, buildExploreFeed, nextExploreLimit, pickExploreStation } from './stations-explore.js';
+import { createActionGate } from './station-actions.js';
 import { escapeHtml, formatCount } from './stations-format.js';
 import { normaliseDiscover, renderDiscover, renderDiscoverResults, renderCollection, collectionCard, collectionSaveButton, syncCollectionSaveButton, featuredLists, pickFeaturedLists, renderDiscoverUnavailable } from './discover-child.js';
 import { mountDiscoverCloud } from './discover-cloud.js';
@@ -118,7 +119,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     exploreLimit: EXPLORE_PAGE_SIZE,
     exploreCollections: 0,
     exploreError: null,
-    stationActionToken: 0,
+    stationActions: createActionGate(),
   };
 
   let isOpen = false;
@@ -1146,6 +1147,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   }
 
   function destroyCloud() {
+    state.stationActions.invalidate();
     state.cloud?.destroy?.();
     state.cloud = null;
     body.querySelector('#stationsContent')?.classList.remove('is-cloud');
@@ -1160,7 +1162,9 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       lists,
       nowPlayingId: state.nowPlayingId ?? actions.getNowPlayingId?.(),
       onPlay: async (uuid) => {
+        const token = state.stationActions.begin();
         const full = await resolveStation(uuid);
+        if (!state.stationActions.isCurrent(token)) return false;
         if (!full) return false;
         actions.onPlay?.(full);
         return true;
@@ -1433,10 +1437,10 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
 
   async function runStationAction(anchor, station, actionName, { flash = false } = {}) {
     const id = station.id ?? station.stationuuid;
-    const token = ++state.stationActionToken;
+    const token = state.stationActions.begin();
     if (flash) flashElement(anchor);
     const full = await resolveStation(station.stationuuid ?? id);
-    if (state.stationActionToken !== token) return;
+    if (!state.stationActions.isCurrent(token)) return;
     if (!full) {
       anchor.classList.remove('is-flashing');
       return;
@@ -1517,6 +1521,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   }
 
   function browseAll() {
+    clearTimeout(discoverTimer);
     destroyCloud();
     state.view = 'stations';
     state.collection = null;
@@ -1860,7 +1865,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     openSettleTimer = null;
     isOpen = false;
     loadToken++;
-    state.stationActionToken++;
+    state.stationActions.invalidate();
     controller?.abort();
     clearTimeout(discoverTimer);
     destroyCloud();

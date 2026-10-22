@@ -2539,11 +2539,15 @@ html.is-standalone .stations-panel:not(.is-open) {
 
 .stations-cloud-node.is-dimmed {
   opacity: 0.16;
+}
+
+.stations-cloud-stage.is-ring-open .stations-cloud-node.is-dimmed {
   pointer-events: none;
 }
 
 .stations-cloud-node.is-open {
   opacity: 0;
+  pointer-events: none;
 }
 
 .stations-cloud-ring {
@@ -2821,6 +2825,10 @@ html.is-standalone .stations-panel:not(.is-open) {
 }
 
 @media (max-width: 699px) {
+  .stations-discover-toolbar {
+    top: 64px;
+  }
+
   .stations-shell:has(.stations-content.is-cloud) {
     overflow: hidden;
   }
