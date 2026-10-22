@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-22T00:40:43.266Z",
+  "generatedAt": "2026-10-22T01:03:17.280Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -5542,6 +5542,39 @@
             "countrycode": "FR"
           }
         ]
+      },
+      {
+        "slug": "ndw",
+        "title": "NDW",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "7f06cacb-f36f-11e8-a471-52543be04c81",
+            "name": "1A NDW",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "b4198bb3-fc7e-4dc5-9a5b-2f0ad8b7e67a",
+            "name": "Antenne Bayern NDW",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "36fbac9c-0768-4749-b355-c43d4a092432",
+            "name": "RPR1. NDW",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "a491d74d-e2d9-4a9a-91cc-e934220ac02d",
+            "name": "0nlineradio NEUE DEUTSCHE WELLE",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "56e9e4e3-4128-48a0-bcba-445c6f77e29b",
+            "name": "laut.fm NDW",
+            "countrycode": "DE"
+          }
+        ]
       }
     ]
   },
@@ -5872,7 +5905,7 @@
       {
         "genre": "synthpop",
         "label": "80s & New Wave",
-        "count": 1295
+        "count": 1296
       },
       {
         "genre": "community",
@@ -5907,7 +5940,7 @@
       {
         "genre": "alternative",
         "label": "Alternative",
-        "count": 882
+        "count": 892
       },
       {
         "genre": "house",
@@ -5947,7 +5980,7 @@
       {
         "genre": "latin",
         "label": "Latin",
-        "count": 669
+        "count": 678
       },
       {
         "genre": "chillout",
@@ -5997,7 +6030,7 @@
       {
         "genre": "disco",
         "label": "Disco",
-        "count": 413
+        "count": 421
       },
       {
         "genre": "twothousands",
@@ -6072,7 +6105,7 @@
       {
         "genre": "soundtrack",
         "label": "Soundtrack & Score",
-        "count": 130
+        "count": 136
       },
       {
         "genre": "holiday",
