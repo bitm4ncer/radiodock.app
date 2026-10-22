@@ -1,0 +1,134 @@
+/* One-time mobile install hint. Sits above the list navigation, using the
+   same quiet card language as the share/donate nudges. */
+.mobile-tour-badge {
+  position: fixed;
+  left: 14px;
+  right: 14px;
+  bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  z-index: 95;
+  box-sizing: border-box;
+  padding: 13px 14px 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  background: #141414;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.38);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 220ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root.theme-light .mobile-tour-badge {
+  background: #dbdbdb;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.mobile-tour-badge.is-entering,
+.mobile-tour-badge.is-dismissed {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.mobile-tour-badge:not(.is-entering):not(.is-dismissed) {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mobile-tour-badge__close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: var(--text-muted);
+  background: transparent;
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.mobile-tour-badge__close:hover {
+  color: var(--text);
+  background: var(--overlay-med);
+}
+
+.mobile-tour-badge__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding-right: 22px;
+}
+
+.mobile-tour-badge__icon {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  color: var(--text-muted);
+}
+
+.mobile-tour-badge__icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.mobile-tour-badge__copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mobile-tour-badge__copy strong {
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.mobile-tour-badge__copy span {
+  color: var(--text-muted);
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+
+.mobile-tour-badge__cta {
+  margin: 10px 0 0 30px;
+  padding: 5px 11px;
+  border: 1px solid var(--overlay-med);
+  border-radius: 999px;
+  color: var(--text);
+  background: transparent;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.mobile-tour-badge__cta:hover {
+  background: var(--overlay-med);
+}
+
+.mobile-tour-badge__close:focus-visible,
+.mobile-tour-badge__cta:focus-visible {
+  outline: 2px solid var(--text-muted);
+  outline-offset: 2px;
+}
+
+@media (min-width: 700px) {
+  .mobile-tour-badge {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-tour-badge {
+    transition: none;
+  }
+}

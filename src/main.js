@@ -58,6 +58,8 @@ import { mountNudges } from './ui/nudges.js';
 import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
 import { mountSurfaceToggle } from './ui/surface.js';
 import { mountSnapToggle } from './ui/snap-toggle.js';
+import { mountQuickTour } from './ui/quick-tour.js';
+import { mountMobileTourBadge } from './ui/mobile-tour-badge.js';
 import { detectPlatform, detectStandalone, canPromptInstall, promptInstall } from './platform.js';
 import { attachStreamProber } from './player/stream-prober.js';
 
@@ -190,6 +192,8 @@ subscribeThemeOSChange();
 mountSurfaceToggle({ root: document.getElementById('mobileMenu') });
 mountSurfaceToggle({ root: document.querySelector('.site-footer-desktop') });
 mountSnapToggle();
+mountQuickTour();
+mountMobileTourBadge();
 
 // Block pinch-zoom on iOS Safari. The viewport meta `user-scalable=no` and
 // `maximum-scale=1` are unreliable on iOS 10+ (Safari ignores them for
