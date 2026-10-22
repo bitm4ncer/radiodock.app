@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-22T12:22:22.577Z",
+  "generatedAt": "2026-10-22T23:02:22.752Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -5896,6 +5896,39 @@
             "countrycode": "IE"
           }
         ]
+      },
+      {
+        "slug": "trip-hop",
+        "title": "Trip Hop",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "72612036-9d94-46a7-b0ff-7a1061a62867",
+            "name": "TripHop.Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "cdc4a71a-cb5f-4f05-8073-4ef3d72bfdf2",
+            "name": "Bristol Sound Webradio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "4e19721e-b501-48eb-887b-cdd187e1670b",
+            "name": "trip radio",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "7ecd1c73-0e21-4075-8ae5-a1ae2d749ad7",
+            "name": "Trip Hop",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "2ee81587-dba9-4d68-82b3-a7b32aafc525",
+            "name": "Nordic Lodge Copenhagen",
+            "countrycode": "DK"
+          }
+        ]
       }
     ]
   },
@@ -6246,7 +6279,7 @@
       {
         "genre": "electronic",
         "label": "Electronic",
-        "count": 996
+        "count": 999
       },
       {
         "genre": "public",
@@ -6306,7 +6339,7 @@
       {
         "genre": "chillout",
         "label": "Chillout & Lounge",
-        "count": 610
+        "count": 613
       },
       {
         "genre": "regional-mexican",
@@ -6369,13 +6402,13 @@
         "count": 330
       },
       {
-        "genre": "reggae",
-        "label": "Reggae & Dub",
-        "count": 328
-      },
-      {
         "genre": "cumbia",
         "label": "Cumbia",
+        "count": 327
+      },
+      {
+        "genre": "reggae",
+        "label": "Reggae & Dub",
         "count": 327
       },
       {
