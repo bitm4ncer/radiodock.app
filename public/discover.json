@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-22T01:14:09.704Z",
+  "generatedAt": "2026-10-22T03:12:55.179Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -5391,11 +5391,6 @@
             "countrycode": "FR"
           },
           {
-            "stationuuid": "9617b9cb-0601-11e8-ae97-52543be04c81",
-            "name": "Latina Reggaeton",
-            "countrycode": "FR"
-          },
-          {
             "stationuuid": "0c069c3d-d05a-48cf-9676-707f63b3d1ed",
             "name": "Tumbado al 100",
             "countrycode": "MX"
@@ -5810,6 +5805,130 @@
             "countrycode": "DE"
           }
         ]
+      },
+      {
+        "slug": "deutsche-news",
+        "title": "Deutsche News",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "717e3749-b9e8-4497-bd6a-61ccec935922",
+            "name": "Deutschlandfunk",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "f1e4f80e-a454-4f0c-b2ae-1f346d7ca5a6",
+            "name": "BR24",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "ecb3dcc6-a8a5-4638-b29a-a0f8a033cf45",
+            "name": "MDR AKTUELL",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "5cfa5b31-87af-4492-a8fd-507db12dd519",
+            "name": "hr INFO",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "bd4b6e6a-37eb-40fd-920c-64e836dc24af",
+            "name": "NDR Info",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "051a1bf5-646b-421c-975e-4022c4be3e09",
+            "name": "rbb24 Inforadio",
+            "countrycode": "DE"
+          }
+        ]
+      },
+      {
+        "slug": "deep-house",
+        "title": "Deep House",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "b55bdebb-54b5-4fdf-9078-d750612fcda1",
+            "name": "deephouse.fm",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "6dae7585-bf43-4c4f-a3dd-6a6b44354c64",
+            "name": "Deep House Radio",
+            "countrycode": "BG"
+          },
+          {
+            "stationuuid": "772aa985-0c95-4962-9870-cdf84ea14368",
+            "name": "Deep Motion FM",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "bdea1790-a3d2-48d5-b873-17318d775574",
+            "name": "Deep House Energy",
+            "countrycode": "RO"
+          },
+          {
+            "stationuuid": "ee2020d0-ad67-4b6a-b4be-eb2ad27a6eb9",
+            "name": "Deep in Radio",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "191bc3a9-845b-4e9f-aca9-e3c7344b6a87",
+            "name": "Deep One",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "8f2eafd6-af82-49e6-84f5-4e3b32694c80",
+            "name": "Ibiza Deep House",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "dd032a09-a9f0-4154-a4ad-ebe84eec1287",
+            "name": "Hotmix Deep House",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "bbc43504-6901-4ef1-8175-11c3fc02ddfa",
+            "name": "Deep House Radio (DHR)",
+            "countrycode": "IE"
+          }
+        ]
+      },
+      {
+        "slug": "reggaeton",
+        "title": "Reggaeton",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "bd91f733-4c9d-4de1-bd6b-070fd40a6cbc",
+            "name": "Clásicos Reggaeton 24/7",
+            "countrycode": "CO"
+          },
+          {
+            "stationuuid": "5c21aee4-8300-46e5-83db-fe71b6f305b3",
+            "name": "La Capital Del Reggaeton",
+            "countrycode": "CO"
+          },
+          {
+            "stationuuid": "0d43c4b2-0b0d-43de-a074-f135d90d19d0",
+            "name": "NRJ Reggaeton",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "ace545f7-c057-44de-92d2-ae70421f6458",
+            "name": "NRJ Reggaeton Fever",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9617b9cb-0601-11e8-ae97-52543be04c81",
+            "name": "Latina Reggaeton",
+            "countrycode": "FR"
+          }
+        ]
       }
     ]
   },
@@ -6105,7 +6224,7 @@
       {
         "genre": "news",
         "label": "News",
-        "count": 3991
+        "count": 3992
       },
       {
         "genre": "rock",
@@ -6180,7 +6299,7 @@
       {
         "genre": "house",
         "label": "House",
-        "count": 851
+        "count": 853
       },
       {
         "genre": "hiphop",
@@ -6305,7 +6424,7 @@
       {
         "genre": "reggaeton",
         "label": "Reggaeton",
-        "count": 253
+        "count": 255
       },
       {
         "genre": "trance",
