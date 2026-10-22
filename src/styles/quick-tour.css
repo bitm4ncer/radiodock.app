@@ -219,6 +219,12 @@ body.tour-show-actions #playerActionBar {
   display: flex !important;
 }
 
+/* The heart is hidden until a station is selected. The tour explains it
+   before anything is playing, so keep it visible for those steps. */
+body.tour-show-actions #addToFavoritesBtn {
+  display: inline-flex !important;
+}
+
 /* The install card shares the right edge with the Notes flag and normally
    hides it. For the diary steps the flag is the target, so bring it back
    without dismissing the install card. */

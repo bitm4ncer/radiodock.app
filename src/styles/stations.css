@@ -233,7 +233,7 @@ body.is-electron .stations-resize-handle {
 }
 
 .stations-search-wrap {
-  padding: 0 20px 10px;
+  padding: 0 20px 12px;
 }
 
 .stations-search-input {
@@ -258,7 +258,7 @@ body.is-electron .stations-resize-handle {
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
-  padding: 0 20px 10px;
+  padding: 0 20px 12px;
 }
 
 .stations-mode {
@@ -399,7 +399,7 @@ body.is-electron .stations-resize-handle {
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
-  padding: 10px 20px 6px;
+  padding: 12px 20px 8px;
   color: var(--text-muted);
   font-size: 10px;
   letter-spacing: 0.04em;
@@ -2428,7 +2428,7 @@ html.is-standalone .stations-panel:not(.is-open) {
 }
 
 .stations-featured .stations-collection-grid {
-  margin: 0 0 8px;
+  margin: 0 0 12px;
 }
 
 .stations-featured-actions {
@@ -2449,12 +2449,12 @@ html.is-standalone .stations-panel:not(.is-open) {
 
 /* The featured actions sit a little further from the search field. */
 .stations-featured {
-  padding: 0 20px 16px;
+  padding: 0 20px 24px;
 }
 
 @media (max-width: 699px) {
   .stations-featured {
-    padding: 0 14px 12px;
+    padding: 0 14px 20px;
   }
 }
 
