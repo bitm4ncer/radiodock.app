@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-22T03:12:55.179Z",
+  "generatedAt": "2026-10-22T23:02:22.752Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -1078,8 +1078,8 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "f34ae431-42cd-4ef1-8a24-f4eca8a70cc1",
-            "name": "WNYC 93.9 FM",
+            "stationuuid": "535d3971-0a8f-4ccd-9dbe-2444bc7d339b",
+            "name": "WNYC FM",
             "countrycode": "US"
           },
           {
@@ -1088,8 +1088,8 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "325a61dc-fe34-48c6-ae82-1467b710f07b",
-            "name": "KCRW 88.9 FM - Live",
+            "stationuuid": "8dab6197-8529-4ae7-9fa3-01bfa4f8a25a",
+            "name": "KCRW Live 89.9 FM (AAC)",
             "countrycode": "US"
           },
           {
@@ -1211,8 +1211,8 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "96459d88-0601-11e8-ae97-52543be04c81",
-            "name": "FluxFM - Jazzradio Schwarzenstein",
+            "stationuuid": "6b90442e-7431-46f9-9723-26624c1602f7",
+            "name": "Jazzradio Schwqrzenstein",
             "countrycode": "DE"
           },
           {
@@ -1604,8 +1604,8 @@
             "countrycode": "AT"
           },
           {
-            "stationuuid": "b6e1150b-c65f-42aa-918b-4f59ecf1461e",
-            "name": "FLUX FM Dub Radio [128 kbps]",
+            "stationuuid": "7a8640b5-05e2-11e9-a3cd-52543be04c81",
+            "name": "FluxFM - DubRadio",
             "countrycode": "DE"
           },
           {
@@ -2510,8 +2510,8 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "298371df-ecf9-46b3-90ac-b46fe5af7f61",
-            "name": "EILO Dubstep Radio",
+            "stationuuid": "280a4ae0-6946-4db7-8f5f-9cf122cfca1c",
+            "name": "EILO Techno Radio",
             "countrycode": "BG"
           },
           {
@@ -2643,9 +2643,9 @@
             "countrycode": "FR"
           },
           {
-            "stationuuid": "96225a38-0601-11e8-ae97-52543be04c81",
-            "name": "1.FM - Otto's Baroque Music Radio",
-            "countrycode": "CH"
+            "stationuuid": "2fc9aa97-f278-4475-bfd1-098c7a1eabdc",
+            "name": "1.Fm Baroque Music",
+            "countrycode": "GB"
           },
           {
             "stationuuid": "ffd351fe-219e-4c6e-b14f-9c2e02fbe45e",
@@ -2673,8 +2673,8 @@
             "countrycode": "GB"
           },
           {
-            "stationuuid": "9605f05a-0601-11e8-ae97-52543be04c81",
-            "name": "WDR 3",
+            "stationuuid": "961251f9-0601-11e8-ae97-52543be04c81",
+            "name": "WDR 3 HQ",
             "countrycode": "DE"
           },
           {
@@ -2834,8 +2834,8 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "960c4c2a-0601-11e8-ae97-52543be04c81",
-            "name": "Rock Antenne - Punk Rock",
+            "stationuuid": "960594a6-0601-11e8-ae97-52543be04c81",
+            "name": "Rock Antenne",
             "countrycode": "DE"
           },
           {
@@ -3243,8 +3243,8 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "325a61dc-fe34-48c6-ae82-1467b710f07b",
-            "name": "KCRW 88.9 FM - Live",
+            "stationuuid": "8dab6197-8529-4ae7-9fa3-01bfa4f8a25a",
+            "name": "KCRW Live 89.9 FM (AAC)",
             "countrycode": "US"
           },
           {
@@ -3328,7 +3328,7 @@
             "countrycode": "TZ"
           },
           {
-            "stationuuid": "9614225b-0601-11e8-ae97-52543be04c81",
+            "stationuuid": "4521215b-50ff-4d08-89a6-a023619001c2",
             "name": "Jacaranda FM",
             "countrycode": "ZA"
           },
@@ -3391,8 +3391,8 @@
             "countrycode": "BR"
           },
           {
-            "stationuuid": "4d863a83-aac6-4c7b-8e84-054630fd8033",
-            "name": "Sanctuary Radio (Dark Electro Channel)",
+            "stationuuid": "9265f88b-3773-40f1-8f3a-7d0ab236d067",
+            "name": "Sanctuary Radio (Retro 80s Channel)",
             "countrycode": "US"
           },
           {
@@ -3474,7 +3474,7 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "de990f20-683b-42a7-a69c-0271d08730fb",
+            "stationuuid": "c311142f-fde8-4708-80ab-0b778a2e86b8",
             "name": "R.SA 80er Italo Disco Hits",
             "countrycode": "DE"
           },
@@ -4797,7 +4797,7 @@
             "countrycode": "MX"
           },
           {
-            "stationuuid": "41e4522c-2cbb-4cb6-9976-fe2182d01bad",
+            "stationuuid": "fffb8081-7382-45aa-b3a0-56e5b85b1b6b",
             "name": "Svartkrog Black Metal Radio",
             "countrycode": "DE"
           }
@@ -5353,7 +5353,7 @@
             "countrycode": "FR"
           },
           {
-            "stationuuid": "cfc37572-caa4-4172-bc5f-f9b32e35b365",
+            "stationuuid": "ae79ae30-7bd3-46c9-acb0-e870b838d165",
             "name": "The Quiet Storm Station",
             "countrycode": "US"
           }
@@ -5487,8 +5487,8 @@
             "countrycode": "RO"
           },
           {
-            "stationuuid": "b0523b55-79ff-4318-8716-78f2d4f1882a",
-            "name": "Nostalgie Funk ",
+            "stationuuid": "c785b4aa-d774-4a2f-9d66-c168ee45ed08",
+            "name": "Nostalgie",
             "countrycode": "FR"
           },
           {
@@ -5568,7 +5568,7 @@
             "countrycode": "DE"
           },
           {
-            "stationuuid": "046cb924-4b2d-4aeb-85e4-3b5d0365238f",
+            "stationuuid": "96162fda-0601-11e8-ae97-52543be04c81",
             "name": "DARKCLUB-RADIO",
             "countrycode": "DE"
           },
@@ -5898,35 +5898,35 @@
         ]
       },
       {
-        "slug": "reggaeton",
-        "title": "Reggaeton",
+        "slug": "trip-hop",
+        "title": "Trip Hop",
         "source": "radiodock",
         "featured": false,
         "stations": [
           {
-            "stationuuid": "bd91f733-4c9d-4de1-bd6b-070fd40a6cbc",
-            "name": "Clásicos Reggaeton 24/7",
-            "countrycode": "CO"
+            "stationuuid": "72612036-9d94-46a7-b0ff-7a1061a62867",
+            "name": "TripHop.Radio",
+            "countrycode": "GB"
           },
           {
-            "stationuuid": "5c21aee4-8300-46e5-83db-fe71b6f305b3",
-            "name": "La Capital Del Reggaeton",
-            "countrycode": "CO"
+            "stationuuid": "cdc4a71a-cb5f-4f05-8073-4ef3d72bfdf2",
+            "name": "Bristol Sound Webradio",
+            "countrycode": "GB"
           },
           {
-            "stationuuid": "0d43c4b2-0b0d-43de-a074-f135d90d19d0",
-            "name": "NRJ Reggaeton",
-            "countrycode": "FR"
+            "stationuuid": "4e19721e-b501-48eb-887b-cdd187e1670b",
+            "name": "trip radio",
+            "countrycode": "PL"
           },
           {
-            "stationuuid": "ace545f7-c057-44de-92d2-ae70421f6458",
-            "name": "NRJ Reggaeton Fever",
-            "countrycode": "FR"
+            "stationuuid": "7ecd1c73-0e21-4075-8ae5-a1ae2d749ad7",
+            "name": "Trip Hop",
+            "countrycode": "DE"
           },
           {
-            "stationuuid": "9617b9cb-0601-11e8-ae97-52543be04c81",
-            "name": "Latina Reggaeton",
-            "countrycode": "FR"
+            "stationuuid": "2ee81587-dba9-4d68-82b3-a7b32aafc525",
+            "name": "Nordic Lodge Copenhagen",
+            "countrycode": "DK"
           }
         ]
       }
@@ -5937,71 +5937,78 @@
       "stationuuid": "1b762b21-2ec6-412a-a231-fa34a96f4f99",
       "name": "80s80s Radio",
       "countrycode": "DE",
-      "listen_minutes": 13355,
-      "plays": 35
+      "listen_minutes": 12967,
+      "plays": 38
     },
     {
       "stationuuid": "77871905-48cd-465c-8d25-dd14ae536656",
       "name": "100 % COVERS LOUNGE",
       "countrycode": "CA",
-      "listen_minutes": 7358,
+      "listen_minutes": 7373,
       "plays": 25
     },
     {
       "stationuuid": "961e6cac-0601-11e8-ae97-52543be04c81",
       "name": "NTS Radio 1",
       "countrycode": "GB",
-      "listen_minutes": 5664,
-      "plays": 589
-    },
-    {
-      "stationuuid": "98b22cd2-0ec8-4bb1-a5f6-f168de7548b5",
-      "name": "Retro Rádió",
-      "countrycode": "HU",
-      "listen_minutes": 4688,
-      "plays": 28
+      "listen_minutes": 5736,
+      "plays": 601
     },
     {
       "stationuuid": "128d5561-8439-4e2a-9e6c-4e48ad4f0cc0",
       "name": "Do You Radio",
       "countrycode": "GB",
-      "listen_minutes": 4642,
-      "plays": 155
+      "listen_minutes": 4664,
+      "plays": 153
     },
     {
-      "stationuuid": "960cf833-0601-11e8-ae97-52543be04c81",
-      "name": "SomaFM Groove Salad (128k MP3)",
-      "countrycode": "US",
-      "listen_minutes": 2747,
-      "plays": 47
+      "stationuuid": "98b22cd2-0ec8-4bb1-a5f6-f168de7548b5",
+      "name": "Retro Rádió",
+      "countrycode": "HU",
+      "listen_minutes": 4509,
+      "plays": 32
     },
     {
-      "stationuuid": "434e9a4b-018a-4557-8ca1-8c328bb1e09d",
-      "name": "The Lot Radio",
+      "stationuuid": "6ee0b2ea-50f0-4bcc-8318-8de674dd9efc",
+      "name": "SomaFM Groove Salad 2 (256k MP3)",
       "countrycode": "US",
-      "listen_minutes": 1844,
-      "plays": 119
+      "listen_minutes": 3837,
+      "plays": 50
     },
     {
       "stationuuid": "db4e7fb7-dfe8-4e2d-a11c-f67420a14ed8",
       "name": "VRT Radio 1",
       "countrycode": "BE",
-      "listen_minutes": 1808,
+      "listen_minutes": 2533,
       "plays": 0
     },
     {
       "stationuuid": "9634ab94-0601-11e8-ae97-52543be04c81",
       "name": "NTS Radio 2",
       "countrycode": "GB",
-      "listen_minutes": 1731,
-      "plays": 230
+      "listen_minutes": 1943,
+      "plays": 233
+    },
+    {
+      "stationuuid": "d271b4e8-a298-4862-9f4b-025c110cedd9",
+      "name": "IBIZA CHILLOUT LOUNGE - Ambient, Deep House, Balearic, Smooth Jazz, Acoustic, Chill House, Lo-Fi, Chillwave, Dream Pop, Electro, Tropical House, Sunset Chill, Café del Mar, Soft Electronica, Slow House, Ambient, Relax, Easy Listening, Beach Vibes, Summer",
+      "countrycode": "DE",
+      "listen_minutes": 1796,
+      "plays": 0
     },
     {
       "stationuuid": "bae70c5c-9f3f-42fc-a83d-6c13920590e0",
       "name": "Kiosk Radio",
       "countrycode": "BE",
-      "listen_minutes": 1689,
-      "plays": 175
+      "listen_minutes": 1691,
+      "plays": 183
+    },
+    {
+      "stationuuid": "434e9a4b-018a-4557-8ca1-8c328bb1e09d",
+      "name": "The Lot Radio",
+      "countrycode": "US",
+      "listen_minutes": 1669,
+      "plays": 119
     },
     {
       "stationuuid": "d420bcf1-bb4c-11e9-acb2-52543be04c81",
@@ -6018,24 +6025,17 @@
       "plays": 20
     },
     {
-      "stationuuid": "d271b4e8-a298-4862-9f4b-025c110cedd9",
-      "name": "IBIZA CHILLOUT LOUNGE - Ambient, Deep House, Balearic, Smooth Jazz, Acoustic, Chill House, Lo-Fi, Chillwave, Dream Pop, Electro, Tropical House, Sunset Chill, Café del Mar, Soft Electronica, Slow House, Ambient, Relax, Easy Listening, Beach Vibes, Summer",
-      "countrycode": "DE",
-      "listen_minutes": 1604,
-      "plays": 0
+      "stationuuid": "5ce6f88b-6308-420d-aa40-343dbdab6c61",
+      "name": "Radio ROKS Hard'n'Heavy",
+      "countrycode": "UA",
+      "listen_minutes": 1538,
+      "plays": 14
     },
     {
       "stationuuid": "a6d675b8-1ce5-42c6-97e2-4440d233c58d",
       "name": "__DEUTSCHE HITS__ by rautemusik (rm.fm)",
       "countrycode": "DE",
       "listen_minutes": 1514,
-      "plays": 0
-    },
-    {
-      "stationuuid": "5ce6f88b-6308-420d-aa40-343dbdab6c61",
-      "name": "Radio ROKS Hard'n'Heavy",
-      "countrycode": "UA",
-      "listen_minutes": 1290,
       "plays": 0
     },
     {
@@ -6049,7 +6049,7 @@
       "stationuuid": "a7789334-2f1d-4f95-9a64-b169a963e99c",
       "name": "Radio1",
       "countrycode": "HU",
-      "listen_minutes": 1049,
+      "listen_minutes": 1159,
       "plays": 0
     },
     {
@@ -6057,35 +6057,28 @@
       "name": "dublab DE",
       "countrycode": "DE",
       "listen_minutes": 959,
-      "plays": 71
-    },
-    {
-      "stationuuid": "49902d2d-672d-4130-b42a-90592d0460c5",
-      "name": "0R - LO-FI || LoFi, Chill, Study, Hip Hop, Relax, Background, Calm, Instrumental, Smooth, Beats, Coffee, Work, Focus, Soft, Chillhop",
-      "countrycode": "DE",
-      "listen_minutes": 896,
-      "plays": 17
+      "plays": 74
     },
     {
       "stationuuid": "2a85a1c6-0cec-428a-a7df-126e4d8a90d9",
       "name": "Netil Radio",
       "countrycode": "GB",
-      "listen_minutes": 856,
-      "plays": 69
+      "listen_minutes": 922,
+      "plays": 80
+    },
+    {
+      "stationuuid": "49902d2d-672d-4130-b42a-90592d0460c5",
+      "name": "0R - LO-FI || LoFi, Chill, Study, Hip Hop, Relax, Background, Calm, Instrumental, Smooth, Beats, Coffee, Work, Focus, Soft, Chillhop",
+      "countrycode": "DE",
+      "listen_minutes": 853,
+      "plays": 17
     },
     {
       "stationuuid": "6b4c2748-07ee-11e8-ae97-52543be04c81",
       "name": "Radio 80000",
       "countrycode": "DE",
-      "listen_minutes": 835,
-      "plays": 169
-    },
-    {
-      "stationuuid": "9c100db7-ba97-4e6f-821f-dba1ed08ad52",
-      "name": "Rinse UK",
-      "countrycode": "GB",
-      "listen_minutes": 755,
-      "plays": 139
+      "listen_minutes": 728,
+      "plays": 174
     },
     {
       "stationuuid": "961aeb3b-0601-11e8-ae97-52543be04c81",
@@ -6095,24 +6088,31 @@
       "plays": 0
     },
     {
-      "stationuuid": "9611cf11-0601-11e8-ae97-52543be04c81",
-      "name": "electronic music club",
-      "countrycode": "DE",
-      "listen_minutes": 580,
+      "stationuuid": "9c100db7-ba97-4e6f-821f-dba1ed08ad52",
+      "name": "Rinse UK",
+      "countrycode": "GB",
+      "listen_minutes": 674,
+      "plays": 140
+    },
+    {
+      "stationuuid": "c6ed0be5-21dd-4b03-aa18-0dbc9a0c3f87",
+      "name": "M80 rádio",
+      "countrycode": "PT",
+      "listen_minutes": 581,
       "plays": 12
     },
     {
       "stationuuid": "5dcf8a28-dc2f-47a1-9f18-ca70df4ac89d",
       "name": "Noods",
       "countrycode": "GB",
-      "listen_minutes": 573,
-      "plays": 82
+      "listen_minutes": 556,
+      "plays": 81
     },
     {
       "stationuuid": "1dbdc89f-f0d1-4bf7-8922-266edeb912dd",
       "name": "Subtle Radio",
       "countrycode": "GB",
-      "listen_minutes": 532,
+      "listen_minutes": 531,
       "plays": 52
     },
     {
@@ -6144,13 +6144,6 @@
       "plays": 16
     },
     {
-      "stationuuid": "c6ed0be5-21dd-4b03-aa18-0dbc9a0c3f87",
-      "name": "M80 rádio",
-      "countrycode": "PT",
-      "listen_minutes": 515,
-      "plays": 0
-    },
-    {
       "stationuuid": "3fd18c3f-8157-11e9-aa30-52543be04c81",
       "name": "Café del Mar",
       "countrycode": "ES",
@@ -6168,7 +6161,14 @@
       "stationuuid": "06faec0e-52eb-11e8-a4d1-52543be04c81",
       "name": "Triple J",
       "countrycode": "AU",
-      "listen_minutes": 481,
+      "listen_minutes": 480,
+      "plays": 0
+    },
+    {
+      "stationuuid": "9611cf11-0601-11e8-ae97-52543be04c81",
+      "name": "electronic music club",
+      "countrycode": "DE",
+      "listen_minutes": 455,
       "plays": 0
     },
     {
@@ -6186,31 +6186,31 @@
       "plays": 0
     },
     {
-      "stationuuid": "8f18579b-ffe4-49cb-970c-16712b154392",
-      "name": "Callshop Radio",
-      "countrycode": "DE",
-      "listen_minutes": 412,
-      "plays": 84
+      "stationuuid": "96102c22-0601-11e8-ae97-52543be04c81",
+      "name": "Jazz Radio Blues",
+      "countrycode": "FR",
+      "listen_minutes": 423,
+      "plays": 15
     },
     {
       "stationuuid": "356a337d-4552-4b2d-bfdb-d381a6d85a9d",
       "name": "Cashmere Radio",
       "countrycode": "DE",
-      "listen_minutes": 402,
-      "plays": 63
+      "listen_minutes": 415,
+      "plays": 70
     },
     {
-      "stationuuid": "96102c22-0601-11e8-ae97-52543be04c81",
-      "name": "Jazz Radio Blues",
-      "countrycode": "FR",
-      "listen_minutes": 390,
-      "plays": 14
+      "stationuuid": "8f18579b-ffe4-49cb-970c-16712b154392",
+      "name": "Callshop Radio",
+      "countrycode": "DE",
+      "listen_minutes": 412,
+      "plays": 88
     },
     {
-      "stationuuid": "9610b12b-0601-11e8-ae97-52543be04c81",
-      "name": "King Dub Radio",
-      "countrycode": "FR",
-      "listen_minutes": 372,
+      "stationuuid": "3792ce9a-346e-4220-8bd3-5a6d4b9d8c37",
+      "name": "24/7 Vapor Funk Radio (MP3)",
+      "countrycode": "US",
+      "listen_minutes": 364,
       "plays": 0
     }
   ],
@@ -6219,292 +6219,292 @@
       {
         "genre": "pop",
         "label": "Pop",
-        "count": 5558
+        "count": 5455
       },
       {
         "genre": "news",
         "label": "News",
-        "count": 3992
+        "count": 3909
       },
       {
         "genre": "rock",
         "label": "Rock",
-        "count": 3224
+        "count": 3144
       },
       {
         "genre": "hits",
         "label": "Top 40 & Hits",
-        "count": 2929
-      },
-      {
-        "genre": "oldies",
-        "label": "Oldies",
-        "count": 1829
+        "count": 2854
       },
       {
         "genre": "talk",
         "label": "Talk",
-        "count": 1809
+        "count": 1768
+      },
+      {
+        "genre": "oldies",
+        "label": "Oldies",
+        "count": 1762
       },
       {
         "genre": "edm-dance",
         "label": "Dance & EDM",
-        "count": 1799
+        "count": 1756
       },
       {
         "genre": "christian",
         "label": "Christian & Gospel",
-        "count": 1379
-      },
-      {
-        "genre": "synthpop",
-        "label": "80s & New Wave",
-        "count": 1296
+        "count": 1363
       },
       {
         "genre": "community",
         "label": "Community & Freeform",
-        "count": 1294
+        "count": 1272
+      },
+      {
+        "genre": "synthpop",
+        "label": "80s & New Wave",
+        "count": 1262
       },
       {
         "genre": "classical",
         "label": "Classical",
-        "count": 1280
+        "count": 1215
       },
       {
         "genre": "jazz",
         "label": "Jazz",
-        "count": 1212
+        "count": 1178
       },
       {
         "genre": "electronic",
         "label": "Electronic",
-        "count": 1050
+        "count": 999
       },
       {
         "genre": "public",
         "label": "Public Radio",
-        "count": 993
-      },
-      {
-        "genre": "nineties",
-        "label": "90s",
-        "count": 898
+        "count": 956
       },
       {
         "genre": "alternative",
         "label": "Alternative",
-        "count": 892
+        "count": 871
       },
       {
-        "genre": "house",
-        "label": "House",
-        "count": 853
-      },
-      {
-        "genre": "hiphop",
-        "label": "Hip-Hop",
-        "count": 840
+        "genre": "nineties",
+        "label": "90s",
+        "count": 868
       },
       {
         "genre": "folk",
         "label": "Folk & Acoustic",
-        "count": 824
+        "count": 812
+      },
+      {
+        "genre": "house",
+        "label": "House",
+        "count": 806
       },
       {
         "genre": "classic-rock",
         "label": "Classic Rock",
-        "count": 821
+        "count": 803
+      },
+      {
+        "genre": "hiphop",
+        "label": "Hip-Hop",
+        "count": 797
       },
       {
         "genre": "country",
         "label": "Country",
-        "count": 794
-      },
-      {
-        "genre": "rnb",
-        "label": "R&B & Soul",
-        "count": 700
+        "count": 782
       },
       {
         "genre": "sports",
         "label": "Sports",
-        "count": 689
+        "count": 671
+      },
+      {
+        "genre": "rnb",
+        "label": "R&B & Soul",
+        "count": 666
       },
       {
         "genre": "latin",
         "label": "Latin",
-        "count": 678
+        "count": 651
       },
       {
         "genre": "chillout",
         "label": "Chillout & Lounge",
-        "count": 657
+        "count": 613
       },
       {
         "genre": "regional-mexican",
         "label": "Regional Mexican",
-        "count": 563
-      },
-      {
-        "genre": "metal",
-        "label": "Metal",
-        "count": 540
+        "count": 547
       },
       {
         "genre": "easy",
         "label": "Easy Listening",
-        "count": 538
+        "count": 527
+      },
+      {
+        "genre": "metal",
+        "label": "Metal",
+        "count": 516
       },
       {
         "genre": "world",
         "label": "World",
-        "count": 530
+        "count": 508
       },
       {
         "genre": "indie",
         "label": "Indie",
-        "count": 507
+        "count": 495
       },
       {
         "genre": "culture",
         "label": "Culture",
-        "count": 475
+        "count": 451
       },
       {
         "genre": "salsa",
         "label": "Salsa & Tropical",
-        "count": 451
+        "count": 441
       },
       {
         "genre": "ambient",
         "label": "Ambient",
-        "count": 448
+        "count": 429
       },
       {
         "genre": "disco",
         "label": "Disco",
-        "count": 422
+        "count": 414
       },
       {
         "genre": "twothousands",
         "label": "2000s",
-        "count": 396
+        "count": 372
       },
       {
         "genre": "techno",
         "label": "Techno",
-        "count": 388
-      },
-      {
-        "genre": "cumbia",
-        "label": "Cumbia",
-        "count": 335
-      },
-      {
-        "genre": "reggae",
-        "label": "Reggae & Dub",
-        "count": 335
+        "count": 358
       },
       {
         "genre": "funk",
         "label": "Funk",
-        "count": 333
+        "count": 330
+      },
+      {
+        "genre": "cumbia",
+        "label": "Cumbia",
+        "count": 327
+      },
+      {
+        "genre": "reggae",
+        "label": "Reggae & Dub",
+        "count": 327
       },
       {
         "genre": "blues",
         "label": "Blues",
-        "count": 307
+        "count": 301
       },
       {
         "genre": "punk",
         "label": "Punk & Hardcore",
-        "count": 296
-      },
-      {
-        "genre": "reggaeton",
-        "label": "Reggaeton",
-        "count": 255
+        "count": 289
       },
       {
         "genre": "trance",
         "label": "Trance",
-        "count": 253
+        "count": 244
+      },
+      {
+        "genre": "reggaeton",
+        "label": "Reggaeton",
+        "count": 240
       },
       {
         "genre": "hard-rock",
         "label": "Hard Rock",
-        "count": 240
+        "count": 230
       },
       {
         "genre": "schlager",
         "label": "Schlager & Volksmusik",
-        "count": 222
+        "count": 213
       },
       {
         "genre": "dnb",
         "label": "Drum & Bass",
-        "count": 192
+        "count": 187
       },
       {
         "genre": "kids",
         "label": "Kids",
-        "count": 168
+        "count": 161
       },
       {
         "genre": "dubstep",
         "label": "Bass & Dubstep",
-        "count": 165
+        "count": 158
       },
       {
         "genre": "soundtrack",
         "label": "Soundtrack & Score",
-        "count": 136
+        "count": 127
       },
       {
         "genre": "holiday",
         "label": "Holiday",
-        "count": 124
+        "count": 118
       },
       {
         "genre": "desi",
         "label": "Bollywood & Desi",
-        "count": 117
+        "count": 116
       },
       {
         "genre": "comedy",
         "label": "Comedy",
-        "count": 114
+        "count": 109
       },
       {
         "genre": "afrobeat",
         "label": "Afro",
-        "count": 102
+        "count": 98
       },
       {
         "genre": "jpop",
         "label": "J-Pop & Anime",
-        "count": 101
-      },
-      {
-        "genre": "lofi",
-        "label": "Lo-Fi & Study",
-        "count": 84
+        "count": 97
       },
       {
         "genre": "arabic",
         "label": "Arabic",
-        "count": 69
+        "count": 86
+      },
+      {
+        "genre": "lofi",
+        "label": "Lo-Fi & Study",
+        "count": 83
       },
       {
         "genre": "kpop",
         "label": "K-Pop",
-        "count": 62
+        "count": 60
       },
       {
         "genre": "opera",
         "label": "Opera",
-        "count": 60
+        "count": 58
       },
       {
         "genre": "balkan",
@@ -6514,7 +6514,7 @@
       {
         "genre": "french-chanson",
         "label": "French Chanson",
-        "count": 35
+        "count": 33
       }
     ]
   }
