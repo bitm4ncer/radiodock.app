@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-22T00:40:19.627Z",
+  "generatedAt": "2026-10-22T00:40:43.266Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -5444,6 +5444,54 @@
             "stationuuid": "b31425e7-8988-433b-8162-ba66af7e1c45",
             "name": "Panamericana Latino Refrescante",
             "countrycode": "PE"
+          }
+        ]
+      },
+      {
+        "slug": "psychedelic-rock",
+        "title": "Psychedelic Rock",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "0e0f2961-5c53-4c52-af70-eebe1b2af496",
+            "name": "24-7 Psychedelic Rock",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "98dbeb09-d208-4597-8f0e-18a4b5b9c446",
+            "name": "Psychedelicized Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "dbb28050-c9f4-4f1a-a450-9410dac95ced",
+            "name": "Krautrockworld",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "737269d6-fa3e-493c-a5cc-883df75a327e",
+            "name": "Venenos Psicodélicos",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "70133397-5845-4524-bcda-701da75f46fa",
+            "name": "HEADY",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "dae9c0a5-809a-4a8f-a3fe-4b916a3044d9",
+            "name": "COSMIC FUZZ FM",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "7abc4c3f-2149-4032-94c8-0f46b91c24d5",
+            "name": "Radio Haspe",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "d288325b-a5ed-42c4-820b-f7b99ab39bd1",
+            "name": "Psychedelic Secret Radio",
+            "countrycode": "GB"
           }
         ]
       },
