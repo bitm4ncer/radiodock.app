@@ -120,6 +120,8 @@ export const CLOUD_GENRE_VECTORS = {
   celtic: { family: 'folk', energy: 36, electronic: 6, era: 10 },
   tango: { family: 'latin', energy: 48, electronic: 10, era: 18 },
   flamenco: { family: 'latin', energy: 64, electronic: 12, era: 20 },
+  rockabilly: { family: 'rock', energy: 66, electronic: 12, era: 22 },
+  'surf-rock': { family: 'rock', energy: 58, electronic: 16, era: 18 },
 };
 
 export const CLOUD_GENRE_EDGES = [
@@ -319,6 +321,12 @@ export const CLOUD_GENRE_EDGES = [
   ['flamenco', 'latin'],
   ['flamenco', 'jazz'],
   ['flamenco', 'tango'],
+  ['rockabilly', 'oldies-decades'],
+  ['rockabilly', 'classic-rock'],
+  ['rockabilly', 'country-roots'],
+  ['surf-rock', 'rockabilly'],
+  ['surf-rock', 'classic-rock'],
+  ['surf-rock', 'oldies-decades'],
 ];
 
 function clamp(value, minimum, maximum) {
