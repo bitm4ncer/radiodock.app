@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-23T01:35:25.280Z",
+  "generatedAt": "2026-10-23T01:36:46.237Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -5947,6 +5947,11 @@
             "countrycode": "ZA"
           },
           {
+            "stationuuid": "4c41fb58-fe5c-419e-bad7-ea81e4932092",
+            "name": "Afrobeat N1 FM",
+            "countrycode": "ZA"
+          },
+          {
             "stationuuid": "e5f1cdc8-e711-46ab-9739-f3e711549c5c",
             "name": "WDR COSMO - Afrobeats",
             "countrycode": "DE"
@@ -5960,11 +5965,6 @@
             "stationuuid": "3c8dd994-143a-444d-95da-1a8ba41fce16",
             "name": "LagosJump Radio",
             "countrycode": "GB"
-          },
-          {
-            "stationuuid": "4c41fb58-fe5c-419e-bad7-ea81e4932092",
-            "name": "Afrobeat N1 FM",
-            "countrycode": "ZA"
           },
           {
             "stationuuid": "bed37ad7-1542-4455-96ea-6b7608c7bc8f",
@@ -6738,6 +6738,39 @@
             "stationuuid": "8b03a69d-5fbf-47c7-b186-a4cc01890160",
             "name": "Mettaswara Campursari",
             "countrycode": "ID"
+          }
+        ]
+      },
+      {
+        "slug": "reggaeton",
+        "title": "Reggaeton",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "bd91f733-4c9d-4de1-bd6b-070fd40a6cbc",
+            "name": "Clásicos Reggaeton 24/7",
+            "countrycode": "CO"
+          },
+          {
+            "stationuuid": "5c21aee4-8300-46e5-83db-fe71b6f305b3",
+            "name": "La Capital Del Reggaeton",
+            "countrycode": "CO"
+          },
+          {
+            "stationuuid": "0d43c4b2-0b0d-43de-a074-f135d90d19d0",
+            "name": "NRJ Reggaeton",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "ace545f7-c057-44de-92d2-ae70421f6458",
+            "name": "NRJ Reggaeton Fever",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9617b9cb-0601-11e8-ae97-52543be04c81",
+            "name": "Latina Reggaeton",
+            "countrycode": "FR"
           }
         ]
       }
