@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-23T13:44:01.403Z",
+  "generatedAt": "2026-10-23T13:54:41.395Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -8021,6 +8021,145 @@
             "countrycode": "FR"
           }
         ]
+      },
+      {
+        "slug": "classical-piano",
+        "title": "Classical Piano",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "8856d584-f766-453d-b432-3926ded75aff",
+            "name": "Klassik Radio Piano",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "a93bec5c-39b3-463a-ad2b-0f2d81ea55d3",
+            "name": "France Musique Piano Zen",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "2c1f87b2-525d-4e30-8279-7889f5d4a94a",
+            "name": "La Grande Musique 100% Piano",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "df93ef73-7b82-4478-9e02-a30fe0251b16",
+            "name": "Allzic Classic Piano",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "b5d3a333-e76a-497f-a43d-b3502358f867",
+            "name": "Klassik Radio - Piano New Classics",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "3ed7d046-0a6a-47f4-a470-147b3dee79ff",
+            "name": "GREAT PIANO CONCERTS by Epic Piano",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "a3923012-3b2c-4930-87b2-00058121709c",
+            "name": "Beethoven Piano Sonatas",
+            "countrycode": "JP"
+          },
+          {
+            "stationuuid": "6816e8cd-8b06-4d68-b61f-4d9f54015f95",
+            "name": "CHOPIN by Epic Piano",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "6d9a1b35-7898-44d6-bb42-cb1b5cc70239",
+            "name": "All Classical Piano Chamber Works and Concertos",
+            "countrycode": "JP"
+          }
+        ]
+      },
+      {
+        "slug": "swing-big-band",
+        "title": "Swing / Big Band",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "ef57ef88-3b9f-484d-bdc5-8063e201b6df",
+            "name": "Ella Radio - Swing & Big Band",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "f5481400-edb1-4c32-8069-8c86f325cb76",
+            "name": "Swing FM",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "40d1066e-4903-4775-b137-07fa1b4b1cf9",
+            "name": "Crooner Radio Swing",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "c2ad691a-9059-42ca-99e0-22335e7cd2d5",
+            "name": "Jazz Radio by Maestro - Swingin'",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "e9c80983-35cd-4268-a850-4b1b0c20db26",
+            "name": "Swingtime Radio",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "9615a503-0601-11e8-ae97-52543be04c81",
+            "name": "Swingsalon",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "3743d006-ae3d-11e8-aa67-52543be04c81",
+            "name": "Radio Art - Big Bands",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "1be12f60-7cc5-4c98-a50e-e00284ef16e5",
+            "name": "GotRadio - Big Band Land",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "bachata",
+        "title": "Bachata",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "6db7d374-1be7-42b4-9214-17f44a40ece9",
+            "name": "Bachata FM",
+            "countrycode": "DO"
+          },
+          {
+            "stationuuid": "babb440c-0a73-4e19-81ee-0829152a71a1",
+            "name": "Radio Bachata FM",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9d82539b-8d37-46c1-a9be-2aa3fe38b2a1",
+            "name": "Top Bachata Radio",
+            "countrycode": "DO"
+          },
+          {
+            "stationuuid": "1eaa7a2e-8fbe-4936-b71c-18190cfb25e8",
+            "name": "Bachata Nation Radio",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "6c1ad61c-ac08-4350-95bb-eca2c02dbc74",
+            "name": "Rósate con Bachata",
+            "countrycode": "EC"
+          },
+          {
+            "stationuuid": "c5e33185-b622-47ec-9e51-8836c7241123",
+            "name": "Bachata Hits",
+            "countrycode": "DO"
+          }
+        ]
       }
     ]
   },
@@ -8361,12 +8500,12 @@
       {
         "genre": "classical",
         "label": "Classical",
-        "count": 1214
+        "count": 1218
       },
       {
         "genre": "jazz",
         "label": "Jazz",
-        "count": 1181
+        "count": 1183
       },
       {
         "genre": "electronic",
@@ -8466,7 +8605,7 @@
       {
         "genre": "salsa",
         "label": "Salsa & Tropical",
-        "count": 441
+        "count": 443
       },
       {
         "genre": "ambient",
