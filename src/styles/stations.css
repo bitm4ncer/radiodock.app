@@ -2689,8 +2689,24 @@ html.is-standalone .stations-panel:not(.is-open) {
   display: block;
 }
 
-.stations-cloud-stage.is-3d.is-scene-transitioning .stations-cloud-3d-axes {
+.stations-cloud-stage.is-3d.is-scene-transitioning .stations-cloud-3d-axes,
+.stations-cloud-stage.is-3d.is-scene-transitioning .stations-cloud-3d-axis-labels {
   opacity: 0;
+}
+
+.stations-cloud-3d-axis-labels {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: none;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.stations-cloud-stage.is-3d .stations-cloud-3d-axis-labels {
+  display: block;
 }
 
 .stations-cloud-3d-axis-line {
@@ -2719,16 +2735,12 @@ html.is-standalone .stations-panel:not(.is-open) {
 }
 
 .stations-cloud-stage.is-3d .stations-cloud-node {
-  opacity: var(--cloud-depth-opacity, 1);
+  opacity: 1;
   transition: none;
 }
 
 .stations-cloud-stage.is-3d .stations-cloud-node.is-dimmed {
-  opacity: calc(var(--cloud-depth-opacity, 1) * 0.18);
-}
-
-.stations-cloud-stage.is-3d .stations-cloud-node.is-active {
-  opacity: var(--cloud-depth-opacity, 1);
+  opacity: 0.18 !important;
 }
 
 .stations-cloud-stage.is-3d .stations-cloud-bubble {
@@ -3713,7 +3725,7 @@ html.is-standalone .stations-panel:not(.is-open) {
 
   .stations-cloud-axis--x {
     right: 20%;
-    bottom: calc(60px + env(safe-area-inset-bottom));
+    bottom: calc(64px + env(safe-area-inset-bottom));
     left: 20%;
   }
 
@@ -3740,6 +3752,38 @@ html.is-standalone .stations-panel:not(.is-open) {
   .stations-cloud-results button {
     animation: none;
     transition: none;
+  }
+}
+
+@media (max-width: 699px) and (orientation: landscape) {
+  body:has(.stations-content.is-cloud) .stations-panel {
+    top: 0;
+  }
+
+  body:has(.stations-content.is-cloud) .stations-header {
+    padding: 4px 12px;
+  }
+
+  body:has(.stations-content.is-cloud) .stations-kicker {
+    display: none;
+  }
+
+  body:has(.stations-content.is-cloud) .stations-title {
+    font-size: 16px;
+  }
+
+  body:has(.stations-content.is-cloud) .stations-discover-toolbar {
+    padding: 2px 0 4px;
+  }
+
+  body:has(.stations-content.is-cloud) .stations-cloud-controls {
+    right: calc(12px + env(safe-area-inset-right));
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    flex-direction: row;
+  }
+
+  body:has(.stations-content.is-cloud) .stations-cloud-axis--x {
+    bottom: calc(64px + env(safe-area-inset-bottom));
   }
 }
 

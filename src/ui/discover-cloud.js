@@ -397,6 +397,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   let zoomResetButton = null;
   let mode = '2d';
   let pointerRect = null;
+  let orbitDistanceCustomized = false;
   let orbit = { ...DEFAULT_CLOUD_ORBIT };
   let sceneViewport = { width: 1, height: 1 };
   let sceneFrame = 0;
@@ -404,6 +405,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   let sceneTransition = null;
   let saved2dCamera = null;
   let sceneAxisGroup = null;
+  let sceneLabelLayer = null;
   const sceneAxisElements = new Map();
   const nodeSceneCache = new Map();
   const linkSceneCache = new Map();
@@ -530,6 +532,9 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
 
   sceneAxisGroup = document.createElementNS(svgNS, 'g');
   sceneAxisGroup.setAttribute('class', 'stations-cloud-3d-axes');
+  sceneLabelLayer = document.createElementNS(svgNS, 'svg');
+  sceneLabelLayer.setAttribute('class', 'stations-cloud-3d-axis-labels');
+  sceneLabelLayer.setAttribute('aria-hidden', 'true');
   for (const axis of ['x', 'y', 'z']) {
     const group = document.createElementNS(svgNS, 'g');
     group.setAttribute('class', `stations-cloud-3d-axis stations-cloud-3d-axis--${axis}`);
@@ -544,8 +549,9 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     const dimension = { x: CLOUD_DIMENSIONS.electronic, y: CLOUD_DIMENSIONS.energy, z: CLOUD_DIMENSIONS.mood }[axis];
     startLabel.textContent = dimension.labels[0];
     endLabel.textContent = dimension.labels[1];
-    group.append(line, startLabel, endLabel);
+    group.append(line);
     sceneAxisGroup.append(group);
+    sceneLabelLayer.append(startLabel, endLabel);
     sceneAxisElements.set(axis, { group, line, startLabel, endLabel, cache: '' });
   }
   svg.append(sceneAxisGroup);
@@ -919,7 +925,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   tooltip.className = 'stations-cloud-tooltip';
   tooltip.hidden = true;
 
-  stage.append(back, world, axisX, axisY, controls, hint, tooltip, modeSlot, axisEditor);
+  stage.append(back, world, sceneLabelLayer, axisX, axisY, controls, hint, tooltip, modeSlot, axisEditor);
   if (!model.nodes.length) {
     const empty = document.createElement('div');
     empty.className = 'stations-cloud-empty';
@@ -973,6 +979,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     syncFullscreenState();
     if (mode === '3d') {
       measureSceneViewport();
+      fitOrbitDistanceIfDefault();
       applyLinks3dLayout();
       invalidateScene();
     }
@@ -1197,6 +1204,19 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     };
   }
 
+  function fittedOrbitDistance() {
+    const minSide = Math.max(80, Math.min(sceneViewport.width, sceneViewport.height));
+    return clampCloudOrbit({
+      ...orbit,
+      distance: DEFAULT_CLOUD_ORBIT.distance * (820 / minSide),
+    }).distance;
+  }
+
+  function fitOrbitDistanceIfDefault() {
+    if (orbitDistanceCustomized) return;
+    orbit = { ...orbit, distance: fittedOrbitDistance() };
+  }
+
   function applyLinks2dLayout() {
     svg.classList.remove('is-3d-links');
     if (!links2dLayout) {
@@ -1284,12 +1304,14 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       if (!point || !element) return;
       const translateX = point.x - node.radius;
       const translateY = point.y - node.radius;
-      const styleKey = `${translateX.toFixed(2)}|${translateY.toFixed(2)}|${point.scale.toFixed(4)}|${point.opacity.toFixed(3)}|${index}`;
+      const opacity = Math.round(point.opacity * 20) / 20;
+      const depthOrder = 2 + Math.round(index / 4);
+      const styleKey = `${translateX.toFixed(2)}|${translateY.toFixed(2)}|${point.scale.toFixed(4)}|${opacity}|${depthOrder}`;
       const cached = nodeSceneCache.get(node.slug) ?? { styleKey: '', visible: null };
       if (cached.styleKey !== styleKey) {
         element.style.transform = `translate3d(${translateX.toFixed(2)}px, ${translateY.toFixed(2)}px, 0) scale(${point.scale.toFixed(4)})`;
-        element.style.setProperty('--cloud-depth-opacity', point.opacity.toFixed(3));
-        element.style.zIndex = String(index + 2);
+        element.style.opacity = String(opacity);
+        element.style.zIndex = String(depthOrder);
         cached.styleKey = styleKey;
       }
       if (cached.visible !== point.visible) {
@@ -1393,6 +1415,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     hideTooltip();
     saved2dCamera = { ...camera };
     measureSceneViewport();
+    fitOrbitDistanceIfDefault();
     mode = '3d';
     stage.classList.add('is-3d');
     stage.classList.remove('is-scene-transitioning');
@@ -1451,7 +1474,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       element.style.zIndex = '';
       element.style.visibility = '';
       element.style.pointerEvents = '';
-      element.style.removeProperty('--cloud-depth-opacity');
+      element.style.opacity = '';
       element.removeAttribute('aria-hidden');
       element.removeAttribute('tabindex');
     }
@@ -1723,6 +1746,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     evt.preventDefault();
     if (mode === '3d') {
       hideTooltip();
+      orbitDistanceCustomized = true;
       orbit = clampCloudOrbit({
         ...orbit,
         distance: orbit.distance * Math.exp(evt.deltaY * 0.0012),
@@ -1786,6 +1810,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       stage.classList.add('is-orbit-active');
       hideTooltip();
       if (mode === '3d') {
+        orbitDistanceCustomized = true;
         orbit = clampCloudOrbit({
           ...orbit,
           distance: pinch.distanceOrbit / factor,
@@ -2222,6 +2247,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   function adjustOrbitDistance(factor) {
     if (destroyed || mode !== '3d' || sceneTransition?.direction === 'leave') return;
     hideTooltip();
+    orbitDistanceCustomized = true;
     orbit = clampCloudOrbit({ ...orbit, distance: orbit.distance * factor });
     invalidateScene();
   }
@@ -2232,7 +2258,9 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       hideTooltip();
       sceneTransition = null;
       stage.classList.remove('is-scene-transitioning', 'is-orbit-active');
-      orbit = { ...DEFAULT_CLOUD_ORBIT };
+      orbitDistanceCustomized = false;
+      measureSceneViewport();
+      orbit = clampCloudOrbit({ ...DEFAULT_CLOUD_ORBIT, distance: fittedOrbitDistance() });
       closeAxisEditor({ restoreFocus: false });
       invalidateScene();
       return;
@@ -2349,6 +2377,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     if (destroyed) return;
     measureSceneViewport();
     if (mode === '3d') {
+      fitOrbitDistanceIfDefault();
       applyLinks3dLayout();
       invalidateScene();
       return;
@@ -2407,6 +2436,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     modeSlot = null;
     modeButton = null;
     sceneAxisGroup = null;
+    sceneLabelLayer = null;
     sceneAxisElements.clear();
     nodeSceneCache.clear();
     linkSceneCache.clear();
