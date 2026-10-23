@@ -123,6 +123,14 @@ export const CLOUD_GENRE_VECTORS = {
   flamenco: { family: 'latin', energy: 64, electronic: 12, era: 20 },
   rockabilly: { family: 'rock', energy: 66, electronic: 12, era: 22 },
   'surf-rock': { family: 'rock', energy: 58, electronic: 16, era: 18 },
+  sports: { family: 'spoken', energy: 54, electronic: 18, era: 42 },
+  holiday: { family: 'holiday', energy: 54, electronic: 18, era: 30 },
+  lofi: { family: 'chill', energy: 26, electronic: 58, era: 70 },
+  kids: { family: 'kids', energy: 58, electronic: 18, era: 42 },
+  comedy: { family: 'spoken', energy: 52, electronic: 18, era: 36 },
+  'progressive-rock': { family: 'rock', energy: 70, electronic: 30, era: 32 },
+  'smooth-jazz': { family: 'jazz', energy: 38, electronic: 24, era: 28 },
+  'french-chanson': { family: 'chanson', energy: 44, electronic: 10, era: 22 },
 };
 
 export const CLOUD_GENRE_EDGES = [
@@ -333,6 +341,28 @@ export const CLOUD_GENRE_EDGES = [
   ['surf-rock', 'rockabilly'],
   ['surf-rock', 'classic-rock'],
   ['surf-rock', 'oldies-decades'],
+  ['sports', 'news'],
+  ['holiday', 'pop'],
+  ['holiday', 'oldies-decades'],
+  ['holiday', 'classical'],
+  ['lofi', 'chill'],
+  ['lofi', 'trip-hop'],
+  ['lofi', 'hiphop'],
+  ['lofi', 'ambient'],
+  ['kids', 'pop'],
+  ['kids', 'chiptune'],
+  ['kids', 'soundtracks-game'],
+  ['comedy', 'news'],
+  ['comedy', 'pop'],
+  ['progressive-rock', 'classic-rock'],
+  ['progressive-rock', 'psychedelic-rock'],
+  ['progressive-rock', 'metal'],
+  ['smooth-jazz', 'jazz'],
+  ['smooth-jazz', 'rnb'],
+  ['smooth-jazz', 'chill'],
+  ['french-chanson', 'pop'],
+  ['french-chanson', 'oldies-decades'],
+  ['french-chanson', 'jazz'],
 ];
 
 function clamp(value, minimum, maximum) {
