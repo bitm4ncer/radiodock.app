@@ -3,7 +3,11 @@ import { STATIONS_BASE } from '../data/stations-api.js';
 const LISTENER_KEY = 'rd_listener_id';
 const OPT_OUT_KEYS = ['umami.disabled', 'rd_analytics_opt_out'];
 
-export function isOptedOut(storage = globalThis.localStorage, nav = globalThis.navigator) {
+export function isOptedOut(storage = globalThis.localStorage, nav = globalThis.navigator, doc = globalThis.document) {
+  const cookie = String(doc?.cookie ?? '')
+    .split(';')
+    .some((part) => part.trim() === 'rd_stats_exclude=1');
+  if (cookie) return true;
   if (storage) {
     if (OPT_OUT_KEYS.some((key) => storage.getItem(key) === '1')) return true;
   }
@@ -39,7 +43,7 @@ export function attachListenSession(player, {
   windowImpl = globalThis.window,
   documentImpl = globalThis.document,
 } = {}) {
-  if (!player || !windowImpl || isDev || isOptedOut(storage)) {
+  if (!player || !windowImpl || isDev || isOptedOut(storage, globalThis.navigator, documentImpl)) {
     return { stop() {} };
   }
 
@@ -49,6 +53,7 @@ export function attachListenSession(player, {
   let stopped = false;
 
   function post(url, body, { useBeacon = false } = {}) {
+    if (isOptedOut(storage, globalThis.navigator, documentImpl)) return;
     const json = JSON.stringify(body);
     try {
       if (useBeacon && typeof beacon === 'function') {
@@ -126,6 +131,9 @@ export function attachListenSession(player, {
 
   function tick() {
     if (!session || session.ended || !audible || !player.isPlaying?.()) return;
+    // In-app mute (volume 0) is not listening. Browser-tab mute is not
+    // observable from the page, so the player's own volume is the honest gate.
+    if ((player.getVolume?.() ?? 1) <= 0) return;
     const background = documentImpl?.visibilityState === 'hidden';
     if (background) session.backgroundMinutes += 1;
     else session.foregroundMinutes += 1;

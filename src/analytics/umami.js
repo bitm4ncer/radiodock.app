@@ -3,6 +3,8 @@
 // the live dashboard. All calls are best-effort: a missing or
 // late-loading umami global no-ops rather than throwing.
 
+import { getAnalyticsOptOut } from '../data/analytics-prefs.js';
+
 const ENABLED = import.meta.env?.PROD === true;
 
 function devLog(name, data) {
@@ -16,6 +18,7 @@ function devLog(name, data) {
 // Attach anonymous session-scoped data (shown in Umami's Sessions view).
 // Last write wins, so callers can send cumulative values repeatedly.
 export function identifySession(data) {
+  if (getAnalyticsOptOut()) return;
   if (!ENABLED) {
     devLog('$identify', data);
     return;
@@ -30,6 +33,7 @@ export function identifySession(data) {
 }
 
 export function track(name, data) {
+  if (getAnalyticsOptOut()) return;
   if (!ENABLED) {
     devLog(name, data);
     return;

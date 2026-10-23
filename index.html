@@ -205,13 +205,27 @@
       }
     </script>
 
-    <!-- Privacy-friendly, cookieless analytics. Honours the browser's
-         Do-Not-Track header AND a manual opt-out flag in localStorage
-         (set/unset from the toggle on /legal.html). Umami's own track
-         function checks `localStorage['umami.disabled']` internally, so
-         this single mechanism mutes both auto-pageviews and the custom
-         events emitted from src/analytics/umami.js. -->
-    <script defer src="https://stats.bitmancer.net/script.js" data-website-id="edaa7022-cf0f-4826-8279-b8eff071acf4" data-do-not-track="true" data-performance="true" data-exclude-hash="true"></script>
+    <!-- Privacy-friendly, cookieless analytics. The stations dashboard sets
+         `rd_stats_exclude=1` on the parent domain when the admin is logged in;
+         that browser must not appear in listening stats. Otherwise load Umami
+         only when the visitor has not opted out. Do-Not-Track is enforced by
+         Umami itself. -->
+    <script>
+      (function () {
+        var excluded = document.cookie.split(';').some(function (part) {
+          return part.trim() === 'rd_stats_exclude=1';
+        });
+        if (excluded) return;
+        var script = document.createElement('script');
+        script.defer = true;
+        script.src = 'https://stats.bitmancer.net/script.js';
+        script.setAttribute('data-website-id', 'edaa7022-cf0f-4826-8279-b8eff071acf4');
+        script.setAttribute('data-do-not-track', 'true');
+        script.setAttribute('data-performance', 'true');
+        script.setAttribute('data-exclude-hash', 'true');
+        document.head.appendChild(script);
+      })();
+    </script>
     <script type="module" src="/src/main.js"></script>
   </head>
   <body>

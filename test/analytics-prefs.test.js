@@ -21,6 +21,8 @@ test('analytics preference writes both opt-out keys', () => {
   assert.equal(storage.getItem('umami.disabled'), null);
   assert.equal(storage.getItem('rd_analytics_opt_out'), null);
   assert.equal(getAnalyticsOptOut(storage), false);
+  assert.equal(getAnalyticsOptOut(storage, { cookie: 'rd_stats_exclude=1' }), true);
+  assert.equal(getAnalyticsOptOut(storage, { cookie: 'rd_stats_exclude=0' }), false);
 });
 
 test('trackStationPlay dispatches rd:station-play even without Umami', () => {
