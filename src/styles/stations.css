@@ -3222,6 +3222,11 @@ html.is-standalone .stations-panel:not(.is-open) {
   pointer-events: none;
 }
 
+.stations-cloud-stage.is-short-ring .stations-cloud-ring-label {
+  left: -170px;
+  top: 22px;
+}
+
 .stations-cloud-ring-label strong {
   display: block;
   font-size: 14px;
@@ -3900,7 +3905,7 @@ html.is-standalone .stations-panel:not(.is-open) {
     opacity: 0.38;
   }
 
-  .stations-cloud-node.is-minor .stations-cloud-label {
+  .stations-cloud-node.is-minor:not(:hover):not(:focus-visible) .stations-cloud-label {
     opacity: 0;
   }
 

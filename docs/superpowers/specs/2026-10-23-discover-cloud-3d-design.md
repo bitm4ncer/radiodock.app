@@ -237,7 +237,7 @@ The follow-up review replaced the dense 3D logo orbits with a compact genre map 
 - Orbit, wheel zoom, pinch, and reset remain available in 3D focus. The mode switch and axis editor stay locked while the ring is open.
 - Closing the ring returns to the 3D overview, still in 3D.
 - Collection selection never calls `playStation` or `onPlay`. Playback still requires the explicit station action inside the ring.
-- On mobile, the ring shows at most 18 stations by default, with an explicit `All N stations` button for the complete set. The ring is capped to the stage, station targets are 44 by 44 CSS pixels, and the collection note panel is omitted to keep the ring usable.
+- On mobile, the ring shows at most 18 stations in portrait, 12 on medium-height stages, and 8 on short stages, with an explicit `All N stations` button for the complete set. A station search result is moved into the first ring rather than bypassing the cap. The ring is capped to the stage, station targets are 44 by 44 CSS pixels, and the collection note panel is omitted to keep the ring usable.
 
 ### Mobile layout and performance
 
@@ -255,13 +255,13 @@ Headless Chrome for Testing, 390 by 844 CSS pixels, device scale factor 2, 4x CP
 
 | Interaction | Before follow-up | After follow-up |
 | --- | --- | --- |
-| 3D orbit | 23.7 fps | 60.0 fps |
-| 3D mode enter | 43.9 fps | 56.3 fps |
-| 3D focus open | 40.0 fps | 52.7 fps |
+| 3D orbit | 23.7 fps | 59.1 fps |
+| 3D mode enter | 43.9 fps | 54.3 fps |
+| 3D focus open | 40.0 fps | 53.5 fps |
 | 3D focus orbit | 58.1 fps | 60.0 fps |
-| 2D axis change | 33.0 fps | 53.9 fps |
-| 2D pan | Not measured | 60.0 fps |
-| 3D exit | 30.5 fps | 43.6 fps |
+| 2D axis change | 33.0 fps | 52.4 fps |
+| 2D pan | Not measured | 59.1 fps |
+| 3D exit | 30.5 fps | 47.7 fps |
 
 Idle 2D and 3D both report zero app animation frames and zero stage mutations. The remaining measured limitation is a single long task when opening a large focus ring and when restoring the 2D scene on exit. These are documented as one-time transition costs, not continuous interaction costs.
 

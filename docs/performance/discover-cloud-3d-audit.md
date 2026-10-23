@@ -125,8 +125,8 @@ Verified locally in the browser:
 - 3D mode toggle with `aria-pressed`, blocked while the focus ring is open, mode enter and leave interpolation, reduced-motion immediate state.
 - 3D orbit by pointer drag, pitch clamp, wheel distance zoom, pinch distance zoom, plus and minus distance controls, and reset.
 - Dashed projected edges, neighbor highlighting on hover and focus, collection tooltips, and collection labels hidden in 3D.
-- Clicking a collection in 3D, keyboard Enter on a focused collection, and collection search results all exit 3D and open the existing focus ring with zero playback calls.
-- A station search result in 3D opens and highlights its ring station with zero playback calls. The same action in 2D still starts playback exactly once.
+- Clicking a collection in 3D, keyboard Enter on a focused collection, and collection search results all keep 3D active and open the existing focus ring with zero playback calls. Closing the ring returns to 3D.
+- A station search result in 3D opens and highlights its ring station with zero playback calls. The searched station is moved into the capped first ring. The same action in 2D still starts playback exactly once.
 - Fullscreen 3D at 1280 x 800, Tiny Player docked and restored, 89 of 89 nodes fully inside.
 - Mobile portrait and landscape 3D, bottom sheet, touch targets of at least 44 px, no horizontal overflow.
 - Light theme stage resolves to `rgb(247, 247, 249)`. Dark theme was captured separately and renders the cloud with all axis labels visible.
@@ -162,13 +162,13 @@ The first 3D implementation was clean on desktop but too dense and too slow on p
 
 | Interaction | First 3D build | Follow-up |
 | --- | --- | --- |
-| 3D orbit | 23.7 fps | 60.0 fps |
-| 3D mode enter | 43.9 fps | 56.3 fps |
-| 3D focus open | 40.0 fps | 52.7 fps |
+| 3D orbit | 23.7 fps | 59.1 fps |
+| 3D mode enter | 43.9 fps | 54.3 fps |
+| 3D focus open | 40.0 fps | 53.5 fps |
 | 3D focus orbit | 58.1 fps | 60.0 fps |
-| 2D axis change | 33.0 fps | 53.9 fps |
-| 2D pan | Not measured | 60.0 fps |
-| 3D exit | 30.5 fps | 43.6 fps |
+| 2D axis change | 33.0 fps | 52.4 fps |
+| 2D pan | Not measured | 59.1 fps |
+| 3D exit | 30.5 fps | 47.7 fps |
 
 Idle 2D and 3D both report 60 fps refresh sampling with zero app animation frames and zero cloud-stage mutations. The 2D overview now renders 356 station previews instead of 648 on phones, hides minor labels until hover or focus, and runs zero decorative bubble animations.
 
@@ -176,7 +176,7 @@ Idle 2D and 3D both report 60 fps refresh sampling with zero app animation frame
 
 - The 3D overview uses compact dots and nine super-genre colors. Station thumbnails exist only in the focus ring.
 - The 3D focus ring stays in 3D. The camera target centres the selected collection and the ring follows it while orbit remains active.
-- Mobile phones cap the focus ring at 18 stations with an explicit `All N stations` expansion.
+- Mobile phones cap the focus ring at 18 stations in portrait and 8 or 12 on short stages, with an explicit `All N stations` expansion. The default cap keeps the ring usable; the expansion is a dense overview, so search is the precise path for a specific station.
 - Phones use a compact 2D layout spread, a cover fit, four preview logos per collection, no floating animation, no backdrop blur, and a 2 by 2 utility grid.
 - Axis changes and 3D exits are immediate on phones. Desktop keeps the interpolated transitions.
 - Axis transitions animate node transforms and defer edge geometry until the nodes settle. 3D transitions skip per-frame SVG edge writes and reveal links when the scene settles.
@@ -186,3 +186,5 @@ Idle 2D and 3D both report 60 fps refresh sampling with zero app animation frame
 - At 4x CPU throttle, opening a large focus ring still produces one long task roughly between 80 and 110 ms. Closing 3D still produces a one-time long task roughly between 250 and 285 ms while the full 2D scene returns. These are transition costs, not continuous interaction costs.
 - The measurements are headless Chrome, not a physical phone. GPU, thermal behaviour, and browser chrome differ on real devices.
 - The 3D overview remains a canvas of 89 collections. Some dense clusters still overlap visually; orbit and zoom are the intended ways to inspect them.
+
+Follow-up test suite: 359 of 359 tests passed. Vite production build succeeded.

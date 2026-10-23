@@ -367,8 +367,8 @@ function dimensionShortLabel(key) {
 }
 
 export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPlay = async () => false, playerCard = null } = {}) {
-  const compactCloud = window.matchMedia('(max-width: 699px), (pointer: coarse)').matches;
-  const coverCloud = window.matchMedia('(max-width: 699px)').matches;
+  const compactCloud = window.matchMedia('(max-width: 699px)').matches;
+  const coverCloud = compactCloud;
   const model = buildCloudModel(lists, {
     previewLimit: compactCloud ? 4 : 8,
     layoutSpread: compactCloud ? COMPACT_LAYOUT_SPREAD : LAYOUT_SPREAD,
@@ -424,6 +424,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   let sceneDirty = false;
   let sceneTransition = null;
   let sceneTarget = { x: 0, y: 0, z: 0 };
+  let sceneTargetTo = { x: 0, y: 0, z: 0 };
   let sceneTargetFrame = 0;
   let saved2dCamera = null;
   let sceneAxisGroup = null;
@@ -1039,8 +1040,10 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   }
 
   function clampScale(value) {
-    const base = fitScale > 0 ? fitScale : 0.0001;
-    return Math.min(base * 6, Math.max(base * 0.75, value));
+    const base = ring?.ringScale > 0 ? ring.ringScale : (fitScale > 0 ? fitScale : 0.0001);
+    const minimum = ring ? base * 0.6 : base * 0.75;
+    const maximum = ring ? base * 1.8 : base * 6;
+    return Math.min(maximum, Math.max(minimum, value));
   }
 
   function applyCamera() {
@@ -1469,6 +1472,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     };
     cancelAnimationFrame(sceneTargetFrame);
     sceneTargetFrame = 0;
+    sceneTargetTo = next;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (immediate || reduced) {
       sceneTarget = next;
@@ -1503,6 +1507,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     cancelAnimationFrame(sceneTargetFrame);
     sceneTargetFrame = 0;
     sceneTarget = { x: 0, y: 0, z: 0 };
+    sceneTargetTo = { x: 0, y: 0, z: 0 };
   }
 
   function enter3d() {
@@ -1511,6 +1516,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     finishAxis();
     finishCameraFlight();
     resetSceneTarget();
+    activateNode(null);
     hideTooltip();
     saved2dCamera = { ...camera };
     measureSceneViewport();
@@ -1561,6 +1567,8 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     stage.classList.remove('is-node-hover');
     mode = '2d';
     stage.classList.remove('is-3d', 'is-orbit-active');
+    activateNode(null);
+    hideTooltip();
     applyLinks2dLayout();
     for (const node of model.nodes) {
       const element = nodeElements.get(node.slug);
@@ -1636,6 +1644,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       const leaving = sceneTransition?.direction === 'leave';
       cancelAnimationFrame(sceneFrame);
       sceneFrame = 0;
+      if (sceneTargetFrame) sceneTarget = { ...sceneTargetTo };
       cancelAnimationFrame(sceneTargetFrame);
       sceneTargetFrame = 0;
       sceneTransition = null;
@@ -1958,7 +1967,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
 
   function onPointerMove(evt) {
     if (!pointers.has(evt.pointerId)) {
-      if (mode === '3d' && !ring && evt.pointerType !== 'touch') {
+      if (mode === '3d' && !ring && sceneTransition?.direction !== 'leave' && evt.pointerType !== 'touch') {
         const chrome = evt.target.closest('.stations-cloud-controls, .stations-cloud-axis-editor, .stations-cloud-mode, .stations-cloud-back, .stations-cloud-results, .stations-cloud-note-panel, .stations-cloud-player');
         setHoveredNode(chrome ? null : nearestSceneNode(evt.clientX, evt.clientY));
       }
@@ -2037,13 +2046,20 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   }
 
   function onStagePointerLeave() {
-    if (mode === '3d' && !ring) setHoveredNode(null);
+    if (mode === '3d' && !ring && sceneTransition?.direction !== 'leave') setHoveredNode(null);
   }
 
   function onPointerUp(evt) {
     pointers.delete(evt.pointerId);
     if (pointers.size < 2) pinch = null;
     if (pointers.size === 0) {
+      if (evt.type === 'pointerup' && mode === '3d' && !ring && !orbitDistanceCustomized && dragMoved) {
+        const nextDistance = fittedOrbitDistance();
+        if (Math.abs(nextDistance - orbit.distance) > 1) {
+          orbit = clampCloudOrbit({ ...orbit, distance: nextDistance });
+          invalidateScene();
+        }
+      }
       if (dragMoved) {
         suppressClick = true;
         clearTimeout(suppressTimer);
@@ -2102,6 +2118,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       suppressClick = false;
       return;
     }
+    if (sceneTransition?.direction === 'leave') return;
     if (!ring && mode === '3d') {
       const slug = nearestSceneNode(evt.clientX, evt.clientY);
       if (slug) {
@@ -2243,7 +2260,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     }
     ring.element.remove();
     ring = null;
-    stage.classList.remove('is-ring-open');
+    stage.classList.remove('is-ring-open', 'is-short-ring');
     for (const element of nodeElements.values()) {
       element.classList.remove('is-active', 'is-related', 'is-dimmed', 'is-open', 'is-expanded');
       element.removeAttribute('aria-hidden');
@@ -2337,7 +2354,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   function activateCollection(slug, { stationUuid = null, play = false } = {}) {
     if (destroyed) return;
     const was3d = mode === '3d' || sceneTransition?.direction === 'leave';
-    openCollection(slug, { showAll: !!stationUuid });
+    openCollection(slug, { focusStation: stationUuid });
     if (stationUuid) {
       highlightStation(stationUuid);
       if (play && !was3d) playStation(stationUuid);
@@ -2349,7 +2366,9 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     const height = Math.max(1, stage.clientHeight || host.clientHeight || 1);
     const maxRing = ringState.points.length ? Math.max(...ringState.points.map((point) => point.ring)) : 0;
     const maxRadius = 190 + maxRing * 78;
-    const screenScale = Math.max(0.22, Math.min(0.92, (Math.min(width, height) / 2 / (maxRadius + 40)) * 0.9));
+    const minStage = Math.min(width, height);
+    stage.classList.toggle('is-short-ring', minStage < 260);
+    const screenScale = Math.max(0.22, Math.min(0.92, (minStage / 2 / (maxRadius + 40)) * 0.9));
     return { screenScale, size: width < 520 ? 40 : 46 };
   }
 
@@ -2359,7 +2378,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     ringState.screenScale = screenScale;
     ringState.size = size;
     for (const point of ringState.points) {
-      const station = ringState.node.stations[point.index];
+      const station = ringState.stations?.[point.index] ?? ringState.node.stations[point.index];
       const uuid = station?.stationuuid ?? station?.uuid ?? station?.id;
       const element = uuid ? ringState.stationEls.get(uuid) : null;
       if (!element) continue;
@@ -2378,20 +2397,22 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     ring.element.style.visibility = projected.visible ? 'visible' : 'hidden';
   }
 
-  function openCollection(slug, { showAll = false } = {}) {
+  function openCollection(slug, { showAll = false, focusStation = null } = {}) {
     if (destroyed) return;
+    if (sceneTransition?.direction === 'leave') finishLeave3d();
     const focus3d = mode === '3d';
     if (focus3d) {
       sceneTransition = null;
       stage.classList.remove('is-scene-transitioning');
     }
+    const hadRing = !!ring;
     finishAxis();
     closeAxisEditor({ restoreFocus: false });
     hideTooltip();
     const node = model.nodeBySlug.get(slug);
     if (!node) return;
     const nodeEl = nodeElements.get(slug);
-    if (nodeEl) ensureMiniCloud(node, nodeEl);
+    if (nodeEl && !compactCloud) ensureMiniCloud(node, nodeEl);
     const cloudLogos = new Map();
     nodeEl?.querySelectorAll('.stations-cloud-orbit .logo-slot, .stations-cloud-mini-layer .logo-slot').forEach((logo) => {
       const uuid = logo.dataset.uuid;
@@ -2406,8 +2427,8 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       }
     }
     if (ring) clearRing();
-    if (!focus3d) overviewCamera = { ...camera };
-    else overviewCamera = null;
+    if (!focus3d && !hadRing) overviewCamera = { ...camera };
+    else if (focus3d) overviewCamera = null;
     hideResults();
     setHoveredNode(null);
     stage.classList.add('is-ring-open');
@@ -2433,13 +2454,23 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       modeButton.tabIndex = -1;
     }
 
-    const stationLimit = compactCloud && !showAll ? 18 : Infinity;
+    const width = Math.max(1, stage.clientWidth || host.clientWidth || 1);
+    const height = Math.max(1, stage.clientHeight || host.clientHeight || 1);
+    const minStage = Math.min(width, height);
+    stage.classList.toggle('is-short-ring', minStage < 260);
+    const mobileStationLimit = minStage < 260 ? 8 : (minStage < 340 ? 12 : 18);
+    const stationLimit = compactCloud && !showAll ? mobileStationLimit : Infinity;
     const shownCount = Math.min(node.count, stationLimit);
+    const orderedStations = [...node.stations];
+    if (focusStation) {
+      const index = orderedStations.findIndex((station) => (
+        String(station.stationuuid ?? station.uuid ?? station.id ?? '') === String(focusStation)
+      ));
+      if (index > 0) orderedStations.unshift(orderedStations.splice(index, 1)[0]);
+    }
     const points = ringLayout(shownCount, { radius: 190, gap: 78 });
     const maxRing = points.length ? Math.max(...points.map((point) => point.ring)) : 0;
     const maxRadius = 190 + maxRing * 78;
-    const width = Math.max(1, stage.clientWidth || host.clientWidth || 1);
-    const height = Math.max(1, stage.clientHeight || host.clientHeight || 1);
     const size = width < 520 ? 40 : 46;
     const fitRing = Math.min(width, height) / 2 / (maxRadius + 40);
     const ringScale = focus3d
@@ -2457,7 +2488,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     const migratedLogos = [];
 
     points.forEach((point, index) => {
-      const station = node.stations[point.index];
+      const station = orderedStations[point.index];
       if (!station) return;
       const uuid = station.stationuuid ?? station.uuid ?? station.id;
       if (!uuid) return;
@@ -2541,7 +2572,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     hydrateLogos(element);
 
     ring = {
-      slug, node, element, label, current, stationEls, ringScale, screenScale, size, points, migratedLogos, focus3d,
+      slug, node, element, label, current, stationEls, ringScale, screenScale, size, points, stations: orderedStations, migratedLogos, focus3d,
     };
     if (!compactCloud) renderCollectionNote(node);
     if (nowPlayingId) setNowPlaying(nowPlayingId);
@@ -2569,6 +2600,8 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
 
   function reset() {
     if (destroyed) return;
+    if (sceneTransition?.direction === 'leave') finishLeave3d();
+    if (ring?.focus3d) closeRing({ restoreFocus: false, restoreCamera: false });
     if (mode === '3d') {
       hideTooltip();
       sceneTransition = null;
@@ -2707,7 +2740,10 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       const maxRing = ring.points.length ? Math.max(...ring.points.map((point) => point.ring)) : 0;
       const maxRadius = 190 + maxRing * 78;
       const size = width < 520 ? 40 : 46;
-      const ringScale = clampScale(Math.min(width, height) / 2 / (maxRadius + 40));
+      const minStage = Math.min(width, height);
+      stage.classList.toggle('is-short-ring', minStage < 260);
+      const fitRing = minStage / 2 / (maxRadius + 40);
+      const ringScale = Math.max(0.2, Math.min(1.1, fitRing * 0.92));
       ring.ringScale = ringScale;
       ring.size = size;
       for (const element of ring.stationEls.values()) {
