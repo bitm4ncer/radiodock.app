@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-23T14:57:57.322Z",
+  "generatedAt": "2026-10-23T16:36:21.046Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -2749,11 +2749,6 @@
             "countrycode": "DE"
           },
           {
-            "stationuuid": "bc5e41ee-51da-454b-993a-56895be3e864",
-            "name": "punk irratia",
-            "countrycode": "ES"
-          },
-          {
             "stationuuid": "5446f9e0-25d9-4be1-824d-72fba2037554",
             "name": "REAL PUNK RADIO",
             "countrycode": "US"
@@ -2852,11 +2847,6 @@
             "stationuuid": "c79485f1-013e-46ec-a2ef-8eb3cef2d6dd",
             "name": "Známka Punku",
             "countrycode": "CZ"
-          },
-          {
-            "stationuuid": "d799ed01-e98b-47f5-9b4f-2307e07feede",
-            "name": "PUNKRATZ",
-            "countrycode": "DE"
           },
           {
             "stationuuid": "6754605b-0bc9-11ea-a87e-52543be04c81",
@@ -8471,6 +8461,44 @@
             "countrycode": "GB"
           }
         ]
+      },
+      {
+        "slug": "hardcore-metalcore",
+        "title": "Hardcore / Metalcore",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "cf626443-8fb2-4095-a793-a68f1c91f87a",
+            "name": "Laut.fm Hardcore",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "d799ed01-e98b-47f5-9b4f-2307e07feede",
+            "name": "PUNKRATZ",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "bc5e41ee-51da-454b-993a-56895be3e864",
+            "name": "Punk Irratia",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "9626c92b-0601-11e8-ae97-52543be04c81",
+            "name": "Beatdownx",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "78d86ac2-b623-4728-9671-57ba5fcd82cd",
+            "name": "Laut.fm Metalcore",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "e5ef8210-7cea-49e5-b2ef-13db01df225f",
+            "name": "RADIO BOB! Metalcore",
+            "countrycode": "DE"
+          }
+        ]
       }
     ]
   },
@@ -8761,7 +8789,7 @@
       {
         "genre": "pop",
         "label": "Pop",
-        "count": 5468
+        "count": 5469
       },
       {
         "genre": "news",
@@ -8771,7 +8799,7 @@
       {
         "genre": "rock",
         "label": "Rock",
-        "count": 3171
+        "count": 3172
       },
       {
         "genre": "hits",
@@ -8851,7 +8879,7 @@
       {
         "genre": "house",
         "label": "House",
-        "count": 807
+        "count": 808
       },
       {
         "genre": "hiphop",
@@ -8896,7 +8924,7 @@
       {
         "genre": "metal",
         "label": "Metal",
-        "count": 515
+        "count": 517
       },
       {
         "genre": "world",
