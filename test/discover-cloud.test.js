@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildCloudModel, ringLayout, matchCloud } from '../src/ui/discover-cloud.js';
-import { CLOUD_AXIS_PRESETS, CLOUD_GENRE_VECTORS } from '../src/ui/cloud-genre-map.js';
+import { CLOUD_DIMENSIONS, CLOUD_GENRE_VECTORS } from '../src/ui/cloud-genre-map.js';
+import { axisPairKey } from '../src/ui/cloud-geometry.js';
 import { COLLECTION_NOTES } from '../src/ui/collection-notes.js';
 
 function station(uuid, countrycode = 'US') {
@@ -119,39 +120,66 @@ test('edges use the curated genre graph and are deduplicated', () => {
   assert.equal(keys.has('hardcore|punk'), false);
 });
 
-test('keeps semantic positions and layouts for every axis preset', () => {
+function orderedAxisPairs() {
+  const dimensions = Object.keys(CLOUD_DIMENSIONS);
+  return dimensions.flatMap((x) => dimensions
+    .filter((y) => y !== x)
+    .map((y) => ({ x, y, key: axisPairKey(x, y) })));
+}
+
+test('keeps semantic positions and layouts for every ordered axis pair', () => {
   const model = buildCloudModel([list('metal', 10), list('pop', 10), list('news', 10)]);
   const metal = model.nodeBySlug.get('metal');
   const pop = model.nodeBySlug.get('pop');
   const news = model.nodeBySlug.get('news');
-  for (const preset of Object.keys(CLOUD_AXIS_PRESETS)) {
-    assert.ok(metal.layouts[preset], `metal has no ${preset} layout`);
-    assert.ok(pop.layouts[preset], `pop has no ${preset} layout`);
-    assert.ok(news.layouts[preset], `news has no ${preset} layout`);
+  for (const { key } of orderedAxisPairs()) {
+    assert.ok(metal.layouts[key], `metal has no ${key} layout`);
+    assert.ok(pop.layouts[key], `pop has no ${key} layout`);
+    assert.ok(news.layouts[key], `news has no ${key} layout`);
   }
   assert.ok(metal.y < pop.y, 'metal should sit above pop on the energy axis');
   assert.ok(news.x < pop.x, 'news should sit left of pop on the electronic axis');
   assert.deepEqual(metal.vector, CLOUD_GENRE_VECTORS.metal);
+  assert.deepEqual(metal.point3d, {
+    x: (metal.vector.electronic - 50) / 50,
+    y: (metal.vector.energy - 50) / 50,
+    z: (metal.vector.mood - 50) / 50,
+  });
 });
 
-test('does not overlap in any axis preset', () => {
+test('transposes reversed pairs without overlaps and includes every pair in bounds', () => {
   const slugs = Object.keys(CLOUD_GENRE_VECTORS);
   const model = buildCloudModel(slugs.map((slug, index) => list(slug, 5 + (index % 40))));
-  for (const preset of Object.keys(CLOUD_AXIS_PRESETS)) {
+  for (const { x, y, key } of orderedAxisPairs()) {
+    const reverseKey = axisPairKey(y, x);
     for (let i = 0; i < model.nodes.length; i += 1) {
+      const point = model.nodes[i].layouts[key];
+      const reverse = model.nodes[i].layouts[reverseKey];
+      assert.equal(point.x, -reverse.y);
+      assert.equal(point.y, -reverse.x);
+      assert.ok(model.bounds.minX <= point.x - model.nodes[i].radius - 180 + 0.001);
+      assert.ok(model.bounds.maxX >= point.x + model.nodes[i].radius + 180 - 0.001);
+      assert.ok(model.bounds.minY <= point.y - model.nodes[i].radius - 180 + 0.001);
+      assert.ok(model.bounds.maxY >= point.y + model.nodes[i].radius + 180 - 0.001);
       for (let j = i + 1; j < model.nodes.length; j += 1) {
         const a = model.nodes[i];
         const b = model.nodes[j];
-        const first = a.layouts[preset];
-        const second = b.layouts[preset];
+        const first = a.layouts[key];
+        const second = b.layouts[key];
         const distance = Math.hypot(first.x - second.x, first.y - second.y);
         assert.ok(
           distance >= a.radius + b.radius + 20 - 0.001,
-          `${a.slug} and ${b.slug} overlap in ${preset}`,
+          `${a.slug} and ${b.slug} overlap in ${key}`,
         );
       }
     }
   }
+});
+
+test('keeps an unknown collection vector stable when collections are reordered or added', () => {
+  const first = buildCloudModel([list('future-one', 6), list('jazz', 6)]);
+  const changed = buildCloudModel([list('new-first', 6), list('jazz', 6), list('future-one', 6)]);
+  assert.deepEqual(first.nodeBySlug.get('future-one').vector, changed.nodeBySlug.get('future-one').vector);
 });
 
 test('ringLayout uses one, two, or three rings', () => {

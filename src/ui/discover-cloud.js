@@ -2,16 +2,18 @@ import { renderLogoSlot } from './station-logo.js';
 import { formatCount } from './stations-format.js';
 import {
   CLOUD_AXIS_PRESETS,
+  CLOUD_DEFAULT_2D_AXES,
+  CLOUD_DIMENSIONS,
   CLOUD_GENRE_EDGES,
   CLOUD_GENRE_VECTORS,
   projectVector,
 } from './cloud-genre-map.js';
+import { axisPairKey, normaliseCloudVector } from './cloud-geometry.js';
 import { collectionNoteFor } from './collection-notes.js';
 
 const PADDING = 180;
 const LAYOUT_SPREAD = 3;
 const CLEARANCE = 56;
-const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
 const RELAX_ITERATIONS = 380;
 const REPULSION_RADIUS = 520;
 const REPULSION_STRENGTH = 2.8;
@@ -25,19 +27,8 @@ function clamp(value, minimum, maximum) {
   return Math.min(maximum, Math.max(minimum, value));
 }
 
-function fallbackVector(index) {
-  const angle = index * GOLDEN_ANGLE;
-  const distance = 34 * Math.sqrt(index + 0.5);
-  return {
-    family: 'other',
-    energy: clamp(50 + Math.sin(angle) * distance, 6, 94),
-    electronic: clamp(50 + Math.cos(angle) * distance, 6, 94),
-    era: clamp(50 + Math.sin(angle + 2.1) * distance * 0.7, 6, 94),
-  };
-}
-
-function relaxLayout(nodes, preset) {
-  const anchors = nodes.map((node) => projectVector(node.vector, preset));
+function relaxLayout(nodes, axes) {
+  const anchors = nodes.map((node) => projectVector(node.vector, axes));
   const points = anchors.map((point) => ({ x: point.x, y: point.y }));
   for (let iteration = 0; iteration < RELAX_ITERATIONS; iteration += 1) {
     for (let first = 0; first < points.length; first += 1) {
@@ -142,7 +133,7 @@ export function buildCloudModel(lists = []) {
         size: clamp(radius * 0.32, 16, 54),
       };
     });
-    const vector = CLOUD_GENRE_VECTORS[list.slug] ?? fallbackVector(nodes.length);
+    const vector = normaliseCloudVector(list.slug, CLOUD_GENRE_VECTORS[list.slug]);
     nodes.push({
       slug: list.slug,
       title: list.title,
@@ -154,29 +145,39 @@ export function buildCloudModel(lists = []) {
       family: vector.family,
       info: collectionNoteFor(list),
       layouts: {},
+      point3d: {
+        x: (vector.electronic - 50) / 50,
+        y: (vector.energy - 50) / 50,
+        z: (vector.mood - 50) / 50,
+      },
       x: 0,
       y: 0,
     });
   }
 
-  for (const preset of Object.values(CLOUD_AXIS_PRESETS)) {
-    const points = relaxLayout(nodes, preset);
-    nodes.forEach((node, index) => {
-      node.layouts[preset.key] = points[index];
-    });
-  }
-
-  for (const node of nodes) {
-    for (const layout of Object.values(node.layouts)) {
-      layout.x *= LAYOUT_SPREAD;
-      layout.y *= LAYOUT_SPREAD;
+  const dimensions = Object.keys(CLOUD_DIMENSIONS);
+  for (let first = 0; first < dimensions.length; first += 1) {
+    for (let second = first + 1; second < dimensions.length; second += 1) {
+      const x = dimensions[first];
+      const y = dimensions[second];
+      const points = relaxLayout(nodes, { x, y });
+      const key = axisPairKey(x, y);
+      const reverseKey = axisPairKey(y, x);
+      nodes.forEach((node, index) => {
+        const point = {
+          x: points[index].x * LAYOUT_SPREAD,
+          y: points[index].y * LAYOUT_SPREAD,
+        };
+        node.layouts[key] = point;
+        node.layouts[reverseKey] = { x: -point.y, y: -point.x };
+      });
     }
   }
 
-  const initial = CLOUD_AXIS_PRESETS.vibe;
+  const initialKey = axisPairKey(CLOUD_DEFAULT_2D_AXES.x, CLOUD_DEFAULT_2D_AXES.y);
   for (const node of nodes) {
-    node.x = node.layouts[initial.key].x;
-    node.y = node.layouts[initial.key].y;
+    node.x = node.layouts[initialKey].x;
+    node.y = node.layouts[initialKey].y;
   }
 
   const nodeBySlug = new Map();
