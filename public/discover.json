@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-23T16:36:21.046Z",
+  "generatedAt": "2026-10-23T17:47:58.377Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -8469,6 +8469,11 @@
         "featured": false,
         "stations": [
           {
+            "stationuuid": "bc5e41ee-51da-454b-993a-56895be3e864",
+            "name": "Punk Irratia",
+            "countrycode": "ES"
+          },
+          {
             "stationuuid": "cf626443-8fb2-4095-a793-a68f1c91f87a",
             "name": "Laut.fm Hardcore",
             "countrycode": "DE"
@@ -8477,11 +8482,6 @@
             "stationuuid": "d799ed01-e98b-47f5-9b4f-2307e07feede",
             "name": "PUNKRATZ",
             "countrycode": "DE"
-          },
-          {
-            "stationuuid": "bc5e41ee-51da-454b-993a-56895be3e864",
-            "name": "Punk Irratia",
-            "countrycode": "ES"
           },
           {
             "stationuuid": "9626c92b-0601-11e8-ae97-52543be04c81",
