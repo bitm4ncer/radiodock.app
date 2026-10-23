@@ -434,6 +434,10 @@ export const COLLECTION_NOTES = {
   "new-age-meditation": {
     "short": "New age music is built for a quieter room: slow synths, piano, nature sounds and a melody that never insists. Eno's ambient records are a cousin; Deuter and Kitaro made the genre a market. Meditation and sleep are part of the format. The genre overlaps with ambient, relaxation and sleep music, but keeps a clearer melody and a warmer surface.",
     "long": "New age music emerged in the 1970s and 1980s as a calm, melodic alternative to rock, classical and jazz, often associated with meditation, healing and spiritual practice. Synthesizers, piano, harp, flute and field recordings are common; the structure is slow and repetitive, with no sharp edges. Kitaro, Deuter, Paul Winter and Enya crossed into the mainstream, while Brian Eno's ambient work supplied a more experimental lineage. The genre overlaps with ambient, relaxation and sleep music, but keeps a clearer melody. The genre overlaps with ambient, relaxation and sleep music, but keeps a clearer melody and a warmer surface."
+  },
+  "hardcore-metalcore": {
+    "short": "Hardcore and metalcore in one heavy shelf: NYHC grit, beatdown grooves and modern breakdowns. From Biohazard and Madball to Hatebreed and Irate, this is music built for the pit, the street and the basement show, with loud, hard riffs, gang vocals and no polished edges.",
+    "long": "New York hardcore made punk heavier, slower and meaner, fusing street-level aggression with metal riffs and crowd-moving breakdowns. That lineage runs through Biohazard, Madball, Agnostic Front and Sick of It All into beatdown and modern metalcore bands such as Hatebreed and Irate. This collection follows the whole arc: raw NYHC, crossover, beatdown and today's metalcore, with live-wire riffs, gang vocals and no polished edges. It is the sound of basement shows, packed clubs and a scene that never asked for permission. The tempo can drop to a crawl or jump to a sprint, but the message stays direct."
   }
 };
 
