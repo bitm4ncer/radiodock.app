@@ -138,6 +138,9 @@ export const CLOUD_GENRE_VECTORS = {
   'choral-sacred': { family: 'classical', energy: 28, electronic: 2, era: 2 },
   'latin-jazz-bossa': { family: 'latin', energy: 54, electronic: 12, era: 24 },
   'new-age-meditation': { family: 'ambient', energy: 16, electronic: 28, era: 48 },
+  'old-time-radio': { family: 'spoken', energy: 34, electronic: 8, era: 8 },
+  'christian-rock': { family: 'rock', energy: 76, electronic: 18, era: 50 },
+  bluegrass: { family: 'folk', energy: 58, electronic: 5, era: 8 },
 };
 
 export const CLOUD_GENRE_EDGES = [
@@ -392,6 +395,15 @@ export const CLOUD_GENRE_EDGES = [
   ['new-age-meditation', 'ambient'],
   ['new-age-meditation', 'chill'],
   ['new-age-meditation', 'classical-piano'],
+  ['old-time-radio', 'comedy'],
+  ['old-time-radio', 'oldies-decades'],
+  ['old-time-radio', 'news'],
+  ['christian-rock', 'gospel'],
+  ['christian-rock', '80s-hard-rock'],
+  ['christian-rock', 'classic-rock'],
+  ['bluegrass', 'folk-americana'],
+  ['bluegrass', 'country-roots'],
+  ['bluegrass', 'celtic'],
 ];
 
 function clamp(value, minimum, maximum) {
