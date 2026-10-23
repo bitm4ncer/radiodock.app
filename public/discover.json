@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-23T03:55:45.148Z",
+  "generatedAt": "2026-10-23T04:09:37.666Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -7359,6 +7359,135 @@
             "countrycode": "BG"
           }
         ]
+      },
+      {
+        "slug": "celtic",
+        "title": "Celtic",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "39e5d255-c3ad-4f81-9957-a1ceb59a3488",
+            "name": "Celtic Music Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "a96e06f8-4d64-11ea-b877-52543be04c81",
+            "name": "Celtcast",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "9612745b-0601-11e8-ae97-52543be04c81",
+            "name": "SomaFM ThistleRadio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "80f853f5-61f3-46e7-95fe-2d57da3fd1f3",
+            "name": "Folk Alley Irish",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "874ebb9b-e658-4bab-b303-8a914fc99e3d",
+            "name": "Radio Art - Celtic",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "08f7233b-d890-11e9-a861-52543be04c81",
+            "name": "Celtic Sounds",
+            "countrycode": "DE"
+          }
+        ]
+      },
+      {
+        "slug": "tango",
+        "title": "Tango",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "ffd131d8-acf9-4190-b6f4-b377624878e1",
+            "name": "La 2x4",
+            "countrycode": "AR"
+          },
+          {
+            "stationuuid": "cdd6e9d9-b547-4a75-b705-9427ad2f356b",
+            "name": "Argentine Tango Radio",
+            "countrycode": "HU"
+          },
+          {
+            "stationuuid": "a56679a1-0bbd-4258-a2f9-63e9aa1cfe59",
+            "name": "NaranjoFM",
+            "countrycode": "AR"
+          },
+          {
+            "stationuuid": "cc498541-8a41-4f7f-a293-4adcde4051dd",
+            "name": "Radio Tango Uno",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "d85fd402-37b8-4776-8c2b-d0cdbebb9672",
+            "name": "Tango Berlin",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "d1aff0af-3e9e-4ad2-a9d6-cfed3ffd6a66",
+            "name": "Tango Copenhagen Radio",
+            "countrycode": "DK"
+          },
+          {
+            "stationuuid": "9e783e27-3eec-427c-8f1c-66f05fadc418",
+            "name": "Tango Nuevo",
+            "countrycode": ""
+          },
+          {
+            "stationuuid": "961b1adc-0601-11e8-ae97-52543be04c81",
+            "name": "Tangoparabailar",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "a025f39d-4a4a-46b4-80f9-2997841a6c4e",
+            "name": "Radio Santa Milonga - Tango de Soie",
+            "countrycode": "FR"
+          }
+        ]
+      },
+      {
+        "slug": "flamenco",
+        "title": "Flamenco",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "e5bbc1b0-e694-4eef-917d-09eef16604a1",
+            "name": "Flamenco Radio",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "ec3cc0b8-bee4-4f07-88b2-e6d292318930",
+            "name": "Flamenco FM",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "91986b06-796d-4f01-99f0-ef47f3b9917a",
+            "name": "Energía Flamenca",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "531f957f-afd2-4cbf-b77d-9ef04b6ee473",
+            "name": "La flamenca",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "beb44633-1faa-48b3-b604-aead0e25df25",
+            "name": "Flamenco Barcelona",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "378de125-fc22-414a-a2ce-acc04a6661bc",
+            "name": "Deluxe Radio - Flamenco Flow",
+            "countrycode": "ES"
+          }
+        ]
       }
     ]
   },
@@ -7729,7 +7858,7 @@
       {
         "genre": "folk",
         "label": "Folk & Acoustic",
-        "count": 828
+        "count": 830
       },
       {
         "genre": "hiphop",
@@ -7764,7 +7893,7 @@
       {
         "genre": "latin",
         "label": "Latin",
-        "count": 651
+        "count": 660
       },
       {
         "genre": "chillout",
@@ -7782,14 +7911,14 @@
         "count": 527
       },
       {
+        "genre": "world",
+        "label": "World",
+        "count": 520
+      },
+      {
         "genre": "metal",
         "label": "Metal",
         "count": 516
-      },
-      {
-        "genre": "world",
-        "label": "World",
-        "count": 514
       },
       {
         "genre": "indie",
