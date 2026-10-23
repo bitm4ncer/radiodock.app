@@ -2470,6 +2470,7 @@ html.is-standalone .stations-panel:not(.is-open) {
 .stations-featured-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
 }
 
