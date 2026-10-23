@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-23T01:23:36.690Z",
+  "generatedAt": "2026-10-23T01:35:21.274Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -5937,6 +5937,11 @@
         "featured": false,
         "stations": [
           {
+            "stationuuid": "d529453c-08b3-42bb-bb65-4e95b43c9178",
+            "name": "InterSpace Sound System",
+            "countrycode": "NG"
+          },
+          {
             "stationuuid": "e5f1cdc8-e711-46ab-9739-f3e711549c5c",
             "name": "WDR COSMO - Afrobeats",
             "countrycode": "DE"
@@ -5970,11 +5975,6 @@
             "stationuuid": "480b2ac3-5d97-406d-b003-c5da40706e04",
             "name": "AFROPULSE FM",
             "countrycode": "US"
-          },
-          {
-            "stationuuid": "d529453c-08b3-42bb-bb65-4e95b43c9178",
-            "name": "InterSpace Sound System",
-            "countrycode": "NG"
           }
         ]
       },
