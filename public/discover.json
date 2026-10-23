@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-23T01:35:21.274Z",
+  "generatedAt": "2026-10-23T01:35:25.280Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -5942,6 +5942,11 @@
             "countrycode": "NG"
           },
           {
+            "stationuuid": "629c8df6-1cbb-4602-bc26-c4c580228759",
+            "name": "AFROBEATS FM",
+            "countrycode": "ZA"
+          },
+          {
             "stationuuid": "e5f1cdc8-e711-46ab-9739-f3e711549c5c",
             "name": "WDR COSMO - Afrobeats",
             "countrycode": "DE"
@@ -5955,11 +5960,6 @@
             "stationuuid": "3c8dd994-143a-444d-95da-1a8ba41fce16",
             "name": "LagosJump Radio",
             "countrycode": "GB"
-          },
-          {
-            "stationuuid": "629c8df6-1cbb-4602-bc26-c4c580228759",
-            "name": "AFROBEATS FM",
-            "countrycode": "ZA"
           },
           {
             "stationuuid": "4c41fb58-fe5c-419e-bad7-ea81e4932092",
