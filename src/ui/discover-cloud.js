@@ -1,19 +1,24 @@
 import { renderLogoSlot } from './station-logo.js';
 import { formatCount } from './stations-format.js';
 import {
-  CLOUD_AXIS_PRESETS,
   CLOUD_DEFAULT_2D_AXES,
   CLOUD_DIMENSIONS,
   CLOUD_GENRE_EDGES,
   CLOUD_GENRE_VECTORS,
   projectVector,
 } from './cloud-genre-map.js';
-import { axisPairKey, normaliseCloudVector } from './cloud-geometry.js';
+import {
+  assignCloudAxis,
+  axisPairKey,
+  normaliseCloudAxes,
+  normaliseCloudVector,
+} from './cloud-geometry.js';
 import { collectionNoteFor } from './collection-notes.js';
 
 const PADDING = 180;
 const LAYOUT_SPREAD = 3;
 const CLEARANCE = 56;
+const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
 const RELAX_ITERATIONS = 380;
 const REPULSION_RADIUS = 520;
 const REPULSION_STRENGTH = 2.8;
@@ -336,6 +341,11 @@ function hydrateLogos(root) {
   root.querySelectorAll('[data-logo-slot]').forEach(hydrateLogoSlot);
 }
 
+function dimensionShortLabel(key) {
+  const value = String(key ?? '');
+  return value ? value.charAt(0).toUpperCase() + value.slice(1) : '';
+}
+
 export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPlay = async () => false, playerCard = null } = {}) {
   const model = buildCloudModel(lists);
   const neighbors = new Map();
@@ -358,17 +368,23 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   let fitTimer = null;
   const flashTimers = new Set();
   let cameraFrame = 0;
-  let axis = CLOUD_AXIS_PRESETS.vibe.key;
+  let axes2d = normaliseCloudAxes(CLOUD_DEFAULT_2D_AXES);
+  let axisKey = axisPairKey(axes2d.x, axes2d.y);
   let axisFrame = 0;
   let labelFrame = 0;
-  let axisControl = null;
+  let axisEditor = null;
+  let axisSummary = null;
+  let axisPanel = null;
+  let axisPanelOpen = false;
+  let axisFocusBefore = null;
   let axisX = null;
   let axisY = null;
   let axisXStart = null;
   let axisXEnd = null;
   let axisYStart = null;
   let axisYEnd = null;
-  const axisButtons = new Map();
+  let modeSlot = null;
+  const axisOptionButtons = new Map();
   let suppressClick = false;
   let dragMoved = false;
   let dragStart = null;
@@ -670,24 +686,104 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   if (!host.requestFullscreen) fullscreenButton.hidden = true;
   controls.append(zoomIn, zoomOut, zoomReset, fullscreenButton);
 
-  axisControl = document.createElement('div');
-  axisControl.className = 'stations-cloud-axes';
-  axisControl.setAttribute('role', 'group');
-  axisControl.setAttribute('aria-label', 'Cloud axes');
-  for (const preset of Object.values(CLOUD_AXIS_PRESETS)) {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.dataset.cloudAxis = preset.key;
-    button.textContent = preset.label;
-    button.setAttribute('aria-pressed', String(preset.key === axis));
-    button.title = `${preset.xLabels[0]} to ${preset.xLabels[1]}, ${preset.yLabels[0]} to ${preset.yLabels[1]}`;
-    button.addEventListener('click', (evt) => {
-      evt.stopPropagation();
-      setAxis(preset.key);
-    });
-    axisControl.append(button);
-    axisButtons.set(preset.key, button);
+  axisEditor = document.createElement('div');
+  axisEditor.className = 'stations-cloud-axis-editor';
+
+  axisSummary = document.createElement('button');
+  axisSummary.type = 'button';
+  axisSummary.className = 'stations-cloud-axis-summary';
+  axisSummary.setAttribute('aria-expanded', 'false');
+  axisSummary.setAttribute('aria-controls', 'stationsCloudAxisPanel');
+  const summaryLabel = document.createElement('span');
+  summaryLabel.className = 'stations-cloud-axis-summary-label';
+  summaryLabel.textContent = 'Axes';
+  const summaryValue = document.createElement('span');
+  summaryValue.className = 'stations-cloud-axis-summary-value';
+  axisSummary.append(summaryLabel, summaryValue);
+  axisSummary.addEventListener('click', (evt) => {
+    evt.stopPropagation();
+    if (axisPanelOpen) closeAxisEditor({ restoreFocus: true });
+    else openAxisEditor();
+  });
+
+  axisPanel = document.createElement('div');
+  axisPanel.id = 'stationsCloudAxisPanel';
+  axisPanel.className = 'stations-cloud-axis-panel';
+  axisPanel.setAttribute('role', 'dialog');
+  axisPanel.setAttribute('aria-label', 'Map the cloud');
+  axisPanel.hidden = true;
+
+  const panelHead = document.createElement('div');
+  panelHead.className = 'stations-cloud-axis-panel-head';
+  const panelTitle = document.createElement('strong');
+  panelTitle.textContent = 'Map the cloud';
+  const panelClose = document.createElement('button');
+  panelClose.type = 'button';
+  panelClose.className = 'stations-cloud-axis-close';
+  panelClose.setAttribute('aria-label', 'Close axis settings');
+  panelClose.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg>';
+  panelClose.addEventListener('click', (evt) => {
+    evt.stopPropagation();
+    closeAxisEditor({ restoreFocus: true });
+  });
+  panelHead.append(panelTitle, panelClose);
+  axisPanel.append(panelHead);
+
+  for (const target of ['x', 'y']) {
+    const field = document.createElement('div');
+    field.className = 'stations-cloud-axis-field';
+    const fieldLabel = document.createElement('span');
+    fieldLabel.className = 'stations-cloud-axis-field-label';
+    fieldLabel.id = `stationsCloudAxis${target.toUpperCase()}Label`;
+    fieldLabel.textContent = `${target.toUpperCase()} axis`;
+    const options = document.createElement('div');
+    options.className = 'stations-cloud-axis-options';
+    options.setAttribute('role', 'group');
+    options.setAttribute('aria-labelledby', fieldLabel.id);
+    for (const dimension of Object.values(CLOUD_DIMENSIONS)) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'stations-cloud-axis-option';
+      button.dataset.axisTarget = target;
+      button.dataset.dimension = dimension.key;
+      const name = document.createElement('span');
+      name.className = 'stations-cloud-axis-option-name';
+      name.textContent = dimensionShortLabel(dimension.key);
+      const endpoints = document.createElement('span');
+      endpoints.className = 'stations-cloud-axis-option-endpoints';
+      endpoints.textContent = `${dimension.labels[0]} / ${dimension.labels[1]}`;
+      button.append(name, endpoints);
+      button.addEventListener('click', (evt) => {
+        evt.stopPropagation();
+        setAxisAssignment(target, dimension.key);
+      });
+      options.append(button);
+      axisOptionButtons.set(`${target}:${dimension.key}`, button);
+    }
+    field.append(fieldLabel, options);
+    axisPanel.append(field);
   }
+
+  const panelFoot = document.createElement('div');
+  panelFoot.className = 'stations-cloud-axis-panel-foot';
+  const swapButton = document.createElement('button');
+  swapButton.type = 'button';
+  swapButton.className = 'stations-cloud-axis-swap';
+  swapButton.textContent = 'Swap X and Y';
+  swapButton.addEventListener('click', (evt) => {
+    evt.stopPropagation();
+    setAxes2d({ x: axes2d.y, y: axes2d.x });
+  });
+  const panelNote = document.createElement('p');
+  panelNote.className = 'stations-cloud-axis-note';
+  panelNote.textContent = 'Picking the dimension already on the other axis swaps the two.';
+  panelFoot.append(swapButton, panelNote);
+  axisPanel.append(panelFoot);
+  axisEditor.append(axisPanel, axisSummary);
+  updateAxisLabels();
+
+  modeSlot = document.createElement('div');
+  modeSlot.className = 'stations-cloud-mode';
 
   axisX = document.createElement('div');
   axisX.className = 'stations-cloud-axis stations-cloud-axis--x';
@@ -721,7 +817,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   tooltip.className = 'stations-cloud-tooltip';
   tooltip.hidden = true;
 
-  stage.append(back, world, axisX, axisY, controls, hint, tooltip, axisControl);
+  stage.append(back, world, axisX, axisY, controls, hint, tooltip, modeSlot, axisEditor);
   if (!model.nodes.length) {
     const empty = document.createElement('div');
     empty.className = 'stations-cloud-empty';
@@ -856,7 +952,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   function layoutOverviewLabels() {
     if (destroyed) return;
     const stageRect = stage.getBoundingClientRect();
-    const keepOut = [axisControl, controls, hint, back, axisX, axisY]
+    const keepOut = [axisSummary, controls, hint, back, axisX, axisY, modeSlot]
       .filter((element) => element && !element.hidden)
       .map((element) => element.getBoundingClientRect())
       .filter((rect) => rect.width > 0 && rect.height > 0)
@@ -940,12 +1036,29 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   }
 
   function updateAxisLabels() {
-    const preset = CLOUD_AXIS_PRESETS[axis];
-    if (!preset) return;
-    axisXStart.textContent = preset.xLabels[0];
-    axisXEnd.textContent = preset.xLabels[1];
-    axisYStart.textContent = preset.yLabels[0];
-    axisYEnd.textContent = preset.yLabels[1];
+    const xDimension = CLOUD_DIMENSIONS[axes2d.x];
+    const yDimension = CLOUD_DIMENSIONS[axes2d.y];
+    if (axisXStart) axisXStart.textContent = xDimension?.labels[0] ?? '';
+    if (axisXEnd) axisXEnd.textContent = xDimension?.labels[1] ?? '';
+    if (axisYStart) axisYStart.textContent = yDimension?.labels[0] ?? '';
+    if (axisYEnd) axisYEnd.textContent = yDimension?.labels[1] ?? '';
+    if (axisSummary) {
+      const value = `${dimensionShortLabel(axes2d.x)} × ${dimensionShortLabel(axes2d.y)}`;
+      axisSummary.querySelector('.stations-cloud-axis-summary-value').textContent = value;
+      axisSummary.setAttribute(
+        'aria-label',
+        `Change cloud axes. X ${dimensionShortLabel(axes2d.x)}, Y ${dimensionShortLabel(axes2d.y)}.`,
+      );
+      axisSummary.title = axisSummary.getAttribute('aria-label');
+    }
+    for (const [key, button] of axisOptionButtons) {
+      const [target, dimension] = key.split(':');
+      button.setAttribute('aria-pressed', String(axes2d[target] === dimension));
+    }
+    stage.setAttribute(
+      'aria-label',
+      `Collection cloud. X axis ${dimensionShortLabel(axes2d.x)}, ${xDimension?.labels[0]} to ${xDimension?.labels[1]}. Y axis ${dimensionShortLabel(axes2d.y)}, ${yDimension?.labels[0]} to ${yDimension?.labels[1]}. Drag to pan, scroll to zoom, click a collection.`,
+    );
   }
 
   function snapAxis(key) {
@@ -968,7 +1081,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     if (!axisFrame) return;
     cancelAnimationFrame(axisFrame);
     axisFrame = 0;
-    snapAxis(axis);
+    snapAxis(axisKey);
   }
 
   function animateAxis(fromKey, toKey) {
@@ -1010,15 +1123,53 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     axisFrame = requestAnimationFrame(step);
   }
 
-  function setAxis(key) {
-    if (destroyed || ring || key === axis || !CLOUD_AXIS_PRESETS[key]) return;
-    const previous = axis;
-    axis = key;
-    for (const [buttonKey, button] of axisButtons) {
-      button.setAttribute('aria-pressed', String(buttonKey === axis));
-    }
+  function setAxes2d(nextAxes) {
+    if (destroyed || ring) return axes2d;
+    const next = normaliseCloudAxes(nextAxes);
+    const nextKey = axisPairKey(next.x, next.y);
+    if (nextKey === axisKey) return axes2d;
+    const previousKey = axisKey;
+    axes2d = next;
+    axisKey = nextKey;
     updateAxisLabels();
-    animateAxis(previous, key);
+    animateAxis(previousKey, nextKey);
+    return axes2d;
+  }
+
+  function setAxisAssignment(target, dimension) {
+    if (destroyed || ring) return axes2d;
+    return setAxes2d(assignCloudAxis(axes2d, target, dimension));
+  }
+
+  function openAxisEditor() {
+    if (destroyed || ring || axisPanelOpen) return;
+    axisFocusBefore = document.activeElement;
+    axisPanelOpen = true;
+    axisPanel.hidden = false;
+    axisEditor.classList.add('is-open');
+    axisSummary.setAttribute('aria-expanded', 'true');
+    const selected = axisOptionButtons.get(`x:${axes2d.x}`) ?? axisPanel.querySelector('button');
+    selected?.focus({ preventScroll: true });
+    scheduleLabelLayout();
+  }
+
+  function closeAxisEditor({ restoreFocus = true } = {}) {
+    if (!axisPanelOpen) return;
+    axisPanelOpen = false;
+    axisPanel.hidden = true;
+    axisEditor.classList.remove('is-open');
+    axisSummary.setAttribute('aria-expanded', 'false');
+    if (restoreFocus) {
+      const target = axisFocusBefore?.isConnected ? axisFocusBefore : axisSummary;
+      target?.focus({ preventScroll: true });
+    }
+    axisFocusBefore = null;
+    scheduleLabelLayout();
+  }
+
+  function onDocumentPointerDown(evt) {
+    if (!axisPanelOpen || axisEditor.contains(evt.target)) return;
+    closeAxisEditor({ restoreFocus: axisPanel.contains(document.activeElement) });
   }
 
   function flyTo(target, { animate = true } = {}) {
@@ -1073,14 +1224,14 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   }
 
   function onWheel(evt) {
-    if (evt.target.closest('.stations-cloud-results, .stations-cloud-note-panel')) return;
+    if (evt.target.closest('.stations-cloud-results, .stations-cloud-note-panel, .stations-cloud-axis-panel')) return;
     evt.preventDefault();
     zoomAt(evt.clientX, evt.clientY, Math.exp(-evt.deltaY * 0.0015));
   }
 
   function onPointerDown(evt) {
     if (evt.button != null && evt.button !== 0) return;
-    if (evt.target.closest('.stations-cloud-results, .stations-cloud-note-panel, .stations-cloud-controls, .stations-cloud-axes, .stations-cloud-back')) return;
+    if (evt.target.closest('.stations-cloud-results, .stations-cloud-note-panel, .stations-cloud-controls, .stations-cloud-axis-editor, .stations-cloud-mode, .stations-cloud-back')) return;
     pointers.set(evt.pointerId, { x: evt.clientX, y: evt.clientY });
     if (pointers.size === 1) {
       dragStart = { x: evt.clientX, y: evt.clientY };
@@ -1174,7 +1325,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       return;
     }
     if (!ring) return;
-    if (evt.target.closest('.stations-cloud-node, .stations-cloud-station, .stations-cloud-controls, .stations-cloud-axes, .stations-cloud-axis, .stations-cloud-back, .stations-cloud-results, .stations-cloud-note-panel, .stations-cloud-tooltip')) return;
+    if (evt.target.closest('.stations-cloud-node, .stations-cloud-station, .stations-cloud-controls, .stations-cloud-axis-editor, .stations-cloud-axis, .stations-cloud-mode, .stations-cloud-back, .stations-cloud-results, .stations-cloud-note-panel, .stations-cloud-tooltip')) return;
     closeRing();
   }
 
@@ -1285,7 +1436,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       button.removeAttribute('aria-hidden');
       button.removeAttribute('tabindex');
     }
-    for (const button of axisButtons.values()) {
+    for (const button of axisEditor.querySelectorAll('button')) {
       button.removeAttribute('aria-hidden');
       button.removeAttribute('tabindex');
     }
@@ -1362,6 +1513,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   function openCollection(slug) {
     if (destroyed) return;
     finishAxis();
+    closeAxisEditor({ restoreFocus: false });
     hideTooltip();
     const node = model.nodeBySlug.get(slug);
     if (!node) return;
@@ -1395,7 +1547,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       button.setAttribute('aria-hidden', 'true');
       button.tabIndex = -1;
     }
-    for (const button of axisButtons.values()) {
+    for (const button of axisEditor.querySelectorAll('button')) {
       button.setAttribute('aria-hidden', 'true');
       button.tabIndex = -1;
     }
@@ -1590,6 +1742,12 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
 
   function onDocumentKeydown(evt) {
     if (evt.key !== 'Escape') return;
+    if (axisPanelOpen) {
+      evt.preventDefault();
+      evt.stopPropagation();
+      closeAxisEditor({ restoreFocus: true });
+      return;
+    }
     if (resultsEl && !resultsEl.hidden) {
       evt.preventDefault();
       evt.stopPropagation();
@@ -1640,9 +1798,18 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     axisFrame = 0;
     cancelAnimationFrame(labelFrame);
     labelFrame = 0;
-    axisButtons.clear();
-    axisControl?.remove();
-    axisControl = null;
+    axisOptionButtons.clear();
+    axisPanelOpen = false;
+    axisEditor = null;
+    axisSummary = null;
+    axisPanel = null;
+    axisX = null;
+    axisY = null;
+    axisXStart = null;
+    axisXEnd = null;
+    axisYStart = null;
+    axisYEnd = null;
+    modeSlot = null;
     clearTimeout(highlightTimer);
     highlightTimer = null;
     clearTimeout(suppressTimer);
@@ -1652,6 +1819,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     flashTimers.forEach(clearTimeout);
     flashTimers.clear();
     document.removeEventListener('keydown', onDocumentKeydown, true);
+    document.removeEventListener('pointerdown', onDocumentPointerDown, true);
     document.removeEventListener('fullscreenchange', onFullscreenChange);
     restorePlayerFromDock();
     if (document.fullscreenElement === host) {
@@ -1685,6 +1853,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   stage.addEventListener('wheel', onWheel, { passive: false });
   stage.addEventListener('click', onStageClick);
   document.addEventListener('keydown', onDocumentKeydown, true);
+  document.addEventListener('pointerdown', onDocumentPointerDown, true);
 
   resizeObserver = new ResizeObserver(handleResize);
   resizeObserver.observe(stage);

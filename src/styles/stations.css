@@ -2516,10 +2516,6 @@ html.is-standalone .stations-panel:not(.is-open) {
   backdrop-filter: blur(10px);
 }
 
-.stations-cloud:not(:fullscreen) .stations-cloud-axes {
-  top: 12px;
-}
-
 .stations-discover.is-cloud .stations-discover-results {
   flex: 1;
   min-height: 0;
@@ -3021,7 +3017,8 @@ html.is-standalone .stations-panel:not(.is-open) {
 .stations-cloud-node:focus-visible,
 .stations-cloud-station:focus-visible,
 .stations-cloud-controls button:focus-visible,
-.stations-cloud-axes button:focus-visible,
+.stations-cloud-axis-editor button:focus-visible,
+.stations-cloud-mode button:focus-visible,
 .stations-cloud-back:focus-visible,
 .stations-cloud-results button:focus-visible {
   outline: 2px solid var(--text);
@@ -3058,34 +3055,183 @@ html.is-standalone .stations-panel:not(.is-open) {
   white-space: normal;
 }
 
-.stations-cloud-axes {
+.stations-cloud-mode {
   position: absolute;
   top: 12px;
   right: 12px;
-  z-index: 5;
+  z-index: 6;
   display: flex;
-  gap: 2px;
-  padding: 2px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  gap: 6px;
 }
 
-.stations-cloud-axes button {
-  padding: 5px 9px;
-  border: 0;
+.stations-cloud-axis-editor {
+  position: absolute;
+  left: 12px;
+  bottom: 16px;
+  z-index: 5;
+}
+
+.stations-cloud-axis-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
   border-radius: var(--radius-pill);
+  color: var(--text);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  font: inherit;
+  font-size: 10px;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+.stations-cloud-axis-summary-label {
+  color: var(--text-muted);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.stations-cloud-axis-editor.is-open .stations-cloud-axis-summary {
+  background: var(--surface-2);
+}
+
+.stations-cloud-axis-panel[hidden] {
+  display: none;
+}
+
+.stations-cloud-axis-panel {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  z-index: 7;
+  width: min(330px, calc(100vw - 24px));
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+}
+
+.stations-cloud-axis-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.stations-cloud-axis-panel-head strong {
+  font-size: 12px;
+}
+
+.stations-cloud-axis-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 50%;
   color: var(--text-muted);
   background: transparent;
-  font: inherit;
-  font-size: 9px;
-  line-height: 1;
   cursor: pointer;
 }
 
-.stations-cloud-axes button[aria-pressed='true'] {
+.stations-cloud-axis-close:hover {
   color: var(--text);
   background: var(--surface-2);
+}
+
+.stations-cloud-axis-close svg {
+  width: 14px;
+  height: 14px;
+}
+
+.stations-cloud-axis-field + .stations-cloud-axis-field {
+  margin-top: 10px;
+}
+
+.stations-cloud-axis-field-label {
+  display: block;
+  color: var(--text-muted);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.stations-cloud-axis-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 5px;
+}
+
+.stations-cloud-axis-option {
+  display: flex;
+  min-height: 44px;
+  padding: 7px 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  color: var(--text);
+  background: var(--surface-2);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.stations-cloud-axis-option:hover {
+  border-color: var(--border);
+}
+
+.stations-cloud-axis-option[aria-pressed='true'] {
+  border-color: var(--text);
+}
+
+.stations-cloud-axis-option-name {
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+.stations-cloud-axis-option-endpoints {
+  color: var(--text-muted);
+  font-size: 8px;
+  line-height: 1.2;
+}
+
+.stations-cloud-axis-panel-foot {
+  display: flex;
+  margin-top: 10px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.stations-cloud-axis-swap {
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--text);
+  background: transparent;
+  font: inherit;
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.stations-cloud-axis-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 8px;
+  line-height: 1.4;
 }
 
 .stations-cloud-axis {
@@ -3102,7 +3248,7 @@ html.is-standalone .stations-panel:not(.is-open) {
 
 .stations-cloud-axis--x {
   right: 24%;
-  bottom: 12px;
+  bottom: 60px;
   left: 24%;
   justify-content: space-between;
 }
@@ -3115,7 +3261,7 @@ html.is-standalone .stations-panel:not(.is-open) {
   justify-content: space-between;
 }
 
-.stations-cloud-stage.is-ring-open .stations-cloud-axes,
+.stations-cloud-stage.is-ring-open .stations-cloud-axis-editor,
 .stations-cloud-stage.is-ring-open .stations-cloud-axis {
   opacity: 0;
   pointer-events: none;
@@ -3172,8 +3318,8 @@ html.is-standalone .stations-panel:not(.is-open) {
 
 .stations-cloud-hint {
   position: absolute;
+  top: 12px;
   left: 12px;
-  bottom: 30px;
   max-width: 48%;
   color: var(--text-muted);
   font-size: 9px;
@@ -3451,13 +3597,38 @@ html.is-standalone .stations-panel:not(.is-open) {
     left: calc(12px + env(safe-area-inset-left));
   }
 
-  .stations-cloud-axes {
+  .stations-cloud-mode {
     top: calc(12px + env(safe-area-inset-top));
     right: calc(12px + env(safe-area-inset-right));
   }
 
+  .stations-cloud-hint {
+    top: calc(12px + env(safe-area-inset-top));
+    left: calc(12px + env(safe-area-inset-left));
+  }
+
+  .stations-cloud-axis-editor {
+    left: calc(12px + env(safe-area-inset-left));
+    bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+
+  .stations-cloud-axis-panel {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    max-height: min(72vh, 520px);
+    overflow: auto;
+    padding: 16px calc(16px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
+    border-bottom: 0;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.25);
+  }
+
   .stations-cloud-axis--x {
     right: 20%;
+    bottom: calc(60px + env(safe-area-inset-bottom));
     left: 20%;
   }
 
@@ -3479,10 +3650,28 @@ html.is-standalone .stations-panel:not(.is-open) {
   .stations-cloud-station,
   .stations-cloud-label,
   .stations-cloud-node,
-  .stations-cloud-axes button,
+  .stations-cloud-axis-editor button,
+  .stations-cloud-mode button,
   .stations-cloud-results button {
     animation: none;
     transition: none;
+  }
+}
+
+@media (pointer: coarse) {
+  .stations-cloud-controls button,
+  .stations-cloud-back,
+  .stations-cloud-axis-summary,
+  .stations-cloud-axis-close,
+  .stations-cloud-axis-option,
+  .stations-cloud-axis-swap {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .stations-cloud-axis-close {
+    width: 44px;
+    height: 44px;
   }
 }
 
