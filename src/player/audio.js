@@ -111,6 +111,11 @@ function relayHlsFor(station) {
   return relayHlsUrl(uuid);
 }
 
+// Export for tests and for callers that need the same mixed-content rule.
+export function isMixedContentStream(station, secureContext = typeof window !== 'undefined' && window.isSecureContext) {
+  return Boolean(secureContext && /^http:\/\//i.test(String(station?.url || '')));
+}
+
 // hls.js setup for one source URL. Network and media fatals get one local
 // recovery each before the ladder escalates. The relay HLS URL is a signed
 // manifest proxy, so relative segment and key URIs work as well as absolute
@@ -244,11 +249,15 @@ async function playStation(station) {
     const streamUrl = preferHttps(station.url);
     currentIsHls = isHlsUrl(station.url) || isHlsUrl(streamUrl);
     const relay = currentIsHls ? relayHlsFor(station) : relayFor(station);
+    // A secure page cannot load http:// media directly. Guessing https:// on
+    // the same port often hangs without firing an error, which used to trap
+    // recovery on an unreachable URL. Use the working relay first instead.
+    const mixedContent = isMixedContentStream(station);
     // A previous attempt for this station already died on the direct source
     // (this load or a recovery retry) — go straight to the relay instead of
-    // burning another round on a known-dead URL. Playlist files are not audio
-    // either, so let the relay resolve those first.
-    const useRelayFirst = Boolean(relay && (directFailed || isPlaylistUrl(station.url)));
+    // burning another round on a known-dead URL. Playlist files and mixed
+    // content are not playable directly either, so the relay goes first.
+    const useRelayFirst = Boolean(relay && (directFailed || isPlaylistUrl(station.url) || mixedContent));
     const source = useRelayFirst ? relay : streamUrl;
     relayTried = relayTried || useRelayFirst;
 

@@ -37,6 +37,8 @@
 // completes in ~40s without flooding stream servers, then re-checks each
 // minute. Pauses when the tab is hidden.
 
+import { relayUrl, relayHlsUrl } from '../data/relay.js';
+
 const PROBE_TIMEOUT_MS = 6_000;   // generous for a stream to emit headers/data
 const RECHECK_INTERVAL_MS = 60_000;
 const CONCURRENCY = 3;
@@ -48,6 +50,18 @@ function preferHttps(url) {
     return 'https://' + url.slice('http://'.length);
   }
   return url;
+}
+
+// A secure page cannot fetch http:// media directly. Probing the https guess
+// often just times out; the relay is the same path playback uses and is the
+// honest liveness check for those stations.
+export function probeUrl(station, secureContext = typeof window !== 'undefined' && window.isSecureContext) {
+  const raw = String(station?.url || '');
+  if (secureContext && /^http:\/\//i.test(raw)) {
+    const uuid = String(station?.stationuuid || station?.id || '');
+    if (uuid) return /\.m3u8(\?|$)/i.test(raw) ? relayHlsUrl(uuid) : relayUrl(uuid);
+  }
+  return preferHttps(raw);
 }
 
 export function attachStreamProber({ getStations, getPlayingId, onStatusChange }) {
@@ -105,7 +119,7 @@ export function attachStreamProber({ getStations, getPlayingId, onStatusChange }
       // false-OFF bug on cold-start icecast). Only a hard error flips to OFF.
       const timer = setTimeout(() => finish('unknown'), PROBE_TIMEOUT_MS);
 
-      audio.src = preferHttps(station.url);
+      audio.src = probeUrl(station);
       try { audio.load(); } catch { finish('offline'); }
     });
   }
