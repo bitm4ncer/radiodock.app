@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-23T00:16:17.414Z",
+  "generatedAt": "2026-10-23T00:52:33.708Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -6154,6 +6154,395 @@
             "countrycode": "CA"
           }
         ]
+      },
+      {
+        "slug": "dancehall-ska",
+        "title": "Dancehall / Ska",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "169b5210-0a16-497a-a579-61aa6f504cbd",
+            "name": "RCI Dancehall",
+            "countrycode": "MQ"
+          },
+          {
+            "stationuuid": "49da007a-d18c-4f03-b3ba-f1934079facc",
+            "name": "Sensimedia Dancehall Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "df1335f0-a069-43a3-9a48-9386452d8f08",
+            "name": "DFM Dancehall",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "1a79feff-3563-4449-ab72-ff94f0c08b7d",
+            "name": "Générations Dancehall",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9613562f-0601-11e8-ae97-52543be04c81",
+            "name": "Skaworld",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "587fa9b3-6297-11e8-b15b-52543be04c81",
+            "name": "Papas Skakiste 007",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "ce4975d8-1972-46d6-a46a-6450968d7cce",
+            "name": "RADIO BOB! Ska-Stream",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "7a28a83f-70f0-403f-8b19-10a3573950ca",
+            "name": "Ska",
+            "countrycode": "DE"
+          }
+        ]
+      },
+      {
+        "slug": "70s",
+        "title": "70s",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "6cddaca1-f2c1-11e8-a471-52543be04c81",
+            "name": "0N 70s",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "e1ad0462-4f25-421a-9d18-73519fec3da5",
+            "name": "That 70's Channel",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "961e37ee-0601-11e8-ae97-52543be04c81",
+            "name": "SomaFM Left Coast 70s",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "5ab5b266-a643-4666-a69b-31a748c62b73",
+            "name": "OUI FM Rock 70's",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "036bdc87-962f-462b-b909-26f9d2a2e7a8",
+            "name": "70s Disco Nights",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "cdc00ce4-dacc-4630-984c-e8c5b0e65785",
+            "name": "SF70s",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "d5644326-77e9-4c6a-9444-b1dc636ce8e8",
+            "name": "Star 70's",
+            "countrycode": "SE"
+          },
+          {
+            "stationuuid": "0720511d-4843-49c6-b5b6-9390c3cd268a",
+            "name": "Forever Classic 1970's - Goulburn",
+            "countrycode": "AU"
+          }
+        ]
+      },
+      {
+        "slug": "80s",
+        "title": "80s",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "962dc110-0601-11e8-ae97-52543be04c81",
+            "name": "80s80s",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "8a41b60c-f115-11e8-a471-52543be04c81",
+            "name": "0N 80s",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "9614b5e5-0601-11e8-ae97-52543be04c81",
+            "name": "SomaFM Underground 80s",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "d95c1da9-838c-4684-a009-44fc73608279",
+            "name": "80's New Wave Radio",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "3046ced9-d322-4098-a8cd-e3c38f60cccb",
+            "name": "KINK 80's",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "96147fcb-0601-11e8-ae97-52543be04c81",
+            "name": "Chante France 80's",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "bc910109-8c16-45dd-a337-83b631b51888",
+            "name": "Oxygen The 80s Hits",
+            "countrycode": "HU"
+          },
+          {
+            "stationuuid": "159824f0-5475-4263-bcc8-59a48a213896",
+            "name": "Radio 10 80's Hits",
+            "countrycode": "NL"
+          }
+        ]
+      },
+      {
+        "slug": "jpop",
+        "title": "J-Pop / City Pop",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "5a4eb5bc-7fbd-43fb-a6a4-cc4517ce6ac4",
+            "name": "J1 HITS",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "e0f2f4cb-d4c3-48ee-8668-333329e158e0",
+            "name": "Asia DREAM Radio - Japan Hits",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "9278c4fc-87fc-4ec9-aa6a-c8c4c5443b50",
+            "name": "J-Pop Powerplay",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "dc3727a8-90a9-4b83-bbfc-2a87d2bb9897",
+            "name": "J-Pop Powerplay Kawaii",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "3c64cfe3-2b28-4ccd-bbd0-037a0d36a509",
+            "name": "J1 GOLD",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "38288da2-4295-4e1a-9e88-fe7e04deab8a",
+            "name": "J-Pop Sakura",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "10828bdb-9a75-4f19-af01-d394e781d4c1",
+            "name": "Japanese Music ID",
+            "countrycode": "ID"
+          }
+        ]
+      },
+      {
+        "slug": "2000s",
+        "title": "2000s",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "e23bebbf-8908-4ed0-ade5-3fe40eaa12f4",
+            "name": "Radio X 00s",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "9624a5a0-0601-11e8-ae97-52543be04c81",
+            "name": "R101 '00",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "5cd4666f-e2cc-43e2-9337-03cef1c36b7a",
+            "name": "Radio Noise 2000s",
+            "countrycode": "RO"
+          },
+          {
+            "stationuuid": "a8b818b1-8968-469a-9fbf-728d6e177812",
+            "name": "Studio Brussel De Jaren Nul",
+            "countrycode": "BE"
+          },
+          {
+            "stationuuid": "5855ca57-ae57-4760-9cef-9b869b8ad2dc",
+            "name": "bigFM 2000er",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "8d7e4527-3f3b-4f94-974d-10c5cef66ad9",
+            "name": "Totally Radio 00s",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "c93bb909-2189-4934-ba7c-686562a5d726",
+            "name": "Positively 2000's",
+            "countrycode": "AE"
+          },
+          {
+            "stationuuid": "3a844c14-d13f-4223-84b7-cdadb9809841",
+            "name": "M Radio Années 2000",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "37f849b3-b6f9-46da-ae4d-149542a4b736",
+            "name": "Radio S 2000-e",
+            "countrycode": "RS"
+          },
+          {
+            "stationuuid": "e257491f-83d7-43c4-a34e-b89005709034",
+            "name": "iHeart 2000s Radio",
+            "countrycode": "UM"
+          }
+        ]
+      },
+      {
+        "slug": "2010s",
+        "title": "2010s",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "e6675974-4989-42d1-af01-a9b60a8e0a58",
+            "name": "iHeart2010s Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "1ef8c3ff-ad1d-4c16-a623-5e16331d5d89",
+            "name": "RPR1. 2010er",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "6c8c1072-525d-410f-a54f-9a72454a0665",
+            "name": "Radio SAW 2010er",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "b30eb753-907b-4782-92b6-ec4c0e6250f7",
+            "name": "Radio Noise 2010s",
+            "countrycode": "RO"
+          },
+          {
+            "stationuuid": "3c25117b-709a-435b-b899-0581c5ae59ad",
+            "name": "Qmusic 10s",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "7ddddc74-3f60-4c31-9c56-41c1d3611025",
+            "name": "Ostseewelle HIT-RADIO - 2010er Hits",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "f468880f-68a6-4096-ace8-b781c4a07e35",
+            "name": "Positively 2010's",
+            "countrycode": "AE"
+          }
+        ]
+      },
+      {
+        "slug": "90s",
+        "title": "90s",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "9637a1b2-0601-11e8-ae97-52543be04c81",
+            "name": "90s90s RADIO",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "52bb00fe-dc31-11e9-a8ba-52543be04c81",
+            "name": "Heart 90s",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "960dc18b-0601-11e8-ae97-52543be04c81",
+            "name": "RMF 90s",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "a86c3cb7-e0ae-4f12-afa7-264696e79d55",
+            "name": "Hitrádio Devadesátka",
+            "countrycode": "CZ"
+          },
+          {
+            "stationuuid": "b87ddc6a-b153-4275-94dc-18cb612138d6",
+            "name": "Radio X 90s",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "ac8b0eda-c69b-4f3e-acb7-71666085dc33",
+            "name": "OUI FM Rock 90's",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "6692cbbd-d238-49be-b953-92872584ef2c",
+            "name": "NJS Radio - New Jack Swing",
+            "countrycode": "BG"
+          },
+          {
+            "stationuuid": "9638a655-0601-11e8-ae97-52543be04c81",
+            "name": "181.FM - 90's Dance",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "bf036b3a-082f-4a8b-a35a-5b5d8efd7b91",
+            "name": "Radio Dancefloor 90s",
+            "countrycode": "IT"
+          }
+        ]
+      },
+      {
+        "slug": "desi",
+        "title": "Desi / Bollywood",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "b2bd5eb7-704e-492e-b0e6-c91e32998c7e",
+            "name": "Lyca Radio 1458 AM",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "526d9fa0-cda6-4464-bd5f-eb0a0c56f9cb",
+            "name": "Tune India Radio",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "3447ded9-0b52-4f59-ad6b-d1a7259fdf28",
+            "name": "Radio Plus - Indiz",
+            "countrycode": "MU"
+          },
+          {
+            "stationuuid": "cc559c9c-3551-437a-845d-a9d8731c9c7d",
+            "name": "Radio Hulchul",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "c270e397-12a9-4fbe-bb2e-305cff8659b9",
+            "name": "Vahon Hindustani Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "8eceafa2-9c04-417e-90e4-36eb6524f46c",
+            "name": "Lyca Gold",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "5d743713-b997-4b1a-888a-17f052af1a13",
+            "name": "American Tamil Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "50e38be6-ffe4-472d-83fb-4a6a15987177",
+            "name": "Tamil Panpalai Gold",
+            "countrycode": "IN"
+          }
+        ]
       }
     ]
   },
@@ -6444,7 +6833,7 @@
       {
         "genre": "pop",
         "label": "Pop",
-        "count": 5455
+        "count": 5468
       },
       {
         "genre": "news",
@@ -6454,7 +6843,7 @@
       {
         "genre": "rock",
         "label": "Rock",
-        "count": 3144
+        "count": 3147
       },
       {
         "genre": "hits",
@@ -6469,7 +6858,7 @@
       {
         "genre": "oldies",
         "label": "Oldies",
-        "count": 1762
+        "count": 1764
       },
       {
         "genre": "edm-dance",
@@ -6489,12 +6878,12 @@
       {
         "genre": "synthpop",
         "label": "80s & New Wave",
-        "count": 1262
+        "count": 1263
       },
       {
         "genre": "classical",
         "label": "Classical",
-        "count": 1215
+        "count": 1214
       },
       {
         "genre": "jazz",
@@ -6504,22 +6893,22 @@
       {
         "genre": "electronic",
         "label": "Electronic",
-        "count": 999
+        "count": 998
       },
       {
         "genre": "public",
         "label": "Public Radio",
-        "count": 956
+        "count": 955
       },
       {
         "genre": "alternative",
         "label": "Alternative",
-        "count": 871
+        "count": 873
       },
       {
         "genre": "nineties",
         "label": "90s",
-        "count": 868
+        "count": 873
       },
       {
         "genre": "folk",
@@ -6529,17 +6918,17 @@
       {
         "genre": "house",
         "label": "House",
-        "count": 806
+        "count": 805
       },
       {
         "genre": "classic-rock",
         "label": "Classic Rock",
-        "count": 803
+        "count": 804
       },
       {
         "genre": "hiphop",
         "label": "Hip-Hop",
-        "count": 797
+        "count": 799
       },
       {
         "genre": "country",
@@ -6554,7 +6943,7 @@
       {
         "genre": "rnb",
         "label": "R&B & Soul",
-        "count": 666
+        "count": 669
       },
       {
         "genre": "latin",
@@ -6584,7 +6973,7 @@
       {
         "genre": "world",
         "label": "World",
-        "count": 508
+        "count": 507
       },
       {
         "genre": "indie",
@@ -6609,12 +6998,12 @@
       {
         "genre": "disco",
         "label": "Disco",
-        "count": 414
+        "count": 415
       },
       {
         "genre": "twothousands",
         "label": "2000s",
-        "count": 372
+        "count": 375
       },
       {
         "genre": "techno",
@@ -6622,18 +7011,18 @@
         "count": 358
       },
       {
+        "genre": "reggae",
+        "label": "Reggae & Dub",
+        "count": 332
+      },
+      {
         "genre": "funk",
         "label": "Funk",
-        "count": 330
+        "count": 331
       },
       {
         "genre": "cumbia",
         "label": "Cumbia",
-        "count": 327
-      },
-      {
-        "genre": "reggae",
-        "label": "Reggae & Dub",
         "count": 327
       },
       {
@@ -6687,14 +7076,14 @@
         "count": 127
       },
       {
+        "genre": "desi",
+        "label": "Bollywood & Desi",
+        "count": 120
+      },
+      {
         "genre": "holiday",
         "label": "Holiday",
         "count": 118
-      },
-      {
-        "genre": "desi",
-        "label": "Bollywood & Desi",
-        "count": 116
       },
       {
         "genre": "comedy",
@@ -6709,7 +7098,7 @@
       {
         "genre": "jpop",
         "label": "J-Pop & Anime",
-        "count": 97
+        "count": 100
       },
       {
         "genre": "arabic",
@@ -6739,7 +7128,7 @@
       {
         "genre": "french-chanson",
         "label": "French Chanson",
-        "count": 33
+        "count": 34
       }
     ]
   }
