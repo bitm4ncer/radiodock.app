@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-23T01:36:46.237Z",
+  "generatedAt": "2026-10-23T01:56:23.209Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -6773,6 +6773,178 @@
             "countrycode": "FR"
           }
         ]
+      },
+      {
+        "slug": "shoegaze",
+        "title": "Shoegaze / Dream Pop",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "7c84ac30-1a0f-42f7-8b0d-40b5c6548abf",
+            "name": "DKFM Shoegaze",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "b3e0f22c-6dda-4a57-a915-10ca695bd39b",
+            "name": "DKFM Classic",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "94478573-230b-4add-bead-cd6f785609d6",
+            "name": "DKFM Edge",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "7c97b62b-88b5-4c75-a265-f225b531ad00",
+            "name": "Big Sonic Heaven",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "5d86bd71-12b0-4426-9f26-181a58ee666f",
+            "name": "Ignoreradio Shoegaze",
+            "countrycode": "IE"
+          }
+        ]
+      },
+      {
+        "slug": "chiptune",
+        "title": "Chiptune",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "58b0e580-f230-4492-b813-9aaabf80863e",
+            "name": "BleepLove Chiptune Radio",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "f77929c3-838e-4a5c-898b-01c9a7ac1af4",
+            "name": "CVGM.net",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "e9465363-e12d-41fd-a68b-b50cbc19ee03",
+            "name": "qUAntUm RaDio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "aed36f60-4a68-4c79-866c-da5f9c405d5d",
+            "name": "RainWave Chiptune",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "bd900c1f-e557-4fbb-a70a-cbaea0e1e632",
+            "name": "CPC Scene Radio",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "68e2a63b-cab9-4a04-9236-3a770ff39c11",
+            "name": "Pungas Radio",
+            "countrycode": "AR"
+          },
+          {
+            "stationuuid": "561300e3-86ba-489f-901d-426596141e8d",
+            "name": "Retro Plum Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "55ac0b76-2876-4ca2-a114-e473c3bd750e",
+            "name": "8-bit Remix Radio",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "bad4945f-cd86-42be-8ef4-72e0db167b45",
+            "name": "Retro Lofi Chiptune Radio",
+            "countrycode": "DE"
+          }
+        ]
+      },
+      {
+        "slug": "phonk",
+        "title": "Phonk",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "dcdf1511-4c4e-4b29-83d3-b79dbaf38d8a",
+            "name": "DOPEPHONK",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "2e08b243-5013-4667-a388-ec08c2ef70aa",
+            "name": "Phonkio Radio",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "3c75205e-18a0-4984-a1e5-8e8293378575",
+            "name": "Laut.FM Phonk",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "4e9b0f36-3b10-4e00-baa0-ab2e18322dbe",
+            "name": "Phonk Nation Radio",
+            "countrycode": "CZ"
+          },
+          {
+            "stationuuid": "edbb4c24-20ff-49a9-889e-7faeaa98c2cd",
+            "name": "No.1 Phonk Radio",
+            "countrycode": "CZ"
+          },
+          {
+            "stationuuid": "0dba26e2-6d76-44a1-b8b6-20b197dfde74",
+            "name": "Radio Record Phonk",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "c50ee1cf-1f27-487e-8af4-acb4af6f606f",
+            "name": "ГУСЬ.Фонк",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "f8f21739-ae9e-4cdb-bcca-00a0445db8c9",
+            "name": "1.FM - Full Throttle Phonk",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "9de12658-4887-48f9-8dc1-60a9eaa4df7d",
+            "name": "CLIAMP NCS Phonk",
+            "countrycode": "NO"
+          }
+        ]
+      },
+      {
+        "slug": "emo",
+        "title": "Emo",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "eccc7850-9467-4e3b-b62a-6385f2a875c2",
+            "name": "Emo Nation",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "4ee6800d-5d7c-402e-b06e-6799a4e9c81e",
+            "name": "RADIO BOB! EMO",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "676ab1ac-ff1d-4bb8-9439-3c4f50c28942",
+            "name": "LiSTNR Essential Emo",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "dfda15ab-dfc5-40bc-9d06-c9324edc2bdd",
+            "name": "Big R Radio - Emo + Pop Punk",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "e84423b0-a5d5-4dce-8d05-dc15f64b8dac",
+            "name": "Emocore",
+            "countrycode": "DE"
+          }
+        ]
       }
     ]
   },
@@ -7123,7 +7295,7 @@
       {
         "genre": "electronic",
         "label": "Electronic",
-        "count": 998
+        "count": 1014
       },
       {
         "genre": "public",
@@ -7133,7 +7305,7 @@
       {
         "genre": "alternative",
         "label": "Alternative",
-        "count": 873
+        "count": 883
       },
       {
         "genre": "nineties",
@@ -7146,6 +7318,11 @@
         "count": 812
       },
       {
+        "genre": "hiphop",
+        "label": "Hip-Hop",
+        "count": 806
+      },
+      {
         "genre": "house",
         "label": "House",
         "count": 805
@@ -7154,11 +7331,6 @@
         "genre": "classic-rock",
         "label": "Classic Rock",
         "count": 804
-      },
-      {
-        "genre": "hiphop",
-        "label": "Hip-Hop",
-        "count": 799
       },
       {
         "genre": "country",
@@ -7208,7 +7380,7 @@
       {
         "genre": "indie",
         "label": "Indie",
-        "count": 495
+        "count": 497
       },
       {
         "genre": "culture",
@@ -7263,7 +7435,7 @@
       {
         "genre": "punk",
         "label": "Punk & Hardcore",
-        "count": 289
+        "count": 293
       },
       {
         "genre": "trance",
@@ -7303,7 +7475,7 @@
       {
         "genre": "soundtrack",
         "label": "Soundtrack & Score",
-        "count": 127
+        "count": 135
       },
       {
         "genre": "desi",
