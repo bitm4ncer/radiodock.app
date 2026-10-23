@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-23T14:51:11.926Z",
+  "generatedAt": "2026-10-23T14:57:57.322Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -5207,11 +5207,6 @@
             "countrycode": "US"
           },
           {
-            "stationuuid": "88ec6e1f-f720-432f-a3eb-5cd504d51f07",
-            "name": "The Bluegrass Jamboree",
-            "countrycode": "US"
-          },
-          {
             "stationuuid": "6dbcf88e-c7b5-4cde-93ad-66d0782f98f7",
             "name": "WNRV The Ridge",
             "countrycode": "US"
@@ -8160,6 +8155,322 @@
             "countrycode": "DO"
           }
         ]
+      },
+      {
+        "slug": "bebop-hard-bop",
+        "title": "Bebop / Hard Bop",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "208a791c-fb5c-407e-96bf-c25a2181136e",
+            "name": "Ella Radio - Bebop",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "79190097-0d3c-4110-87b1-2c2eb95f4f52",
+            "name": "Ella Radio - Hard Bop",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "de92b7cc-45ef-4437-8c56-4b9558cab937",
+            "name": "KJazz 88.1 HD2 The Bebop Channel",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "c1e4fc53-e191-11e9-a8ba-52543be04c81",
+            "name": "Concertzender - Hard Bop",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "9628b2a0-0601-11e8-ae97-52543be04c81",
+            "name": "181.FM - BeBop Jazz",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "b0ee4b1a-44b0-4840-a6ce-f0cbdcaedad1",
+            "name": "My Daddy's Music: Jazz from the 50s &60s",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "choral-sacred",
+        "title": "Choral / Sacred",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "e83eee29-9619-44fc-a8d8-059df0815bbd",
+            "name": "YourClassical Choral",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "806ef3b7-6b28-412b-b808-e96eacfc95c8",
+            "name": "Radio Orfey - Russian Choral",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "39bb4ade-0bcc-4c8d-a1df-39003622277e",
+            "name": "Radio Orfey - Foreign Choral",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "ef16e664-b493-48bf-af25-e6e14e1b091c",
+            "name": "Radio Orfey - Contemporary Choral",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "1de75d39-b273-43e4-8e0d-5b9780403661",
+            "name": "Classical Catholic Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "961d33bc-0601-11e8-ae97-52543be04c81",
+            "name": "Abiding Radio - Sacred",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "8c6f6750-d631-42d4-8f75-26d9c1b94716",
+            "name": "Iowa Catholic Radio: Sacred Music",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "old-time-radio",
+        "title": "Old Time Radio",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "313046e3-b203-4b9d-bc3e-393da7d97126",
+            "name": "WALM - Old Time Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "01b6708a-2496-42e2-a40e-1fbfe9e4f8c9",
+            "name": "WOTR - Old Time Radio USA",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "829aaf9f-7c4e-424e-b243-8e3e6cc541cd",
+            "name": "WOTR - Crime Time Radio USA",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "68e826da-67e5-4df8-a179-9f105aa46f87",
+            "name": "ROKit Radio: Classic Old Time Radio Shows",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "3c2da98e-b7b7-4192-8ca4-3a625a301629",
+            "name": "50's Science Fiction KOTR",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "a30c87c7-7c44-4e3f-b875-e2246a87e375",
+            "name": "Laugh Track: Old-Time Radio Comedy",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "bed25346-6e36-42a2-a366-3d213395163a",
+            "name": "Gumshoe: Old-Time Radio Detectives",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "581c6eab-ac3e-4c7f-9fdd-73be740053de",
+            "name": "Dry Gulch: Old-Time Radio Westerns",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "c3a6faa7-8047-4d4d-b3e7-d74e77292af0",
+            "name": "Yesterday USA Blue Network",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9abfbbee-abd5-4a50-a5db-84a419779369",
+            "name": "RetroStrange Radio1",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "christian-rock",
+        "title": "Christian Rock",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "960cfee5-0601-11e8-ae97-52543be04c81",
+            "name": "Christian Rock Dot Net",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "b9f34cdc-7ae7-4d37-8e64-d0c648bc1b90",
+            "name": "Classic Christian Rock Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "c7bba75d-0284-4deb-84fa-ad60318076f9",
+            "name": "ChristianClassicRock.Net",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "3218aa1d-07b9-4977-84fe-0564eff1a63d",
+            "name": "The Blast.FM",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "4f286ff7-ab9d-47aa-8001-9b123b52fea6",
+            "name": "The Blastozoic Era",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "d27ec6e2-3232-4803-a4c2-00961c15fc6f",
+            "name": "97X",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "bluegrass",
+        "title": "Bluegrass",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "88ec6e1f-f720-432f-a3eb-5cd504d51f07",
+            "name": "The Bluegrass Jamboree",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "df478679-77a2-4e28-b7d7-891719fa4cef",
+            "name": "GotRadio - Downhome Den Bluegrass",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "90ae9607-5033-4ce3-9540-f995b73ff19a",
+            "name": "HPR4 Bluegrass Gospel",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "961d3490-0601-11e8-ae97-52543be04c81",
+            "name": "Abiding Radio - Bluegrass Hymns",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "e3823a2d-49cf-4de0-bf16-ef4dbe4819cc",
+            "name": "WIGN - 1550 AM Bluegrass Gospel",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "f0314479-6653-42d3-b41e-40841d6ec93c",
+            "name": "Lighthouse Christian Radio - Appalachian Harmony",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9633a7d4-0601-11e8-ae97-52543be04c81",
+            "name": "181.FM - Front Porch (Bluegrass)",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "latin-jazz-bossa",
+        "title": "Latin Jazz / Bossa Nova",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "9df04921-d5f2-4bd0-9895-4b3b4dfe44e3",
+            "name": "Ella Radio - Latin Jazz",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "96136cda-0601-11e8-ae97-52543be04c81",
+            "name": "Jazz Radio Latin Jazz",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "88001762-565f-4943-bc2b-4ad25c847510",
+            "name": "Radio Art - Latin Jazz",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "710d7b6c-225a-452e-8d2e-1f026386f81f",
+            "name": "Ella Radio - Bossa",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "eda8b900-0ac5-4248-8499-fe23c729ad9c",
+            "name": "24/7 Bossa Nova Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "a8821077-6679-49de-b87a-2be909dfe7e2",
+            "name": "Soma FM Bossa Beyond",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "03636116-d1d3-4ef9-86e8-3ce1ef35b9ab",
+            "name": "Radio Monte Carlo - Bossa Nova",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "e49351ef-ae39-11e8-aa67-52543be04c81",
+            "name": "Radio Art - Bossa Nova",
+            "countrycode": "GR"
+          }
+        ]
+      },
+      {
+        "slug": "new-age-meditation",
+        "title": "New Age / Meditation",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "8492e24d-7908-4cc4-9ee7-c3d5475c42d7",
+            "name": "7 Rays Radio",
+            "countrycode": "UA"
+          },
+          {
+            "stationuuid": "5e715331-d8ae-11e8-a9cc-52543be04c81",
+            "name": "Radio Art - Meditation",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "68843797-7947-4b62-a8cb-568bef2646cf",
+            "name": "Radio Art - Mantras",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "75ac78d4-67f0-40a7-87a7-14a217d6764c",
+            "name": "Mahakatha Radio",
+            "countrycode": "IN"
+          },
+          {
+            "stationuuid": "9211a090-f78c-48e8-b5bf-3f0bf27f5bf2",
+            "name": "KLCBS New Age",
+            "countrycode": "ID"
+          },
+          {
+            "stationuuid": "be2dcd8a-7c6c-42da-9a29-bbec717b2de8",
+            "name": "New Age Radio",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "77eaf32d-241f-4f25-b7d6-347783cd4471",
+            "name": "NATURE RADIO SLEEP",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "04c6c260-eafc-419c-b374-f061080bfd81",
+            "name": "24/7 Seawaves Radio",
+            "countrycode": "GB"
+          }
+        ]
       }
     ]
   },
@@ -8460,7 +8771,7 @@
       {
         "genre": "rock",
         "label": "Rock",
-        "count": 3168
+        "count": 3171
       },
       {
         "genre": "hits",
@@ -8470,7 +8781,7 @@
       {
         "genre": "oldies",
         "label": "Oldies",
-        "count": 1773
+        "count": 1782
       },
       {
         "genre": "talk",
@@ -8485,7 +8796,7 @@
       {
         "genre": "christian",
         "label": "Christian & Gospel",
-        "count": 1374
+        "count": 1379
       },
       {
         "genre": "community",
@@ -8530,12 +8841,12 @@
       {
         "genre": "folk",
         "label": "Folk & Acoustic",
-        "count": 833
+        "count": 835
       },
       {
         "genre": "classic-rock",
         "label": "Classic Rock",
-        "count": 809
+        "count": 811
       },
       {
         "genre": "house",
@@ -8550,7 +8861,7 @@
       {
         "genre": "country",
         "label": "Country",
-        "count": 782
+        "count": 784
       },
       {
         "genre": "sports",
@@ -8565,7 +8876,7 @@
       {
         "genre": "latin",
         "label": "Latin",
-        "count": 647
+        "count": 649
       },
       {
         "genre": "chillout",
@@ -8600,7 +8911,7 @@
       {
         "genre": "culture",
         "label": "Culture",
-        "count": 451
+        "count": 460
       },
       {
         "genre": "salsa",
@@ -8610,7 +8921,7 @@
       {
         "genre": "ambient",
         "label": "Ambient",
-        "count": 426
+        "count": 427
       },
       {
         "genre": "disco",
