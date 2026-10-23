@@ -4,6 +4,7 @@ import {
   assignCloudAxis,
   axisPairKey,
   clampCloudOrbit,
+  cloudStageDescription,
   CLOUD_MAX_DISTANCE,
   CLOUD_MAX_PITCH,
   CLOUD_MIN_DISTANCE,
@@ -111,6 +112,21 @@ test('keeps every projected numeric field finite for extreme finite inputs', () 
   for (const key of ['x', 'y', 'depth', 'scale']) {
     assert.equal(Number.isFinite(projected[key]), true, `${key} is not finite`);
   }
+});
+
+test('describes fixed 3D axes independently of the 2D axis pair', () => {
+  const description = cloudStageDescription('3d', { x: 'mood', y: 'era' });
+  assert.match(description, /X axis Electronic character, Acoustic to Electronic/);
+  assert.match(description, /Y axis Energy, Calm to Intense/);
+  assert.match(description, /Z axis Mood, Dark to Bright/);
+  assert.doesNotMatch(description, /X axis Mood/);
+});
+
+test('describes the active 2D axis pair', () => {
+  const description = cloudStageDescription('2d', { x: 'mood', y: 'era' });
+  assert.match(description, /X axis Mood, Dark to Bright/);
+  assert.match(description, /Y axis Era, Roots to Modern/);
+  assert.doesNotMatch(description, /Z axis/);
 });
 
 test('projects labeled X, Y, and Z axis endpoints', () => {

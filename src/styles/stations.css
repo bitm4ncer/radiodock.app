@@ -3164,7 +3164,7 @@ html.is-standalone .stations-panel:not(.is-open) {
   position: absolute;
   left: 12px;
   bottom: 16px;
-  z-index: 5;
+  z-index: 8;
 }
 
 .stations-cloud-axis-summary {
@@ -3203,13 +3203,17 @@ html.is-standalone .stations-panel:not(.is-open) {
   position: absolute;
   left: 0;
   bottom: calc(100% + 8px);
-  z-index: 7;
+  z-index: 1;
   width: min(330px, calc(100vw - 24px));
+  max-height: min(70vh, 520px);
+  overflow: auto;
   padding: 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: var(--surface);
   box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+  overscroll-behavior: contain;
+  touch-action: pan-y;
 }
 
 .stations-cloud-axis-panel-head {
@@ -3605,7 +3609,7 @@ html.is-standalone .stations-panel:not(.is-open) {
 
 .stations-cloud-tooltip {
   position: absolute;
-  z-index: 7;
+  z-index: 9;
   padding: 4px 7px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);

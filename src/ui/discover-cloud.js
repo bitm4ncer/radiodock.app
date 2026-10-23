@@ -1,6 +1,7 @@
 import { renderLogoSlot } from './station-logo.js';
 import { formatCount } from './stations-format.js';
 import {
+  CLOUD_3D_AXES,
   CLOUD_DEFAULT_2D_AXES,
   CLOUD_DIMENSIONS,
   CLOUD_GENRE_EDGES,
@@ -11,6 +12,7 @@ import {
   assignCloudAxis,
   axisPairKey,
   clampCloudOrbit,
+  cloudStageDescription,
   DEFAULT_CLOUD_ORBIT,
   normaliseCloudAxes,
   normaliseCloudVector,
@@ -374,6 +376,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   let fitTimer = null;
   const flashTimers = new Set();
   let cameraFrame = 0;
+  let cameraFlightTarget = null;
   let axes2d = normaliseCloudAxes(CLOUD_DEFAULT_2D_AXES);
   let axisKey = axisPairKey(axes2d.x, axes2d.y);
   let axisFrame = 0;
@@ -546,7 +549,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     startLabel.setAttribute('text-anchor', 'middle');
     startLabel.setAttribute('dominant-baseline', 'middle');
     const endLabel = startLabel.cloneNode(false);
-    const dimension = { x: CLOUD_DIMENSIONS.electronic, y: CLOUD_DIMENSIONS.energy, z: CLOUD_DIMENSIONS.mood }[axis];
+    const dimension = CLOUD_DIMENSIONS[CLOUD_3D_AXES[axis]];
     startLabel.textContent = dimension.labels[0];
     endLabel.textContent = dimension.labels[1];
     group.append(line);
@@ -1017,12 +1020,23 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   }
 
   function applyCamera() {
+    if (mode === '3d') return;
     const scale = Math.max(0.0001, camera.scale);
     world.style.transform = `translate3d(${camera.tx}px, ${camera.ty}px, 0) scale(${scale})`;
     const labelScale = Math.min(8, 1 / scale);
     for (const label of labelElements) label.style.transform = `scale(${labelScale})`;
     if (ring?.label) ring.label.style.transform = `scale(${labelScale})`;
     stage.classList.toggle('is-zoomed', fitScale > 0 && scale >= fitScale * 1.8);
+  }
+
+  function finishCameraFlight() {
+    if (!cameraFlightTarget) return;
+    cancelAnimationFrame(cameraFrame);
+    cameraFrame = 0;
+    camera = { ...cameraFlightTarget };
+    cameraFlightTarget = null;
+    applyCamera();
+    scheduleLabelLayout();
   }
 
   function applyLabelSide(label, side, gap) {
@@ -1154,20 +1168,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   }
 
   function updateStageDescription() {
-    const x = CLOUD_DIMENSIONS[axes2d.x];
-    const y = CLOUD_DIMENSIONS[axes2d.y];
-    const z = CLOUD_DIMENSIONS.mood;
-    if (mode === '3d') {
-      stage.setAttribute(
-        'aria-label',
-        `Collection cloud in 3D. X axis ${x.label}, ${x.labels[0]} to ${x.labels[1]}. Y axis ${y.label}, ${y.labels[0]} to ${y.labels[1]}. Z axis ${z.label}, ${z.labels[0]} to ${z.labels[1]}. Drag to orbit, scroll or pinch to zoom, click a collection to open it.`,
-      );
-      return;
-    }
-    stage.setAttribute(
-      'aria-label',
-      `Collection cloud. X axis ${x.label}, ${x.labels[0]} to ${x.labels[1]}. Y axis ${y.label}, ${y.labels[0]} to ${y.labels[1]}. Drag to pan, scroll to zoom, click a collection.`,
-    );
+    stage.setAttribute('aria-label', cloudStageDescription(mode, axes2d));
   }
 
   function updateModeChrome() {
@@ -1404,6 +1405,9 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
 
   function invalidateScene() {
     if (destroyed || mode !== '3d' || document.hidden) return;
+    if (sceneTransition && sceneTransition.direction !== 'leave') {
+      sceneTransition.to = projectSceneTargets();
+    }
     sceneDirty = true;
     if (!sceneFrame) sceneFrame = requestAnimationFrame(sceneTick);
   }
@@ -1412,6 +1416,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     if (destroyed || ring || mode === '3d') return;
     closeAxisEditor({ restoreFocus: false });
     finishAxis();
+    finishCameraFlight();
     hideTooltip();
     saved2dCamera = { ...camera };
     measureSceneViewport();
@@ -1660,7 +1665,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
 
   function openAxisEditor() {
     if (destroyed || ring || axisPanelOpen) return;
-    axisFocusBefore = document.activeElement;
+    axisFocusBefore = axisSummary;
     axisPanelOpen = true;
     axisPanel.hidden = false;
     axisEditor.classList.add('is-open');
@@ -1670,23 +1675,34 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     scheduleLabelLayout();
   }
 
-  function closeAxisEditor({ restoreFocus = true } = {}) {
+  function closeAxisEditor({ restoreFocus = true, deferFocus = false } = {}) {
     if (!axisPanelOpen) return;
     axisPanelOpen = false;
     axisPanel.hidden = true;
     axisEditor.classList.remove('is-open');
     axisSummary.setAttribute('aria-expanded', 'false');
-    if (restoreFocus) {
-      const target = axisFocusBefore?.isConnected ? axisFocusBefore : axisSummary;
-      target?.focus({ preventScroll: true });
-    }
+    const target = axisFocusBefore?.isConnected ? axisFocusBefore : axisSummary;
     axisFocusBefore = null;
+    if (restoreFocus) {
+      if (deferFocus) {
+        requestAnimationFrame(() => {
+          if (!axisPanelOpen && target?.isConnected) target.focus({ preventScroll: true });
+        });
+      } else {
+        target?.focus({ preventScroll: true });
+      }
+    }
     scheduleLabelLayout();
+  }
+
+  function isInteractiveTarget(target) {
+    return !!target?.closest?.('button, a, input, select, textarea, [role="button"], [tabindex]:not([tabindex="-1"])');
   }
 
   function onDocumentPointerDown(evt) {
     if (!axisPanelOpen || axisEditor.contains(evt.target)) return;
-    closeAxisEditor({ restoreFocus: axisPanel.contains(document.activeElement) });
+    const restoreFocus = axisPanel.contains(document.activeElement) && !isInteractiveTarget(evt.target);
+    closeAxisEditor({ restoreFocus, deferFocus: restoreFocus });
   }
 
   function flyTo(target, { animate = true } = {}) {
@@ -1697,17 +1713,24 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     };
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!animate || reduced) {
+      cancelAnimationFrame(cameraFrame);
+      cameraFrame = 0;
+      cameraFlightTarget = null;
       camera = next;
       applyCamera();
       scheduleLabelLayout();
       return;
     }
     cancelAnimationFrame(cameraFrame);
+    cameraFlightTarget = next;
     const start = { ...camera };
     const started = performance.now();
     const duration = 420;
     const step = (now) => {
-      if (destroyed) return;
+      if (destroyed) {
+        cameraFrame = 0;
+        return;
+      }
       const progress = Math.min(1, (now - started) / duration);
       const eased = 1 - Math.pow(1 - progress, 3);
       camera = {
@@ -1720,6 +1743,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
         cameraFrame = requestAnimationFrame(step);
       } else {
         cameraFrame = 0;
+        cameraFlightTarget = null;
         scheduleLabelLayout();
       }
     };
@@ -2413,6 +2437,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     destroyed = true;
     cancelAnimationFrame(cameraFrame);
     cameraFrame = 0;
+    cameraFlightTarget = null;
     cancelAnimationFrame(axisFrame);
     axisFrame = 0;
     cancelAnimationFrame(labelFrame);

@@ -1,4 +1,4 @@
-import { CLOUD_DEFAULT_2D_AXES, CLOUD_DIMENSIONS } from './cloud-genre-map.js';
+import { CLOUD_3D_AXES, CLOUD_DEFAULT_2D_AXES, CLOUD_DIMENSIONS } from './cloud-genre-map.js';
 
 const FALLBACK_MIN = 6;
 const FALLBACK_MAX = 94;
@@ -75,6 +75,19 @@ export function normaliseCloudAxes(axes) {
   return { x, y };
 }
 
+export function cloudStageDescription(mode, axes2d) {
+  if (mode === '3d') {
+    const x = CLOUD_DIMENSIONS[CLOUD_3D_AXES.x];
+    const y = CLOUD_DIMENSIONS[CLOUD_3D_AXES.y];
+    const z = CLOUD_DIMENSIONS[CLOUD_3D_AXES.z];
+    return `Collection cloud in 3D. X axis ${x.label}, ${x.labels[0]} to ${x.labels[1]}. Y axis ${y.label}, ${y.labels[0]} to ${y.labels[1]}. Z axis ${z.label}, ${z.labels[0]} to ${z.labels[1]}. Drag to orbit, scroll or pinch to zoom, click a collection to open it.`;
+  }
+  const axes = normaliseCloudAxes(axes2d);
+  const x = CLOUD_DIMENSIONS[axes.x];
+  const y = CLOUD_DIMENSIONS[axes.y];
+  return `Collection cloud. X axis ${x.label}, ${x.labels[0]} to ${x.labels[1]}. Y axis ${y.label}, ${y.labels[0]} to ${y.labels[1]}. Drag to pan, scroll to zoom, click a collection.`;
+}
+
 export function assignCloudAxis(current, targetAxis, dimension) {
   const axes = normaliseCloudAxes(current);
   if ((targetAxis !== 'x' && targetAxis !== 'y') || !CLOUD_DIMENSIONS[dimension]) return axes;
@@ -149,9 +162,9 @@ export function projectCloudPoint(point, orbit, viewport) {
 
 export function projectCloudAxis(axis, orbit, viewport) {
   const dimensions = {
-    x: { point: { x: 1, y: 0, z: 0 }, labels: CLOUD_DIMENSIONS.electronic.labels },
-    y: { point: { x: 0, y: 1, z: 0 }, labels: CLOUD_DIMENSIONS.energy.labels },
-    z: { point: { x: 0, y: 0, z: 1 }, labels: CLOUD_DIMENSIONS.mood.labels },
+    x: { point: { x: 1, y: 0, z: 0 }, labels: CLOUD_DIMENSIONS[CLOUD_3D_AXES.x].labels },
+    y: { point: { x: 0, y: 1, z: 0 }, labels: CLOUD_DIMENSIONS[CLOUD_3D_AXES.y].labels },
+    z: { point: { x: 0, y: 0, z: 1 }, labels: CLOUD_DIMENSIONS[CLOUD_3D_AXES.z].labels },
   };
   const chosen = dimensions[axis] ?? dimensions.x;
   const extent = CLOUD_AXIS_EXTENT / CLOUD_SCENE_SCALE;
