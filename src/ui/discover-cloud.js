@@ -392,7 +392,11 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   let hint = null;
   let modeSlot = null;
   let modeButton = null;
+  let zoomInButton = null;
+  let zoomOutButton = null;
+  let zoomResetButton = null;
   let mode = '2d';
+  let pointerRect = null;
   let orbit = { ...DEFAULT_CLOUD_ORBIT };
   let sceneViewport = { width: 1, height: 1 };
   let sceneFrame = 0;
@@ -675,11 +679,11 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     nodeEl.addEventListener('click', (evt) => {
       evt.stopPropagation();
       if (suppressClick) {
+        const fromPointer = evt.detail > 0;
         suppressClick = false;
-        return;
+        if (fromPointer) return;
       }
-      if (mode === '3d') leave3d({ immediate: true });
-      openCollection(node.slug);
+      activateCollection(node.slug);
     });
     nodeEl.addEventListener('pointerenter', () => {
       activateNode(node.slug);
@@ -738,11 +742,19 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   zoomReset.title = 'Fit all collections';
   zoomIn.addEventListener('click', (evt) => {
     evt.stopPropagation();
+    if (mode === '3d') {
+      adjustOrbitDistance(0.82);
+      return;
+    }
     const rect = stage.getBoundingClientRect();
     zoomAt(rect.left + rect.width / 2, rect.top + rect.height / 2, 1.25);
   });
   zoomOut.addEventListener('click', (evt) => {
     evt.stopPropagation();
+    if (mode === '3d') {
+      adjustOrbitDistance(1.22);
+      return;
+    }
     const rect = stage.getBoundingClientRect();
     zoomAt(rect.left + rect.width / 2, rect.top + rect.height / 2, 0.8);
   });
@@ -762,6 +774,9 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   });
   if (!host.requestFullscreen) fullscreenButton.hidden = true;
   controls.append(zoomIn, zoomOut, zoomReset, fullscreenButton);
+  zoomInButton = zoomIn;
+  zoomOutButton = zoomOut;
+  zoomResetButton = zoomReset;
 
   axisEditor = document.createElement('div');
   axisEditor.className = 'stations-cloud-axis-editor';
@@ -1155,6 +1170,21 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       const label = active ? 'Show 2D collection cloud' : 'Show 3D collection cloud';
       modeButton.setAttribute('aria-label', label);
       modeButton.title = label;
+    }
+    if (zoomInButton) {
+      const label = mode === '3d' ? 'Move camera closer' : 'Zoom in';
+      zoomInButton.setAttribute('aria-label', label);
+      zoomInButton.title = label;
+    }
+    if (zoomOutButton) {
+      const label = mode === '3d' ? 'Move camera farther' : 'Zoom out';
+      zoomOutButton.setAttribute('aria-label', label);
+      zoomOutButton.title = label;
+    }
+    if (zoomResetButton) {
+      const label = mode === '3d' ? 'Reset 3D view' : 'Fit all collections';
+      zoomResetButton.setAttribute('aria-label', label);
+      zoomResetButton.title = label;
     }
     if (hint) hint.textContent = modeHintText();
     updateStageDescription();
@@ -1688,14 +1718,26 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   }
 
   function onWheel(evt) {
-    if (evt.target.closest('.stations-cloud-results, .stations-cloud-note-panel, .stations-cloud-axis-panel')) return;
+    if (sceneTransition?.direction === 'leave') return;
+    if (evt.target.closest('.stations-cloud-results, .stations-cloud-note-panel, .stations-cloud-axis-panel, .stations-cloud-controls, .stations-cloud-axis-editor, .stations-cloud-mode, .stations-cloud-back, .stations-cloud-player')) return;
     evt.preventDefault();
+    if (mode === '3d') {
+      hideTooltip();
+      orbit = clampCloudOrbit({
+        ...orbit,
+        distance: orbit.distance * Math.exp(evt.deltaY * 0.0012),
+      });
+      invalidateScene();
+      return;
+    }
     zoomAt(evt.clientX, evt.clientY, Math.exp(-evt.deltaY * 0.0015));
   }
 
   function onPointerDown(evt) {
     if (evt.button != null && evt.button !== 0) return;
-    if (evt.target.closest('.stations-cloud-results, .stations-cloud-note-panel, .stations-cloud-controls, .stations-cloud-axis-editor, .stations-cloud-mode, .stations-cloud-back')) return;
+    if (sceneTransition?.direction === 'leave') return;
+    if (evt.target.closest('.stations-cloud-results, .stations-cloud-note-panel, .stations-cloud-controls, .stations-cloud-axis-editor, .stations-cloud-mode, .stations-cloud-back, .stations-cloud-player')) return;
+    if (pointers.size === 0) pointerRect = stage.getBoundingClientRect();
     pointers.set(evt.pointerId, { x: evt.clientX, y: evt.clientY });
     if (pointers.size === 1) {
       dragStart = { x: evt.clientX, y: evt.clientY };
@@ -1705,6 +1747,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     }
     if (pointers.size === 2) {
       pinch = null;
+      dragStart = null;
       stage.classList.add('is-dragging');
       for (const id of pointers.keys()) {
         try { stage.setPointerCapture(id); } catch { /* capture is best effort */ }
@@ -1714,49 +1757,73 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
 
   function onPointerMove(evt) {
     if (!pointers.has(evt.pointerId)) return;
+    if (sceneTransition?.direction === 'leave') return;
     const previous = pointers.get(evt.pointerId);
     pointers.set(evt.pointerId, { x: evt.clientX, y: evt.clientY });
 
     if (pointers.size >= 2) {
       const [first, second] = [...pointers.values()];
       const distance = Math.hypot(second.x - first.x, second.y - first.y);
-      const rect = stage.getBoundingClientRect();
+      const rect = pointerRect ?? stage.getBoundingClientRect();
       const midpoint = {
         x: (first.x + second.x) / 2 - rect.left,
         y: (first.y + second.y) / 2 - rect.top,
       };
       if (!pinch) {
-        pinch = {
-          distance: Math.max(1, distance),
-          scale: camera.scale,
-          tx: camera.tx,
-          ty: camera.ty,
-          midpoint,
-        };
+        pinch = mode === '3d'
+          ? { distance: Math.max(1, distance), distanceOrbit: orbit.distance }
+          : {
+            distance: Math.max(1, distance),
+            scale: camera.scale,
+            tx: camera.tx,
+            ty: camera.ty,
+            midpoint,
+          };
         return;
       }
       const factor = Math.max(0.2, Math.min(5, distance / pinch.distance));
+      dragMoved = true;
+      stage.classList.add('is-orbit-active');
+      hideTooltip();
+      if (mode === '3d') {
+        orbit = clampCloudOrbit({
+          ...orbit,
+          distance: pinch.distanceOrbit / factor,
+        });
+        invalidateScene();
+        return;
+      }
       const nextScale = clampScale(pinch.scale * factor);
       const worldX = (pinch.midpoint.x - pinch.tx) / pinch.scale;
       const worldY = (pinch.midpoint.y - pinch.ty) / pinch.scale;
       camera.scale = nextScale;
       camera.tx = midpoint.x - worldX * nextScale;
       camera.ty = midpoint.y - worldY * nextScale;
-      dragMoved = true;
-      hideTooltip();
       applyCamera();
       return;
     }
 
     if (!dragStart || pinch) return;
+    const deltaX = evt.clientX - previous.x;
+    const deltaY = evt.clientY - previous.y;
     dragDistance = Math.max(dragDistance, Math.hypot(evt.clientX - dragStart.x, evt.clientY - dragStart.y));
     if (dragDistance > 5) {
       dragMoved = true;
       stage.classList.add('is-dragging');
       try { stage.setPointerCapture(evt.pointerId); } catch { /* capture is best effort */ }
-      camera.tx += evt.clientX - previous.x;
-      camera.ty += evt.clientY - previous.y;
       hideTooltip();
+      if (mode === '3d') {
+        stage.classList.add('is-orbit-active');
+        orbit = clampCloudOrbit({
+          ...orbit,
+          yaw: orbit.yaw + deltaX * 0.0065,
+          pitch: orbit.pitch + deltaY * 0.0055,
+        });
+        invalidateScene();
+        return;
+      }
+      camera.tx += deltaX;
+      camera.ty += deltaY;
       applyCamera();
     }
   }
@@ -1773,10 +1840,13 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
           suppressTimer = null;
         }, 0);
       }
-      stage.classList.remove('is-dragging');
+      stage.classList.remove('is-dragging', 'is-orbit-active');
       dragStart = null;
       dragDistance = 0;
       dragMoved = false;
+      pointerRect = null;
+    } else if (pointers.size === 1) {
+      dragStart = null;
     }
     try {
       if (stage.hasPointerCapture?.(evt.pointerId)) stage.releasePointerCapture(evt.pointerId);
@@ -1789,7 +1859,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       return;
     }
     if (!ring) return;
-    if (evt.target.closest('.stations-cloud-node, .stations-cloud-station, .stations-cloud-controls, .stations-cloud-axis-editor, .stations-cloud-axis, .stations-cloud-mode, .stations-cloud-back, .stations-cloud-results, .stations-cloud-note-panel, .stations-cloud-tooltip')) return;
+    if (evt.target.closest('.stations-cloud-node, .stations-cloud-station, .stations-cloud-controls, .stations-cloud-axis-editor, .stations-cloud-axis, .stations-cloud-mode, .stations-cloud-back, .stations-cloud-results, .stations-cloud-note-panel, .stations-cloud-tooltip, .stations-cloud-player')) return;
     closeRing();
   }
 
@@ -1993,6 +2063,17 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     ring.current.textContent = current ? current.name : '';
   }
 
+  function activateCollection(slug, { stationUuid = null, play = false } = {}) {
+    if (destroyed) return;
+    const was3d = mode === '3d' || sceneTransition?.direction === 'leave';
+    if (was3d) leave3d({ immediate: true });
+    openCollection(slug);
+    if (stationUuid) {
+      highlightStation(stationUuid);
+      if (play && !was3d) playStation(stationUuid);
+    }
+  }
+
   function openCollection(slug) {
     if (destroyed) return;
     if (mode === '3d') leave3d({ immediate: true });
@@ -2138,10 +2219,19 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     stationEls.values().next().value?.focus({ preventScroll: true });
   }
 
+  function adjustOrbitDistance(factor) {
+    if (destroyed || mode !== '3d' || sceneTransition?.direction === 'leave') return;
+    hideTooltip();
+    orbit = clampCloudOrbit({ ...orbit, distance: orbit.distance * factor });
+    invalidateScene();
+  }
+
   function reset() {
     if (destroyed) return;
     if (mode === '3d') {
       hideTooltip();
+      sceneTransition = null;
+      stage.classList.remove('is-scene-transitioning', 'is-orbit-active');
       orbit = { ...DEFAULT_CLOUD_ORBIT };
       closeAxisEditor({ restoreFocus: false });
       invalidateScene();
@@ -2189,8 +2279,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
         row.append(title, count);
         row.addEventListener('click', (evt) => {
           evt.stopPropagation();
-          openCollection(collection.slug);
-          hideResults();
+          activateCollection(collection.slug);
         });
         resultsEl.append(row);
       }
@@ -2224,10 +2313,10 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
         row.append(copy);
         row.addEventListener('click', (evt) => {
           evt.stopPropagation();
-          openCollection(station.collectionSlug);
-          highlightStation(station.stationuuid);
-          playStation(station.stationuuid);
-          hideResults();
+          activateCollection(station.collectionSlug, {
+            stationUuid: station.stationuuid,
+            play: true,
+          });
         });
         resultsEl.append(row);
       }
@@ -2348,7 +2437,14 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     stage.removeEventListener('pointercancel', onPointerUp);
     stage.removeEventListener('wheel', onWheel);
     stage.removeEventListener('click', onStageClick);
+    for (const pointerId of pointers.keys()) {
+      try { stage.releasePointerCapture?.(pointerId); } catch { /* capture is best effort */ }
+    }
     pointers.clear();
+    pointerRect = null;
+    zoomInButton = null;
+    zoomOutButton = null;
+    zoomResetButton = null;
     ring = null;
     noteEl = null;
     resultsEl = null;
