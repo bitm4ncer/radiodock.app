@@ -62,8 +62,8 @@ function discoverIcon() {
   return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m15.6 8.4-2.1 5.1-5.1 2.1 2.1-5.1 5.1-2.1Z" fill="currentColor"/></svg>';
 }
 
-function cloudIcon() {
-  return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h9a4 4 0 0 0 .6-7.96A5.5 5.5 0 0 0 6.1 9.6 3.75 3.75 0 0 0 7 18Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function graphIcon() {
+  return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.2 16.7 10.7 7.9M13.3 7.9l4.2 6.5M8.1 17.5l7.8-1.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="6" cy="17" r="2.1" fill="currentColor"/><circle cx="12" cy="6.8" r="2.1" fill="currentColor"/><circle cx="18" cy="15.6" r="2.1" fill="currentColor"/></svg>';
 }
 
 export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = {}) {
@@ -1131,7 +1131,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       <div class="stations-collection-grid stations-featured-grid">${lists.map((list) => collectionCard(list, { saved: isCollectionSaved(list.slug) })).join('')}</div>
       <div class="stations-featured-actions">
         <button type="button" class="stations-pill stations-discover-btn" data-action="discover-more">${discoverIcon()}<span>Discover more collections</span></button>
-        <button type="button" class="stations-icon-btn stations-cloud-btn" data-action="discover-cloud" aria-label="Open collection cloud" title="Collection cloud">${cloudIcon()}</button>
+        <button type="button" class="stations-icon-btn stations-cloud-btn" data-action="discover-cloud" aria-label="Open collection cloud" title="Collection cloud">${graphIcon()}</button>
         <button type="button" class="stations-submit-link" data-action="submit-list">Suggest a collection</button>
       </div>
     `;

@@ -15,6 +15,13 @@ test('the featured row has a cloud button beside Discover more', () => {
   assert.match(panel, /class="stations-featured-actions"/);
 });
 
+test('the cloud entry uses a node-edge graph icon, not a cloud', () => {
+  assert.match(panel, /function graphIcon\(\)/);
+  assert.match(panel, /\$\{graphIcon\(\)\}/);
+  assert.doesNotMatch(panel, /function cloudIcon\(\)/);
+  assert.match(panel, /<circle cx="12" cy="6\.8" r="2\.1"/);
+});
+
 test('the cloud button opens Discover in cloud mode', () => {
   assert.match(panel, /openDiscover\(\{ view: 'cloud' \}\)/);
   assert.match(panel, /async function openDiscover\(\{ view = 'small' \} = \{\}\)/);
