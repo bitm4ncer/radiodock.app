@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-23T00:52:33.708Z",
+  "generatedAt": "2026-10-23T01:23:36.690Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -6543,6 +6543,203 @@
             "countrycode": "IN"
           }
         ]
+      },
+      {
+        "slug": "kpop",
+        "title": "K-Pop",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "517d1b65-91f6-47be-9832-25862f6e0d7e",
+            "name": "0N K-Pop",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "87b2d880-4792-4fe6-a5c4-4aba7bc79040",
+            "name": "City K-Pop",
+            "countrycode": "BG"
+          },
+          {
+            "stationuuid": "9c5927bf-2d41-4868-9d2a-677d5a269402",
+            "name": "ENERGY K-pop",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "168b79d5-be7b-436f-b144-759696655d6d",
+            "name": "HIT FM K-Pop Hits",
+            "countrycode": "MD"
+          },
+          {
+            "stationuuid": "0ebbadd2-0a95-4bde-9868-883f21523ae0",
+            "name": "Hotmix K-Pop",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "1748f193-6d40-4a9e-acbc-e284984c00d0",
+            "name": "K-Pop 24",
+            "countrycode": "UA"
+          },
+          {
+            "stationuuid": "8495c4a7-0c66-47b3-acd6-4b957017f610",
+            "name": "KPOP atomicradio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "7e0188a0-b332-405d-af8f-57da3223369b",
+            "name": "Listen.moe Kpop",
+            "countrycode": "KR"
+          },
+          {
+            "stationuuid": "2e53ff8e-1d21-4e04-b0e9-f68257c4e7e9",
+            "name": "Only Hits K-Pop",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "15d5f6f4-e88f-4d5b-bbb7-7a72b2c9611d",
+            "name": "World Music Radio - K-Pop",
+            "countrycode": "AE"
+          }
+        ]
+      },
+      {
+        "slug": "salsa",
+        "title": "Salsa",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "dbae7640-ee5b-4be1-95fe-4f4c56bf8a9f",
+            "name": "El Sol Cali",
+            "countrycode": "CO"
+          },
+          {
+            "stationuuid": "e6cdaf02-1a15-4d20-8844-126844125475",
+            "name": "Capital Salsa",
+            "countrycode": "CO"
+          },
+          {
+            "stationuuid": "839c6307-7d21-4d18-962f-ecf96f991072",
+            "name": "Caracas Salsa Brava",
+            "countrycode": "VE"
+          },
+          {
+            "stationuuid": "96826b40-cc1e-4aa4-8d83-6794827c3d85",
+            "name": "Salsa Radio Amsterdam",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "116a6ba3-232d-4a6d-a0ac-16cf68721729",
+            "name": "Salsa 787 — El Sabor de la Clave",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "db09528b-7ed8-4214-a263-8a92e26c88b6",
+            "name": "SalsaViva",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "33eb7f6a-bb3a-4bb4-a5fb-56c9fb5143b0",
+            "name": "Hotmix Salsa",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "823ae385-e777-4363-8c9c-693374033a2a",
+            "name": "Salsa 92.7 FM",
+            "countrycode": "DO"
+          },
+          {
+            "stationuuid": "a0282d74-0fae-4399-afc9-54b07a266c0e",
+            "name": "Puerto Salsa Radio",
+            "countrycode": "CL"
+          },
+          {
+            "stationuuid": "cdd58c8d-c3b6-407a-beec-90d4f7759a3d",
+            "name": "Salsa FM",
+            "countrycode": "ES"
+          }
+        ]
+      },
+      {
+        "slug": "cumbia",
+        "title": "Cumbia",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "1d4d7e90-fe9b-413a-9dda-f3aa507a848c",
+            "name": "Cumbia Total",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "9a12e2fe-ba2b-42ae-946e-fa657fb779a4",
+            "name": "FM Cumbiambera",
+            "countrycode": "AR"
+          },
+          {
+            "stationuuid": "fcf7421a-2a01-4348-9b45-9c9a3b862c71",
+            "name": "Sabor a Cumbia",
+            "countrycode": "CL"
+          },
+          {
+            "stationuuid": "d8e71f6d-3277-45d1-b9f2-840676282d77",
+            "name": "Radio Inkafuego",
+            "countrycode": "PE"
+          },
+          {
+            "stationuuid": "a2b86efb-d688-419c-b4b1-3abc531b9036",
+            "name": "Estación Cumbia",
+            "countrycode": "PE"
+          },
+          {
+            "stationuuid": "d881d1d4-9dea-4d94-8c4a-668390f544e6",
+            "name": "Tierra Verde Radio",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "dangdut",
+        "title": "Dangdut / Indonesian",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "507908c8-52ab-4be6-9ed5-5389c9fe6f27",
+            "name": "RDI 97.1 FM Jakarta",
+            "countrycode": "ID"
+          },
+          {
+            "stationuuid": "b26a55ce-32ad-4821-ae68-14425e942917",
+            "name": "Radiks 99.3 FM Semarang",
+            "countrycode": "ID"
+          },
+          {
+            "stationuuid": "66d55788-6e57-4755-ac58-aa85bfb7cf94",
+            "name": "Suara Soneta",
+            "countrycode": "ID"
+          },
+          {
+            "stationuuid": "fd6e2783-293c-476e-8201-ddeda1336ca3",
+            "name": "Campursari FM 89.2 Jakarta",
+            "countrycode": "ID"
+          },
+          {
+            "stationuuid": "a6992630-f3c2-42a1-b280-7370ddfa1aba",
+            "name": "Beat Radio Dangdut",
+            "countrycode": "ID"
+          },
+          {
+            "stationuuid": "36db69aa-2a1a-4d74-b9de-bf0edfe7159e",
+            "name": "Mettaswara Dangdut",
+            "countrycode": "ID"
+          },
+          {
+            "stationuuid": "8b03a69d-5fbf-47c7-b186-a4cc01890160",
+            "name": "Mettaswara Campursari",
+            "countrycode": "ID"
+          }
+        ]
       }
     ]
   },
@@ -6973,7 +7170,7 @@
       {
         "genre": "world",
         "label": "World",
-        "count": 507
+        "count": 514
       },
       {
         "genre": "indie",
@@ -6988,7 +7185,7 @@
       {
         "genre": "salsa",
         "label": "Salsa & Tropical",
-        "count": 441
+        "count": 444
       },
       {
         "genre": "ambient",
@@ -7016,14 +7213,14 @@
         "count": 332
       },
       {
-        "genre": "funk",
-        "label": "Funk",
+        "genre": "cumbia",
+        "label": "Cumbia",
         "count": 331
       },
       {
-        "genre": "cumbia",
-        "label": "Cumbia",
-        "count": 327
+        "genre": "funk",
+        "label": "Funk",
+        "count": 331
       },
       {
         "genre": "blues",
@@ -7113,7 +7310,7 @@
       {
         "genre": "kpop",
         "label": "K-Pop",
-        "count": 60
+        "count": 61
       },
       {
         "genre": "opera",
