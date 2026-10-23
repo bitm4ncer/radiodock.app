@@ -104,6 +104,10 @@ export const CLOUD_GENRE_VECTORS = {
   salsa: { family: 'latin', energy: 76, electronic: 22, era: 38 },
   cumbia: { family: 'latin', energy: 72, electronic: 18, era: 40 },
   dangdut: { family: 'world', energy: 76, electronic: 20, era: 44 },
+  shoegaze: { family: 'indie', energy: 34, electronic: 42, era: 38 },
+  chiptune: { family: 'electronic', energy: 66, electronic: 78, era: 72 },
+  phonk: { family: 'hiphop', energy: 88, electronic: 62, era: 92 },
+  emo: { family: 'punk', energy: 78, electronic: 20, era: 62 },
 };
 
 export const CLOUD_GENRE_EDGES = [
@@ -260,6 +264,17 @@ export const CLOUD_GENRE_EDGES = [
   ['salsa', 'cumbia'],
   ['dangdut', 'pop'],
   ['dangdut', 'dance'],
+  ['shoegaze', 'indie-alternative'],
+  ['shoegaze', 'psychedelic-rock'],
+  ['shoegaze', 'chill'],
+  ['chiptune', 'soundtracks-game'],
+  ['chiptune', 'electro'],
+  ['phonk', 'trap-drill'],
+  ['phonk', 'hiphop'],
+  ['phonk', 'dubstep'],
+  ['emo', 'punk'],
+  ['emo', 'indie-alternative'],
+  ['emo', 'pop'],
 ];
 
 function clamp(value, minimum, maximum) {
