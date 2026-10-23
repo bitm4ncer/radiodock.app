@@ -100,6 +100,10 @@ export const CLOUD_GENRE_VECTORS = {
   'regional-mexican': { family: 'latin', energy: 68, electronic: 16, era: 38 },
   balkan: { family: 'balkan', energy: 74, electronic: 28, era: 42 },
   arabic: { family: 'arabic', energy: 56, electronic: 24, era: 34 },
+  kpop: { family: 'kpop', energy: 82, electronic: 58, era: 92 },
+  salsa: { family: 'latin', energy: 76, electronic: 22, era: 38 },
+  cumbia: { family: 'latin', energy: 72, electronic: 18, era: 40 },
+  dangdut: { family: 'world', energy: 76, electronic: 20, era: 44 },
 };
 
 export const CLOUD_GENRE_EDGES = [
@@ -246,6 +250,16 @@ export const CLOUD_GENRE_EDGES = [
   ['balkan', 'dance'],
   ['arabic', 'pop'],
   ['arabic', 'dance'],
+  ['kpop', 'jpop'],
+  ['kpop', 'pop'],
+  ['kpop', 'dance'],
+  ['salsa', 'latin'],
+  ['salsa', 'dance'],
+  ['cumbia', 'latin'],
+  ['cumbia', 'dance'],
+  ['salsa', 'cumbia'],
+  ['dangdut', 'pop'],
+  ['dangdut', 'dance'],
 ];
 
 function clamp(value, minimum, maximum) {
