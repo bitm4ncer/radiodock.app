@@ -143,3 +143,46 @@ Final test suite: 351 of 351 tests passed. Vite production build succeeded.
 - The trace did not expose `DrawFrame` events in this Chromium capture, so compositor frame timing was assessed from requestAnimationFrame intervals, not from DrawFrame counts.
 - Heap evidence covers 8 mode cycles and 10 ring transitions after a warm baseline. It is not a long-soak leak proof.
 - The one browser warning in the final run was an unrelated WebAssembly capability probe. No page errors occurred in the final measured run.
+
+## Mobile follow-up
+
+Date: 2026-10-23
+
+The first 3D implementation was clean on desktop but too dense and too slow on phones. The follow-up removed station thumbnails from the 3D overview, replaced them with nine color-coded genre dots, relaxed the 3D point cloud, fitted the camera to the projected extent, and made mobile transitions immediate where a long animation cost more than it added.
+
+### Method
+
+- Chrome for Testing 156.0.8078.4 through Playwright 1.64.1.
+- Mobile viewport 390 by 844 CSS pixels, device scale factor 2, 4x CPU throttle.
+- Dataset: 89 published collections, 204 edges.
+- Scenes: 2D overview, 2D axis change, 2D pan, 3D enter, 3D orbit, 3D focus open, 3D focus orbit, 3D exit.
+- Frame sampling used requestAnimationFrame intervals and PerformanceObserver long tasks. Idle checks used a MutationObserver on the cloud stage.
+
+### Results
+
+| Interaction | First 3D build | Follow-up |
+| --- | --- | --- |
+| 3D orbit | 23.7 fps | 60.0 fps |
+| 3D mode enter | 43.9 fps | 56.3 fps |
+| 3D focus open | 40.0 fps | 52.7 fps |
+| 3D focus orbit | 58.1 fps | 60.0 fps |
+| 2D axis change | 33.0 fps | 53.9 fps |
+| 2D pan | Not measured | 60.0 fps |
+| 3D exit | 30.5 fps | 43.6 fps |
+
+Idle 2D and 3D both report 60 fps refresh sampling with zero app animation frames and zero cloud-stage mutations. The 2D overview now renders 356 station previews instead of 648 on phones, hides minor labels until hover or focus, and runs zero decorative bubble animations.
+
+### What changed
+
+- The 3D overview uses compact dots and nine super-genre colors. Station thumbnails exist only in the focus ring.
+- The 3D focus ring stays in 3D. The camera target centres the selected collection and the ring follows it while orbit remains active.
+- Mobile phones cap the focus ring at 18 stations with an explicit `All N stations` expansion.
+- Phones use a compact 2D layout spread, a cover fit, four preview logos per collection, no floating animation, no backdrop blur, and a 2 by 2 utility grid.
+- Axis changes and 3D exits are immediate on phones. Desktop keeps the interpolated transitions.
+- Axis transitions animate node transforms and defer edge geometry until the nodes settle. 3D transitions skip per-frame SVG edge writes and reveal links when the scene settles.
+
+### Remaining limitations
+
+- At 4x CPU throttle, opening a large focus ring still produces one long task roughly between 80 and 110 ms. Closing 3D still produces a one-time long task roughly between 250 and 285 ms while the full 2D scene returns. These are transition costs, not continuous interaction costs.
+- The measurements are headless Chrome, not a physical phone. GPU, thermal behaviour, and browser chrome differ on real devices.
+- The 3D overview remains a canvas of 89 collections. Some dense clusters still overlap visually; orbit and zoom are the intended ways to inspect them.

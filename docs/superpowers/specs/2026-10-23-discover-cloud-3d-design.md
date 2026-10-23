@@ -146,13 +146,13 @@ Current pan, wheel zoom, pinch zoom, zoom buttons, reset, and collection interac
 - Input deltas are accumulated and rendered once per animation frame.
 - Pointer capture keeps drags stable when a pointer crosses a node or leaves the stage.
 
-Dragging beyond a small movement threshold suppresses the following click. A regular click or keyboard activation on a collection first exits 3D, then opens the existing in-cloud focus ring for that collection. This path must not call `playStation` or `onPlay`. Playback remains possible only through the existing explicit station action inside the focus ring.
+Dragging beyond a small movement threshold suppresses the following click. A regular click or keyboard activation on a collection keeps 3D active and opens the in-cloud focus ring around that collection. The ring is a screen-space layer anchored to the projected node, so it stays readable while the cloud orbits behind it. This path must not call `playStation` or `onPlay`. Playback remains possible only through the explicit station action inside the focus ring. Closing the ring returns to the 3D overview, still in 3D. The mode switch is locked while the ring is open.
 
-Search results follow the same rule: selecting a collection while in 3D exits 3D and opens that collection's focus ring without playback.
+Search results follow the same rule: selecting a collection while in 3D keeps 3D active and opens that collection's focus ring without playback.
 
 ### Labels and tooltips
 
-Collection labels are hidden in 3D to avoid depth clutter. Hover and keyboard focus show the existing tooltip with the collection name. Tooltip placement is clamped to the viewport and does not participate in the projection transform.
+Collection labels and station thumbnails are hidden in 3D to avoid depth clutter. Each collection is a compact dot, sized by station count and colored by one of nine editorial super-genres. Hover and keyboard focus show the tooltip with the collection name, count, and genre. Tooltip placement is clamped to the viewport and does not participate in the projection transform.
 
 ### Mode transitions
 
@@ -217,6 +217,54 @@ The audit records:
 
 The target is a 16.7 ms frame budget on a typical desktop and the smoothest sustainable result under throttled mobile conditions. This is a target, not a claim made before measurement. Any remaining limitation is documented with measured evidence.
 
+## Mobile and visual revision
+
+The follow-up review replaced the dense 3D logo orbits with a compact genre map and made mobile the primary layout target.
+
+### 3D visual language
+
+- The 3D overview shows one compact dot per collection. Station thumbnails are hidden until the collection focus ring opens.
+- Dot size still follows station count. Dot color follows one of nine editorial super-genres derived from the existing `family` values: Electronic/Club, Bass/UK Bass, Hip-Hop/Rap, Pop/Schlager, Rock/Metal/Punk, Soul/Funk/Disco, Jazz/Classical, Roots/Folk/Global, and Ambient/Other.
+- The nine colors are theme-aware CSS tokens. They use flat fills, not gradients or glows.
+- 3D positions pass through a deterministic relaxation pass that separates near-neighbours while keeping the axis anchors. The camera distance is fitted to the projected cloud, so the map fills the stage without clipping dots.
+- Edges remain dashed and neutral. They sit at low opacity by default and brighten only for the active collection.
+- Hover is resolved by nearest projected dot on the stage, not by overlapping hit boxes. This keeps dense clusters clickable.
+
+### 3D focus
+
+- A collection click or keyboard activation keeps 3D active. It does not switch to 2D.
+- The focus ring is a screen-space overlay anchored to the projected collection. The camera target moves to that collection, keeping the ring centred while the rest of the cloud can still be orbited.
+- Orbit, wheel zoom, pinch, and reset remain available in 3D focus. The mode switch and axis editor stay locked while the ring is open.
+- Closing the ring returns to the 3D overview, still in 3D.
+- Collection selection never calls `playStation` or `onPlay`. Playback still requires the explicit station action inside the ring.
+- On mobile, the ring shows at most 18 stations by default, with an explicit `All N stations` button for the complete set. The ring is capped to the stage, station targets are 44 by 44 CSS pixels, and the collection note panel is omitted to keep the ring usable.
+
+### Mobile layout and performance
+
+- Phones use a compact 2D layout spread of 1.6 instead of the desktop spread of 3.0. Desktop 2D remains unchanged.
+- Phones use a cover fit for the 2D overview so the map fills the stage; panning reaches the cropped edges. Tablets keep the contain fit.
+- Phones render four station previews per collection instead of eight, hide minor collection labels until hover or focus, and disable the decorative floating animation.
+- Backdrop blur is removed from mobile cloud chrome, and the zoom, reset, and fullscreen controls become a 2 by 2 grid of 44 pixel targets.
+- Axis changes and mode exits are immediate on mobile. Desktop keeps the short interpolated transitions.
+- Axis transitions move nodes with transforms and defer link geometry until the nodes settle. 3D enter and leave transitions skip per-frame SVG edge updates and reveal the links after the scene settles.
+- 2D desktop geometry, preview density, labels, and floating animation are unchanged.
+
+### Measured follow-up
+
+Headless Chrome for Testing, 390 by 844 CSS pixels, device scale factor 2, 4x CPU throttle:
+
+| Interaction | Before follow-up | After follow-up |
+| --- | --- | --- |
+| 3D orbit | 23.7 fps | 60.0 fps |
+| 3D mode enter | 43.9 fps | 56.3 fps |
+| 3D focus open | 40.0 fps | 52.7 fps |
+| 3D focus orbit | 58.1 fps | 60.0 fps |
+| 2D axis change | 33.0 fps | 53.9 fps |
+| 2D pan | Not measured | 60.0 fps |
+| 3D exit | 30.5 fps | 43.6 fps |
+
+Idle 2D and 3D both report zero app animation frames and zero stage mutations. The remaining measured limitation is a single long task when opening a large focus ring and when restoring the 2D scene on exit. These are documented as one-time transition costs, not continuous interaction costs.
+
 ## Error handling and cleanup
 
 - Unknown axis keys fall back to the default 2D pair.
@@ -235,9 +283,13 @@ The target is a 16.7 ms frame budget on a typical desktop and the smoothest sust
 - Arbitrary ordered 2D axis pairs produce deterministic, bounded layouts.
 - Selecting an occupied dimension swaps X and Y.
 - 3D rotation and perspective projection return finite, deterministic coordinates and depth.
+- Projection with a camera target centres that target.
+- 3D relaxation is deterministic, bounded, and increases minimum point separation.
+- Every curated family maps to exactly one of the nine super-genres.
 - Camera-distance and pitch clamps are enforced.
 - Near-plane visibility behaves correctly.
 - Runtime edges remain filtered and deduplicated.
+- Compact preview and layout options reduce mobile work without changing desktop defaults.
 - Existing ring layout and cloud search tests continue passing.
 
 ### Behavioral verification
@@ -246,8 +298,11 @@ Local browser checks cover:
 
 - 2D pan, zoom, reset, search, axis selection, and axis swapping
 - 3D entry, orbit, wheel zoom, pinch, buttons, reset, and exit
-- collection click and keyboard activation from 3D into the focus ring
+- collection click and keyboard activation from 3D into a focus ring that stays in 3D
+- closing the 3D focus ring returns to the 3D overview
 - confirmation that collection navigation never calls playback
+- nearest-dot hover and click resolution in dense 3D clusters
+- focus-ring station cap and the `All N stations` expansion on mobile
 - hover and focus neighbor highlighting and tooltips
 - fullscreen entry/exit and Tiny Player placement
 - light and dark themes
@@ -264,9 +319,13 @@ Local browser checks cover:
 ## Intended file scope
 
 - `src/ui/cloud-genre-map.js`: axis metadata, mood values, and dimension projection helpers.
-- `src/ui/discover-cloud.js`: stable fallback, axis assignment, 3D controller, projection, interaction, and render scheduling.
-- `src/styles/stations.css`: mode switch, axis editor, 3D state, responsive controls, and reduced-motion styling.
+- `src/ui/cloud-genre-groups.js`: nine editorial super-genres and the family mapping used by the 3D dots.
+- `src/ui/cloud-geometry.js`: fallback vectors, axis assignment, projection, camera target, and deterministic 3D relaxation.
+- `src/ui/discover-cloud.js`: stable fallback, compact mobile layouts, axis assignment, 3D controller, focus ring, interaction, and render scheduling.
+- `src/styles/stations.css`: mode switch, axis editor, genre palette, 3D state, mobile controls, and reduced-motion styling.
 - `test/cloud-genre-map.test.js`: vector, mood, dimension, and projection coverage.
-- `test/discover-cloud.test.js`: fallback, dynamic axes, geometry, and regression coverage.
+- `test/cloud-genre-groups.test.js`: super-genre coverage and fallback coverage.
+- `test/cloud-geometry.test.js`: relaxation, camera target, projection, and axis coverage.
+- `test/discover-cloud.test.js`: fallback, compact layout options, dynamic axes, geometry, and regression coverage.
 
 No backend file or dependency manifest should change.

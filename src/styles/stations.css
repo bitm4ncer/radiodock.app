@@ -2604,6 +2604,15 @@ html.is-standalone .stations-panel:not(.is-open) {
   --cloud-link-a: var(--text-muted);
   --cloud-link-b: var(--text);
   --cloud-link-c: var(--text-muted);
+  --cloud-genre-club: #39d0c2;
+  --cloud-genre-bass: #8f7bff;
+  --cloud-genre-hiphop: #e35bc4;
+  --cloud-genre-pop: #ff7096;
+  --cloud-genre-rock: #ff9f45;
+  --cloud-genre-soul: #e5b94c;
+  --cloud-genre-jazz: #5b9dff;
+  --cloud-genre-roots: #79c96b;
+  --cloud-genre-ambient: #93a4b8;
   position: absolute;
   inset: 0 0 12px;
   overflow: hidden;
@@ -2630,12 +2639,35 @@ html.is-standalone .stations-panel:not(.is-open) {
   --text-muted: #5f5f64;
   --overlay-soft: rgba(0, 0, 0, 0.04);
   --overlay-hard: rgba(0, 0, 0, 0.10);
+  --cloud-genre-club: #087f76;
+  --cloud-genre-bass: #5b4bc4;
+  --cloud-genre-hiphop: #a52a8e;
+  --cloud-genre-pop: #c23b60;
+  --cloud-genre-rock: #b85b00;
+  --cloud-genre-soul: #8a6500;
+  --cloud-genre-jazz: #1f62b5;
+  --cloud-genre-roots: #3f7f35;
+  --cloud-genre-ambient: #56687b;
   background: #f7f7f9;
   box-shadow: inset 0 0 46px rgba(0, 0, 0, 0.04), inset 0 0 8px rgba(0, 0, 0, 0.03);
 }
 
+.stations-cloud-node[data-cloud-genre='club'] { --cloud-genre-color: var(--cloud-genre-club); }
+.stations-cloud-node[data-cloud-genre='bass'] { --cloud-genre-color: var(--cloud-genre-bass); }
+.stations-cloud-node[data-cloud-genre='hiphop'] { --cloud-genre-color: var(--cloud-genre-hiphop); }
+.stations-cloud-node[data-cloud-genre='pop'] { --cloud-genre-color: var(--cloud-genre-pop); }
+.stations-cloud-node[data-cloud-genre='rock'] { --cloud-genre-color: var(--cloud-genre-rock); }
+.stations-cloud-node[data-cloud-genre='soul'] { --cloud-genre-color: var(--cloud-genre-soul); }
+.stations-cloud-node[data-cloud-genre='jazz'] { --cloud-genre-color: var(--cloud-genre-jazz); }
+.stations-cloud-node[data-cloud-genre='roots'] { --cloud-genre-color: var(--cloud-genre-roots); }
+.stations-cloud-node[data-cloud-genre='ambient'] { --cloud-genre-color: var(--cloud-genre-ambient); }
+
 .stations-cloud-stage.is-dragging {
   cursor: grabbing;
+}
+
+.stations-cloud-stage.is-3d.is-node-hover {
+  cursor: pointer;
 }
 
 .stations-cloud img {
@@ -2658,6 +2690,15 @@ html.is-standalone .stations-panel:not(.is-open) {
   position: absolute;
   overflow: visible;
   pointer-events: none;
+  transition: opacity 120ms ease;
+}
+
+.stations-cloud-stage.is-axis-transitioning .stations-cloud-links {
+  opacity: 0;
+}
+
+.stations-cloud-stage.is-axis-transitioning .stations-cloud-node {
+  will-change: transform;
 }
 
 .stations-cloud-link {
@@ -2690,7 +2731,8 @@ html.is-standalone .stations-panel:not(.is-open) {
 }
 
 .stations-cloud-stage.is-3d.is-scene-transitioning .stations-cloud-3d-axes,
-.stations-cloud-stage.is-3d.is-scene-transitioning .stations-cloud-3d-axis-labels {
+.stations-cloud-stage.is-3d.is-scene-transitioning .stations-cloud-3d-axis-labels,
+.stations-cloud-stage.is-scene-transitioning .stations-cloud-links {
   opacity: 0;
 }
 
@@ -2746,6 +2788,62 @@ html.is-standalone .stations-panel:not(.is-open) {
 .stations-cloud-stage.is-3d .stations-cloud-bubble {
   animation: none;
   transition: none;
+}
+
+.stations-cloud-stage.is-3d .stations-cloud-orbit,
+.stations-cloud-stage.is-3d .stations-cloud-preview-orbit,
+.stations-cloud-stage.is-3d .stations-cloud-mini-layer,
+.stations-cloud-stage.is-3d .stations-cloud-hub {
+  display: none;
+}
+
+.stations-cloud-stage.is-3d .stations-cloud-bubble::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 36%;
+  height: 36%;
+  border: 1px solid color-mix(in srgb, var(--bg-dark) 55%, transparent);
+  border-radius: 50%;
+  background: var(--cloud-genre-color, var(--text-muted));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--text) 16%, transparent);
+  translate: -50% -50%;
+  transition: scale 0.16s ease, box-shadow 0.16s ease;
+}
+
+.stations-cloud-stage.is-3d .stations-cloud-node:hover .stations-cloud-bubble::before,
+.stations-cloud-stage.is-3d .stations-cloud-node:focus-visible .stations-cloud-bubble::before,
+.stations-cloud-stage.is-3d .stations-cloud-node.is-active .stations-cloud-bubble::before {
+  scale: 1.28;
+  box-shadow: 0 0 0 2px var(--text);
+}
+
+.stations-cloud-stage.is-3d .stations-cloud-node {
+  pointer-events: none;
+}
+
+.stations-cloud-stage.is-3d .stations-cloud-node.is-open {
+  opacity: 0 !important;
+}
+
+.stations-cloud-stage.is-3d .stations-cloud-bubble {
+  pointer-events: none;
+}
+
+.stations-cloud-stage.is-3d .stations-cloud-link {
+  stroke: var(--text-muted);
+  stroke-width: 1.4;
+  opacity: 0.12;
+}
+
+.stations-cloud-stage.is-3d .stations-cloud-link.is-active {
+  stroke: var(--text);
+  opacity: 0.85;
+}
+
+.stations-cloud-stage.is-3d .stations-cloud-link.is-dimmed {
+  opacity: 0.035;
 }
 
 .stations-cloud-stage.is-3d.is-scene-transitioning .stations-cloud-node,
@@ -3020,6 +3118,22 @@ html.is-standalone .stations-panel:not(.is-open) {
   pointer-events: none;
 }
 
+.stations-cloud-ring.is-3d-ring {
+  z-index: 10;
+}
+
+.stations-cloud-ring.is-3d-ring .stations-cloud-ring-label {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--bg-dark) 78%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+.stations-cloud-stage.is-3d.is-ring-open .stations-cloud-3d-axes,
+.stations-cloud-stage.is-3d.is-ring-open .stations-cloud-3d-axis-labels {
+  opacity: 0;
+}
+
 .stations-cloud-station {
   position: absolute;
   overflow: hidden;
@@ -3125,6 +3239,23 @@ html.is-standalone .stations-panel:not(.is-open) {
   font-size: 9px;
   line-height: 1.35;
   white-space: normal;
+}
+
+.stations-cloud-ring-all {
+  margin-top: 7px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--text);
+  background: var(--surface);
+  font: inherit;
+  font-size: 9px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.stations-cloud-ring-all:hover {
+  border-color: var(--text-muted);
 }
 
 .stations-cloud-mode {
@@ -3609,14 +3740,17 @@ html.is-standalone .stations-panel:not(.is-open) {
 
 .stations-cloud-tooltip {
   position: absolute;
-  z-index: 9;
+  z-index: 11;
   padding: 4px 7px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: var(--bg);
   color: var(--text);
+  max-width: min(260px, calc(100vw - 24px));
   font-size: 9px;
-  white-space: nowrap;
+  line-height: 1.35;
+  text-align: center;
+  white-space: normal;
   translate: -50% -100%;
   pointer-events: none;
 }
@@ -3744,6 +3878,60 @@ html.is-standalone .stations-panel:not(.is-open) {
     max-height: 50%;
     translate: 0 0;
   }
+
+  .stations-discover.is-cloud .stations-discover-results {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+  }
+
+  .stations-discover.is-cloud .stations-cloud {
+    height: auto;
+    min-height: 0;
+    flex: 1 1 auto;
+  }
+
+  .stations-cloud-bubble {
+    animation: none;
+  }
+
+  .stations-cloud-link {
+    stroke-width: 1.8;
+    opacity: 0.38;
+  }
+
+  .stations-cloud-node.is-minor .stations-cloud-label {
+    opacity: 0;
+  }
+
+  .stations-cloud-mode-toggle,
+  .stations-cloud-axis-summary {
+    background: var(--bg);
+    backdrop-filter: none;
+  }
+
+  .stations-cloud-ring.is-3d-ring .stations-cloud-ring-label {
+    background: var(--bg-dark);
+    backdrop-filter: none;
+  }
+
+  .stations-cloud-controls {
+    display: grid;
+    grid-template-columns: repeat(2, 44px);
+    grid-auto-rows: 44px;
+    gap: 6px;
+  }
+
+  .stations-cloud-controls button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .stations-cloud-axis--x {
+    right: 12%;
+    bottom: calc(120px + env(safe-area-inset-bottom));
+    left: 12%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3783,6 +3971,7 @@ html.is-standalone .stations-panel:not(.is-open) {
   body:has(.stations-content.is-cloud) .stations-cloud-controls {
     right: calc(12px + env(safe-area-inset-right));
     bottom: calc(12px + env(safe-area-inset-bottom));
+    display: flex;
     flex-direction: row;
   }
 
@@ -3806,6 +3995,16 @@ html.is-standalone .stations-panel:not(.is-open) {
   .stations-cloud-axis-close {
     width: 44px;
     height: 44px;
+  }
+
+  .stations-cloud-station {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .stations-cloud-ring-all {
+    min-height: 44px;
+    padding-inline: 12px;
   }
 }
 

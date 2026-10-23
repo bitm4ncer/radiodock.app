@@ -30,6 +30,15 @@ test('carries editorial notes into the cloud model', () => {
   assert.equal(node.info.long, COLLECTION_NOTES.jungle.long);
 });
 
+test('supports compact preview and layout options for mobile', () => {
+  const lists = [list('metal', 20), list('pop', 20), list('news', 20)];
+  const compact = buildCloudModel(lists, { previewLimit: 4, layoutSpread: 1.6 });
+  const desktop = buildCloudModel(lists, { previewLimit: 8, layoutSpread: 3 });
+  assert.equal(compact.nodes[0].preview.length, 4);
+  assert.equal(desktop.nodes[0].preview.length, 8);
+  assert.ok(compact.bounds.width < desktop.bounds.width);
+});
+
 test('preview uses five to eight stations or all when fewer', () => {
   const ten = buildCloudModel([list('ten', 10)]).nodes[0];
   const four = buildCloudModel([list('four', 4)]).nodes[0];
@@ -140,11 +149,10 @@ test('keeps semantic positions and layouts for every ordered axis pair', () => {
   assert.ok(metal.y < pop.y, 'metal should sit above pop on the energy axis');
   assert.ok(news.x < pop.x, 'news should sit left of pop on the electronic axis');
   assert.deepEqual(metal.vector, CLOUD_GENRE_VECTORS.metal);
-  assert.deepEqual(metal.point3d, {
-    x: (metal.vector.electronic - 50) / 50,
-    y: (metal.vector.energy - 50) / 50,
-    z: (metal.vector.mood - 50) / 50,
-  });
+  for (const key of ['x', 'y', 'z']) {
+    assert.equal(Number.isFinite(metal.point3d[key]), true, `point3d.${key} is not finite`);
+    assert.ok(Math.abs(metal.point3d[key]) <= 1.0001, `point3d.${key} is outside the unit cube`);
+  }
 });
 
 test('transposes reversed pairs without overlaps and includes every pair in bounds', () => {

@@ -15,6 +15,7 @@ import {
   normaliseCloudVector,
   projectCloudAxis,
   projectCloudPoint,
+  relaxCloudPoints,
 } from '../src/ui/cloud-geometry.js';
 import { CLOUD_DEFAULT_2D_AXES } from '../src/ui/cloud-genre-map.js';
 
@@ -91,6 +92,48 @@ test('projects the origin to center and rotates yaw and pitch in screen space', 
   const pitched = projectCloudPoint({ x: 0, y: 0, z: 1 }, { ...orbit, pitch: 0.5 }, viewport);
   assert.ok(yawed.x > 400);
   assert.ok(pitched.y > 300);
+});
+
+test('spreads clustered 3D points deterministically while staying bounded', () => {
+  const raw = [
+    { x: 0, y: 0, z: 0 },
+    { x: 0.02, y: 0, z: 0 },
+    { x: 0, y: 0.02, z: 0 },
+    { x: 0, y: 0, z: 0.02 },
+    { x: 0.8, y: 0.7, z: 0.6 },
+  ];
+  const first = relaxCloudPoints(raw);
+  const second = relaxCloudPoints(raw);
+  assert.deepEqual(first, second);
+  assert.equal(first.length, raw.length);
+  for (const point of first) {
+    for (const key of ['x', 'y', 'z']) {
+      assert.equal(Number.isFinite(point[key]), true);
+      assert.ok(Math.abs(point[key]) <= 1.0001, `${key} is outside the unit cube`);
+    }
+  }
+  const minimumDistance = (points) => Math.min(...points.flatMap((firstPoint, index) => (
+    points.slice(index + 1).map((secondPoint) => Math.hypot(
+      firstPoint.x - secondPoint.x,
+      firstPoint.y - secondPoint.y,
+      firstPoint.z - secondPoint.z,
+    ))
+  )));
+  assert.ok(minimumDistance(first) > minimumDistance(raw));
+  assert.ok(Math.hypot(first[4].x - raw[4].x, first[4].y - raw[4].y, first[4].z - raw[4].z) < 0.35);
+});
+
+test('projects the camera target to the viewport center', () => {
+  const target = { x: 0.4, y: -0.2, z: 0.3 };
+  const projected = projectCloudPoint(
+    target,
+    { yaw: 0.6, pitch: 0.2, distance: 1000 },
+    { width: 800, height: 600 },
+    target,
+  );
+  assert.ok(Math.abs(projected.x - 400) < 0.0001);
+  assert.ok(Math.abs(projected.y - 300) < 0.0001);
+  assert.equal(projected.visible, true);
 });
 
 test('uses depth for perspective and hides points at or behind the near plane', () => {

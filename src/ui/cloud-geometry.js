@@ -12,6 +12,9 @@ export const CLOUD_MAX_DISTANCE = 8000;
 export const CLOUD_MIN_PITCH = -1.35;
 export const CLOUD_MAX_PITCH = 1.35;
 export const CLOUD_AXIS_EXTENT = 300;
+export const CLOUD_RELAX_ITERATIONS = 180;
+export const CLOUD_RELAX_MIN_DISTANCE = 0.22;
+export const CLOUD_RELAX_ANCHOR = 0.035;
 
 export const DEFAULT_CLOUD_ORBIT = Object.freeze({
   yaw: -0.42,
@@ -126,16 +129,84 @@ export function clampCloudOrbit(orbit) {
   };
 }
 
-export function projectCloudPoint(point, orbit, viewport) {
+export function relaxCloudPoints(points) {
+  const source = (Array.isArray(points) ? points : []).map((point) => ({
+    x: clamp(finiteOr(point?.x, 0), -1, 1),
+    y: clamp(finiteOr(point?.y, 0), -1, 1),
+    z: clamp(finiteOr(point?.z, 0), -1, 1),
+  }));
+  const result = source.map((point) => ({ ...point }));
+  if (result.length < 2) return result;
+
+  for (let iteration = 0; iteration < CLOUD_RELAX_ITERATIONS; iteration += 1) {
+    for (let first = 0; first < result.length; first += 1) {
+      for (let second = first + 1; second < result.length; second += 1) {
+        const a = result[first];
+        const b = result[second];
+        let dx = b.x - a.x;
+        let dy = b.y - a.y;
+        let dz = b.z - a.z;
+        let distance = Math.hypot(dx, dy, dz);
+        if (distance < 0.0001) {
+          const seed = (first + 1) * 12.9898 + (second + 1) * 78.233;
+          dx = Math.sin(seed) || 0.001;
+          dy = Math.cos(seed * 1.37) || 0.001;
+          dz = Math.sin(seed * 0.73) || 0.001;
+          distance = Math.hypot(dx, dy, dz);
+        }
+        if (distance >= CLOUD_RELAX_MIN_DISTANCE) continue;
+        const push = (CLOUD_RELAX_MIN_DISTANCE - distance) * 0.5;
+        const nx = dx / distance;
+        const ny = dy / distance;
+        const nz = dz / distance;
+        a.x -= nx * push;
+        a.y -= ny * push;
+        a.z -= nz * push;
+        b.x += nx * push;
+        b.y += ny * push;
+        b.z += nz * push;
+      }
+    }
+    for (let index = 0; index < result.length; index += 1) {
+      const point = result[index];
+      point.x += (source[index].x - point.x) * CLOUD_RELAX_ANCHOR;
+      point.y += (source[index].y - point.y) * CLOUD_RELAX_ANCHOR;
+      point.z += (source[index].z - point.z) * CLOUD_RELAX_ANCHOR;
+      point.x = clamp(point.x, -1.08, 1.08);
+      point.y = clamp(point.y, -1.08, 1.08);
+      point.z = clamp(point.z, -1.08, 1.08);
+    }
+  }
+
+  const maxAbs = Math.max(
+    0.0001,
+    ...result.flatMap((point) => [Math.abs(point.x), Math.abs(point.y), Math.abs(point.z)]),
+  );
+  for (const point of result) {
+    point.x /= maxAbs;
+    point.y /= maxAbs;
+    point.z /= maxAbs;
+  }
+  return result;
+}
+
+function targetCoordinate(target, key) {
+  return clamp(finiteOr(target?.[key], 0), -4, 4);
+}
+
+export function projectCloudPoint(point, orbit, viewport, target = null) {
   const camera = clampCloudOrbit(orbit);
   const width = Math.max(0, finiteOr(viewport?.width, 1));
   const height = Math.max(0, finiteOr(viewport?.height, 1));
   const centerX = width / 2;
   const centerY = height / 2;
+  const targetX = targetCoordinate(target, 'x');
+  const targetY = targetCoordinate(target, 'y');
+  const targetZ = targetCoordinate(target, 'z');
 
-  const x = clamp(finiteOr(point?.x, 0), -4, 4) * CLOUD_SCENE_SCALE;
-  const y = clamp(finiteOr(point?.y, 0), -4, 4) * CLOUD_SCENE_SCALE;
-  const z = clamp(finiteOr(point?.z, 0), -4, 4) * CLOUD_SCENE_SCALE;
+  const x = clamp(finiteOr(point?.x, 0) - targetX, -4, 4) * CLOUD_SCENE_SCALE;
+  const y = clamp(finiteOr(point?.y, 0) - targetY, -4, 4) * CLOUD_SCENE_SCALE;
+  const z = clamp(finiteOr(point?.z, 0) - targetZ, -4, 4) * CLOUD_SCENE_SCALE;
 
   const cosYaw = Math.cos(camera.yaw);
   const sinYaw = Math.sin(camera.yaw);
@@ -160,7 +231,7 @@ export function projectCloudPoint(point, orbit, viewport) {
   };
 }
 
-export function projectCloudAxis(axis, orbit, viewport) {
+export function projectCloudAxis(axis, orbit, viewport, target = null) {
   const dimensions = {
     x: { point: { x: 1, y: 0, z: 0 }, labels: CLOUD_DIMENSIONS[CLOUD_3D_AXES.x].labels },
     y: { point: { x: 0, y: 1, z: 0 }, labels: CLOUD_DIMENSIONS[CLOUD_3D_AXES.y].labels },
@@ -176,7 +247,7 @@ export function projectCloudAxis(axis, orbit, viewport) {
         x: -direction.x * extent,
         y: -direction.y * extent,
         z: -direction.z * extent,
-      }, orbit, viewport),
+      }, orbit, viewport, target),
       label: chosen.labels[0],
     },
     end: {
@@ -184,7 +255,7 @@ export function projectCloudAxis(axis, orbit, viewport) {
         x: direction.x * extent,
         y: direction.y * extent,
         z: direction.z * extent,
-      }, orbit, viewport),
+      }, orbit, viewport, target),
       label: chosen.labels[1],
     },
   };
