@@ -2652,7 +2652,6 @@ html.is-standalone .stations-panel:not(.is-open) {
   height: 0;
   overflow: visible;
   transform-origin: 0 0;
-  will-change: transform;
 }
 
 .stations-cloud-links {
@@ -2680,6 +2679,67 @@ html.is-standalone .stations-panel:not(.is-open) {
 
 .stations-cloud-link.is-dimmed {
   opacity: 0.05;
+}
+
+.stations-cloud-3d-axes {
+  display: none;
+}
+
+.stations-cloud-stage.is-3d .stations-cloud-3d-axes {
+  display: block;
+}
+
+.stations-cloud-stage.is-3d.is-scene-transitioning .stations-cloud-3d-axes {
+  opacity: 0;
+}
+
+.stations-cloud-3d-axis-line {
+  stroke: var(--text-muted);
+  stroke-width: 1;
+  stroke-dasharray: 3 6;
+  opacity: 0.38;
+}
+
+.stations-cloud-3d-axis-label {
+  fill: var(--text-muted);
+  font-family: inherit;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.62;
+}
+
+.stations-cloud-stage.is-3d .stations-cloud-label {
+  display: none;
+}
+
+.stations-cloud-stage.is-3d .stations-cloud-axis-editor,
+.stations-cloud-stage.is-3d .stations-cloud-axis {
+  display: none;
+}
+
+.stations-cloud-stage.is-3d .stations-cloud-node {
+  opacity: var(--cloud-depth-opacity, 1);
+  transition: none;
+}
+
+.stations-cloud-stage.is-3d .stations-cloud-node.is-dimmed {
+  opacity: calc(var(--cloud-depth-opacity, 1) * 0.18);
+}
+
+.stations-cloud-stage.is-3d .stations-cloud-node.is-active {
+  opacity: var(--cloud-depth-opacity, 1);
+}
+
+.stations-cloud-stage.is-3d .stations-cloud-bubble {
+  animation: none;
+  transition: none;
+}
+
+.stations-cloud-stage.is-3d.is-scene-transitioning .stations-cloud-node,
+.stations-cloud-stage.is-3d.is-orbit-active .stations-cloud-node,
+.stations-cloud-stage.is-3d.is-scene-transitioning .stations-cloud-links {
+  will-change: transform;
 }
 
 .stations-cloud-node {
@@ -3064,6 +3124,30 @@ html.is-standalone .stations-panel:not(.is-open) {
   gap: 6px;
 }
 
+.stations-cloud-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  font: inherit;
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+.stations-cloud-mode-toggle[aria-pressed='true'] {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
 .stations-cloud-axis-editor {
   position: absolute;
   left: 12px;
@@ -3262,6 +3346,7 @@ html.is-standalone .stations-panel:not(.is-open) {
 }
 
 .stations-cloud-stage.is-ring-open .stations-cloud-axis-editor,
+.stations-cloud-stage.is-ring-open .stations-cloud-mode,
 .stations-cloud-stage.is-ring-open .stations-cloud-axis {
   opacity: 0;
   pointer-events: none;
@@ -3664,7 +3749,8 @@ html.is-standalone .stations-panel:not(.is-open) {
   .stations-cloud-axis-summary,
   .stations-cloud-axis-close,
   .stations-cloud-axis-option,
-  .stations-cloud-axis-swap {
+  .stations-cloud-axis-swap,
+  .stations-cloud-mode-toggle {
     min-width: 44px;
     min-height: 44px;
   }
