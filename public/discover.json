@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-23T13:17:23.030Z",
+  "generatedAt": "2026-10-23T13:44:01.403Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -7567,6 +7567,460 @@
             "countrycode": "CA"
           }
         ]
+      },
+      {
+        "slug": "sports",
+        "title": "Sports",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "4f7f32f3-5d60-43ed-99aa-ea3a563918f3",
+            "name": "98.7 Arizona Sports KMVP",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "67cf514b-0881-4338-8262-9a046c401a27",
+            "name": "Sports Radio KJR",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "426237d6-476b-424e-8ff1-1a630d838e31",
+            "name": "KIRO 710 ESPN Seattle",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "4f68f27a-e212-4acf-9113-2e4e1b4640ea",
+            "name": "Sports 1140 KHTK",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "67cfc9c9-77f3-4f50-9099-c9a82f8f4675",
+            "name": "KFAN FM Sports",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "8c137563-0b79-4dd0-b968-311885c70db4",
+            "name": "ESPN Chicago 1000",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "83cafc67-c6ac-47f3-b580-e51b568ebd6d",
+            "name": "Sports Radio 740",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "holiday",
+        "title": "Christmas / Holiday",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "171a0ff8-f186-11e8-a471-52543be04c81",
+            "name": "0N Christmas",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "0ff4271b-0a4b-11ea-a87e-52543be04c81",
+            "name": "1A Christmas",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "2d63a059-f188-11e8-a471-52543be04c81",
+            "name": "1A Weihnachten",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "fe6cadad-0b05-11ea-a87e-52543be04c81",
+            "name": "1000 Weihnachten",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "c43a1850-1176-4426-88d7-4d3f6984f18b",
+            "name": "Christmasradio24",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "6beb8be7-c4ec-40fb-99be-b27d03f43d24",
+            "name": "Heart Xmas",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "47c1604c-4607-41ae-85e9-cf84869bb487",
+            "name": "Christmas FM",
+            "countrycode": "IE"
+          },
+          {
+            "stationuuid": "bd561f63-26fa-4bd1-b986-aa5025d7870b",
+            "name": "Christmas Hits Radio NL",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "c0c02d01-f94e-11e8-a97a-52543be04c81",
+            "name": "SomaFM Christmas Lounge",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "lofi",
+        "title": "Lo-Fi / Chillhop",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "6d12806f-6273-4b53-9281-026e89c0df8a",
+            "name": "24/7 LoFi Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "49aedf08-6425-4491-a96c-f598e29aaf00",
+            "name": "CLIAMP Lofi Hip Hop Radio",
+            "countrycode": "NO"
+          },
+          {
+            "stationuuid": "58d3cce6-62b5-43f1-8f41-8d024998aabc",
+            "name": "FluxFM Chillhop",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "658d23e7-8a2e-4221-a8f0-cb4b7e406b8f",
+            "name": "Hotmix Lo-Fi",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "5008eff6-2ad8-4b72-8d08-ea92b316abbe",
+            "name": "Hunter.FM Lo-Fi",
+            "countrycode": "BR"
+          },
+          {
+            "stationuuid": "c963baa8-e165-418d-a2d0-7e28e5d6f841",
+            "name": "Hamnava Records - Lofi",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "a58da318-7924-400f-a076-a5081c462906",
+            "name": "Music Radio Lo-Fi",
+            "countrycode": "CH"
+          },
+          {
+            "stationuuid": "c1484aa5-b758-47a1-b098-69db58d6fb78",
+            "name": "I Love Music - I Love Chillhop",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "4e681355-3ebb-4b6c-a79a-d7cc81a0afd5",
+            "name": "REYFM #LOFI",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "e1fd7785-30cb-4923-8321-ad6b243441cb",
+            "name": "lalo-fi radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "932860fb-2e9c-419f-9d8d-13a902ec1d85",
+            "name": "LoFi Cafe Chilling",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "1a95ddb0-eb51-4ff1-8ad2-6f9b49a6463e",
+            "name": "dewoq Lo-Fi Radio",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "ab9697c4-f1cf-48bc-b4d8-4d15ad5618fa",
+            "name": "NIA Radio Lo-Fi",
+            "countrycode": "NC"
+          }
+        ]
+      },
+      {
+        "slug": "kids",
+        "title": "Kids / Family",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "ff871225-7731-45a1-aee0-9e8fa463dfc3",
+            "name": "Fun Kids",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "6ebbea93-0ba5-441b-8fbc-51c586d361e3",
+            "name": "Die Maus",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "3623e8a8-dcfd-4f01-b31d-84cf4f238850",
+            "name": "Arion Kids",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "b35393aa-5f8e-429f-8df2-f7e14cc23ef1",
+            "name": "Babyradio España",
+            "countrycode": "ES"
+          },
+          {
+            "stationuuid": "06f73256-9f0f-474d-84f7-00006f8db801",
+            "name": "Clasic Radio Kids",
+            "countrycode": "RO"
+          },
+          {
+            "stationuuid": "d92ecdb3-1b0d-4560-9140-a81073524844",
+            "name": "Deti.FM",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "346146e0-4908-43cc-b9f9-5abf9cdda8ac",
+            "name": "Hallo Kids Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "82ebafb0-e192-40c5-abea-02834259f01d",
+            "name": "RPR1. Kinderlieder",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "236f5c02-ac75-4f0f-b4f7-86dcad159765",
+            "name": "BANANRADION",
+            "countrycode": "SE"
+          },
+          {
+            "stationuuid": "3f73e918-41a0-4b54-9d98-2ed949a8353d",
+            "name": "KidsRadio 88.6",
+            "countrycode": "GR"
+          },
+          {
+            "stationuuid": "9612e256-0601-11e8-ae97-52543be04c81",
+            "name": "Efteling Kids Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "9df9d491-607a-49ad-9439-ed76a5abdd1d",
+            "name": "Csukás Meserádió",
+            "countrycode": "HU"
+          },
+          {
+            "stationuuid": "1b1f0fc3-8b03-461e-bd68-cb07987d58a1",
+            "name": "Naxi Kids Radio",
+            "countrycode": "RS"
+          },
+          {
+            "stationuuid": "9612e4b6-0601-11e8-ae97-52543be04c81",
+            "name": "Radio Teddy - Kinderlieder",
+            "countrycode": "DE"
+          }
+        ]
+      },
+      {
+        "slug": "comedy",
+        "title": "Comedy",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "a2c3cec0-1dfd-4feb-b96a-e6ee2979fc5c",
+            "name": "24/7 Comedy",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "45daead0-5c3f-44f4-8bb3-177596bcf8ab",
+            "name": "Britcom 4",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "c2958dcc-75ad-4ece-8781-6a465f4fb09f",
+            "name": "Comedy 104 - Radiostorm",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "6e3b295f-54be-4c3c-8300-798150ddd940",
+            "name": "FFN Comedy",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "a458786b-c1d2-42da-847e-2ad9c9feda41",
+            "name": "ComedyUK",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "4b6aebf2-0ced-4058-8e71-52c701359b93",
+            "name": "ROKit Comedy Gold",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "b2e362d0-b8e0-11e9-acb2-52543be04c81",
+            "name": "Comedy Club R@dio DIANA",
+            "countrycode": "CZ"
+          },
+          {
+            "stationuuid": "ec318e57-0210-4676-85ff-5f662a49b794",
+            "name": "Rádió Comedy",
+            "countrycode": "HU"
+          },
+          {
+            "stationuuid": "01d20fa7-91a9-4364-b4b9-19cbfbd7a58c",
+            "name": "Rire & Chansons Stand Up",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9638b168-0601-11e8-ae97-52543be04c81",
+            "name": "181.FM Comedy Club",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "a35f9fa2-18f6-11e9-a80b-52543be04c81",
+            "name": "Allzic Humour",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "c22be0f0-b8a4-4c0d-9f0f-2ab146e581dd",
+            "name": "Radio Humor FM",
+            "countrycode": "ES"
+          }
+        ]
+      },
+      {
+        "slug": "progressive-rock",
+        "title": "Progressive Rock",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "3afe9b05-2269-4188-bcfa-cc114c46f9c3",
+            "name": "ISKC Rock Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "830b7ee1-3f04-4f6b-a8ad-1139e8e782e6",
+            "name": "ISKC Rock Radio RPO (Recent Prog Only)",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "47346c3a-a0cf-4046-841c-c8c2f6c4fb9a",
+            "name": "Labgate Radio Progressive Rock",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "aa43f4c0-8081-4abd-b530-959fc8a6232e",
+            "name": "Prog Palace Radio's The Courtyard",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "689fe07b-efa8-4b6f-8994-eba7d2ea7c46",
+            "name": "ProgRadio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "844d5de5-52f9-4916-a894-b7f7637b6b19",
+            "name": "ProgRadio The Dragon's Tower",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "154457e2-f136-447b-96fa-d061f2536acf",
+            "name": "Progulus - Online Progressive Rock Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "0c853606-cf48-43db-8e5e-3b6db2e7e678",
+            "name": "Progzilla Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "49b8a950-2224-49d9-960b-1983bc6ac6d5",
+            "name": "Progressieve Rock",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "e37f8dba-96c9-42cf-831b-6966077ef50f",
+            "name": "Prog Rock and Metal",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "smooth-jazz",
+        "title": "Smooth Jazz",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "4cd97318-3a95-11e9-9b4e-52543be04c81",
+            "name": "- 0 N - Smooth Jazz on Radio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "b4ebd6de-a066-43c2-bd58-f88bf125b441",
+            "name": "CIWV-FM \"Wave 98.3\" Vancouver, BC",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "f98c7b97-e67c-4aea-b91c-b08ffcef8343",
+            "name": "Smooth Jazz Deluxe",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "31176d1c-d087-4f96-a775-455187497d41",
+            "name": "Ella Radio - Smooth Jazz",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "8dd6344d-f84c-4050-9f00-5d56e83fe37f",
+            "name": "101 Smooth Jazz",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "9c62a188-6155-486c-adb9-6b1744b32cc0",
+            "name": "Soft Jazz (ACIR)",
+            "countrycode": "MX"
+          }
+        ]
+      },
+      {
+        "slug": "french-chanson",
+        "title": "French Chanson",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "24e2291a-e782-4d49-a351-7135cc151a70",
+            "name": "Chansons oubliées ou presque",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "0b75d36d-decf-4fbb-8ee9-a7324de6b532",
+            "name": "Chante France",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "50420f6a-fe77-40c5-a065-b12c5c7d5299",
+            "name": "FIP Sacré Français !",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "3526f94b-d456-4370-96a1-8bdfc6f27090",
+            "name": "ICI 100% Chanson Française",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "12dde7af-bf57-4d89-854a-f77f57df5a0e",
+            "name": "Clapas Chanson",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "7c2bdd5a-81e4-49ec-9128-dd7d3a6e2db2",
+            "name": "Maxi France radio",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "fbc0a114-29e9-4150-b4ca-8353db085245",
+            "name": "Nostalgie Chansons Françaises",
+            "countrycode": "FR"
+          }
+        ]
       }
     ]
   },
@@ -7867,7 +8321,7 @@
       {
         "genre": "rock",
         "label": "Rock",
-        "count": 3157
+        "count": 3167
       },
       {
         "genre": "hits",
@@ -7962,7 +8416,7 @@
       {
         "genre": "sports",
         "label": "Sports",
-        "count": 674
+        "count": 675
       },
       {
         "genre": "rnb",
@@ -8087,7 +8541,7 @@
       {
         "genre": "kids",
         "label": "Kids",
-        "count": 161
+        "count": 163
       },
       {
         "genre": "dubstep",
@@ -8107,12 +8561,12 @@
       {
         "genre": "holiday",
         "label": "Holiday",
-        "count": 118
+        "count": 120
       },
       {
         "genre": "comedy",
         "label": "Comedy",
-        "count": 109
+        "count": 110
       },
       {
         "genre": "afrobeat",
@@ -8132,7 +8586,7 @@
       {
         "genre": "lofi",
         "label": "Lo-Fi & Study",
-        "count": 83
+        "count": 88
       },
       {
         "genre": "kpop",
@@ -8152,7 +8606,7 @@
       {
         "genre": "french-chanson",
         "label": "French Chanson",
-        "count": 34
+        "count": 41
       }
     ]
   }
