@@ -4,6 +4,16 @@
 
 export const CLOUD_MAP_SCALE = 26;
 
+export const CLOUD_DIMENSIONS = {
+  electronic: { key: 'electronic', label: 'Electronic character', labels: ['Acoustic', 'Electronic'] },
+  energy: { key: 'energy', label: 'Energy', labels: ['Calm', 'Intense'] },
+  era: { key: 'era', label: 'Era', labels: ['Roots', 'Modern'] },
+  mood: { key: 'mood', label: 'Mood', labels: ['Dark', 'Bright'] },
+};
+
+export const CLOUD_DEFAULT_2D_AXES = { x: 'electronic', y: 'energy' };
+export const CLOUD_3D_AXES = { x: 'electronic', y: 'energy', z: 'mood' };
+
 export const CLOUD_AXIS_PRESETS = {
   vibe: {
     key: 'vibe',
@@ -31,7 +41,7 @@ export const CLOUD_AXIS_PRESETS = {
   },
 };
 
-export const CLOUD_GENRE_VECTORS = {
+const CLOUD_GENRE_BASE_VECTORS = {
   news: { family: 'spoken', energy: 30, electronic: 44, era: 20 },
   jazz: { family: 'jazz', energy: 46, electronic: 18, era: 10 },
   dubby: { family: 'reggae', energy: 52, electronic: 30, era: 35 },
@@ -124,6 +134,107 @@ export const CLOUD_GENRE_VECTORS = {
   rockabilly: { family: 'rock', energy: 66, electronic: 12, era: 22 },
   'surf-rock': { family: 'rock', energy: 58, electronic: 16, era: 18 },
 };
+
+const CLOUD_GENRE_MOODS = {
+  news: 45,
+  jazz: 60,
+  dubby: 45,
+  'country-roots': 65,
+  ambient: 55,
+  noise: 15,
+  obscure: 35,
+  'late-night': 30,
+  'bass-rave': 45,
+  dubstep: 30,
+  classical: 55,
+  'soul-funk': 75,
+  punk: 35,
+  hiphop: 45,
+  chill: 75,
+  pop: 75,
+  electro: 65,
+  dance: 80,
+  eurodance: 90,
+  'trance-psy': 75,
+  dubtechno: 30,
+  'drum-and-bass': 45,
+  jungle: 40,
+  minimal: 50,
+  techno: 40,
+  hardcore: 25,
+  'tech-house': 65,
+  house: 75,
+  metal: 20,
+  'classic-rock': 55,
+  'uk-garage': 55,
+  grime: 30,
+  'black-metal-doom': 5,
+  'boom-bap': 45,
+  'trap-drill': 20,
+  soul: 70,
+  blues: 35,
+  '80s-hard-rock': 45,
+  'indie-alternative': 55,
+  'folk-americana': 70,
+  'oldies-decades': 70,
+  rnb: 65,
+  latin: 80,
+  'psychedelic-rock': 60,
+  funk: 85,
+  ndw: 50,
+  'gothic-industrial': 15,
+  disco: 90,
+  'italo-disco': 85,
+  'soundtracks-game': 55,
+  brazilian: 80,
+  'deutsche-schlager': 80,
+  'deutsche-news': 45,
+  'deep-house': 70,
+  reggaeton: 75,
+  'trip-hop': 30,
+  'dancehall-ska': 75,
+  '70s': 70,
+  '80s': 70,
+  jpop: 80,
+  '2000s': 70,
+  '2010s': 75,
+  '90s': 70,
+  desi: 75,
+  'afrobeats-amapiano': 85,
+  gospel: 85,
+  'regional-mexican': 75,
+  balkan: 75,
+  arabic: 65,
+  kpop: 90,
+  salsa: 90,
+  cumbia: 85,
+  dangdut: 80,
+  shoegaze: 35,
+  chiptune: 75,
+  phonk: 20,
+  emo: 25,
+  synthwave: 60,
+  hardstyle: 60,
+  blasmusik: 75,
+  polka: 80,
+  medieval: 60,
+  anime: 85,
+  opera: 50,
+  musical: 75,
+  darkwave: 15,
+  celtic: 70,
+  tango: 55,
+  flamenco: 70,
+  rockabilly: 75,
+  'surf-rock': 80,
+};
+
+export const CLOUD_GENRE_VECTORS = Object.fromEntries(
+  Object.entries(CLOUD_GENRE_BASE_VECTORS).map(([slug, vector]) => [
+    slug,
+    { ...vector, mood: CLOUD_GENRE_MOODS[slug] },
+  ]),
+);
 
 export const CLOUD_GENRE_EDGES = [
   ['black-metal-doom', 'metal'],
@@ -339,9 +450,9 @@ function clamp(value, minimum, maximum) {
   return Math.min(maximum, Math.max(minimum, value));
 }
 
-export function projectVector(vector, preset = CLOUD_AXIS_PRESETS.vibe) {
-  const rawX = Number(vector?.[preset.x]);
-  const rawY = Number(vector?.[preset.y]);
+export function projectVector(vector, axes = CLOUD_DEFAULT_2D_AXES) {
+  const rawX = Number(vector?.[axes.x]);
+  const rawY = Number(vector?.[axes.y]);
   const x = clamp(Number.isFinite(rawX) ? rawX : 50, 0, 100);
   const y = clamp(Number.isFinite(rawY) ? rawY : 50, 0, 100);
   return {

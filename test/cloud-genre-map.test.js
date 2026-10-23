@@ -2,7 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
-  CLOUD_AXIS_PRESETS,
+  CLOUD_3D_AXES,
+  CLOUD_DEFAULT_2D_AXES,
+  CLOUD_DIMENSIONS,
   CLOUD_GENRE_EDGES,
   CLOUD_GENRE_VECTORS,
   CLOUD_MAP_SCALE,
@@ -25,38 +27,31 @@ test('covers every collection currently published in discover.json', () => {
   assert.deepEqual(missing, []);
 });
 
-test('every vector has bounded axes and a family', () => {
+test('every vector has four bounded dimensions and a family', () => {
   for (const [slug, vector] of Object.entries(CLOUD_GENRE_VECTORS)) {
     assert.ok(vector.family, `${slug} has no family`);
-    for (const axis of ['energy', 'electronic', 'era']) {
+    for (const axis of ['energy', 'electronic', 'era', 'mood']) {
       assert.equal(typeof vector[axis], 'number', `${slug}.${axis} is not a number`);
+      assert.equal(Number.isFinite(vector[axis]), true, `${slug}.${axis} is not finite`);
       assert.ok(vector[axis] >= 0 && vector[axis] <= 100, `${slug}.${axis} is out of bounds`);
     }
   }
 });
 
-test('provides three switchable axis presets with labels', () => {
-  assert.deepEqual(Object.keys(CLOUD_AXIS_PRESETS).sort(), ['era', 'texture', 'vibe']);
-  for (const preset of Object.values(CLOUD_AXIS_PRESETS)) {
-    assert.ok(['energy', 'electronic', 'era'].includes(preset.x), `${preset.key} has no valid x axis`);
-    assert.ok(['energy', 'electronic', 'era'].includes(preset.y), `${preset.key} has no valid y axis`);
-    assert.equal(preset.xLabels.length, 2);
-    assert.equal(preset.yLabels.length, 2);
+test('describes four independently selectable dimensions', () => {
+  assert.deepEqual(Object.keys(CLOUD_DIMENSIONS).sort(), ['electronic', 'energy', 'era', 'mood']);
+  for (const dimension of Object.values(CLOUD_DIMENSIONS)) {
+    assert.equal(dimension.labels.length, 2);
+    assert.ok(dimension.labels.every(Boolean));
   }
+  assert.deepEqual(CLOUD_DEFAULT_2D_AXES, { x: 'electronic', y: 'energy' });
+  assert.deepEqual(CLOUD_3D_AXES, { x: 'electronic', y: 'energy', z: 'mood' });
 });
 
-test('projects a vector onto each preset', () => {
-  const vector = { energy: 80, electronic: 20, era: 60 };
-  assert.deepEqual(projectVector(vector, CLOUD_AXIS_PRESETS.vibe), {
-    x: (20 - 50) * CLOUD_MAP_SCALE,
-    y: (50 - 80) * CLOUD_MAP_SCALE,
-  });
-  assert.deepEqual(projectVector(vector, CLOUD_AXIS_PRESETS.era), {
-    x: (60 - 50) * CLOUD_MAP_SCALE,
-    y: (50 - 80) * CLOUD_MAP_SCALE,
-  });
-  assert.deepEqual(projectVector(vector, CLOUD_AXIS_PRESETS.texture), {
-    x: (20 - 50) * CLOUD_MAP_SCALE,
+test('projects a vector onto any ordered dimension pair', () => {
+  const vector = { energy: 80, electronic: 20, era: 60, mood: 35 };
+  assert.deepEqual(projectVector(vector, { x: 'mood', y: 'era' }), {
+    x: (35 - 50) * CLOUD_MAP_SCALE,
     y: (50 - 60) * CLOUD_MAP_SCALE,
   });
 });
