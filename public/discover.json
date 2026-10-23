@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-23T17:47:58.377Z",
+  "generatedAt": "2026-10-23T17:48:03.676Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -8474,6 +8474,11 @@
             "countrycode": "ES"
           },
           {
+            "stationuuid": "78d86ac2-b623-4728-9671-57ba5fcd82cd",
+            "name": "Laut.fm Metalcore",
+            "countrycode": "DE"
+          },
+          {
             "stationuuid": "cf626443-8fb2-4095-a793-a68f1c91f87a",
             "name": "Laut.fm Hardcore",
             "countrycode": "DE"
@@ -8486,11 +8491,6 @@
           {
             "stationuuid": "9626c92b-0601-11e8-ae97-52543be04c81",
             "name": "Beatdownx",
-            "countrycode": "DE"
-          },
-          {
-            "stationuuid": "78d86ac2-b623-4728-9671-57ba5fcd82cd",
-            "name": "Laut.fm Metalcore",
             "countrycode": "DE"
           },
           {
