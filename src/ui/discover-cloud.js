@@ -234,7 +234,7 @@ export function buildCloudModel(lists = []) {
   return { nodes, edges, bounds, nodeBySlug, stationByUuid };
 }
 
-export function ringLayout(count, { radius = 170, gap = 58, startAngle = -Math.PI / 2 } = {}) {
+export function ringLayout(count, { radius = 190, gap = 78, startAngle = -Math.PI / 2 } = {}) {
   const total = Math.max(0, Math.floor(Number(count) || 0));
   if (!total) return [];
   const ringCount = total <= 18 ? 1 : total <= 36 ? 2 : 3;
@@ -761,7 +761,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     fullscreenButton.setAttribute('aria-label', active ? 'Exit fullscreen' : 'Enter fullscreen');
     fullscreenButton.title = active ? 'Exit fullscreen' : 'Enter fullscreen';
     fullscreenButton.innerHTML = active
-      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h5V3"/><path d="M16 3v5h5"/><path d="M3 16v5h5"/><path d="M21 16h-5v5"/></svg>'
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h5V3"/><path d="M16 3v5h5"/><path d="M3 16h5v5"/><path d="M21 16h-5v5"/></svg>'
       : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H3v5"/><path d="M16 3h5v5"/><path d="M8 21H3v-5"/><path d="M21 16v5h-5"/></svg>';
   }
 
@@ -1399,12 +1399,12 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       button.tabIndex = -1;
     }
 
-    const points = ringLayout(node.count, { radius: 170, gap: 58 });
+    const points = ringLayout(node.count, { radius: 190, gap: 78 });
     const maxRing = points.length ? Math.max(...points.map((point) => point.ring)) : 0;
-    const maxRadius = 170 + maxRing * 58;
+    const maxRadius = 190 + maxRing * 78;
     const width = Math.max(1, stage.clientWidth || host.clientWidth || 1);
     const height = Math.max(1, stage.clientHeight || host.clientHeight || 1);
-    const size = width < 520 ? 44 : 52;
+    const size = width < 520 ? 40 : 46;
     const ringScale = clampScale(Math.min(width, height) / 2 / (maxRadius + 40));
 
     const element = document.createElement('div');
@@ -1610,8 +1610,8 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     fitScale = fit.scale;
     if (ring) {
       const maxRing = ring.points.length ? Math.max(...ring.points.map((point) => point.ring)) : 0;
-      const maxRadius = 170 + maxRing * 58;
-      const size = width < 520 ? 44 : 52;
+      const maxRadius = 190 + maxRing * 78;
+      const size = width < 520 ? 40 : 46;
       const ringScale = clampScale(Math.min(width, height) / 2 / (maxRadius + 40));
       ring.ringScale = ringScale;
       ring.size = size;

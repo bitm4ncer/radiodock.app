@@ -110,12 +110,26 @@
 }
 
 .station-info__collection {
+  font: inherit;
   font-size: 11px;
+  line-height: 1.2;
   color: var(--text);
   background: var(--overlay-soft);
   border: 1px solid var(--border);
   padding: 3px 8px;
   border-radius: 999px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.station-info__collection:hover {
+  background: var(--overlay-med);
+  border-color: var(--overlay-hard);
+}
+
+.station-info__collection:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
 }
 
 .station-info__tag {

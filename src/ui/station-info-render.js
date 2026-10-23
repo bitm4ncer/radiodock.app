@@ -42,7 +42,7 @@ export function renderStationInfo(station, { full = null, wiki = null, wikiLoadi
     ? `<section class="station-info__section">
          <h4>Collections</h4>
          <div class="station-info__collections">
-           ${collectionItems.map((item) => `<span class="station-info__collection">${escapeHtml(item.title)}</span>`).join('')}
+           ${collectionItems.map((item) => `<button type="button" class="station-info__collection" data-action="open-collection" data-slug="${escapeHtml(item.slug)}">${escapeHtml(item.title)}</button>`).join('')}
          </div>
        </section>`
     : '';

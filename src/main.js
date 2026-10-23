@@ -240,7 +240,14 @@ mountSleepTimer({
 // Publishes --app-page-top / --app-page-bottom so About / Notes / Sync / Log open
 // between the top bar and the player instead of covering them.
 mountAppPageBounds();
-const stationInfo = mountStationInfo();
+let stationsPanel = null;
+let stationInfo = null;
+stationInfo = mountStationInfo({
+  onOpenCollection: (slug) => {
+    stationInfo?.close();
+    stationsPanel?.openCollection(slug);
+  },
+});
 
 // Tiny-player ↔ station-info coordination (Electron):
 // - Switching to the tiny pill auto-closes an open info panel (it isn't a
@@ -507,6 +514,7 @@ const stations = mountStationsPanel({
     toast,
   },
 });
+stationsPanel = stations;
 
 document.getElementById('stationsTriggerBtn')?.addEventListener('click', () => stations.open());
 document.getElementById('stationsOpenBtn')?.addEventListener('click', () => stations.open());

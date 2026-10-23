@@ -1918,10 +1918,18 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
   });
   panel.addEventListener('keydown', onKeydown);
 
+  async function openCollectionFromInfo(slug) {
+    if (!slug) return;
+    if (!isOpen) open();
+    await ensureDiscover();
+    openCollection(slug, { backAction: 'back-discover' });
+  }
+
   return {
     open,
     close,
     isOpen: () => isOpen,
+    openCollection: openCollectionFromInfo,
     openMoveMenuFor(anchor, station, onSettled) {
       return openMoveMenu(anchor, station, onSettled);
     },

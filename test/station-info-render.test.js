@@ -36,7 +36,7 @@ test('info body renders collection memberships and escapes their titles', () => 
     ],
   });
   assert.match(html, /<h4>Collections<\/h4>/);
-  assert.match(html, /station-info__collection">Jazz</);
+  assert.match(html, /class="station-info__collection"[^>]*data-action="open-collection"[^>]*data-slug="jazz"[^>]*>Jazz</);
   assert.match(html, /&lt;b&gt;Late Night&lt;\/b&gt;/);
   assert.ok(!html.includes('<b>Late Night</b>'));
 });

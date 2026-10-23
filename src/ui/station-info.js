@@ -47,8 +47,14 @@ function collectionsForStation(data, station) {
 
 // Shared click handling for the info body (bottom sheet and inline row
 // section): copy the stream URL, or open the community edit form.
-export function wireStationInfoActions(root, { getStation = () => null, getFull = () => null } = {}) {
+export function wireStationInfoActions(root, { getStation = () => null, getFull = () => null, onOpenCollection = null } = {}) {
   root.addEventListener('click', async (evt) => {
+    const collectionButton = evt.target.closest('[data-action="open-collection"]');
+    if (collectionButton) {
+      const slug = collectionButton.dataset.slug;
+      if (slug) onOpenCollection?.(slug);
+      return;
+    }
     if (evt.target.closest('[data-action="edit"]')) {
       openStationEdit(getStation(), getFull());
       return;
@@ -65,7 +71,7 @@ export function wireStationInfoActions(root, { getStation = () => null, getFull 
   });
 }
 
-export function mountStationInfo() {
+export function mountStationInfo({ onOpenCollection = null } = {}) {
   // Structural mode follows the layout regime (matches pagesAreExclusive in
   // main.js): narrow viewport, installed PWA, or Electron → the slide-up sheet;
   // a regular desktop browser → the floating draggable panel.
@@ -126,6 +132,7 @@ export function mountStationInfo() {
   wireStationInfoActions(bodyEl, {
     getStation: () => currentStation,
     getFull: () => currentFull,
+    onOpenCollection,
   });
 
   panel.querySelector('[data-action="close"]').addEventListener('click', () => close());
