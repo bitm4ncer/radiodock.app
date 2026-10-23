@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-23T13:54:41.395Z",
+  "generatedAt": "2026-10-23T14:51:11.926Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -8130,8 +8130,8 @@
         "featured": false,
         "stations": [
           {
-            "stationuuid": "6db7d374-1be7-42b4-9214-17f44a40ece9",
-            "name": "Bachata FM",
+            "stationuuid": "c5e33185-b622-47ec-9e51-8836c7241123",
+            "name": "Bachata Hits",
             "countrycode": "DO"
           },
           {
@@ -8155,8 +8155,8 @@
             "countrycode": "EC"
           },
           {
-            "stationuuid": "c5e33185-b622-47ec-9e51-8836c7241123",
-            "name": "Bachata Hits",
+            "stationuuid": "6db7d374-1be7-42b4-9214-17f44a40ece9",
+            "name": "Bachata FM",
             "countrycode": "DO"
           }
         ]
@@ -8450,17 +8450,17 @@
       {
         "genre": "pop",
         "label": "Pop",
-        "count": 5466
+        "count": 5468
       },
       {
         "genre": "news",
         "label": "News",
-        "count": 3915
+        "count": 3916
       },
       {
         "genre": "rock",
         "label": "Rock",
-        "count": 3167
+        "count": 3168
       },
       {
         "genre": "hits",
@@ -8485,7 +8485,7 @@
       {
         "genre": "christian",
         "label": "Christian & Gospel",
-        "count": 1372
+        "count": 1374
       },
       {
         "genre": "community",
@@ -8495,17 +8495,17 @@
       {
         "genre": "synthpop",
         "label": "80s & New Wave",
-        "count": 1266
+        "count": 1267
       },
       {
         "genre": "classical",
         "label": "Classical",
-        "count": 1218
+        "count": 1223
       },
       {
         "genre": "jazz",
         "label": "Jazz",
-        "count": 1183
+        "count": 1185
       },
       {
         "genre": "electronic",
@@ -8525,7 +8525,7 @@
       {
         "genre": "nineties",
         "label": "90s",
-        "count": 875
+        "count": 876
       },
       {
         "genre": "folk",
@@ -8545,17 +8545,17 @@
       {
         "genre": "hiphop",
         "label": "Hip-Hop",
-        "count": 798
+        "count": 799
       },
       {
         "genre": "country",
         "label": "Country",
-        "count": 781
+        "count": 782
       },
       {
         "genre": "sports",
         "label": "Sports",
-        "count": 675
+        "count": 676
       },
       {
         "genre": "rnb",
