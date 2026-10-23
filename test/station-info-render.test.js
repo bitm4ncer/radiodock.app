@@ -28,6 +28,24 @@ test('info body renders location, links, stream facts, tags and the edit CTA', (
   assert.match(html, /Suggest an edit/);
 });
 
+test('info body renders collection memberships and escapes their titles', () => {
+  const html = renderStationInfo(base, {
+    collections: [
+      { slug: 'jazz', title: 'Jazz' },
+      { slug: 'late-night', title: '<b>Late Night</b>' },
+    ],
+  });
+  assert.match(html, /<h4>Collections<\/h4>/);
+  assert.match(html, /station-info__collection">Jazz</);
+  assert.match(html, /&lt;b&gt;Late Night&lt;\/b&gt;/);
+  assert.ok(!html.includes('<b>Late Night</b>'));
+});
+
+test('info body omits the collections section without memberships', () => {
+  const html = renderStationInfo(base, { collections: [] });
+  assert.doesNotMatch(html, /<h4>Collections<\/h4>/);
+});
+
 test('info body escapes untrusted station text', () => {
   const html = renderStationInfo({
     ...base,

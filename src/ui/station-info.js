@@ -12,6 +12,7 @@
 // `info` always wins over the Wikipedia fallback.
 
 import { fetchStationInfo } from '../data/wikipedia.js';
+import { loadDiscover } from '../data/discover.js';
 import { getStationByUuid, getStationInfo } from '../data/stations-source.js';
 import { renderStationInfo, ICON_CHECK } from './station-info-render.js';
 import { openStationEdit } from './station-edit.js';
@@ -24,6 +25,24 @@ import { registerSnapSurface, snapPanel, cancelSnap } from './panel-snap.js';
 const ICON_DRAG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
 const ICON_CLOSE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 const ICON_ARROW_DOWN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+
+function collectionsForStation(data, station) {
+  const id = String(station?.id ?? '').trim();
+  if (!id) return [];
+  const lists = Array.isArray(data?.curated?.lists) ? data.curated.lists : [];
+  const seen = new Set();
+  const result = [];
+  for (const list of lists) {
+    const slug = String(list?.slug ?? '').trim();
+    const title = String(list?.title ?? '').trim();
+    if (!slug || !title || seen.has(slug) || !Array.isArray(list.stations)) continue;
+    if (list.stations.some((entry) => String(entry?.stationuuid ?? '') === id)) {
+      seen.add(slug);
+      result.push({ slug, title });
+    }
+  }
+  return result;
+}
 
 
 // Shared click handling for the info body (bottom sheet and inline row
@@ -87,6 +106,21 @@ export function mountStationInfo() {
   // Latest station + consolidated payload, so the edit form opens pre-filled.
   let currentStation = null;
   let currentFull = null;
+  let currentWiki = null;
+  let currentCollections = [];
+  let fullLoading = true;
+  let wikiLoading = true;
+
+  function paint() {
+    if (!currentStation) return;
+    bodyEl.innerHTML = renderStationInfo(currentStation, {
+      full: currentFull,
+      wiki: currentWiki,
+      wikiLoading,
+      fullLoading,
+      collections: currentCollections,
+    });
+  }
 
   // Delegated action clicks inside the body.
   wireStationInfoActions(bodyEl, {
@@ -103,8 +137,12 @@ export function mountStationInfo() {
     const token = ++openToken;
     currentStation = station;
     currentFull = null;
+    currentWiki = null;
+    currentCollections = [];
+    fullLoading = true;
+    wikiLoading = true;
     if (titleEl) titleEl.textContent = station.name ?? 'Station';
-    bodyEl.innerHTML = renderStationInfo(station, { full: null, wiki: null, wikiLoading: true, fullLoading: true });
+    paint();
     if (!isOpen) showPanel();
 
     const isCustom = String(station.id ?? '').startsWith('custom-');
@@ -114,17 +152,28 @@ export function mountStationInfo() {
           .then((info) => info ?? getStationByUuid(station.id).catch(() => null))
           .catch(() => getStationByUuid(station.id).catch(() => null));
     const wikiPromise = fetchStationInfo(station.name).catch(() => null);
+    const collectionsPromise = loadDiscover({})
+      .then((data) => collectionsForStation(data, station))
+      .catch(() => []);
 
     fullPromise.then((full) => {
       if (token !== openToken) return;
       currentFull = full ?? currentFull;
-      bodyEl.innerHTML = renderStationInfo(station, { full, wiki: null, wikiLoading: true, fullLoading: false });
+      fullLoading = false;
+      paint();
     });
 
-    Promise.all([fullPromise, wikiPromise]).then(([full, wiki]) => {
+    wikiPromise.then((wiki) => {
       if (token !== openToken) return;
-      currentFull = full ?? currentFull;
-      bodyEl.innerHTML = renderStationInfo(station, { full, wiki, wikiLoading: false, fullLoading: false });
+      currentWiki = wiki ?? null;
+      wikiLoading = false;
+      paint();
+    });
+
+    collectionsPromise.then((collections) => {
+      if (token !== openToken) return;
+      currentCollections = collections;
+      paint();
     });
   }
 

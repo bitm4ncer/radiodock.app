@@ -32,9 +32,20 @@ function streamKind(url) {
   return 'ICY / HTTP';
 }
 
-export function renderStationInfo(station, { full = null, wiki = null, wikiLoading = false, fullLoading = false } = {}) {
+export function renderStationInfo(station, { full = null, wiki = null, wikiLoading = false, fullLoading = false, collections = [] } = {}) {
   const data = { ...station, ...(full ?? {}) };
   const tags = Array.isArray(data.tags) ? data.tags.filter(Boolean).slice(0, 8) : [];
+  const collectionItems = Array.isArray(collections)
+    ? collections.filter((item) => item && String(item.title ?? '').trim())
+    : [];
+  const collectionsHtml = collectionItems.length
+    ? `<section class="station-info__section">
+         <h4>Collections</h4>
+         <div class="station-info__collections">
+           ${collectionItems.map((item) => `<span class="station-info__collection">${escapeHtml(item.title)}</span>`).join('')}
+         </div>
+       </section>`
+    : '';
 
   const tagsHtml = tags.length
     ? `<div class="station-info__tags">${tags.map((t) => `<span class="station-info__tag">${escapeHtml(t)}</span>`).join('')}</div>`
@@ -129,6 +140,7 @@ export function renderStationInfo(station, { full = null, wiki = null, wikiLoadi
     ${shotHtml}
     ${aboutBlock}
     ${streamHtml}
+    ${collectionsHtml}
     ${tagsHtml}
     ${editHtml}
   `;

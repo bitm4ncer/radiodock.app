@@ -103,6 +103,21 @@
   gap: 4px;
 }
 
+.station-info__collections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.station-info__collection {
+  font-size: 11px;
+  color: var(--text);
+  background: var(--overlay-soft);
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
 .station-info__tag {
   font-size: 11px;
   color: var(--text-muted);

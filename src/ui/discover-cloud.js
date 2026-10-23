@@ -9,6 +9,7 @@ import {
 import { collectionNoteFor } from './collection-notes.js';
 
 const PADDING = 180;
+const LAYOUT_SPREAD = 3;
 const CLEARANCE = 56;
 const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
 const RELAX_ITERATIONS = 380;
@@ -19,7 +20,6 @@ const RADIUS_MIN = 80;
 const RADIUS_MAX = 190;
 const RADIUS_COUNT_MIN = 5;
 const RADIUS_COUNT_MAX = 55;
-const BASE_ZOOM = 3.2;
 
 function clamp(value, minimum, maximum) {
   return Math.min(maximum, Math.max(minimum, value));
@@ -164,6 +164,13 @@ export function buildCloudModel(lists = []) {
     nodes.forEach((node, index) => {
       node.layouts[preset.key] = points[index];
     });
+  }
+
+  for (const node of nodes) {
+    for (const layout of Object.values(node.layouts)) {
+      layout.x *= LAYOUT_SPREAD;
+      layout.y *= LAYOUT_SPREAD;
+    }
   }
 
   const initial = CLOUD_AXIS_PRESETS.vibe;
@@ -370,6 +377,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   let playerDock = null;
   let playerOrigin = null;
   let fullscreenButton = null;
+  let fullscreenWasStandalone = null;
   const pointers = new Map();
 
   host.classList.add('stations-cloud');
@@ -632,8 +640,8 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   zoomReset.type = 'button';
   zoomReset.dataset.cloudZoom = 'reset';
   zoomReset.textContent = '↺';
-  zoomReset.setAttribute('aria-label', 'Auto view');
-  zoomReset.title = 'Auto view';
+  zoomReset.setAttribute('aria-label', 'Fit all collections');
+  zoomReset.title = 'Fit all collections';
   zoomIn.addEventListener('click', (evt) => {
     evt.stopPropagation();
     const rect = stage.getBoundingClientRect();
@@ -758,6 +766,11 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   }
 
   function onFullscreenChange() {
+    const active = document.fullscreenElement === host;
+    if (!active && fullscreenWasStandalone === false) {
+      document.documentElement.classList.remove('is-standalone');
+    }
+    if (!active) fullscreenWasStandalone = null;
     syncFullscreenState();
   }
 
@@ -767,7 +780,10 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       return;
     }
     if (!host.requestFullscreen) return;
-    host.requestFullscreen()?.catch?.(() => {});
+    fullscreenWasStandalone = document.documentElement.classList.contains('is-standalone');
+    host.requestFullscreen()?.catch?.(() => {
+      fullscreenWasStandalone = null;
+    });
   }
 
   document.addEventListener('fullscreenchange', onFullscreenChange);
@@ -782,14 +798,6 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       tx: width / 2 - (model.bounds.minX + model.bounds.width / 2) * scale,
       ty: height / 2 - (model.bounds.minY + model.bounds.height / 2) * scale,
     };
-  }
-
-  function spreadZoom() {
-    const nodes = Math.max(1, model.nodes.length);
-    const stations = Math.max(1, model.nodes.reduce((sum, node) => sum + node.count, 0));
-    const nodeScale = Math.max(1, Math.sqrt(nodes / 35));
-    const stationScale = Math.max(1, Math.sqrt(stations / 700));
-    return Math.min(5.5, BASE_ZOOM * nodeScale * stationScale);
   }
 
   function clampScale(value) {
@@ -922,21 +930,10 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     });
   }
 
-  function fitCamera({ spread = false } = {}) {
+  function fitCamera() {
     const target = fitTarget();
     fitScale = target.scale;
-    if (spread && model.nodes.length) {
-      const width = Math.max(1, stage.clientWidth || host.clientWidth || 1);
-      const height = Math.max(1, stage.clientHeight || host.clientHeight || 1);
-      const scale = clampScale(fitScale * spreadZoom());
-      camera = {
-        scale,
-        tx: width / 2 - (model.bounds.minX + model.bounds.width / 2) * scale,
-        ty: height / 2 - (model.bounds.minY + model.bounds.height / 2) * scale,
-      };
-    } else {
-      camera = { ...target };
-    }
+    camera = { ...target };
     applyCamera();
     scheduleLabelLayout();
   }
@@ -1506,7 +1503,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     clearRing();
     overviewCamera = null;
     hideResults();
-    fitCamera({ spread: true });
+    fitCamera();
   }
 
   function search(query) {
@@ -1630,7 +1627,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
       applyCamera();
       return;
     }
-    fitCamera({ spread: true });
+    fitCamera();
   }
 
   function destroy() {
@@ -1656,7 +1653,11 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
     document.removeEventListener('keydown', onDocumentKeydown, true);
     document.removeEventListener('fullscreenchange', onFullscreenChange);
     restorePlayerFromDock();
-    if (document.fullscreenElement === host) document.exitFullscreen?.()?.catch?.(() => {});
+    if (document.fullscreenElement === host) {
+      if (fullscreenWasStandalone === false) document.documentElement.classList.remove('is-standalone');
+      document.exitFullscreen?.()?.catch?.(() => {});
+    }
+    fullscreenWasStandalone = null;
     resizeObserver?.disconnect();
     resizeObserver = null;
     stage.removeEventListener('pointerdown', onPointerDown);
@@ -1686,7 +1687,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
 
   resizeObserver = new ResizeObserver(handleResize);
   resizeObserver.observe(stage);
-  if (model.nodes.length) fitCamera({ spread: true });
+  if (model.nodes.length) fitCamera();
   else {
     camera = { scale: 1, tx: 0, ty: 0 };
     applyCamera();
@@ -1694,7 +1695,7 @@ export function mountDiscoverCloud(host, { lists = [], nowPlayingId = null, onPl
   if (nowPlayingId) setNowPlaying(nowPlayingId);
   fitTimer = setTimeout(() => {
     fitTimer = null;
-    if (!destroyed && !ring) fitCamera({ spread: true });
+    if (!destroyed && !ring) fitCamera();
   }, 0);
 
   return {

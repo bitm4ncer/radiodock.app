@@ -607,13 +607,26 @@ if (inStandalone) {
   document.getElementById('offCanvasInstall')?.remove();
   document.getElementById('footerReinstallBtn')?.remove();
 }
+// detectStandalone() treats the class itself as canonical, so it cannot be
+// used to clear the class when display-mode returns to browser.
+function detectStandaloneEnvironment() {
+  try {
+    if (sessionStorage.getItem('radiodock-pwa') === '1') return true;
+  } catch {}
+  if (window.electronAPI?.isElectron) return true;
+  return (
+    window.navigator.standalone === true
+    || !window.matchMedia('(display-mode: browser)').matches
+  );
+}
+
 // Some browsers (Vivaldi) start a PWA window in display-mode: browser even
 // though the window has no URL bar; the user can also transition modes
 // (e.g. fullscreen). Re-evaluate when the active display mode changes so
 // the .is-standalone class stays accurate.
 ['standalone', 'minimal-ui', 'fullscreen', 'window-controls-overlay'].forEach((m) => {
   window.matchMedia(`(display-mode: ${m})`).addEventListener?.('change', () => {
-    document.documentElement.classList.toggle('is-standalone', detectStandalone());
+    document.documentElement.classList.toggle('is-standalone', detectStandaloneEnvironment());
   });
 });
 
