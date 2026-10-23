@@ -64,6 +64,10 @@ export function probeUrl(station, secureContext = typeof window !== 'undefined' 
   return preferHttps(raw);
 }
 
+export function isHlsStation(station) {
+  return /\.m3u8(\?|$)/i.test(String(station?.url || ''));
+}
+
 export function attachStreamProber({ getStations, getPlayingId, onStatusChange }) {
   let timer = null;
   let statuses = {};          // { stationId: 'online' | 'offline' | 'unknown' } — non-playing rows only
@@ -80,6 +84,10 @@ export function attachStreamProber({ getStations, getPlayingId, onStatusChange }
    * @returns {Promise<'online' | 'offline' | 'unknown'>}
    */
   function probeOne(station) {
+    // <audio> cannot play an HLS manifest in Chrome; a decode error here would
+    // falsely badge every HLS station OFF. Leave those rows unknown rather than
+    // guessing.
+    if (isHlsStation(station)) return Promise.resolve('unknown');
     return new Promise((resolve) => {
       let settled = false;
       const audio = new Audio();
