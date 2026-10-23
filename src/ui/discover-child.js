@@ -111,9 +111,12 @@ export function renderLargeCollectionCard(list, { saved = false, saving = false,
   const isUser = user || list.source === 'user';
   const note = collectionNoteFor(list);
   const countries = countryCounts(list.stations);
-  const countryChips = countries.slice(0, 3).map(([code, count]) => (
-    `<span class="stations-collection-large-country" title="${escapeHtml(countryLabel(code, code))}">${escapeHtml(code)} ${formatCount(count)}</span>`
-  )).join('');
+  const countryChips = countries.slice(0, 3).map(([code, count]) => {
+    const flag = /^[A-Za-z]{2}$/.test(code)
+      ? `<img class="stations-collection-large-flag" src="https://flagcdn.com/${escapeHtml(code.toLowerCase())}.svg" alt="" loading="lazy" decoding="async" onerror="this.remove()">`
+      : '';
+    return `<span class="stations-collection-large-country" title="${escapeHtml(countryLabel(code, code))}">${flag}${escapeHtml(code)} ${formatCount(count)}</span>`;
+  }).join('');
   const kicker = isUser ? 'Community collection' : list.featured ? 'Featured collection' : 'Curated collection';
   const countLine = `${pluralCount(list.stations.length, 'station')}${countries.length ? ` · ${pluralCount(countries.length, 'country')}` : ''}`;
   return `

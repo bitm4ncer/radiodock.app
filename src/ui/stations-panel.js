@@ -85,6 +85,11 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
 
   const resizeHandle = panel.querySelector('.stations-resize-handle') ?? createResizeHandle();
   if (!resizeHandle.isConnected) panel.appendChild(resizeHandle);
+  panel.setAttribute('tabindex', '-1');
+
+  function focusPanel() {
+    panel.focus({ preventScroll: true });
+  }
 
   const state = {
     view: 'stations',
@@ -1084,7 +1089,10 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     content?.addEventListener('click', onDiscoverClick);
     content?.addEventListener('input', onDiscoverInput);
     mountLogoBehavior(content);
-    queueMicrotask(() => body.querySelector(`[data-action="${backAction}"]`)?.focus());
+    queueMicrotask(() => {
+      if (isAppRegime()) focusPanel();
+      else body.querySelector(`[data-action="${backAction}"]`)?.focus();
+    });
   }
 
   // Featured editorial lists above the search bar. The dashboard can feature
@@ -1182,6 +1190,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     state.cloud = mountDiscoverCloud(host, {
       lists,
       nowPlayingId: state.nowPlayingId ?? actions.getNowPlayingId?.(),
+      playerCard: document.getElementById('playerCard'),
       onPlay: async (uuid) => {
         const token = state.stationActions.begin();
         const full = await resolveStation(uuid);
@@ -1569,7 +1578,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       renderAll();
       load({ reset: false });
     }
-    body.querySelector('[data-action="close"]')?.focus();
+    if (isAppRegime()) focusPanel();
+    else body.querySelector('[data-action="close"]')?.focus();
   }
 
   function renderAll() {
@@ -1874,10 +1884,8 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       load({ reset: true });
     }
     setTimeout(() => {
-      const target = isAppRegime()
-        ? body.querySelector('[data-action="close"]')
-        : body.querySelector('#stationsSearch');
-      target?.focus();
+      if (isAppRegime()) focusPanel();
+      else body.querySelector('#stationsSearch')?.focus();
     }, 30);
   }
 
