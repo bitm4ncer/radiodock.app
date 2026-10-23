@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-23T01:56:23.209Z",
+  "generatedAt": "2026-10-23T02:00:25.830Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -6738,39 +6738,6 @@
             "stationuuid": "8b03a69d-5fbf-47c7-b186-a4cc01890160",
             "name": "Mettaswara Campursari",
             "countrycode": "ID"
-          }
-        ]
-      },
-      {
-        "slug": "reggaeton",
-        "title": "Reggaeton",
-        "source": "radiodock",
-        "featured": false,
-        "stations": [
-          {
-            "stationuuid": "bd91f733-4c9d-4de1-bd6b-070fd40a6cbc",
-            "name": "Clásicos Reggaeton 24/7",
-            "countrycode": "CO"
-          },
-          {
-            "stationuuid": "5c21aee4-8300-46e5-83db-fe71b6f305b3",
-            "name": "La Capital Del Reggaeton",
-            "countrycode": "CO"
-          },
-          {
-            "stationuuid": "0d43c4b2-0b0d-43de-a074-f135d90d19d0",
-            "name": "NRJ Reggaeton",
-            "countrycode": "FR"
-          },
-          {
-            "stationuuid": "ace545f7-c057-44de-92d2-ae70421f6458",
-            "name": "NRJ Reggaeton Fever",
-            "countrycode": "FR"
-          },
-          {
-            "stationuuid": "9617b9cb-0601-11e8-ae97-52543be04c81",
-            "name": "Latina Reggaeton",
-            "countrycode": "FR"
           }
         ]
       },
