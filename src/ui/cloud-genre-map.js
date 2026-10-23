@@ -87,6 +87,11 @@ export const CLOUD_GENRE_VECTORS = {
   'deep-house': { family: 'house', energy: 42, electronic: 88, era: 62 },
   reggaeton: { family: 'latin', energy: 78, electronic: 48, era: 78 },
   'trip-hop': { family: 'trip-hop', energy: 34, electronic: 52, era: 55 },
+  'afrobeats-amapiano': { family: 'afrobeat', energy: 78, electronic: 46, era: 92 },
+  gospel: { family: 'gospel', energy: 58, electronic: 12, era: 32 },
+  'regional-mexican': { family: 'latin', energy: 68, electronic: 16, era: 38 },
+  balkan: { family: 'balkan', energy: 74, electronic: 28, era: 42 },
+  arabic: { family: 'arabic', energy: 56, electronic: 24, era: 34 },
 };
 
 export const CLOUD_GENRE_EDGES = [
@@ -196,6 +201,17 @@ export const CLOUD_GENRE_EDGES = [
   ['trip-hop', 'chill'],
   ['trip-hop', 'ambient'],
   ['trip-hop', 'dubby'],
+  ['afrobeats-amapiano', 'dance'],
+  ['afrobeats-amapiano', 'hiphop'],
+  ['afrobeats-amapiano', 'latin'],
+  ['gospel', 'soul'],
+  ['gospel', 'rnb'],
+  ['regional-mexican', 'latin'],
+  ['regional-mexican', 'country-roots'],
+  ['balkan', 'pop'],
+  ['balkan', 'dance'],
+  ['arabic', 'pop'],
+  ['arabic', 'dance'],
 ];
 
 function clamp(value, minimum, maximum) {
