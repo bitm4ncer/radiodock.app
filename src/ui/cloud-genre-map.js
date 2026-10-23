@@ -131,6 +131,9 @@ export const CLOUD_GENRE_VECTORS = {
   'progressive-rock': { family: 'rock', energy: 70, electronic: 30, era: 32 },
   'smooth-jazz': { family: 'jazz', energy: 38, electronic: 24, era: 28 },
   'french-chanson': { family: 'chanson', energy: 44, electronic: 10, era: 22 },
+  'classical-piano': { family: 'classical', energy: 30, electronic: 4, era: 4 },
+  'swing-big-band': { family: 'jazz', energy: 56, electronic: 4, era: 8 },
+  bachata: { family: 'latin', energy: 68, electronic: 18, era: 45 },
 };
 
 export const CLOUD_GENRE_EDGES = [
@@ -363,6 +366,15 @@ export const CLOUD_GENRE_EDGES = [
   ['french-chanson', 'pop'],
   ['french-chanson', 'oldies-decades'],
   ['french-chanson', 'jazz'],
+  ['classical-piano', 'classical'],
+  ['classical-piano', 'opera'],
+  ['classical-piano', 'musical'],
+  ['swing-big-band', 'jazz'],
+  ['swing-big-band', 'oldies-decades'],
+  ['swing-big-band', 'musical'],
+  ['bachata', 'latin'],
+  ['bachata', 'salsa'],
+  ['bachata', 'cumbia'],
 ];
 
 function clamp(value, minimum, maximum) {
