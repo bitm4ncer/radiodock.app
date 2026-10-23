@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-22T23:02:22.752Z",
+  "generatedAt": "2026-10-23T00:16:17.414Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -5929,6 +5929,231 @@
             "countrycode": "DK"
           }
         ]
+      },
+      {
+        "slug": "afrobeats-amapiano",
+        "title": "Afrobeats / Amapiano",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "e5f1cdc8-e711-46ab-9739-f3e711549c5c",
+            "name": "WDR COSMO - Afrobeats",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "c5ba82bf-9783-4618-887c-589f24a9e3ac",
+            "name": "Cosoro Afrobeats",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "3c8dd994-143a-444d-95da-1a8ba41fce16",
+            "name": "LagosJump Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "629c8df6-1cbb-4602-bc26-c4c580228759",
+            "name": "AFROBEATS FM",
+            "countrycode": "ZA"
+          },
+          {
+            "stationuuid": "4c41fb58-fe5c-419e-bad7-ea81e4932092",
+            "name": "Afrobeat N1 FM",
+            "countrycode": "ZA"
+          },
+          {
+            "stationuuid": "bed37ad7-1542-4455-96ea-6b7608c7bc8f",
+            "name": "Amapiano FM",
+            "countrycode": "ZA"
+          },
+          {
+            "stationuuid": "480b2ac3-5d97-406d-b003-c5da40706e04",
+            "name": "AFROPULSE FM",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "d529453c-08b3-42bb-bb65-4e95b43c9178",
+            "name": "InterSpace Sound System",
+            "countrycode": "NG"
+          }
+        ]
+      },
+      {
+        "slug": "gospel",
+        "title": "Gospel",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "d2bd7eee-3df6-4105-aaa2-4e46de165a00",
+            "name": "Black Gospel Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "7f59bb69-d524-4b03-a291-118490256253",
+            "name": "Gospel Highway 11 (WNAP 1110 AM)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "dabe2161-c6fc-4236-9795-79fd6ba13f6b",
+            "name": "REAL Southern Gospel Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "f4b05442-0463-4214-a7f8-cf60e4b159c2",
+            "name": "CBN Southern Gospel",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "cae26fec-7184-4e70-80d4-9dd166837599",
+            "name": "Affirm Southern Gospel Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "21db2c1b-f87d-43c7-ae95-1a45019fe5bb",
+            "name": "The Gospel Station",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "54f5fe69-72b2-4c4b-aa3b-c8265804edcd",
+            "name": "KGHY 88.5 The Gospel Hiway",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "d22eaa1d-4f56-457c-b060-7857b63fc2b9",
+            "name": "Praiseworld Radio",
+            "countrycode": "NG"
+          }
+        ]
+      },
+      {
+        "slug": "regional-mexican",
+        "title": "Regional Mexican",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "be5f956b-42b0-4383-8aee-222f12543c6b",
+            "name": "92.9 La KeBuena (CDMX) - 92.9 FM - XEQ-FM - Radiópolis - Ciudad de México",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "f8fb7eac-cc70-4e71-b56d-47ff892f9e85",
+            "name": "La Mejor Ciudad de México - 97.7 FM - XERC-FM - MVS Radio - Ciudad de México",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "b1fca23d-33f8-44fb-a5e5-7b617f67de3c",
+            "name": " LA MAXI 102.5 (Los Mochis) - 102.5 FM - XHMAX-FM - Grupo Chávez Radio - Los Mochis, Sinaloa",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "31a240a0-af9c-4fb6-a5bb-0f93e6cffaf0",
+            "name": "La Bestia Grupera Culiacán 102.5 FM",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "b8533923-9b36-4cf5-8675-0dd7be7d2426",
+            "name": " LA COMADRE 105.5 (Puebla) - 105.5 FM - XHHIT-FM - Grupo ACIR - Puebla, Puebla",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "2147e947-db78-4d96-a0ae-27fea755574c",
+            "name": "90.1 La Ranchera de Monterrey (MTY) - 90.1 FM - XHCHL-FM - Núcleo Radio Monterrey - Monterrey, Nuevo León",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "b442256e-5791-4d29-a2ab-575cd6dc340b",
+            "name": "Llegó El Mariachi (iHeart Radio) - Online - ACIR Online / iHeart Radio - Ciudad de México",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "4b8e82a9-70db-4e5d-ba8d-058c87007624",
+            "name": "Historia y Corridos de LA COMADRE (iHeart Radio) - Online - ACIR Online / iHeart Radio - Ciudad de México",
+            "countrycode": "MX"
+          }
+        ]
+      },
+      {
+        "slug": "balkan",
+        "title": "Balkan",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "919a362a-4879-4e21-84a7-3ff98ff631c2",
+            "name": "Balkan Beatz Radio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "fa0f6975-f097-4b61-89af-27f86bb69d19",
+            "name": "Radio S Narodni",
+            "countrycode": "RS"
+          },
+          {
+            "stationuuid": "1f28933a-5250-4f43-9415-6481b0e175c9",
+            "name": "Radio Balkan Narodna",
+            "countrycode": "RS"
+          },
+          {
+            "stationuuid": "5edaeb8f-63d3-4a73-a684-a153b1cca9a5",
+            "name": "Radio Gbg Sevdah",
+            "countrycode": "SE"
+          },
+          {
+            "stationuuid": "69297813-a1af-4e3b-8a61-71af664c6dcc",
+            "name": "Plus Radio Hit",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "16b39855-7723-4bec-b2cb-c439ea3f90af",
+            "name": "Banovina Turbo",
+            "countrycode": "HR"
+          },
+          {
+            "stationuuid": "4949fc63-01cd-46e1-a17d-a99fdd461c62",
+            "name": "Radio Elmag Folk Gold",
+            "countrycode": "ME"
+          }
+        ]
+      },
+      {
+        "slug": "arabic",
+        "title": "Arabic",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "75579200-5fca-44a2-b6f9-d6f5a89a1ab4",
+            "name": "Al Khaleejiya 100.9 FM",
+            "countrycode": "AE"
+          },
+          {
+            "stationuuid": "064734c4-5ca8-4b17-b1ad-587e1c2896d6",
+            "name": "Mosaique FM Tarab",
+            "countrycode": "TN"
+          },
+          {
+            "stationuuid": "f27afa46-8650-4a88-a632-6f46e61427b2",
+            "name": "Sawt El Ghad - Tarab",
+            "countrycode": "PS"
+          },
+          {
+            "stationuuid": "f761ebd5-eff4-4b0d-8195-c739911842d9",
+            "name": "Al Bal Radio",
+            "countrycode": "LB"
+          },
+          {
+            "stationuuid": "763cd182-7216-4830-b39a-3258e2422a78",
+            "name": "Mosaique FM Tounsi",
+            "countrycode": "TN"
+          },
+          {
+            "stationuuid": "09429fd2-e1c0-4f38-ad9a-c4935e466e0f",
+            "name": "CINA Arabic Hits",
+            "countrycode": "CA"
+          }
+        ]
       }
     ]
   },
@@ -6254,7 +6479,7 @@
       {
         "genre": "christian",
         "label": "Christian & Gospel",
-        "count": 1363
+        "count": 1369
       },
       {
         "genre": "community",
@@ -6479,7 +6704,7 @@
       {
         "genre": "afrobeat",
         "label": "Afro",
-        "count": 98
+        "count": 102
       },
       {
         "genre": "jpop",
@@ -6489,7 +6714,7 @@
       {
         "genre": "arabic",
         "label": "Arabic",
-        "count": 86
+        "count": 91
       },
       {
         "genre": "lofi",
@@ -6509,7 +6734,7 @@
       {
         "genre": "balkan",
         "label": "Balkan",
-        "count": 46
+        "count": 49
       },
       {
         "genre": "french-chanson",
