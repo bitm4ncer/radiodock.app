@@ -134,6 +134,10 @@ export const CLOUD_GENRE_VECTORS = {
   'classical-piano': { family: 'classical', energy: 30, electronic: 4, era: 4 },
   'swing-big-band': { family: 'jazz', energy: 56, electronic: 4, era: 8 },
   bachata: { family: 'latin', energy: 68, electronic: 18, era: 45 },
+  'bebop-hard-bop': { family: 'jazz', energy: 52, electronic: 6, era: 8 },
+  'choral-sacred': { family: 'classical', energy: 28, electronic: 2, era: 2 },
+  'latin-jazz-bossa': { family: 'latin', energy: 54, electronic: 12, era: 24 },
+  'new-age-meditation': { family: 'ambient', energy: 16, electronic: 28, era: 48 },
 };
 
 export const CLOUD_GENRE_EDGES = [
@@ -375,6 +379,19 @@ export const CLOUD_GENRE_EDGES = [
   ['bachata', 'latin'],
   ['bachata', 'salsa'],
   ['bachata', 'cumbia'],
+  ['bebop-hard-bop', 'jazz'],
+  ['bebop-hard-bop', 'oldies-decades'],
+  ['bebop-hard-bop', 'swing-big-band'],
+  ['choral-sacred', 'classical'],
+  ['choral-sacred', 'opera'],
+  ['choral-sacred', 'medieval'],
+  ['latin-jazz-bossa', 'latin'],
+  ['latin-jazz-bossa', 'jazz'],
+  ['latin-jazz-bossa', 'salsa'],
+  ['latin-jazz-bossa', 'brazilian'],
+  ['new-age-meditation', 'ambient'],
+  ['new-age-meditation', 'chill'],
+  ['new-age-meditation', 'classical-piano'],
 ];
 
 function clamp(value, minimum, maximum) {
