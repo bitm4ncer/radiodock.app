@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-22T23:02:22.752Z",
+  "generatedAt": "2026-10-23T01:36:46.237Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -5929,6 +5929,850 @@
             "countrycode": "DK"
           }
         ]
+      },
+      {
+        "slug": "afrobeats-amapiano",
+        "title": "Afrobeats / Amapiano",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "d529453c-08b3-42bb-bb65-4e95b43c9178",
+            "name": "InterSpace Sound System",
+            "countrycode": "NG"
+          },
+          {
+            "stationuuid": "629c8df6-1cbb-4602-bc26-c4c580228759",
+            "name": "AFROBEATS FM",
+            "countrycode": "ZA"
+          },
+          {
+            "stationuuid": "4c41fb58-fe5c-419e-bad7-ea81e4932092",
+            "name": "Afrobeat N1 FM",
+            "countrycode": "ZA"
+          },
+          {
+            "stationuuid": "e5f1cdc8-e711-46ab-9739-f3e711549c5c",
+            "name": "WDR COSMO - Afrobeats",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "c5ba82bf-9783-4618-887c-589f24a9e3ac",
+            "name": "Cosoro Afrobeats",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "3c8dd994-143a-444d-95da-1a8ba41fce16",
+            "name": "LagosJump Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "bed37ad7-1542-4455-96ea-6b7608c7bc8f",
+            "name": "Amapiano FM",
+            "countrycode": "ZA"
+          },
+          {
+            "stationuuid": "480b2ac3-5d97-406d-b003-c5da40706e04",
+            "name": "AFROPULSE FM",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "gospel",
+        "title": "Gospel",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "d2bd7eee-3df6-4105-aaa2-4e46de165a00",
+            "name": "Black Gospel Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "7f59bb69-d524-4b03-a291-118490256253",
+            "name": "Gospel Highway 11 (WNAP 1110 AM)",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "dabe2161-c6fc-4236-9795-79fd6ba13f6b",
+            "name": "REAL Southern Gospel Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "f4b05442-0463-4214-a7f8-cf60e4b159c2",
+            "name": "CBN Southern Gospel",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "cae26fec-7184-4e70-80d4-9dd166837599",
+            "name": "Affirm Southern Gospel Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "21db2c1b-f87d-43c7-ae95-1a45019fe5bb",
+            "name": "The Gospel Station",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "54f5fe69-72b2-4c4b-aa3b-c8265804edcd",
+            "name": "KGHY 88.5 The Gospel Hiway",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "d22eaa1d-4f56-457c-b060-7857b63fc2b9",
+            "name": "Praiseworld Radio",
+            "countrycode": "NG"
+          }
+        ]
+      },
+      {
+        "slug": "regional-mexican",
+        "title": "Regional Mexican",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "be5f956b-42b0-4383-8aee-222f12543c6b",
+            "name": "92.9 La KeBuena (CDMX) - 92.9 FM - XEQ-FM - Radiópolis - Ciudad de México",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "f8fb7eac-cc70-4e71-b56d-47ff892f9e85",
+            "name": "La Mejor Ciudad de México - 97.7 FM - XERC-FM - MVS Radio - Ciudad de México",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "b1fca23d-33f8-44fb-a5e5-7b617f67de3c",
+            "name": " LA MAXI 102.5 (Los Mochis) - 102.5 FM - XHMAX-FM - Grupo Chávez Radio - Los Mochis, Sinaloa",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "31a240a0-af9c-4fb6-a5bb-0f93e6cffaf0",
+            "name": "La Bestia Grupera Culiacán 102.5 FM",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "b8533923-9b36-4cf5-8675-0dd7be7d2426",
+            "name": " LA COMADRE 105.5 (Puebla) - 105.5 FM - XHHIT-FM - Grupo ACIR - Puebla, Puebla",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "2147e947-db78-4d96-a0ae-27fea755574c",
+            "name": "90.1 La Ranchera de Monterrey (MTY) - 90.1 FM - XHCHL-FM - Núcleo Radio Monterrey - Monterrey, Nuevo León",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "b442256e-5791-4d29-a2ab-575cd6dc340b",
+            "name": "Llegó El Mariachi (iHeart Radio) - Online - ACIR Online / iHeart Radio - Ciudad de México",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "4b8e82a9-70db-4e5d-ba8d-058c87007624",
+            "name": "Historia y Corridos de LA COMADRE (iHeart Radio) - Online - ACIR Online / iHeart Radio - Ciudad de México",
+            "countrycode": "MX"
+          }
+        ]
+      },
+      {
+        "slug": "balkan",
+        "title": "Balkan",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "919a362a-4879-4e21-84a7-3ff98ff631c2",
+            "name": "Balkan Beatz Radio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "fa0f6975-f097-4b61-89af-27f86bb69d19",
+            "name": "Radio S Narodni",
+            "countrycode": "RS"
+          },
+          {
+            "stationuuid": "1f28933a-5250-4f43-9415-6481b0e175c9",
+            "name": "Radio Balkan Narodna",
+            "countrycode": "RS"
+          },
+          {
+            "stationuuid": "5edaeb8f-63d3-4a73-a684-a153b1cca9a5",
+            "name": "Radio Gbg Sevdah",
+            "countrycode": "SE"
+          },
+          {
+            "stationuuid": "69297813-a1af-4e3b-8a61-71af664c6dcc",
+            "name": "Plus Radio Hit",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "16b39855-7723-4bec-b2cb-c439ea3f90af",
+            "name": "Banovina Turbo",
+            "countrycode": "HR"
+          },
+          {
+            "stationuuid": "4949fc63-01cd-46e1-a17d-a99fdd461c62",
+            "name": "Radio Elmag Folk Gold",
+            "countrycode": "ME"
+          }
+        ]
+      },
+      {
+        "slug": "arabic",
+        "title": "Arabic",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "75579200-5fca-44a2-b6f9-d6f5a89a1ab4",
+            "name": "Al Khaleejiya 100.9 FM",
+            "countrycode": "AE"
+          },
+          {
+            "stationuuid": "064734c4-5ca8-4b17-b1ad-587e1c2896d6",
+            "name": "Mosaique FM Tarab",
+            "countrycode": "TN"
+          },
+          {
+            "stationuuid": "f27afa46-8650-4a88-a632-6f46e61427b2",
+            "name": "Sawt El Ghad - Tarab",
+            "countrycode": "PS"
+          },
+          {
+            "stationuuid": "f761ebd5-eff4-4b0d-8195-c739911842d9",
+            "name": "Al Bal Radio",
+            "countrycode": "LB"
+          },
+          {
+            "stationuuid": "763cd182-7216-4830-b39a-3258e2422a78",
+            "name": "Mosaique FM Tounsi",
+            "countrycode": "TN"
+          },
+          {
+            "stationuuid": "09429fd2-e1c0-4f38-ad9a-c4935e466e0f",
+            "name": "CINA Arabic Hits",
+            "countrycode": "CA"
+          }
+        ]
+      },
+      {
+        "slug": "dancehall-ska",
+        "title": "Dancehall / Ska",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "169b5210-0a16-497a-a579-61aa6f504cbd",
+            "name": "RCI Dancehall",
+            "countrycode": "MQ"
+          },
+          {
+            "stationuuid": "49da007a-d18c-4f03-b3ba-f1934079facc",
+            "name": "Sensimedia Dancehall Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "df1335f0-a069-43a3-9a48-9386452d8f08",
+            "name": "DFM Dancehall",
+            "countrycode": "RU"
+          },
+          {
+            "stationuuid": "1a79feff-3563-4449-ab72-ff94f0c08b7d",
+            "name": "Générations Dancehall",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9613562f-0601-11e8-ae97-52543be04c81",
+            "name": "Skaworld",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "587fa9b3-6297-11e8-b15b-52543be04c81",
+            "name": "Papas Skakiste 007",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "ce4975d8-1972-46d6-a46a-6450968d7cce",
+            "name": "RADIO BOB! Ska-Stream",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "7a28a83f-70f0-403f-8b19-10a3573950ca",
+            "name": "Ska",
+            "countrycode": "DE"
+          }
+        ]
+      },
+      {
+        "slug": "70s",
+        "title": "70s",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "6cddaca1-f2c1-11e8-a471-52543be04c81",
+            "name": "0N 70s",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "e1ad0462-4f25-421a-9d18-73519fec3da5",
+            "name": "That 70's Channel",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "961e37ee-0601-11e8-ae97-52543be04c81",
+            "name": "SomaFM Left Coast 70s",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "5ab5b266-a643-4666-a69b-31a748c62b73",
+            "name": "OUI FM Rock 70's",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "036bdc87-962f-462b-b909-26f9d2a2e7a8",
+            "name": "70s Disco Nights",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "cdc00ce4-dacc-4630-984c-e8c5b0e65785",
+            "name": "SF70s",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "d5644326-77e9-4c6a-9444-b1dc636ce8e8",
+            "name": "Star 70's",
+            "countrycode": "SE"
+          },
+          {
+            "stationuuid": "0720511d-4843-49c6-b5b6-9390c3cd268a",
+            "name": "Forever Classic 1970's - Goulburn",
+            "countrycode": "AU"
+          }
+        ]
+      },
+      {
+        "slug": "80s",
+        "title": "80s",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "962dc110-0601-11e8-ae97-52543be04c81",
+            "name": "80s80s",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "8a41b60c-f115-11e8-a471-52543be04c81",
+            "name": "0N 80s",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "9614b5e5-0601-11e8-ae97-52543be04c81",
+            "name": "SomaFM Underground 80s",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "d95c1da9-838c-4684-a009-44fc73608279",
+            "name": "80's New Wave Radio",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "3046ced9-d322-4098-a8cd-e3c38f60cccb",
+            "name": "KINK 80's",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "96147fcb-0601-11e8-ae97-52543be04c81",
+            "name": "Chante France 80's",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "bc910109-8c16-45dd-a337-83b631b51888",
+            "name": "Oxygen The 80s Hits",
+            "countrycode": "HU"
+          },
+          {
+            "stationuuid": "159824f0-5475-4263-bcc8-59a48a213896",
+            "name": "Radio 10 80's Hits",
+            "countrycode": "NL"
+          }
+        ]
+      },
+      {
+        "slug": "jpop",
+        "title": "J-Pop / City Pop",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "5a4eb5bc-7fbd-43fb-a6a4-cc4517ce6ac4",
+            "name": "J1 HITS",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "e0f2f4cb-d4c3-48ee-8668-333329e158e0",
+            "name": "Asia DREAM Radio - Japan Hits",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "9278c4fc-87fc-4ec9-aa6a-c8c4c5443b50",
+            "name": "J-Pop Powerplay",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "dc3727a8-90a9-4b83-bbfc-2a87d2bb9897",
+            "name": "J-Pop Powerplay Kawaii",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "3c64cfe3-2b28-4ccd-bbd0-037a0d36a509",
+            "name": "J1 GOLD",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "38288da2-4295-4e1a-9e88-fe7e04deab8a",
+            "name": "J-Pop Sakura",
+            "countrycode": "CA"
+          },
+          {
+            "stationuuid": "10828bdb-9a75-4f19-af01-d394e781d4c1",
+            "name": "Japanese Music ID",
+            "countrycode": "ID"
+          }
+        ]
+      },
+      {
+        "slug": "2000s",
+        "title": "2000s",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "e23bebbf-8908-4ed0-ade5-3fe40eaa12f4",
+            "name": "Radio X 00s",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "9624a5a0-0601-11e8-ae97-52543be04c81",
+            "name": "R101 '00",
+            "countrycode": "IT"
+          },
+          {
+            "stationuuid": "5cd4666f-e2cc-43e2-9337-03cef1c36b7a",
+            "name": "Radio Noise 2000s",
+            "countrycode": "RO"
+          },
+          {
+            "stationuuid": "a8b818b1-8968-469a-9fbf-728d6e177812",
+            "name": "Studio Brussel De Jaren Nul",
+            "countrycode": "BE"
+          },
+          {
+            "stationuuid": "5855ca57-ae57-4760-9cef-9b869b8ad2dc",
+            "name": "bigFM 2000er",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "8d7e4527-3f3b-4f94-974d-10c5cef66ad9",
+            "name": "Totally Radio 00s",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "c93bb909-2189-4934-ba7c-686562a5d726",
+            "name": "Positively 2000's",
+            "countrycode": "AE"
+          },
+          {
+            "stationuuid": "3a844c14-d13f-4223-84b7-cdadb9809841",
+            "name": "M Radio Années 2000",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "37f849b3-b6f9-46da-ae4d-149542a4b736",
+            "name": "Radio S 2000-e",
+            "countrycode": "RS"
+          },
+          {
+            "stationuuid": "e257491f-83d7-43c4-a34e-b89005709034",
+            "name": "iHeart 2000s Radio",
+            "countrycode": "UM"
+          }
+        ]
+      },
+      {
+        "slug": "2010s",
+        "title": "2010s",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "e6675974-4989-42d1-af01-a9b60a8e0a58",
+            "name": "iHeart2010s Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "1ef8c3ff-ad1d-4c16-a623-5e16331d5d89",
+            "name": "RPR1. 2010er",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "6c8c1072-525d-410f-a54f-9a72454a0665",
+            "name": "Radio SAW 2010er",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "b30eb753-907b-4782-92b6-ec4c0e6250f7",
+            "name": "Radio Noise 2010s",
+            "countrycode": "RO"
+          },
+          {
+            "stationuuid": "3c25117b-709a-435b-b899-0581c5ae59ad",
+            "name": "Qmusic 10s",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "7ddddc74-3f60-4c31-9c56-41c1d3611025",
+            "name": "Ostseewelle HIT-RADIO - 2010er Hits",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "f468880f-68a6-4096-ace8-b781c4a07e35",
+            "name": "Positively 2010's",
+            "countrycode": "AE"
+          }
+        ]
+      },
+      {
+        "slug": "90s",
+        "title": "90s",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "9637a1b2-0601-11e8-ae97-52543be04c81",
+            "name": "90s90s RADIO",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "52bb00fe-dc31-11e9-a8ba-52543be04c81",
+            "name": "Heart 90s",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "960dc18b-0601-11e8-ae97-52543be04c81",
+            "name": "RMF 90s",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "a86c3cb7-e0ae-4f12-afa7-264696e79d55",
+            "name": "Hitrádio Devadesátka",
+            "countrycode": "CZ"
+          },
+          {
+            "stationuuid": "b87ddc6a-b153-4275-94dc-18cb612138d6",
+            "name": "Radio X 90s",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "ac8b0eda-c69b-4f3e-acb7-71666085dc33",
+            "name": "OUI FM Rock 90's",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "6692cbbd-d238-49be-b953-92872584ef2c",
+            "name": "NJS Radio - New Jack Swing",
+            "countrycode": "BG"
+          },
+          {
+            "stationuuid": "9638a655-0601-11e8-ae97-52543be04c81",
+            "name": "181.FM - 90's Dance",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "bf036b3a-082f-4a8b-a35a-5b5d8efd7b91",
+            "name": "Radio Dancefloor 90s",
+            "countrycode": "IT"
+          }
+        ]
+      },
+      {
+        "slug": "desi",
+        "title": "Desi / Bollywood",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "b2bd5eb7-704e-492e-b0e6-c91e32998c7e",
+            "name": "Lyca Radio 1458 AM",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "526d9fa0-cda6-4464-bd5f-eb0a0c56f9cb",
+            "name": "Tune India Radio",
+            "countrycode": "AU"
+          },
+          {
+            "stationuuid": "3447ded9-0b52-4f59-ad6b-d1a7259fdf28",
+            "name": "Radio Plus - Indiz",
+            "countrycode": "MU"
+          },
+          {
+            "stationuuid": "cc559c9c-3551-437a-845d-a9d8731c9c7d",
+            "name": "Radio Hulchul",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "c270e397-12a9-4fbe-bb2e-305cff8659b9",
+            "name": "Vahon Hindustani Radio",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "8eceafa2-9c04-417e-90e4-36eb6524f46c",
+            "name": "Lyca Gold",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "5d743713-b997-4b1a-888a-17f052af1a13",
+            "name": "American Tamil Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "50e38be6-ffe4-472d-83fb-4a6a15987177",
+            "name": "Tamil Panpalai Gold",
+            "countrycode": "IN"
+          }
+        ]
+      },
+      {
+        "slug": "kpop",
+        "title": "K-Pop",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "517d1b65-91f6-47be-9832-25862f6e0d7e",
+            "name": "0N K-Pop",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "87b2d880-4792-4fe6-a5c4-4aba7bc79040",
+            "name": "City K-Pop",
+            "countrycode": "BG"
+          },
+          {
+            "stationuuid": "9c5927bf-2d41-4868-9d2a-677d5a269402",
+            "name": "ENERGY K-pop",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "168b79d5-be7b-436f-b144-759696655d6d",
+            "name": "HIT FM K-Pop Hits",
+            "countrycode": "MD"
+          },
+          {
+            "stationuuid": "0ebbadd2-0a95-4bde-9868-883f21523ae0",
+            "name": "Hotmix K-Pop",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "1748f193-6d40-4a9e-acbc-e284984c00d0",
+            "name": "K-Pop 24",
+            "countrycode": "UA"
+          },
+          {
+            "stationuuid": "8495c4a7-0c66-47b3-acd6-4b957017f610",
+            "name": "KPOP atomicradio",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "7e0188a0-b332-405d-af8f-57da3223369b",
+            "name": "Listen.moe Kpop",
+            "countrycode": "KR"
+          },
+          {
+            "stationuuid": "2e53ff8e-1d21-4e04-b0e9-f68257c4e7e9",
+            "name": "Only Hits K-Pop",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "15d5f6f4-e88f-4d5b-bbb7-7a72b2c9611d",
+            "name": "World Music Radio - K-Pop",
+            "countrycode": "AE"
+          }
+        ]
+      },
+      {
+        "slug": "salsa",
+        "title": "Salsa",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "dbae7640-ee5b-4be1-95fe-4f4c56bf8a9f",
+            "name": "El Sol Cali",
+            "countrycode": "CO"
+          },
+          {
+            "stationuuid": "e6cdaf02-1a15-4d20-8844-126844125475",
+            "name": "Capital Salsa",
+            "countrycode": "CO"
+          },
+          {
+            "stationuuid": "839c6307-7d21-4d18-962f-ecf96f991072",
+            "name": "Caracas Salsa Brava",
+            "countrycode": "VE"
+          },
+          {
+            "stationuuid": "96826b40-cc1e-4aa4-8d83-6794827c3d85",
+            "name": "Salsa Radio Amsterdam",
+            "countrycode": "NL"
+          },
+          {
+            "stationuuid": "116a6ba3-232d-4a6d-a0ac-16cf68721729",
+            "name": "Salsa 787 — El Sabor de la Clave",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "db09528b-7ed8-4214-a263-8a92e26c88b6",
+            "name": "SalsaViva",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "33eb7f6a-bb3a-4bb4-a5fb-56c9fb5143b0",
+            "name": "Hotmix Salsa",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "823ae385-e777-4363-8c9c-693374033a2a",
+            "name": "Salsa 92.7 FM",
+            "countrycode": "DO"
+          },
+          {
+            "stationuuid": "a0282d74-0fae-4399-afc9-54b07a266c0e",
+            "name": "Puerto Salsa Radio",
+            "countrycode": "CL"
+          },
+          {
+            "stationuuid": "cdd58c8d-c3b6-407a-beec-90d4f7759a3d",
+            "name": "Salsa FM",
+            "countrycode": "ES"
+          }
+        ]
+      },
+      {
+        "slug": "cumbia",
+        "title": "Cumbia",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "1d4d7e90-fe9b-413a-9dda-f3aa507a848c",
+            "name": "Cumbia Total",
+            "countrycode": "MX"
+          },
+          {
+            "stationuuid": "9a12e2fe-ba2b-42ae-946e-fa657fb779a4",
+            "name": "FM Cumbiambera",
+            "countrycode": "AR"
+          },
+          {
+            "stationuuid": "fcf7421a-2a01-4348-9b45-9c9a3b862c71",
+            "name": "Sabor a Cumbia",
+            "countrycode": "CL"
+          },
+          {
+            "stationuuid": "d8e71f6d-3277-45d1-b9f2-840676282d77",
+            "name": "Radio Inkafuego",
+            "countrycode": "PE"
+          },
+          {
+            "stationuuid": "a2b86efb-d688-419c-b4b1-3abc531b9036",
+            "name": "Estación Cumbia",
+            "countrycode": "PE"
+          },
+          {
+            "stationuuid": "d881d1d4-9dea-4d94-8c4a-668390f544e6",
+            "name": "Tierra Verde Radio",
+            "countrycode": "US"
+          }
+        ]
+      },
+      {
+        "slug": "dangdut",
+        "title": "Dangdut / Indonesian",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "507908c8-52ab-4be6-9ed5-5389c9fe6f27",
+            "name": "RDI 97.1 FM Jakarta",
+            "countrycode": "ID"
+          },
+          {
+            "stationuuid": "b26a55ce-32ad-4821-ae68-14425e942917",
+            "name": "Radiks 99.3 FM Semarang",
+            "countrycode": "ID"
+          },
+          {
+            "stationuuid": "66d55788-6e57-4755-ac58-aa85bfb7cf94",
+            "name": "Suara Soneta",
+            "countrycode": "ID"
+          },
+          {
+            "stationuuid": "fd6e2783-293c-476e-8201-ddeda1336ca3",
+            "name": "Campursari FM 89.2 Jakarta",
+            "countrycode": "ID"
+          },
+          {
+            "stationuuid": "a6992630-f3c2-42a1-b280-7370ddfa1aba",
+            "name": "Beat Radio Dangdut",
+            "countrycode": "ID"
+          },
+          {
+            "stationuuid": "36db69aa-2a1a-4d74-b9de-bf0edfe7159e",
+            "name": "Mettaswara Dangdut",
+            "countrycode": "ID"
+          },
+          {
+            "stationuuid": "8b03a69d-5fbf-47c7-b186-a4cc01890160",
+            "name": "Mettaswara Campursari",
+            "countrycode": "ID"
+          }
+        ]
+      },
+      {
+        "slug": "reggaeton",
+        "title": "Reggaeton",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "bd91f733-4c9d-4de1-bd6b-070fd40a6cbc",
+            "name": "Clásicos Reggaeton 24/7",
+            "countrycode": "CO"
+          },
+          {
+            "stationuuid": "5c21aee4-8300-46e5-83db-fe71b6f305b3",
+            "name": "La Capital Del Reggaeton",
+            "countrycode": "CO"
+          },
+          {
+            "stationuuid": "0d43c4b2-0b0d-43de-a074-f135d90d19d0",
+            "name": "NRJ Reggaeton",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "ace545f7-c057-44de-92d2-ae70421f6458",
+            "name": "NRJ Reggaeton Fever",
+            "countrycode": "FR"
+          },
+          {
+            "stationuuid": "9617b9cb-0601-11e8-ae97-52543be04c81",
+            "name": "Latina Reggaeton",
+            "countrycode": "FR"
+          }
+        ]
       }
     ]
   },
@@ -6219,7 +7063,7 @@
       {
         "genre": "pop",
         "label": "Pop",
-        "count": 5455
+        "count": 5468
       },
       {
         "genre": "news",
@@ -6229,7 +7073,7 @@
       {
         "genre": "rock",
         "label": "Rock",
-        "count": 3144
+        "count": 3147
       },
       {
         "genre": "hits",
@@ -6244,7 +7088,7 @@
       {
         "genre": "oldies",
         "label": "Oldies",
-        "count": 1762
+        "count": 1764
       },
       {
         "genre": "edm-dance",
@@ -6254,7 +7098,7 @@
       {
         "genre": "christian",
         "label": "Christian & Gospel",
-        "count": 1363
+        "count": 1369
       },
       {
         "genre": "community",
@@ -6264,12 +7108,12 @@
       {
         "genre": "synthpop",
         "label": "80s & New Wave",
-        "count": 1262
+        "count": 1263
       },
       {
         "genre": "classical",
         "label": "Classical",
-        "count": 1215
+        "count": 1214
       },
       {
         "genre": "jazz",
@@ -6279,22 +7123,22 @@
       {
         "genre": "electronic",
         "label": "Electronic",
-        "count": 999
+        "count": 998
       },
       {
         "genre": "public",
         "label": "Public Radio",
-        "count": 956
+        "count": 955
       },
       {
         "genre": "alternative",
         "label": "Alternative",
-        "count": 871
+        "count": 873
       },
       {
         "genre": "nineties",
         "label": "90s",
-        "count": 868
+        "count": 873
       },
       {
         "genre": "folk",
@@ -6304,17 +7148,17 @@
       {
         "genre": "house",
         "label": "House",
-        "count": 806
+        "count": 805
       },
       {
         "genre": "classic-rock",
         "label": "Classic Rock",
-        "count": 803
+        "count": 804
       },
       {
         "genre": "hiphop",
         "label": "Hip-Hop",
-        "count": 797
+        "count": 799
       },
       {
         "genre": "country",
@@ -6329,7 +7173,7 @@
       {
         "genre": "rnb",
         "label": "R&B & Soul",
-        "count": 666
+        "count": 669
       },
       {
         "genre": "latin",
@@ -6359,7 +7203,7 @@
       {
         "genre": "world",
         "label": "World",
-        "count": 508
+        "count": 514
       },
       {
         "genre": "indie",
@@ -6374,7 +7218,7 @@
       {
         "genre": "salsa",
         "label": "Salsa & Tropical",
-        "count": 441
+        "count": 444
       },
       {
         "genre": "ambient",
@@ -6384,12 +7228,12 @@
       {
         "genre": "disco",
         "label": "Disco",
-        "count": 414
+        "count": 415
       },
       {
         "genre": "twothousands",
         "label": "2000s",
-        "count": 372
+        "count": 375
       },
       {
         "genre": "techno",
@@ -6397,19 +7241,19 @@
         "count": 358
       },
       {
-        "genre": "funk",
-        "label": "Funk",
-        "count": 330
+        "genre": "reggae",
+        "label": "Reggae & Dub",
+        "count": 332
       },
       {
         "genre": "cumbia",
         "label": "Cumbia",
-        "count": 327
+        "count": 331
       },
       {
-        "genre": "reggae",
-        "label": "Reggae & Dub",
-        "count": 327
+        "genre": "funk",
+        "label": "Funk",
+        "count": 331
       },
       {
         "genre": "blues",
@@ -6462,14 +7306,14 @@
         "count": 127
       },
       {
+        "genre": "desi",
+        "label": "Bollywood & Desi",
+        "count": 120
+      },
+      {
         "genre": "holiday",
         "label": "Holiday",
         "count": 118
-      },
-      {
-        "genre": "desi",
-        "label": "Bollywood & Desi",
-        "count": 116
       },
       {
         "genre": "comedy",
@@ -6479,17 +7323,17 @@
       {
         "genre": "afrobeat",
         "label": "Afro",
-        "count": 98
+        "count": 102
       },
       {
         "genre": "jpop",
         "label": "J-Pop & Anime",
-        "count": 97
+        "count": 100
       },
       {
         "genre": "arabic",
         "label": "Arabic",
-        "count": 86
+        "count": 91
       },
       {
         "genre": "lofi",
@@ -6499,7 +7343,7 @@
       {
         "genre": "kpop",
         "label": "K-Pop",
-        "count": 60
+        "count": 61
       },
       {
         "genre": "opera",
@@ -6509,12 +7353,12 @@
       {
         "genre": "balkan",
         "label": "Balkan",
-        "count": 46
+        "count": 49
       },
       {
         "genre": "french-chanson",
         "label": "French Chanson",
-        "count": 33
+        "count": 34
       }
     ]
   }
