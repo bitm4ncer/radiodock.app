@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-10-23T04:09:37.666Z",
+  "generatedAt": "2026-10-23T04:15:40.347Z",
   "curated": {
     "sponsored": [],
     "community": [
@@ -7488,6 +7488,82 @@
             "countrycode": "ES"
           }
         ]
+      },
+      {
+        "slug": "rockabilly",
+        "title": "Rockabilly",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "db5b67b9-2239-44d7-885d-ea2120e65b61",
+            "name": "Rockabilly 626",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "afd4ee65-67d8-4746-9598-aebfb22140dc",
+            "name": "Mixabilly Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "c66822d1-4b45-4569-bdac-c16f9c5fb3a0",
+            "name": "Radiobilly365",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "de02f775-e3f8-4456-a249-c04e634a47b9",
+            "name": "RADIO BOB! Rockabilly",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "ebacaa6d-bfdf-4c82-84df-22d8ad8ecd26",
+            "name": "SplinterWood Rock'n'Roll Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "61ad7600-60c3-4751-bc86-2cc9d9252b49",
+            "name": "Rockabilly (laut.fm)",
+            "countrycode": "DE"
+          }
+        ]
+      },
+      {
+        "slug": "surf-rock",
+        "title": "Surf Rock",
+        "source": "radiodock",
+        "featured": false,
+        "stations": [
+          {
+            "stationuuid": "fd966a77-6c7b-40be-b1c0-a7f8d56579dc",
+            "name": "Radio Surf Rock",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "05bd2470-1d16-4629-ad3a-11506dde5589",
+            "name": "Longboard Radio",
+            "countrycode": "US"
+          },
+          {
+            "stationuuid": "13bf1959-ebfb-4823-8a8b-044c14aae897",
+            "name": "Reverb Riff Radio",
+            "countrycode": "PL"
+          },
+          {
+            "stationuuid": "81001fc1-72fd-483c-91f7-8475bdc8bbc4",
+            "name": "Surf Rock Radio",
+            "countrycode": "GB"
+          },
+          {
+            "stationuuid": "754b2c5f-b962-48ff-bec3-43eab5f715fb",
+            "name": "Surf (laut.fm)",
+            "countrycode": "DE"
+          },
+          {
+            "stationuuid": "1649c212-5b5a-4937-9c89-c34f548b57c2",
+            "name": "Wild Rockin' n' Surf",
+            "countrycode": "US"
+          }
+        ]
       }
     ]
   },
@@ -7788,7 +7864,7 @@
       {
         "genre": "rock",
         "label": "Rock",
-        "count": 3149
+        "count": 3158
       },
       {
         "genre": "hits",
@@ -7803,7 +7879,7 @@
       {
         "genre": "oldies",
         "label": "Oldies",
-        "count": 1765
+        "count": 1764
       },
       {
         "genre": "edm-dance",
@@ -7908,7 +7984,7 @@
       {
         "genre": "easy",
         "label": "Easy Listening",
-        "count": 527
+        "count": 526
       },
       {
         "genre": "world",
