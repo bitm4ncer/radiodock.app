@@ -243,6 +243,21 @@ body.is-electron .stations-resize-handle {
   background: color-mix(in srgb, var(--red) 11%, transparent);
 }
 
+.stations-featured-actions .stations-cloud-btn {
+  border-color: color-mix(in srgb, var(--red) 42%, var(--border));
+  background: color-mix(in srgb, var(--red) 7%, transparent);
+}
+
+.stations-featured-actions .stations-cloud-btn:hover {
+  border-color: color-mix(in srgb, var(--red) 65%, var(--border));
+  background: color-mix(in srgb, var(--red) 11%, transparent);
+}
+
+.stations-featured-actions .stations-cloud-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
 .stations-search-wrap {
   padding: 0 20px 12px;
 }
@@ -2455,6 +2470,7 @@ html.is-standalone .stations-panel:not(.is-open) {
 .stations-featured-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
 }
 

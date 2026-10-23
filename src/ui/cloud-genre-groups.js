@@ -20,7 +20,7 @@ export const CLOUD_GENRE_GROUPS = [
   {
     key: 'pop',
     label: 'Pop / Schlager',
-    families: ['pop', 'schlager', 'jpop', 'kpop'],
+    families: ['pop', 'schlager', 'jpop', 'kpop', 'holiday', 'kids'],
   },
   {
     key: 'rock',
@@ -40,7 +40,7 @@ export const CLOUD_GENRE_GROUPS = [
   {
     key: 'roots',
     label: 'Roots / Folk / Global',
-    families: ['roots', 'folk', 'reggae', 'world', 'afrobeat', 'desi', 'balkan', 'arabic', 'latin'],
+    families: ['roots', 'folk', 'reggae', 'world', 'afrobeat', 'desi', 'balkan', 'arabic', 'latin', 'chanson'],
   },
   {
     key: 'ambient',

@@ -37,6 +37,9 @@ export function attachListenHeartbeat(player, {
 
   const tick = () => {
     if (!audible || !player.isPlaying()) return;
+    // Browser-tab mute is not exposed to page JavaScript. The in-app mute and
+    // volume slider both land here as volume 0, which must not count as audible.
+    if ((player.getVolume?.() ?? 1) <= 0) return;
     const station = player.getCurrentStation();
     if (!station) return;
     const background = document.visibilityState === 'hidden';

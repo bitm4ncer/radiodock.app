@@ -11,11 +11,12 @@ import { attachListenHeartbeat } from '../src/analytics/listen-heartbeat.js';
 function harness({ cap = 3 } = {}) {
   globalThis.document = { visibilityState: 'visible' };
   const handlers = new Map();
-  const state = { station: { id: 'a', name: 'A', countrycode: 'DE' }, pings: [] };
+  const state = { station: { id: 'a', name: 'A', countrycode: 'DE' }, pings: [], volume: 1 };
   const player = {
     on: (type, fn) => handlers.set(type, [...(handlers.get(type) ?? []), fn]),
     isPlaying: () => true,
     getCurrentStation: () => state.station,
+    getVolume: () => state.volume,
   };
   attachListenHeartbeat(player, {
     intervalMs: 1000,
@@ -40,6 +41,23 @@ function harness({ cap = 3 } = {}) {
     },
   };
 }
+
+test('a muted player stops producing listen-pings', () => {
+  mock.timers.enable({ apis: ['setInterval'] });
+  try {
+    const h = harness();
+    h.emit('playing');
+    h.emit('stationchange', { station: h.state.station });
+    h.minutes(2);
+    assert.equal(h.state.pings.length, 2);
+    h.state.volume = 0;
+    h.minutes(3);
+    assert.equal(h.state.pings.length, 2, 'muted minutes are not listening');
+    h.state.volume = 1;
+    h.minutes(1);
+    assert.equal(h.state.pings.length, 3, 'unmuting resumes counting');
+  } finally { mock.timers.reset(); }
+});
 
 test('a rebuffer does not renew the unattended-background budget', () => {
   mock.timers.enable({ apis: ['setInterval'] });

@@ -23,7 +23,7 @@ function setup({ isDev = false, storage = new MapStorage(), optOut = false } = {
   const handlers = new Map();
   const sent = [];
   const beacons = [];
-  const state = { station: STATION_A, playing: true };
+  const state = { station: STATION_A, playing: true, volume: 1 };
   let clock = Date.parse('2026-10-18T10:00:00.000Z');
   let sequence = 0;
 
@@ -31,6 +31,7 @@ function setup({ isDev = false, storage = new MapStorage(), optOut = false } = {
     on(type, fn) { handlers.set(type, [...(handlers.get(type) ?? []), fn]); },
     isPlaying: () => state.playing,
     getCurrentStation: () => state.station,
+    getVolume: () => state.volume,
   };
   const fetchImpl = async (url, init) => {
     sent.push({ url, body: JSON.parse(init.body) });
@@ -79,6 +80,8 @@ test('isOptedOut respects both storage keys and Do Not Track', () => {
   assert.equal(isOptedOut(storage, {}), true);
   assert.equal(isOptedOut(new MapStorage(), { doNotTrack: '1' }), true);
   assert.equal(isOptedOut(new MapStorage(), { doNotTrack: 'yes' }), true);
+  assert.equal(isOptedOut(new MapStorage(), {}, { cookie: 'rd_stats_exclude=1' }), true);
+  assert.equal(isOptedOut(new MapStorage(), {}, { cookie: 'other=1' }), false);
 });
 
 test('does not send when dev or opted out', async () => {
@@ -116,6 +119,37 @@ test('starts one session and sends cumulative updates', async () => {
     assert.equal(h.sent[1].body.backgroundMinutes, 0);
     assert.equal(h.sent[1].body.plays, 1);
     assert.equal(h.sent[1].body.ended, false);
+  } finally {
+    mock.timers.reset();
+  }
+});
+
+test('muted minutes are not counted as listening', async () => {
+  mock.timers.enable({ apis: ['setInterval'] });
+  try {
+    const h = setup();
+    h.dispatchPlay();
+    await flush();
+    h.emit('playing');
+    h.advance(60_000);
+    mock.timers.tick(60_000);
+    await flush();
+    assert.equal(h.sent.length, 2);
+
+    h.state.volume = 0;
+    h.advance(60_000);
+    mock.timers.tick(60_000);
+    h.advance(60_000);
+    mock.timers.tick(60_000);
+    await flush();
+    assert.equal(h.sent.length, 2, 'muted minutes must not reach the ingest');
+
+    h.state.volume = 1;
+    h.advance(60_000);
+    mock.timers.tick(60_000);
+    await flush();
+    assert.equal(h.sent.length, 3, 'unmuting resumes counting');
+    assert.equal(h.sent[2].body.foregroundMinutes, 2);
   } finally {
     mock.timers.reset();
   }

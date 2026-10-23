@@ -62,6 +62,10 @@ function discoverIcon() {
   return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m15.6 8.4-2.1 5.1-5.1 2.1 2.1-5.1 5.1-2.1Z" fill="currentColor"/></svg>';
 }
 
+function graphIcon() {
+  return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.2 16.7 10.7 7.9M13.3 7.9l4.2 6.5M8.1 17.5l7.8-1.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="6" cy="17" r="2.1" fill="currentColor"/><circle cx="12" cy="6.8" r="2.1" fill="currentColor"/><circle cx="18" cy="15.6" r="2.1" fill="currentColor"/></svg>';
+}
+
 export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = {}) {
   const panel = elements.panel ?? document.getElementById('stationsPanel');
   const body = elements.body ?? document.getElementById('stationsBody');
@@ -1127,6 +1131,7 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
       <div class="stations-collection-grid stations-featured-grid">${lists.map((list) => collectionCard(list, { saved: isCollectionSaved(list.slug) })).join('')}</div>
       <div class="stations-featured-actions">
         <button type="button" class="stations-pill stations-discover-btn" data-action="discover-more">${discoverIcon()}<span>Discover more collections</span></button>
+        <button type="button" class="stations-icon-btn stations-cloud-btn" data-action="discover-cloud" aria-label="Open collection cloud" title="Collection cloud">${graphIcon()}</button>
         <button type="button" class="stations-submit-link" data-action="submit-list">Suggest a collection</button>
       </div>
     `;
@@ -1150,6 +1155,10 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     }
     if (evt.target.closest('[data-action="discover-more"]')) {
       openDiscover();
+      return;
+    }
+    if (evt.target.closest('[data-action="discover-cloud"]')) {
+      openDiscover({ view: 'cloud' });
       return;
     }
     if (evt.target.closest('[data-action="submit-list"]')) {
@@ -1283,14 +1292,14 @@ export function mountStationsPanel({ elements = {}, data = {}, actions = {} } = 
     card?.querySelector('[data-action="toggle-collection"]')?.focus({ preventScroll: true });
   }
 
-  async function openDiscover() {
+  async function openDiscover({ view = 'small' } = {}) {
     controller?.abort();
     loadToken++;
     destroyCloud();
     state.loading = false;
     state.view = 'discover';
     state.collection = null;
-    state.discoverView = 'small';
+    state.discoverView = view;
     state.discoverQuery = '';
     state.expandedCollection = null;
     clearTimeout(discoverTimer);
