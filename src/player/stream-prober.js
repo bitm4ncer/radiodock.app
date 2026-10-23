@@ -68,6 +68,11 @@ export function isHlsStation(station) {
   return /\.m3u8(\?|$)/i.test(String(station?.url || ''));
 }
 
+export function isRelayProbe(station, secureContext = typeof window !== 'undefined' && window.isSecureContext) {
+  const id = String(station?.stationuuid || station?.id || '');
+  return Boolean(secureContext && id && /^http:\/\//i.test(String(station?.url || '')));
+}
+
 export function attachStreamProber({ getStations, getPlayingId, onStatusChange }) {
   let timer = null;
   let statuses = {};          // { stationId: 'online' | 'offline' | 'unknown' } — non-playing rows only
@@ -114,7 +119,11 @@ export function attachStreamProber({ getStations, getPlayingId, onStatusChange }
       const onProgress = () => {
         if (audio.buffered && audio.buffered.length > 0) finish('online');
       };
-      const onError = () => finish('offline');   // MediaError → confident off-air (404/decode)
+      // A relay probe can fail on codec mismatch (e.g. Chrome rejecting an
+      // AAC+ Icecast source) even though the station is healthy. That is not
+      // proof of an off-air station, so only direct probes may badge OFF.
+      const viaRelay = isRelayProbe(station);
+      const onError = () => finish(viaRelay ? 'unknown' : 'offline');
 
       audio.addEventListener('loadedmetadata', onData);
       audio.addEventListener('loadeddata', onData);

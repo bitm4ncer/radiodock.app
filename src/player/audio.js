@@ -2,6 +2,7 @@
 // Wraps a <audio> element + dynamic hls.js for HLS streams.
 // Emits events via a private EventTarget; consumers subscribe with on(event, handler).
 import { relayHlsUrl, relayUrl } from '../data/relay.js';
+import { getStationInfo } from '../data/stations-api.js';
 
 const events = new EventTarget();
 const emit = (type, detail) => events.dispatchEvent(new CustomEvent(type, { detail }));
@@ -116,6 +117,35 @@ export function isMixedContentStream(station, secureContext = typeof window !== 
   return Boolean(secureContext && /^http:\/\//i.test(String(station?.url || '')));
 }
 
+// Local lists are self-contained snapshots. A station's stream URL can be
+// repaired in the database (e.g. Funky SX moved to an official HLS endpoint)
+// while the favorite still carries the old http:// address. Refresh once, only
+// for the mixed-content case that would otherwise fall through to a broken
+// relay decode, before choosing the transport.
+const refreshedMixedContent = new Map();
+
+export async function refreshMixedContentStation(station, {
+  secureContext = typeof window !== 'undefined' && window.isSecureContext,
+  fetchInfo = getStationInfo,
+} = {}) {
+  const id = String(station?.stationuuid || station?.id || '');
+  if (!id || id.startsWith('custom-') || !isMixedContentStream(station, secureContext)) return station;
+  const key = `${id}|${station.url}`;
+  if (refreshedMixedContent.has(key)) return refreshedMixedContent.get(key) ?? station;
+  try {
+    const fresh = await fetchInfo(id);
+    if (fresh?.url) {
+      const merged = { ...station, ...fresh, id: station.id ?? id };
+      refreshedMixedContent.set(key, merged);
+      return merged;
+    }
+  } catch {
+    // Keep the snapshot; the relay path below is still a valid fallback.
+  }
+  refreshedMixedContent.set(key, null);
+  return station;
+}
+
 // hls.js setup for one source URL. Network and media fatals get one local
 // recovery each before the ladder escalates. The relay HLS URL is a signed
 // manifest proxy, so relative segment and key URIs work as well as absolute
@@ -227,6 +257,10 @@ async function playStation(station) {
   }
 
   const token = ++playToken;
+  // A favorite can hold an old http:// stream after the database URL has been
+  // repaired. Resolve the current record before the relay/decode path.
+  station = await refreshMixedContentStation(station);
+  if (token !== playToken) return;
   const uuid = String(station.stationuuid || station.id || '');
   if (uuid !== currentUuid || station.url !== currentStation?.url) {
     relayTried = false;
