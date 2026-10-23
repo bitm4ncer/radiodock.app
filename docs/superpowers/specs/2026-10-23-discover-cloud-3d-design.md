@@ -251,17 +251,17 @@ The follow-up review replaced the dense 3D logo orbits with a compact genre map 
 
 ### Measured follow-up
 
-Headless Chrome for Testing, 390 by 844 CSS pixels, device scale factor 2, 4x CPU throttle:
+Headless Chrome for Testing, 390 by 844 CSS pixels, device scale factor 2, 4x CPU throttle, after merging the published collection set (108 collections, 261 edges):
 
 | Interaction | Before follow-up | After follow-up |
 | --- | --- | --- |
-| 3D orbit | 23.7 fps | 59.1 fps |
-| 3D mode enter | 43.9 fps | 54.3 fps |
-| 3D focus open | 40.0 fps | 53.5 fps |
-| 3D focus orbit | 58.1 fps | 60.0 fps |
-| 2D axis change | 33.0 fps | 52.4 fps |
-| 2D pan | Not measured | 59.1 fps |
-| 3D exit | 30.5 fps | 47.7 fps |
+| 3D orbit | 23.7 fps | 58.3 fps |
+| 3D mode enter | 43.9 fps | 53.4 fps |
+| 3D focus open | 40.0 fps | 51.8 fps |
+| 3D focus orbit | 58.1 fps | 56.0 fps |
+| 2D axis change | 33.0 fps | 51.9 fps |
+| 2D pan | Not measured | 58.2 fps |
+| 3D exit | 30.5 fps | 45.8 fps |
 
 Idle 2D and 3D both report zero app animation frames and zero stage mutations. The remaining measured limitation is a single long task when opening a large focus ring and when restoring the 2D scene on exit. These are documented as one-time transition costs, not continuous interaction costs.
 

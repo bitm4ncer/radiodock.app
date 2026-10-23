@@ -154,7 +154,7 @@ The first 3D implementation was clean on desktop but too dense and too slow on p
 
 - Chrome for Testing 156.0.8078.4 through Playwright 1.64.1.
 - Mobile viewport 390 by 844 CSS pixels, device scale factor 2, 4x CPU throttle.
-- Dataset: 89 published collections, 204 edges.
+- Dataset after merging the published collection set: 108 collections, 261 edges.
 - Scenes: 2D overview, 2D axis change, 2D pan, 3D enter, 3D orbit, 3D focus open, 3D focus orbit, 3D exit.
 - Frame sampling used requestAnimationFrame intervals and PerformanceObserver long tasks. Idle checks used a MutationObserver on the cloud stage.
 
@@ -162,15 +162,15 @@ The first 3D implementation was clean on desktop but too dense and too slow on p
 
 | Interaction | First 3D build | Follow-up |
 | --- | --- | --- |
-| 3D orbit | 23.7 fps | 59.1 fps |
-| 3D mode enter | 43.9 fps | 54.3 fps |
-| 3D focus open | 40.0 fps | 53.5 fps |
-| 3D focus orbit | 58.1 fps | 60.0 fps |
-| 2D axis change | 33.0 fps | 52.4 fps |
-| 2D pan | Not measured | 59.1 fps |
-| 3D exit | 30.5 fps | 47.7 fps |
+| 3D orbit | 23.7 fps | 58.3 fps |
+| 3D mode enter | 43.9 fps | 53.4 fps |
+| 3D focus open | 40.0 fps | 51.8 fps |
+| 3D focus orbit | 58.1 fps | 56.0 fps |
+| 2D axis change | 33.0 fps | 51.9 fps |
+| 2D pan | Not measured | 58.2 fps |
+| 3D exit | 30.5 fps | 45.8 fps |
 
-Idle 2D and 3D both report 60 fps refresh sampling with zero app animation frames and zero cloud-stage mutations. The 2D overview now renders 356 station previews instead of 648 on phones, hides minor labels until hover or focus, and runs zero decorative bubble animations.
+Idle 2D and 3D both report 60 fps refresh sampling with zero app animation frames and zero cloud-stage mutations. The 2D overview now renders 432 station previews instead of the desktop density on phones, hides minor labels until hover or focus, and runs zero decorative bubble animations.
 
 ### What changed
 
@@ -185,6 +185,6 @@ Idle 2D and 3D both report 60 fps refresh sampling with zero app animation frame
 
 - At 4x CPU throttle, opening a large focus ring still produces one long task roughly between 80 and 110 ms. Closing 3D still produces a one-time long task roughly between 250 and 285 ms while the full 2D scene returns. These are transition costs, not continuous interaction costs.
 - The measurements are headless Chrome, not a physical phone. GPU, thermal behaviour, and browser chrome differ on real devices.
-- The 3D overview remains a canvas of 89 collections. Some dense clusters still overlap visually; orbit and zoom are the intended ways to inspect them.
+- The 3D overview remains a canvas of 108 collections. Some dense clusters still overlap visually; orbit and zoom are the intended ways to inspect them.
 
-Follow-up test suite: 359 of 359 tests passed. Vite production build succeeded.
+Final merged test suite: 365 of 365 tests passed. Vite production build succeeded.
