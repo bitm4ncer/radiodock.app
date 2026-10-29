@@ -10,6 +10,7 @@
 // lookup is now per-container) so this just works.
 
 import { mountStationList } from './station-list.js';
+import { syncPageOrder } from './page-order.js';
 
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({
@@ -113,13 +114,17 @@ export function mountListsCarousel({ root }) {
       }
     }
     // Create / update existing pages, in order.
+    const orderedPages = [];
     for (const list of lists) {
       const entry = ensurePage(list);
       applyPageData(entry, list);
       entry.stationList.setActive(activeStationId);
-      // Reorder DOM to match `lists` order — append moves existing nodes.
-      root.append(entry.pageEl);
+      orderedPages.push(entry.pageEl);
     }
+    // Reorder DOM to match `lists` order without re-inserting pages that are
+    // already in place: moving a scrollable page resets its scrollTop, which
+    // made the list jump back to the top on every station change.
+    syncPageOrder(root, orderedPages);
   }
 
   function scrollToCurrent({ animate }) {
