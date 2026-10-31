@@ -26,9 +26,7 @@
       "output": "dist"
     },
     "files": [
-      "main.js",
-      "preload.js",
-      "tray.js",
+      "*.js",
       "icons/**"
     ],
     "win": {
