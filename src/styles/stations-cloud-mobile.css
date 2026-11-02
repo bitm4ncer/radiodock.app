@@ -1,0 +1,107 @@
+/* Discover cloud on phones: own the whole page instead of letterboxing.
+
+   The stage is absolutely positioned inside .stations-cloud (inset: 0 0 12px),
+   so its height is whatever the flex chain above it hands down — nothing in
+   discover-cloud.js sets it. On a phone that chain had one auto-basis link and
+   the stage came out roughly half the available height, leaving a dead band
+   between the constellation and the player bar.
+
+   Fix the chain first (every level a stretchable flex column with min-height
+   0), then let the stage absorb everything the toolbar does not need. A phone
+   is tall and narrow, so the same world now spreads over a portrait box —
+   more vertical neighbours, fewer nodes competing per row.
+
+   Imported last from index.css so it beats the component defaults in
+   stations.css and the mobile regime in app-mobile.css without !important. */
+
+@media (max-width: 699px), (not (display-mode: browser)) {
+  .stations-shell:has(.stations-content.is-cloud),
+  .stations-main:has(.stations-content.is-cloud),
+  .stations-content.is-cloud,
+  .stations-discover.is-cloud,
+  .stations-discover.is-cloud .stations-discover-results {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    /* height: auto everywhere, or the percentage heights further down the
+       chain resolve against a definite parent and the stretch never happens. */
+    height: auto;
+    min-height: 0;
+  }
+
+  /* The 20px page padding used to sit under the stage as a gutter. The stage
+     is the page now; the player clearance comes from .stations-shell. */
+  .stations-discover.is-cloud {
+    padding-bottom: 0;
+  }
+
+  .stations-discover.is-cloud .stations-cloud {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+  }
+
+  /* Drop the 12px bottom gutter the desktop box kept against the panel edge. */
+  .stations-cloud-stage {
+    inset: 0;
+  }
+
+  /* --- Touch targets ---------------------------------------------------
+     The round controls were 34px and the mode pill 34px tall — under the
+     44px comfortable minimum, and they sit in the thumb zone over the
+     constellation. */
+  .stations-cloud-controls button,
+  .stations-cloud-back {
+    width: 44px;
+    height: 44px;
+  }
+
+  .stations-cloud-controls button svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .stations-cloud-mode-toggle {
+    min-width: 44px;
+    height: 44px;
+  }
+
+  .stations-cloud-axis-summary {
+    min-height: 44px;
+  }
+
+  .stations-discover.is-cloud .stations-discover-search {
+    height: 40px;
+  }
+
+  /* Nodes are laid out by the projection, so their hit area can land well
+     under 44px. A transparent halo widens it without moving the bubble.
+     Modest on purpose: in a dense cluster a bigger halo would make taps
+     ambiguous rather than easier. */
+  .stations-cloud-node::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+  }
+
+  /* --- The hint line ------------------------------------------------
+     It used to sit across the top of the constellation at 48% width. Narrower
+     now, and it fades out the moment a pan starts — by then the user has
+     worked out what the surface does. */
+  .stations-cloud-hint {
+    max-width: 62%;
+    opacity: 0.85;
+    transition: opacity 180ms ease;
+  }
+
+  .stations-cloud-stage.is-dragging .stations-cloud-hint {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stations-cloud-hint {
+    transition: none;
+  }
+}

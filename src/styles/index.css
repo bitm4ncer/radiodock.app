@@ -43,3 +43,6 @@
 /* Surface depth is opt-in on <html>. Imported last so the material layer
    can override the flat regime styles without any selector hacks. */
 @import './surface-3d.css';
+/* Phone layout for the Discover cloud, which has to beat both the component
+   rules in stations.css and the mobile regime above. */
+@import './stations-cloud-mobile.css';
