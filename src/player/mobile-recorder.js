@@ -4,7 +4,7 @@
 // Presents the SAME interface + events as player/recorder.js so notes-panel is
 // unchanged.
 
-import { startRecording, stopRecording, fetchRecording, RecordingExpiredError } from '../data/record-client.js';
+import { startRecording, stopRecording, fetchRecording, RecordingExpiredError, RecordingUnsupportedError } from '../data/record-client.js';
 import { getPref, setPref } from '../data/storage.js';
 
 const PREF_PENDING = 'pendingRecording';
@@ -54,7 +54,15 @@ export function mountMobileRecorder() {
       emit('progress', { seconds: 0, bytes: null });
     } catch (err) {
       recording = false;
-      emit('error', { message: 'Recording could not start.', name: err?.name });
+      // The server may have started a recording before the local handle failed
+      // to persist; stop it so it does not occupy a slot and disk for 30 min.
+      if (handle?.id) { try { await stopRecording(handle.id); } catch {} handle = null; }
+      emit('error', {
+        message: err instanceof RecordingUnsupportedError
+          ? 'Recording is not available for HLS stations yet.'
+          : 'Recording could not start.',
+        name: err?.name,
+      });
     }
   }
 
@@ -96,6 +104,10 @@ export function mountMobileRecorder() {
   async function clearHandle() { handle = null; await setPref(PREF_PENDING, null); }
 
   function stop() {
+    // A second tap while the first stop/fetch is running would issue a second
+    // /stop + /fetch; the second fetch can 404 after the first deleted the file
+    // and the app would treat it as an empty recording and clear the handle.
+    if (fetching) return;
     if (!recording && !handle) return;
     finalizeAndFetch();
   }

@@ -85,3 +85,50 @@ test('repeated rapid starts create exactly one AudioContext', async () => {
     globalThis.MediaRecorder = originalMediaRecorder;
   }
 });
+
+test('a second stop tap during save is ignored (no duplicate fetch)', async () => {
+  const original = globalThis.fetch;
+  let stopCalls = 0;
+  let fetchCalls = 0;
+  globalThis.fetch = async (url) => {
+    const u = String(url);
+    if (u.endsWith('/api/record/start')) {
+      return new Response(JSON.stringify({ id: 'r1', mime: 'audio/mpeg' }), { status: 200 });
+    }
+    if (u.endsWith('/api/record/stop')) {
+      stopCalls += 1;
+      return new Response(JSON.stringify({ id: 'r1', bytes: 10, durationMs: 1000, error: null }), { status: 200 });
+    }
+    if (u.includes('/api/record/fetch')) {
+      fetchCalls += 1;
+      return new Response(new Blob(['audio'], { type: 'audio/mpeg' }), { status: 200 });
+    }
+    return new Response('{}', { status: 200 });
+  };
+  try {
+    const rec = mountMobileRecorder();
+    await rec.start({ id: 's1' });
+    rec.stop();
+    rec.stop(); // must not start a second finalize while the first is fetching
+    await new Promise((r) => setTimeout(r, 50));
+    assert.equal(stopCalls, 1, 'one /api/record/stop');
+    assert.equal(fetchCalls, 1, 'one /api/record/fetch');
+  } finally {
+    globalThis.fetch = original;
+  }
+});
+
+test('server HLS rejection is surfaced instead of a generic failure', async () => {
+  const original = globalThis.fetch;
+  globalThis.fetch = async () => new Response(JSON.stringify({ error: 'hls-unsupported' }), { status: 422 });
+  try {
+    const rec = mountMobileRecorder();
+    let message = '';
+    rec.on('error', (e) => { message = e.detail?.message ?? ''; });
+    await rec.start({ id: 's1' });
+    assert.match(message, /HLS/);
+    assert.equal(rec.isRecording(), false);
+  } finally {
+    globalThis.fetch = original;
+  }
+});

@@ -20,6 +20,11 @@ let hls = null;
 let hlsModulePromise = null;
 let playToken = 0;
 let lastAudibleVolume = 0.8;
+// A live stream that never produces audio must not leave playStation() pending
+// forever: no element event is guaranteed when a server accepts the connection
+// and then stays silent. 12 s triggers the same one-shot relay escalation as
+// an explicit media error, and recovery takes over from there.
+const PLAY_START_TIMEOUT_MS = 12000;
 // Per-selection escalation state: after the direct source fails once, the
 // server relay (uuid-only, stream URL resolved server-side) takes over —
 // that is what rescues http-only streams on https origins, where the https
@@ -88,6 +93,16 @@ function isHlsUrl(url) {
 
 function isPlaylistUrl(url) {
   return /\.(?:pls|m3u|asx)(\?|#|$)/i.test(url);
+}
+
+function withStartTimeout(promise, ms) {
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => {
+      reject(Object.assign(new Error('Playback did not start in time'), { name: 'StartTimeoutError' }));
+    }, ms);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
 }
 
 // On https origins, http:// stream URLs are blocked as mixed content.
@@ -305,10 +320,19 @@ async function playStation(station) {
 
     const playPromise = audio.play();
     if (playPromise && typeof playPromise.then === 'function') {
-      await playPromise;
+      // The race can settle before play() does; keep a rejection handler on the
+      // original promise so it never surfaces as an unhandled rejection.
+      playPromise.catch(() => {});
+      await withStartTimeout(playPromise, PLAY_START_TIMEOUT_MS);
     }
   } catch (err) {
     if (token !== playToken) return; // superseded by a newer call
+    // Autoplay policy is not a stream failure: the relay cannot bypass it and
+    // routing a blocked play() through the VPS only burns capacity.
+    if (err?.name === 'NotAllowedError' || err?.name === 'AbortError') {
+      emit('error', { message: err?.message ?? 'Playback failed', name: err?.name });
+      return;
+    }
     // One immediate escalation before surfacing the error, so an http-only
     // host without TLS still starts on the first tap.
     if (escalateThroughRelay(token)) return;

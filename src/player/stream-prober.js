@@ -77,7 +77,10 @@ export function attachStreamProber({ getStations, getPlayingId, onStatusChange }
   let timer = null;
   let statuses = {};          // { stationId: 'online' | 'offline' | 'unknown' } — non-playing rows only
   let probing = false;
-  let aborted = false;
+  // Per-cycle generation, not a shared boolean: a refresh during an in-flight
+  // pass must invalidate the OLD pass without re-enabling its workers when the
+  // new pass starts (the old `aborted=false` flip let both run concurrently).
+  let generation = 0;
   // Attaching must not start probing. The visibilitychange listener below is
   // registered once at attach time, so without this gate a caller that never
   // called start() (or that called stop()) would still get a full probe pass —
@@ -144,7 +147,7 @@ export function attachStreamProber({ getStations, getPlayingId, onStatusChange }
   async function runProbeCycle() {
     if (probing) return;
     probing = true;
-    aborted = false;
+    const myGen = ++generation;
 
     const all = getStations?.() ?? [];
     const playingId = getPlayingId?.() ?? null;
@@ -155,10 +158,10 @@ export function attachStreamProber({ getStations, getPlayingId, onStatusChange }
     let cursor = 0;
 
     const worker = async () => {
-      while (cursor < queue.length && !aborted) {
+      while (cursor < queue.length && myGen === generation) {
         const station = queue[cursor++];
         const result = await probeOne(station);
-        if (aborted) return;
+        if (myGen !== generation) return;
         next[station.id] = result;
         // Emit progressively so rows flip as the scan advances (~40s pass).
         statuses = { ...next };
@@ -168,11 +171,11 @@ export function attachStreamProber({ getStations, getPlayingId, onStatusChange }
 
     await Promise.all(Array.from({ length: CONCURRENCY }, worker));
 
-    if (!aborted) {
+    if (myGen === generation) {
       statuses = next;
       onStatusChange?.(statuses);
+      probing = false;
     }
-    probing = false;
   }
 
   function startTimer() {
@@ -199,15 +202,16 @@ export function attachStreamProber({ getStations, getPlayingId, onStatusChange }
 
   function start() {
     running = true;
-    aborted = false;
+    generation++;
+    probing = false;
     statuses = {};
     startTimer();
-    if (!probing) runProbeCycle();
+    runProbeCycle();
   }
 
   function stop() {
     running = false;
-    aborted = true;
+    generation++;
     stopTimer();
     probing = false;
     statuses = {};
@@ -217,13 +221,13 @@ export function attachStreamProber({ getStations, getPlayingId, onStatusChange }
   // Active list changed: abort the in-flight pass and restart cleanly.
   function refresh() {
     if (!running) return;
-    aborted = true;
+    generation++;
     probing = false;
     statuses = {};
     onStatusChange?.({});
     setTimeout(() => {
-      aborted = false;
-      if (!probing) runProbeCycle();
+      if (!running || probing) return;
+      runProbeCycle();
     }, 100);
   }
 

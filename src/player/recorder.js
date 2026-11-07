@@ -49,6 +49,12 @@ export function mountRecorder({ maxDurationMs = 60 * 60 * 1000 } = {}) {
     if (recording || starting) return;
     const uuid = station?.id;
     if (!uuid) { emit('error', { message: 'Station cannot be recorded (no id).' }); return; }
+    // The byte relay cannot carry an HLS manifest; fail with a clear message
+    // instead of opening a doomed cross-origin audio graph.
+    if (/\.m3u8(\?|#|$)/i.test(String(station?.url ?? ''))) {
+      emit('error', { message: 'Recording is not available for HLS stations yet.' });
+      return;
+    }
     const mime = pickMime();
     if (!mime) { emit('error', { message: 'Recording is not supported in this browser.' }); return; }
 

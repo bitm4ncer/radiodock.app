@@ -113,3 +113,38 @@ test('a cold-start pause is a user pause, not an internal one', () => {
     restoreGlobals(h);
   }
 });
+
+test('a failed relay escalation still schedules a retry after the grace', () => {
+  const h = harness();
+  stubGlobals(h);
+  try {
+    attachRecovery(h.player);
+    let checks = 0;
+    h.player.isEscalating = () => checks++ === 0; // grace active only on the first check
+    h.fire('error');     // schedules the post-escalation retry
+    h.invokeTimers();    // grace timer -> normal recovery attempt
+    h.invokeTimers();    // recovery delay -> playStation
+    assert.equal(h.plays.length, 1, 'playback is retried after the relay handoff window');
+  } finally {
+    restoreGlobals(h);
+  }
+});
+
+test('replaying the same station after stop gets a fresh attempt budget', () => {
+  const h = harness();
+  stubGlobals(h);
+  try {
+    attachRecovery(h.player);
+    // Exhaust the budget without running the retry timers.
+    h.fire('error');
+    h.fire('error');
+    h.fire('error');
+    h.fire('error'); // gives up
+    h.player.events.dispatchEvent(new CustomEvent('stopped'));
+    h.fire('error');
+    h.invokeTimers();
+    assert.equal(h.plays.length, 1, 'the replay is not stuck in gave-up state');
+  } finally {
+    restoreGlobals(h);
+  }
+});

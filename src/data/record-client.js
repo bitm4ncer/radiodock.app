@@ -4,6 +4,7 @@
 const BASE = 'https://stations.radiodock.app';
 
 export class RecordingExpiredError extends Error {}
+export class RecordingUnsupportedError extends Error {}
 
 export async function startRecording(uuid) {
   const res = await fetch(`${BASE}/api/record/start`, {
@@ -11,6 +12,10 @@ export async function startRecording(uuid) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ uuid }),
   });
+  if (res.status === 422) {
+    const body = await res.json().catch(() => ({}));
+    throw new RecordingUnsupportedError(body.error || 'unsupported');
+  }
   if (!res.ok) throw new Error(`start failed: ${res.status}`);
   return res.json(); // { id, mime }
 }

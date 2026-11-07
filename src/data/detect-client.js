@@ -18,7 +18,7 @@ export async function detectTrack(uuid) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ uuid }),
-      signal: AbortSignal.timeout(25000),
+      signal: AbortSignal.timeout(45000),
     });
   } catch (e) {
     const reason = e?.name === 'TimeoutError' ? 'timeout' : 'network';

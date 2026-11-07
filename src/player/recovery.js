@@ -4,7 +4,7 @@
 // A backgrounded sleeping tab may not self-heal on desktop — accepted tradeoff.
 
 const MAX_ATTEMPTS = 3;
-const DELAYS_MS = [800, 2000, 4000];
+const DELAYS_MS = [1000, 4000, 10000];
 const STALL_THRESHOLD_MS = 15000;
 
 export function attachRecovery(player) {
@@ -56,9 +56,20 @@ export function attachRecovery(player) {
 
   const tryRecover = () => {
     if (userPaused) return;
-    // audio.js is already handing this failure to the relay; a parallel retry
-    // would abort the relay load that is just starting.
-    if (player.isEscalating?.()) return;
+    // audio.js is already handing this failure to the relay. Do not race that
+    // handoff, but DO arm a retry for after the grace: if the relay itself
+    // fails immediately (429/503) no further element event follows, and a bare
+    // return here used to leave the player silently stuck forever.
+    if (player.isEscalating?.()) {
+      clearRecoveryTimer();
+      recoveryTimer = setTimeout(() => {
+        recoveryTimer = null;
+        const current = player.getCurrentStation();
+        if (!current) return;
+        tryRecover();
+      }, 1600);
+      return;
+    }
     const station = player.getCurrentStation();
     if (!station) return;
     if (!navigator.onLine) {
@@ -117,6 +128,13 @@ export function attachRecovery(player) {
     userPaused = false;
     if (lastStationId !== null && id !== lastStationId) resetSilently();
     lastStationId = id;
+  });
+  player.on('stopped', () => {
+    // Stopping and replaying the SAME station must start with a fresh attempt
+    // budget; otherwise a station that failed earlier replays in gave-up state.
+    resetSilently();
+    lastStationId = null;
+    internalPauseExpected = false;
   });
   audio.addEventListener('ended', () => {
     // Live streams shouldn't "end" — treat as a recoverable error.

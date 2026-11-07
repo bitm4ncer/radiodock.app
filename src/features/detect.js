@@ -62,6 +62,10 @@ export function mountDetect({ player, getLatestMetadata, notes, setBusy }) {
         // ONLY a real no-match renders as "No match" — anything else is an
         // operational failure and must not masquerade as one (honest-result rule).
         toast('No match');
+      } else if (out.reason === 'hls-unsupported') {
+        // The server rejects HLS manifests instead of sending text to the
+        // provider, and refunds the quota. Say so instead of a generic failure.
+        toast('Track detection is not available for HLS stations yet');
       } else {
         toast('Detection failed');
       }
