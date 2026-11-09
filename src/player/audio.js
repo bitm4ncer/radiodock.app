@@ -4,6 +4,7 @@
 import { relayHlsUrl, relayUrl } from '../data/relay.js';
 import { getStationInfo } from '../data/stations-api.js';
 import { lowestBitrateLevelIndex } from './hls-levels.js';
+import { nextStreamTransport } from './transport-ladder.js';
 import { decodeHtmlEntities } from '../data/html-entities.js';
 
 const events = new EventTarget();
@@ -27,6 +28,16 @@ let lastAudibleVolume = 0.8;
 // and then stays silent. 12 s triggers the same one-shot relay escalation as
 // an explicit media error, and recovery takes over from there.
 const PLAY_START_TIMEOUT_MS = 12000;
+// A mixed-content URL refresh is an optimisation (it can turn a relay load
+// into a direct one), never a precondition for playback. The station API can
+// be slow exactly when the network is bad, and waiting its full 12 s default
+// left the previous station audible and the UI unchanged after a tap.
+const MIXED_CONTENT_REFRESH_TIMEOUT_MS = 1500;
+// A native relay failure surfaces as an element error almost immediately; an
+// HLS relay handoff needs to load a manifest and usually several segments
+// before audio starts. Recovery must not pre-empt that work (the old fixed
+// 1.5 s grace killed a healthy HLS start after ~2.6 s).
+const HLS_ESCALATION_GRACE_MS = 12000;
 // iOS resumes the previously interrupted audio app (e.g. a podcast) when the
 // main <audio> element pauses during a station switch. Keep a silent looping
 // element playing while the app is supposed to be playing, so the web audio
@@ -51,6 +62,13 @@ let assignedSrc = '';
 let relayTried = false;
 let directFailed = false;
 let escalationGraceUntil = 0;
+// The HLS relay answered with a manifest for this selection. Once confirmed,
+// every retry of this station must use the HLS proxy again instead of paying
+// the direct/native relay rounds first.
+let hlsConfirmed = false;
+// The HLS proxy has been tried for this selection. Reset when the probe fails
+// without a manifest, so a later recovery attempt may probe it again.
+let hlsProbeTried = false;
 
 function getElement() {
   if (element) return element;
@@ -61,6 +79,9 @@ function getElement() {
   document.body.append(element);
 
   element.addEventListener('playing', () => {
+    // The transport that just started is healthy; recovery may arm its stall
+    // detection again and any escalation grace is obsolete.
+    escalationGraceUntil = 0;
     emit('playing');
     // If iOS suspended the silent session keeper while we were in the
     // background, bring it back alongside the real stream.
@@ -80,10 +101,10 @@ function getElement() {
       name: MEDIA_ERR_NAMES[err.code] ?? `MEDIA_ERR_${err.code}`,
       message: err.message ?? '',
     });
-    // A direct (non-relay) source that dies mid-play escalates to the relay
-    // once. HLS errors arrive through the hls.js handler instead — the
+    // A source that dies mid-play escalates along the transport ladder once
+    // per step. HLS errors arrive through the hls.js handler instead — the
     // element keeps a MediaSource blob here, so the src guard skips them.
-    if (assignedSrc && element.getAttribute('src') === assignedSrc && !assignedSrc.includes('/api/relay')) {
+    if (assignedSrc && element.getAttribute('src') === assignedSrc) {
       escalateThroughRelay(playToken);
     }
   });
@@ -198,13 +219,28 @@ const refreshedMixedContent = new Map();
 export async function refreshMixedContentStation(station, {
   secureContext = typeof window !== 'undefined' && window.isSecureContext,
   fetchInfo = getStationInfo,
+  timeoutMs = MIXED_CONTENT_REFRESH_TIMEOUT_MS,
 } = {}) {
   const id = String(station?.stationuuid || station?.id || '');
   if (!id || id.startsWith('custom-') || !isMixedContentStream(station, secureContext)) return station;
   const key = `${id}|${station.url}`;
   if (refreshedMixedContent.has(key)) return refreshedMixedContent.get(key) ?? station;
+  const controller = typeof AbortController === 'function' ? new AbortController() : null;
+  let timer = null;
   try {
-    const fresh = await fetchInfo(id);
+    // Race the lookup against a short deadline. On a bad network the refresh
+    // must yield to the relay path rather than hold the tap hostage; the relay
+    // resolves the current URL from the database anyway.
+    const deadline = new Promise((resolve) => {
+      timer = setTimeout(() => {
+        try { controller?.abort(); } catch { /* already aborted */ }
+        resolve(null);
+      }, Math.max(0, timeoutMs));
+    });
+    const fresh = await Promise.race([
+      fetchInfo(id, controller ? { signal: controller.signal } : undefined),
+      deadline,
+    ]);
     if (fresh?.url) {
       const merged = { ...station, ...fresh, id: station.id ?? id };
       refreshedMixedContent.set(key, merged);
@@ -212,6 +248,8 @@ export async function refreshMixedContentStation(station, {
     }
   } catch {
     // Keep the snapshot; the relay path below is still a valid fallback.
+  } finally {
+    if (timer) clearTimeout(timer);
   }
   refreshedMixedContent.set(key, null);
   return station;
@@ -221,12 +259,13 @@ export async function refreshMixedContentStation(station, {
 // recovery each before the ladder escalates. The relay HLS URL is a signed
 // manifest proxy, so relative segment and key URIs work as well as absolute
 // ones. Native HLS remains the Safari fallback.
-async function startHlsSource(token, url) {
+async function startHlsSource(token, url, { viaRelay = false } = {}) {
   const Hls = await loadHls();
   if (token !== playToken) return; // station changed during dynamic import
 
   const audio = getElement();
   if (Hls.isSupported()) {
+    assignedSrc = '';
     const instance = new Hls({
       enableWorker: true,
       maxBufferLength: 10,
@@ -246,6 +285,7 @@ async function startHlsSource(token, url) {
     // background stream and constant rebuffering on mobile networks.
     instance.startLevel = 0;
     instance.on(Hls.Events.MANIFEST_PARSED, () => {
+      if (viaRelay) hlsConfirmed = true;
       const lowest = lowestBitrateLevelIndex(instance.levels);
       if (lowest < 0) return;
       instance.startLevel = lowest;
@@ -281,15 +321,20 @@ async function startHlsSource(token, url) {
         return;
       }
       if (escalateThroughRelay(token)) return;
-      console.warn('hls fatal error, falling back to native src', data);
+      // No transport left. Never point the native element at the relay's m3u8
+      // URL — that URL serves a manifest, not audio. A failed probe resets its
+      // state so a later recovery attempt can run the ladder again.
+      if (viaRelay) {
+        if (!hlsConfirmed) {
+          hlsProbeTried = false;
+          currentIsHls = false;
+        }
+        destroyHls();
+        emit('error', { message: 'HLS relay unavailable', name: 'HlsRelayError' });
+        return;
+      }
       destroyHls();
-      assignedSrc = url;
-      audio.src = url;
-      audio.load();
-      audio.play().catch((err) => {
-        if (token !== playToken) return;
-        emit('error', { message: err.message, name: err.name });
-      });
+      emit('error', { message: 'HLS playback failed', name: 'HlsFatalError' });
     });
 
     instance.loadSource(url);
@@ -304,25 +349,30 @@ async function startHlsSource(token, url) {
   }
 }
 
-// One-shot escalation of the current load to the server relay. HLS uses the
-// manifest proxy so relative segment URIs resolve server-side; native audio
-// uses the byte relay. The grace window tells the recovery layer not to race
-// this handoff with its own playStation retry.
+// One-shot escalation of the current load along the transport ladder. Native
+// sources go direct -> native relay -> HLS manifest proxy; HLS sources go
+// direct -> HLS manifest proxy. The HLS step for a native station exists
+// because some stations hide an HLS manifest behind a non-.m3u8 URL or a
+// PLS/M3U wrapper — the native relay answers those with 502 + X-Relay-Hls and
+// a plain <audio> element can never play the manifest itself.
 function escalateThroughRelay(token) {
   if (token !== playToken) return false;
-  const relay = currentIsHls ? relayHlsFor(currentStation) : relayFor(currentStation);
-  if (!relay || relayTried) return false;
-  relayTried = true;
-  directFailed = true;
-  escalationGraceUntil = Date.now() + 1500;
-  destroyHls();
-  const audio = getElement();
-  if (currentIsHls) {
-    startHlsSource(token, relay).catch((err) => {
-      if (token !== playToken) return;
-      emit('error', { message: err?.message ?? 'Playback failed', name: err?.name });
-    });
-  } else {
+  const step = nextStreamTransport({
+    isHls: currentIsHls,
+    directTried: true,
+    nativeRelayTried: relayTried,
+    hlsRelayTried: hlsProbeTried,
+  });
+  if (!step) return false;
+
+  if (step === 'native-relay') {
+    const relay = relayFor(currentStation);
+    if (!relay) return false;
+    relayTried = true;
+    directFailed = true;
+    escalationGraceUntil = Date.now() + 1500;
+    destroyHls();
+    const audio = getElement();
     assignedSrc = relay;
     audio.src = relay;
     audio.load();
@@ -330,7 +380,38 @@ function escalateThroughRelay(token) {
       if (token !== playToken) return;
       emit('error', { message: err.message, name: err.name });
     });
+    return true;
   }
+
+  // step === 'hls-relay'
+  const relay = relayHlsFor(currentStation);
+  if (!relay) return false;
+  hlsProbeTried = true;
+  directFailed = true;
+  escalationGraceUntil = Date.now() + HLS_ESCALATION_GRACE_MS;
+  destroyHls();
+  currentIsHls = true;
+  startHlsSource(token, relay, { viaRelay: true })
+    .then(() => {
+      if (token !== playToken) return;
+      // startHlsSource only attaches the MediaSource. The original play()
+      // belonged to the source that just failed, so the HLS handoff must
+      // start playback itself — otherwise hls.js buffers while paused forever.
+      const audio = getElement();
+      const playPromise = audio.play();
+      playPromise?.catch?.((err) => {
+        if (token !== playToken) return;
+        emit('error', { message: err.message, name: err.name });
+      });
+    })
+    .catch((err) => {
+      if (token !== playToken) return;
+      if (!hlsConfirmed) {
+        hlsProbeTried = false;
+        currentIsHls = false;
+      }
+      emit('error', { message: err?.message ?? 'Playback failed', name: err?.name });
+    });
   return true;
 }
 
@@ -343,18 +424,20 @@ async function playStation(station) {
   userPaused = false;
   startSessionKeepAlive();
   const token = ++playToken;
-  // A favorite can hold an old http:// stream after the database URL has been
-  // repaired. Resolve the current record before the relay/decode path.
-  station = await refreshMixedContentStation(station);
-  if (token !== playToken) return;
   const uuid = String(station.stationuuid || station.id || '');
   if (uuid !== currentUuid || station.url !== currentStation?.url) {
     relayTried = false;
     directFailed = false;
+    hlsConfirmed = false;
+    hlsProbeTried = false;
     escalationGraceUntil = 0;
   }
   currentStation = station;
   currentUuid = uuid;
+  // Announce the switch before any network work. The mixed-content refresh
+  // below is an optimisation (it can turn a relay load into a direct one); it
+  // must never delay the UI or leave the previous station audible while the
+  // station API is slow.
   emit('stationchange', { station });
   emit('loading');
 
@@ -366,8 +449,15 @@ async function playStation(station) {
   } catch {}
 
   try {
+    // A favorite can hold an old http:// stream after the database URL has been
+    // repaired. Resolve the current record before the relay/decode path, but
+    // never wait longer than the short refresh deadline for it.
+    station = await refreshMixedContentStation(station);
+    if (token !== playToken) return;
+    currentStation = station;
     const streamUrl = preferHttps(station.url);
-    currentIsHls = isHlsUrl(station.url) || isHlsUrl(streamUrl);
+    const urlIsHls = isHlsUrl(station.url) || isHlsUrl(streamUrl);
+    currentIsHls = urlIsHls || hlsConfirmed;
     const relay = currentIsHls ? relayHlsFor(station) : relayFor(station);
     // A secure page cannot load http:// media directly. Guessing https:// on
     // the same port often hangs without firing an error, which used to trap
@@ -379,10 +469,13 @@ async function playStation(station) {
     // content are not playable directly either, so the relay goes first.
     const useRelayFirst = Boolean(relay && (directFailed || isPlaylistUrl(station.url) || mixedContent));
     const source = useRelayFirst ? relay : streamUrl;
-    relayTried = relayTried || useRelayFirst;
+    if (useRelayFirst) {
+      if (currentIsHls) hlsProbeTried = true;
+      else relayTried = true;
+    }
 
     if (currentIsHls) {
-      await startHlsSource(token, source);
+      await startHlsSource(token, source, { viaRelay: useRelayFirst });
     } else {
       assignedSrc = source;
       audio.src = source;
@@ -414,6 +507,10 @@ async function playStation(station) {
 
 function pause() {
   userPaused = true;
+  // A station load can be in flight (mixed-content refresh, hls.js import,
+  // relay handoff). Pausing must cancel it: otherwise the late load assigns a
+  // src and calls play() after the user — or the lock screen — already paused.
+  playToken++;
   const audio = getElement();
   audio.pause();
   // A real user pause should release the audio session; only a station switch
@@ -450,6 +547,8 @@ function stop() {
   assignedSrc = '';
   relayTried = false;
   directFailed = false;
+  hlsConfirmed = false;
+  hlsProbeTried = false;
   escalationGraceUntil = 0;
   stopSessionKeepAlive();
   emit('stopped');

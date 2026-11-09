@@ -6,6 +6,11 @@
 const MAX_ATTEMPTS = 3;
 const DELAYS_MS = [1000, 4000, 10000];
 const STALL_THRESHOLD_MS = 15000;
+// After the fast budget is exhausted the station may still be in a transient
+// upstream outage (a relay restart, a CDN blip, a station that comes back after
+// its night break). Keep checking once a minute instead of parking forever on
+// a dead play state; the user should not have to re-tap the station.
+const GIVE_UP_RETRY_MS = 30000;
 
 export function attachRecovery(player) {
   const audio = player._element();
@@ -13,6 +18,7 @@ export function attachRecovery(player) {
   let gaveUp = false;
   let stallTimer = null;
   let recoveryTimer = null;
+  let slowRetryTimer = null;
   let waitingForNetwork = false;
   let userPaused = false;
   let internalPauseExpected = false;
@@ -41,6 +47,11 @@ export function attachRecovery(player) {
     recoveryTimer = null;
   };
 
+  const clearSlowRetryTimer = () => {
+    if (slowRetryTimer) clearTimeout(slowRetryTimer);
+    slowRetryTimer = null;
+  };
+
   const reset = () => {
     // Playback resumed after at least one scheduled retry — the recovery
     // layer actually healed something, worth surfacing to analytics.
@@ -51,6 +62,7 @@ export function attachRecovery(player) {
     userPaused = false;
     clearStallTimer();
     clearRecoveryTimer();
+    clearSlowRetryTimer();
   };
 
   // Manual station switch: drop pending retries and reset the counter
@@ -63,10 +75,39 @@ export function attachRecovery(player) {
     userPaused = false;
     clearStallTimer();
     clearRecoveryTimer();
+    clearSlowRetryTimer();
+  };
+
+  const scheduleSlowRetry = () => {
+    if (slowRetryTimer) return;
+    slowRetryTimer = setTimeout(() => {
+      slowRetryTimer = null;
+      if (userPaused) return;
+      if (!navigator.onLine) {
+        waitingForNetwork = true;
+        return;
+      }
+      const current = player.getCurrentStation();
+      if (!current) return;
+      // If audio came back through another path (e.g. a foreground reconnect),
+      // do not cut it.
+      if (!audio.paused) return;
+      // Keep `gaveUp` set so 'recoveryfailed' is emitted once per outage, not
+      // once per slow-retry cycle; a successful 'playing' clears it.
+      attempts = 0;
+      player.playStation(current);
+    }, GIVE_UP_RETRY_MS);
   };
 
   const tryRecover = () => {
     if (userPaused) return;
+    // A retry is already queued. Element errors, relay play() rejections and
+    // HLS fatals can all point at the same failure; burning three attempts on
+    // duplicates would give up while the first retry has not even run yet.
+    if (recoveryTimer) return;
+    // Any new failure supersedes a pending slow retry; the give-up branch
+    // below re-arms it after the fast budget is spent again.
+    clearSlowRetryTimer();
     // audio.js is already handing this failure to the relay. Do not race that
     // handoff, but DO arm a retry for after the grace: if the relay itself
     // fails immediately (429/503) no further element event follows, and a bare
@@ -96,6 +137,7 @@ export function attachRecovery(player) {
         gaveUp = true;
         emit('recoveryfailed', { attempts });
       }
+      scheduleSlowRetry();
       return;
     }
     const delay = DELAYS_MS[attempts] ?? DELAYS_MS.at(-1);
@@ -103,6 +145,7 @@ export function attachRecovery(player) {
     console.info(`[recovery] attempt ${attempts}/${MAX_ATTEMPTS} in ${delay}ms`);
     clearRecoveryTimer();
     recoveryTimer = setTimeout(() => {
+      recoveryTimer = null;
       const current = player.getCurrentStation();
       if (!current) return;
       player.playStation(current);
@@ -134,6 +177,7 @@ export function attachRecovery(player) {
     userPaused = true;
     clearStallTimer();
     clearRecoveryTimer();
+    clearSlowRetryTimer();
     attempts = 0;
     gaveUp = false;
     waitingForNetwork = false;
@@ -149,6 +193,9 @@ export function attachRecovery(player) {
     // set unconditionally here would swallow the user's next real pause.
     internalPauseExpected = !audio.paused;
     userPaused = false;
+    // Every playStation() attempt supersedes a pending slow retry; otherwise a
+    // manual replay and a 30 s timer could race into two simultaneous loads.
+    clearSlowRetryTimer();
     if (lastStationId !== null && id !== lastStationId) resetSilently();
     lastStationId = id;
   });
@@ -166,6 +213,15 @@ export function attachRecovery(player) {
   audio.addEventListener('error', () => {
     tryRecover();
   });
+  // HLS fatal errors exhaust their transport ladder inside audio.js and never
+  // touch the element (hls.js owns a MediaSource blob), so the element's
+  // 'error' listener cannot see them. The player-level error is the signal
+  // that a stream attempt has finally failed and recovery must take over.
+  player.on('error', (evt) => {
+    const name = evt?.detail?.name;
+    if (name === 'NotAllowedError' || name === 'AbortError') return;
+    tryRecover();
+  });
   audio.addEventListener('stalled', () => {
     clearStallTimer();
     stallTimer = setTimeout(() => {
@@ -180,10 +236,11 @@ export function attachRecovery(player) {
   });
 
   window.addEventListener('offline', () => {
-    if (recoveryTimer || stallTimer) {
+    if (recoveryTimer || stallTimer || slowRetryTimer) {
       waitingForNetwork = true;
       clearRecoveryTimer();
       clearStallTimer();
+      clearSlowRetryTimer();
     }
   });
 
@@ -197,6 +254,7 @@ export function attachRecovery(player) {
     if (attempts === 0) attempts = 1;
     clearRecoveryTimer();
     clearStallTimer();
+    clearSlowRetryTimer();
     player.playStation(station);
   });
 
@@ -221,6 +279,7 @@ export function attachRecovery(player) {
     waitingForNetwork = false;
     clearRecoveryTimer();
     clearStallTimer();
+    clearSlowRetryTimer();
     player.playStation(station);
   };
 
@@ -230,6 +289,7 @@ export function attachRecovery(player) {
         // The tab is frozen; pending attempts would only expire unseen.
         clearStallTimer();
         clearRecoveryTimer();
+        clearSlowRetryTimer();
         return;
       }
       resumeAfterBackground();
