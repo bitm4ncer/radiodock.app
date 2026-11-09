@@ -81,21 +81,61 @@ export function attachMediaSession(player) {
   // the lock-screen controls. previoustrack/nexttrack are wired in main.js
   // via the optional callbacks below; if not provided, the buttons are still
   // surfaced but do nothing (some platforms hide them in that case).
-  navigator.mediaSession.setActionHandler('play', () => player.resume());
-  navigator.mediaSession.setActionHandler('pause', () => player.pause());
-  navigator.mediaSession.setActionHandler('stop', () => player.stop());
-
+  // iOS only honours handlers registered after the media element has become
+  // the Now Playing item; handlers set at startup are ignored and iOS falls
+  // back to its default ±10 s skip buttons. Re-registering on every `playing`
+  // event (and after an app switch) makes the previous/next arrows appear.
+  // The seek actions are explicitly cleared because live radio cannot seek.
   let prevCb = null;
   let nextCb = null;
+
+  function setActionHandler(action, handler) {
+    try {
+      navigator.mediaSession.setActionHandler(action, handler);
+    } catch {
+      // Unsupported action in this browser — ignore it rather than losing the
+      // handlers that do exist.
+    }
+  }
+
+  function registerActionHandlers() {
+    setActionHandler('play', () => player.resume());
+    setActionHandler('pause', () => player.pause());
+    setActionHandler('stop', () => player.stop());
+    setActionHandler('previoustrack', () => { prevCb?.(); });
+    setActionHandler('nexttrack', () => { nextCb?.(); });
+    setActionHandler('seekbackward', null);
+    setActionHandler('seekforward', null);
+    setActionHandler('seekto', null);
+  }
+
+  registerActionHandlers();
+  // A short delayed refresh matters on iOS: the Now Playing item can be
+  // established just after `playing`, and handlers registered in the same tick
+  // are then discarded again. 250 ms is enough to land after it.
+  let refreshTimer = null;
+  const refreshActionHandlers = () => {
+    registerActionHandlers();
+    if (typeof setTimeout !== 'function') return;
+    if (refreshTimer) clearTimeout(refreshTimer);
+    refreshTimer = setTimeout(registerActionHandlers, 250);
+  };
+  player.on('playing', refreshActionHandlers);
+  player.on('stationchange', refreshActionHandlers);
+  if (typeof document !== 'undefined') {
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') refreshActionHandlers();
+    });
+  }
 
   return {
     setPreviousTrack(cb) {
       prevCb = cb;
-      navigator.mediaSession.setActionHandler('previoustrack', cb ? () => cb() : null);
+      registerActionHandlers();
     },
     setNextTrack(cb) {
       nextCb = cb;
-      navigator.mediaSession.setActionHandler('nexttrack', cb ? () => cb() : null);
+      registerActionHandlers();
     },
   };
 }
