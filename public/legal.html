@@ -298,6 +298,7 @@
         <li><strong>Metadata proxy</strong> — request log lines including the IP address: <strong>7 days</strong> on the Render fallback instance.</li>
         <li><strong>Umami analytics</strong> - the IP address and the session hash derived from it are discarded when the day rolls over; only the aggregated, non-identifying event counts remain.</li>
         <li><strong>Anonymous listening sessions</strong> - raw session rows and daily listener rollups are deleted after <strong>90 days</strong>; only aggregate Popular scores remain.</li>
+        <li><strong>Anonymous stream-quality measurement</strong> — one outcome per playback attempt (station UUID, played/failed/aborted, timing, coarse platform/network class, error name). No IP, stream URL, error message, or listener ID is stored; rows are deleted after <strong>90 days</strong>.</li>
         <li><strong>Station submissions</strong> — as described under <a href="#submissions">Station submissions</a>.</li>
         <li><strong>Hosting providers</strong> — GitHub, Render and Hetzner keep their own standard server logs under their own retention policies, which we do not control.</li>
       </ul>
@@ -360,10 +361,13 @@
         <strong>Anonymous listening sessions:</strong> to rank Popular, RadioDock also sends an anonymous listening session to its own Stations API. The app stores a random listener ID in local storage and sends only an HMAC of it; the server never stores the raw ID, IP address or user agent with a session. Session rows and daily rollups are kept for <strong>90 days</strong>, then deleted; only aggregate popularity scores remain. This ingest stops when the analytics opt-out is on, Do Not Track is enabled, or a content blocker prevents the request. No listener-level data is public.
       </p>
       <p>
+        <strong>Anonymous stream-quality measurement:</strong> to rank station reliability, the app also sends one anonymous outcome per playback attempt to the Stations API (station UUID, played/failed/aborted, timing, coarse platform/network class, and the error name when one occurred). No IP address, stream URL, error message, or listener ID is stored, and raw rows are deleted after <strong>90 days</strong>. This ingest stops with the same analytics opt-out and is used only to identify stations that need attention; it never changes what is played.
+      </p>
+      <p>
         <strong>Legal basis:</strong> Art. 6(1)(f) GDPR — legitimate interest in understanding aggregate product usage to improve the app. The analytics script itself neither stores information on nor reads information from your terminal equipment, so the consent requirement of § 25 Abs. 1 TDDDG is not triggered; the only value written locally is your own opt-out flag, which is strictly necessary to honour your choice and is exempt under § 25 Abs. 2 Nr. 2 TDDDG. You can object to this processing at any time under Art. 21 GDPR using the toggle below.
       </p>
       <p>
-        <strong>How to opt out:</strong> use the toggle below, or enable "Do Not Track" in your browser, or use any content blocker. RadioDock works identically with analytics off.
+        <strong>How to opt out:</strong> use the toggle below, or enable "Do Not Track" in your browser, or use any content blocker. RadioDock works identically with analytics off; the same opt-out also stops stream-quality reports.
       </p>
       <p>
         <strong>Further reading:</strong> Umami is open-source software (see
