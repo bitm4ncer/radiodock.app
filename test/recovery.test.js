@@ -49,7 +49,7 @@ function stubGlobals(h) {
   };
   Object.defineProperty(globalThis, 'document', { value: h.document, configurable: true, writable: true });
   Object.defineProperty(globalThis, 'navigator', { value: { onLine: true }, configurable: true, writable: true });
-  globalThis.setTimeout = (fn) => { const id = { fn, cleared: false }; h.timers.push(id); return id; };
+  globalThis.setTimeout = (fn, ms) => { const id = { fn, ms, cleared: false }; h.timers.push(id); return id; };
   globalThis.clearTimeout = (id) => { if (id) id.cleared = true; };
 }
 
@@ -152,6 +152,46 @@ test('a failed relay escalation still schedules a retry after the grace', () => 
   }
 });
 
+test('an HLS fatal player error schedules recovery', () => {
+  const h = harness();
+  stubGlobals(h);
+  try {
+    attachRecovery(h.player);
+    h.player.events.dispatchEvent(new CustomEvent('error', { detail: { name: 'HlsFatalError', message: 'no manifest' } }));
+    h.invokeTimers();
+    assert.equal(h.plays.length, 1, 'hls.js fatals never reach the audio element, so recovery must listen here');
+  } finally {
+    restoreGlobals(h);
+  }
+});
+
+test('duplicate failure signals consume only one attempt', () => {
+  const h = harness();
+  stubGlobals(h);
+  try {
+    attachRecovery(h.player);
+    h.fire('error');
+    h.player.events.dispatchEvent(new CustomEvent('error', { detail: { name: 'HlsFatalError' } }));
+    h.invokeTimers();
+    assert.equal(h.plays.length, 1, 'the second signal must not schedule a second retry');
+  } finally {
+    restoreGlobals(h);
+  }
+});
+
+test('an autoplay rejection is not treated as a stream failure', () => {
+  const h = harness();
+  stubGlobals(h);
+  try {
+    attachRecovery(h.player);
+    h.player.events.dispatchEvent(new CustomEvent('error', { detail: { name: 'NotAllowedError' } }));
+    h.invokeTimers();
+    assert.deepEqual(h.plays, []);
+  } finally {
+    restoreGlobals(h);
+  }
+});
+
 test('replaying the same station after stop gets a fresh attempt budget', () => {
   const h = harness();
   stubGlobals(h);
@@ -227,6 +267,70 @@ test('pageshow also reconnects after a background pause', () => {
     h.document.visibilityState = 'visible';
     h.fireWindow('pageshow');
     assert.equal(h.plays.length, 1);
+  } finally {
+    restoreGlobals(h);
+  }
+});
+
+test('after giving up, a slow retry keeps checking without a user tap', () => {
+  const h = harness();
+  stubGlobals(h);
+  try {
+    attachRecovery(h.player);
+    let failed = 0;
+    h.player.events.addEventListener('recoveryfailed', () => { failed += 1; });
+    for (let i = 0; i < 3; i += 1) {
+      h.fire('error');
+      h.invokeTimers(); // let each scheduled retry fire before the next failure
+    }
+    h.fire('error'); // budget exhausted -> recoveryfailed + slow retry
+    assert.equal(failed, 1, 'recoveryfailed is emitted once per outage');
+    const slow = h.timers.find((t) => t.ms === 30000);
+    assert.ok(slow, 'a slow retry is armed after the fast budget');
+    h.plays.length = 0;
+    slow.fn();
+    assert.deepEqual(h.plays, ['playStation'], 'the slow retry reconnects automatically');
+  } finally {
+    restoreGlobals(h);
+  }
+});
+
+test('an explicit pause cancels the slow retry', () => {
+  const h = harness();
+  stubGlobals(h);
+  try {
+    attachRecovery(h.player);
+    for (let i = 0; i < 3; i += 1) {
+      h.fire('error');
+      h.invokeTimers();
+    }
+    h.fire('error');
+    const slow = h.timers.find((t) => t.ms === 30000);
+    assert.ok(slow, 'slow retry armed');
+    h.setUserPaused(true);
+    h.fire('pause');
+    assert.equal(slow.cleared, true, 'a real pause must stop the background retry');
+    h.plays.length = 0;
+    if (!slow.cleared) slow.fn();
+    assert.deepEqual(h.plays, []);
+  } finally {
+    restoreGlobals(h);
+  }
+});
+
+test('a successful playing resets the slow-retry state', () => {
+  const h = harness();
+  stubGlobals(h);
+  try {
+    attachRecovery(h.player);
+    for (let i = 0; i < 3; i += 1) {
+      h.fire('error');
+      h.invokeTimers();
+    }
+    h.fire('error');
+    const slow = h.timers.find((t) => t.ms === 30000);
+    h.fire('playing');
+    assert.equal(slow.cleared, true, 'recovery is fully reset after audio flows');
   } finally {
     restoreGlobals(h);
   }
