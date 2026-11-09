@@ -53,6 +53,7 @@ import { buildListItemEvent } from './analytics/stations-events.js';
 import { attachListenHeartbeat } from './analytics/listen-heartbeat.js';
 import { attachListenSession } from './analytics/listen-session.js';
 import { attachStreamOutcome } from './analytics/stream-outcome.js';
+import { reportStreamOutcome } from './analytics/stream-telemetry.js';
 import { getAnalyticsOptOut, setAnalyticsOptOut } from './data/analytics-prefs.js';
 import { mountNudges } from './ui/nudges.js';
 import { mountThemeToggle, subscribeOSChange as subscribeThemeOSChange } from './ui/theme.js';
@@ -95,7 +96,16 @@ const metadataPoller = attachMetadataPoller(player);
 const mediaSession = attachMediaSession(player);
 attachListenHeartbeat(player, { track, identify: identifySession });
 attachListenSession(player);
-attachStreamOutcome(player, { track });
+attachStreamOutcome(player, {
+  track,
+  report: reportStreamOutcome,
+  getContext: (station) => ({
+    hls: player.isHlsUrl?.(station?.url ?? '') === true,
+    platform: typeof globalThis.matchMedia === 'function'
+      && globalThis.matchMedia('(pointer: coarse)').matches ? 'touch' : 'desktop',
+    network: globalThis.navigator?.connection?.effectiveType ?? 'unknown',
+  }),
+});
 
 const analyticsToggle = document.getElementById('aboutAnalyticsToggle');
 if (analyticsToggle) {
