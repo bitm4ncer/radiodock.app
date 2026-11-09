@@ -26,6 +26,15 @@ let lastAudibleVolume = 0.8;
 // and then stays silent. 12 s triggers the same one-shot relay escalation as
 // an explicit media error, and recovery takes over from there.
 const PLAY_START_TIMEOUT_MS = 12000;
+// iOS resumes the previously interrupted audio app (e.g. a podcast) when the
+// main <audio> element pauses during a station switch. Keep a silent looping
+// element playing while the app is supposed to be playing, so the web audio
+// session never goes inactive in the gap between teardown and the next
+// station's first frame. Real zero samples (not volume 0) keep iOS from
+// treating the element as inactive.
+const SILENT_WAV_DATA_URI = 'data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YSADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==';
+let keepAlive = null;
+let keepAliveWanted = false;
 // Per-selection escalation state: after the direct source fails once, the
 // server relay (uuid-only, stream URL resolved server-side) takes over —
 // that is what rescues http-only streams on https origins, where the https
@@ -50,7 +59,12 @@ function getElement() {
   element.playsInline = true;
   document.body.append(element);
 
-  element.addEventListener('playing', () => emit('playing'));
+  element.addEventListener('playing', () => {
+    emit('playing');
+    // If iOS suspended the silent session keeper while we were in the
+    // background, bring it back alongside the real stream.
+    if (keepAliveWanted) startSessionKeepAlive();
+  });
   element.addEventListener('pause', () => emit('paused'));
   element.addEventListener('waiting', () => emit('loading'));
   element.addEventListener('canplay', () => emit('canplay'));
@@ -75,6 +89,41 @@ function getElement() {
 
   return element;
 }
+
+function ensureKeepAlive() {
+  if (keepAlive || typeof document === 'undefined') return keepAlive;
+  keepAlive = document.createElement('audio');
+  keepAlive.src = SILENT_WAV_DATA_URI;
+  keepAlive.loop = true;
+  keepAlive.preload = 'auto';
+  keepAlive.volume = 0.001;
+  keepAlive.setAttribute('playsinline', '');
+  keepAlive.setAttribute('aria-hidden', 'true');
+  keepAlive.style.display = 'none';
+  (document.body || document.documentElement).append(keepAlive);
+  return keepAlive;
+}
+
+function startSessionKeepAlive() {
+  keepAliveWanted = true;
+  const el = ensureKeepAlive();
+  if (!el || !el.paused) return;
+  const p = el.play();
+  if (p?.catch) p.catch(() => {});
+}
+
+function stopSessionKeepAlive() {
+  keepAliveWanted = false;
+  if (!keepAlive) return;
+  try {
+    keepAlive.pause();
+    keepAlive.currentTime = 0;
+  } catch {
+    // Element already gone.
+  }
+}
+
+events.addEventListener('recoveryfailed', stopSessionKeepAlive);
 
 async function loadHls() {
   if (!hlsModulePromise) {
@@ -291,6 +340,7 @@ async function playStation(station) {
   }
 
   userPaused = false;
+  startSessionKeepAlive();
   const token = ++playToken;
   // A favorite can hold an old http:// stream after the database URL has been
   // repaired. Resolve the current record before the relay/decode path.
@@ -365,6 +415,9 @@ function pause() {
   userPaused = true;
   const audio = getElement();
   audio.pause();
+  // A real user pause should release the audio session; only a station switch
+  // needs the silent keeper to survive the gap.
+  stopSessionKeepAlive();
 }
 
 function resume() {
@@ -397,6 +450,7 @@ function stop() {
   relayTried = false;
   directFailed = false;
   escalationGraceUntil = 0;
+  stopSessionKeepAlive();
   emit('stopped');
 }
 
