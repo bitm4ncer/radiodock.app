@@ -91,7 +91,7 @@ const state = {
 // some other module triggers a failed open).
 mountIdbBlockedBanner();
 attachRecovery(player);
-attachMetadataPoller(player);
+const metadataPoller = attachMetadataPoller(player);
 const mediaSession = attachMediaSession(player);
 attachListenHeartbeat(player, { track, identify: identifySession });
 attachListenSession(player);
@@ -973,6 +973,26 @@ function playAdjacentStation(delta, source) {
   trackStationPlay(target, source);
   player.playStation(target);
 }
+
+// Warm the metadata memo for the two stations on either side of the current
+// one, so a lock-screen next/previous can paint the new show title instantly
+// instead of waiting for a background proxy response.
+function prefetchAdjacentMetadata() {
+  const stations = findList(state.currentListId)?.stations;
+  if (!stations?.length) return;
+  const idx = stations.findIndex((s) => s.id === state.currentStation?.id);
+  if (idx < 0) return;
+  if (stations.length > 1) {
+    metadataPoller?.prefetch(stations[(idx + 1) % stations.length]);
+    metadataPoller?.prefetch(stations[(idx - 1 + stations.length) % stations.length]);
+  }
+}
+
+let adjacentPrefetchTimer = null;
+player.on('stationchange', () => {
+  clearTimeout(adjacentPrefetchTimer);
+  adjacentPrefetchTimer = setTimeout(prefetchAdjacentMetadata, 300);
+});
 
 window.addEventListener('electron:trayNext', () => playAdjacentStation(1, 'tray-next'));
 window.addEventListener('electron:trayPrevious', () => playAdjacentStation(-1, 'tray-previous'));

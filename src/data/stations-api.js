@@ -13,6 +13,7 @@ export const STATIONS_BASE = import.meta.env?.DEV
   : 'https://stations.radiodock.app';
 
 import { fetchWithTimeout } from './transport.js';
+import { decodeHtmlEntities } from './html-entities.js';
 
 const USER_AGENT_HEADER = 'RadioDock/1.0';
 const DEFAULT_LIMIT = 30;
@@ -54,12 +55,12 @@ function buildSearchUrl({ query, filter }) {
 function normaliseStation(rb) {
   return {
     id: rb.stationuuid,
-    name: rb.name?.trim() ?? '',
+    name: decodeHtmlEntities(rb.name?.trim() ?? ''),
     url: rb.url_resolved || rb.url || '',
     countrycode: rb.countrycode ?? '',
     favicon: rb.favicon || '',
     homepage: rb.homepage || '',
-    tags: typeof rb.tags === 'string' ? rb.tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
+    tags: typeof rb.tags === 'string' ? rb.tags.split(',').map((t) => decodeHtmlEntities(t.trim())).filter(Boolean) : [],
     bitrate: rb.bitrate ?? 0,
     codec: rb.codec ?? '',
     votes: rb.votes ?? 0,

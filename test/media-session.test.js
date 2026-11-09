@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { rememberMetadata } from '../src/data/metadata-cache.js';
 
 const calls = [];
 const handlers = new Map();
@@ -97,4 +98,18 @@ test('station change shows the brand, not the country, until metadata arrives', 
   }));
   assert.equal(navigator.mediaSession.metadata.title, 'Track');
   assert.equal(navigator.mediaSession.metadata.artist, 'Sender');
+});
+
+test('a cached show is shown instantly on a lock-screen station change and entities are decoded', () => {
+  handlers.clear();
+  calls.length = 0;
+  rememberMetadata('cache-s1', { nowPlaying: 'Show &amp; Tell', artist: null, title: null });
+  const player = makePlayer();
+  attachMediaSession(player);
+
+  player.events.dispatchEvent(new CustomEvent('stationchange', {
+    detail: { station: { id: 'cache-s1', name: 'Sender &amp; Co', countrycode: 'DE' } },
+  }));
+  assert.equal(navigator.mediaSession.metadata.title, 'Show & Tell');
+  assert.equal(navigator.mediaSession.metadata.artist, 'Sender & Co');
 });

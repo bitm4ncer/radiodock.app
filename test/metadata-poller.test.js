@@ -1,5 +1,6 @@
 import { test, mock } from 'node:test';
 import assert from 'node:assert/strict';
+import { recallMetadata } from '../src/data/metadata-cache.js';
 
 // The poller is a timer state machine, so these tests drive it with a fake
 // clock and record exactly when it reaches for the network.
@@ -17,6 +18,7 @@ function makeHarness() {
   const state = {
     fetches: [],
     dispatched: [],
+    poller: null,
     respond: () => ({ ok: true, display: 'Show A', cacheTtl: 30 }),
     setVisibility(value) {
       globalThis.document.visibilityState = value;
@@ -63,7 +65,7 @@ async function withPoller(run, { hidden = false } = {}) {
   mock.timers.enable({ apis: ['setTimeout', 'Date'] });
   const { attachMetadataPoller } = await import('../src/player/metadata-poller.js');
   try {
-    attachMetadataPoller(h.player);
+    h.poller = attachMetadataPoller(h.player);
     if (hidden) h.setVisibility('hidden');
     h.player.emit('stationchange', { station: STATION });
     await flush();
@@ -194,4 +196,22 @@ test('a lock-screen station switch fetches metadata once while hidden', async ()
     await advance(120_000);
     assert.equal(h.fetches.length, afterFirst, 'later hidden polls still sleep');
   }, { hidden: true });
+});
+
+test('a successful poll is memoized for the next lock-screen switch', async () => {
+  await withPoller(async (h) => {
+    await advance(1000);
+    assert.equal(recallMetadata(STATION.id)?.nowPlaying, 'Show A');
+  });
+});
+
+test('prefetch warms the memo for an adjacent station without dispatching', async () => {
+  await withPoller(async (h) => {
+    const before = h.fetches.length;
+    const dispatchedBefore = h.dispatched.length;
+    await h.poller.prefetch({ id: 'adj-prefetch-1', url: 'http://adj.example/live', homepage: '' });
+    assert.equal(h.fetches.length, before + 1);
+    assert.equal(recallMetadata('adj-prefetch-1')?.nowPlaying, 'Show A');
+    assert.equal(h.dispatched.length, dispatchedBefore, 'prefetch must not change the current UI');
+  });
 });

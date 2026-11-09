@@ -5,6 +5,8 @@
 // Polling pauses while the tab is hidden (saves battery on phone-in-pocket).
 
 import { fetchNowPlaying } from '../data/metadata.js';
+import { decodeHtmlEntities } from '../data/html-entities.js';
+import { rememberMetadata, recallMetadata } from '../data/metadata-cache.js';
 
 const MIN_INTERVAL_MS = 10000;   // never poll faster than every 10 s
 const DEFAULT_INTERVAL_MS = 15000;
@@ -76,16 +78,23 @@ export function attachMetadataPoller(player) {
       // `empty` is a definitive answer and dispatches too, so an ended show
       // clears instead of hanging on screen. A null result is an outage and
       // leaves the last known line alone.
-      const hasText = !!(result?.nowPlaying || result?.artist || result?.title);
+      const clean = {
+        artist: result?.artist == null ? null : decodeHtmlEntities(result.artist),
+        title: result?.title == null ? null : decodeHtmlEntities(result.title),
+        nowPlaying: decodeHtmlEntities(result?.nowPlaying ?? ''),
+      };
+      const hasText = !!(clean.nowPlaying || clean.artist || clean.title);
       if (result && !result.shouldUseLocal && (hasText || result.empty)) {
+        if (hasText) {
+          rememberMetadata(currentStation.id, { ...clean, source: result.source });
+        } else if (result.empty) {
+          // A definitive "nothing on air" must invalidate the old memo too,
+          // otherwise a later lock-screen switch would resurrect it.
+          rememberMetadata(currentStation.id, { nowPlaying: '', artist: null, title: null, source: result.source });
+        }
         player.events?.dispatchEvent(
           new CustomEvent('metadata', {
-            detail: {
-              artist: result.artist,
-              title: result.title,
-              nowPlaying: result.nowPlaying,
-              source: result.source ?? 'proxy',
-            },
+            detail: { ...clean, source: result.source ?? 'proxy' },
           }),
         );
         // Honour the cache TTL the proxy returns, within our own bounds.
@@ -139,5 +148,38 @@ export function attachMetadataPoller(player) {
     else scheduleNext(MIN_INTERVAL_MS - since);
   });
 
-  return { stop };
+  // Best-effort cache warming for the stations on either side of the current
+  // one. Called while the app is foregrounded; the lock-screen switch can then
+  // read the show title synchronously instead of waiting for a hidden fetch.
+  const prefetched = new Set();
+  async function prefetch(station) {
+    const id = String(station?.id ?? '');
+    if (!id || !station?.url || id === String(currentStation?.id ?? '')) return;
+    const cached = recallMetadata(id);
+    if (cached && (cached.nowPlaying || cached.artist || cached.title)) return;
+    if (prefetched.has(id)) return;
+    prefetched.add(id);
+    try {
+      const result = await fetchNowPlaying({
+        streamUrl: station.url,
+        stationId: id,
+        homepage: station.homepage,
+        country: station.countrycode,
+      });
+      const clean = {
+        artist: result?.artist == null ? null : decodeHtmlEntities(result.artist),
+        title: result?.title == null ? null : decodeHtmlEntities(result.title),
+        nowPlaying: decodeHtmlEntities(result?.nowPlaying ?? ''),
+      };
+      if (result && !result.shouldUseLocal && (clean.nowPlaying || clean.artist || clean.title)) {
+        rememberMetadata(id, { ...clean, source: result.source });
+      }
+    } catch {
+      // Best effort; the switch itself still runs its first poll.
+    } finally {
+      setTimeout(() => prefetched.delete(id), 30000);
+    }
+  }
+
+  return { stop, prefetch };
 }

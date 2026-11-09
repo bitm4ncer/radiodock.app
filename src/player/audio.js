@@ -4,6 +4,7 @@
 import { relayHlsUrl, relayUrl } from '../data/relay.js';
 import { getStationInfo } from '../data/stations-api.js';
 import { lowestBitrateLevelIndex } from './hls-levels.js';
+import { decodeHtmlEntities } from '../data/html-entities.js';
 
 const events = new EventTarget();
 const emit = (type, detail) => events.dispatchEvent(new CustomEvent(type, { detail }));
@@ -257,8 +258,8 @@ async function startHlsSource(token, url) {
       for (const sample of samples) {
         const frames = sample?.data;
         if (!frames || typeof frames !== 'object') continue;
-        const title = frames.TIT2?.data ?? null;
-        const artist = frames.TPE1?.data ?? null;
+        const title = decodeHtmlEntities(frames.TIT2?.data ?? '');
+        const artist = decodeHtmlEntities(frames.TPE1?.data ?? '');
         if (title || artist) {
           emit('metadata', { artist, title, source: 'hls-id3' });
         }

@@ -8,6 +8,8 @@
 // (e.g. Firefox Mobile prior to 130).
 
 import { getLogoUrl } from '../data/logo-resolver.js';
+import { decodeHtmlEntities } from '../data/html-entities.js';
+import { recallMetadata } from '../data/metadata-cache.js';
 
 export function attachMediaSession(player) {
   if (!('mediaSession' in navigator)) return;
@@ -15,18 +17,26 @@ export function attachMediaSession(player) {
   let currentStation = null;
   let currentNowPlaying = '';
 
+  function formatNowPlaying(data) {
+    if (!data) return '';
+    const structured = [data.artist, data.title].filter(Boolean).join(' - ');
+    return structured || data.nowPlaying || '';
+  }
+
   function update() {
     if (!currentStation) {
       navigator.mediaSession.metadata = null;
       navigator.mediaSession.playbackState = 'none';
       return;
     }
-    const title = currentNowPlaying || currentStation.name || 'RadioDock';
+    const stationName = decodeHtmlEntities(currentStation.name || 'RadioDock');
+    const nowPlaying = decodeHtmlEntities(currentNowPlaying);
+    const title = nowPlaying || stationName || 'RadioDock';
     // Never put the country code on the lock screen; before the first metadata
     // response it reads as "station / country" and never changes while the app
     // is backgrounded. The brand is a stable placeholder and the real
     // now-playing line replaces it as soon as the poller answers.
-    const artist = currentNowPlaying ? currentStation.name : 'RadioDock';
+    const artist = nowPlaying ? stationName : 'RadioDock';
     const artwork = buildArtwork(currentStation);
     try {
       navigator.mediaSession.metadata = new MediaMetadata({
@@ -58,14 +68,16 @@ export function attachMediaSession(player) {
 
   player.on('stationchange', (evt) => {
     currentStation = evt.detail.station;
-    currentNowPlaying = '';
+    // Read the memo synchronously: a lock-screen next/previous switch has no
+    // chance to wait for a fresh proxy response before iOS paints the card.
+    currentNowPlaying = formatNowPlaying(recallMetadata(currentStation.id));
     update();
   });
 
   player.on('metadata', (evt) => {
     const { artist, title, nowPlaying } = evt.detail;
-    const structured = [artist, title].filter(Boolean).join(' – ');
-    currentNowPlaying = structured || nowPlaying || '';
+    const structured = [artist, title].filter(Boolean).join(' - ');
+    currentNowPlaying = decodeHtmlEntities(structured || nowPlaying || '');
     update();
   });
 
