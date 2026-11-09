@@ -11,7 +11,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const A = { id: 'uuid-a', name: 'Station A' };
 const B = { id: 'uuid-b', name: 'Station B' };
 
-function harness({ dwellMs = 5, failAfterMs = 30, report } = {}) {
+function harness({ dwellMs = 5, failAfterMs = 30, report, randomUUID } = {}) {
   const handlers = new Map();
   const events = [];
   const reports = [];
@@ -27,9 +27,9 @@ function harness({ dwellMs = 5, failAfterMs = 30, report } = {}) {
     dwellMs, failAfterMs,
     now: () => t,
     // First id is pinned for the exact-payload test; later attempts must differ.
-    randomUUID: () => (uuidSeq++ === 0
+    randomUUID: randomUUID ?? (() => (uuidSeq++ === 0
       ? '44444444-4444-4444-8444-444444444444'
-      : '55555555-5555-4555-8555-555555555555'),
+      : '55555555-5555-4555-8555-555555555555')),
     getContext: () => ({ hls: true, platform: 'touch', network: '4g' }),
     track: (n, p) => events.push({ n, ...p }),
     report: reportFn,
@@ -298,4 +298,15 @@ test('a throwing report callback cannot suppress Umami or the next attempt', asy
   h.emit('playing');
   await sleep(25);
   assert.equal(h.events.length, 2);
+});
+
+test('a missing crypto.randomUUID still produces a server-accepted v4 attempt id', async () => {
+  const h = harness({ randomUUID: () => { throw new Error('no crypto'); } });
+  h.play(A);
+  h.emit('playing');
+  await sleep(25);
+  assert.match(
+    h.reports[0].attemptId,
+    /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
+  );
 });
