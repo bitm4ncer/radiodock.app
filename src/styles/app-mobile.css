@@ -550,29 +550,29 @@
 
 /* Desktop PWA: the fixed player dock is the app's bottom edge. Mirror the
    rounded top of the dock (and the shell's rounded window) at the bottom.
-   Phones stay flush with the screen edge; Electron keeps its 48px window
-   radius from search.css. */
+   Use the same radius as the desktop shell's window; Electron defines 48px,
+   and 48px is the safe fallback for the installed PWA. Phones stay flush. */
 @media (hover: hover) and (pointer: fine) and (max-width: 699px) {
   .player-section {
-    border-radius: 50px;
+    border-radius: var(--rd-window-radius, 48px);
   }
   .notes-panel--mobile,
   .sync-panel--mobile,
   .add-panel--mobile,
   #infoModal.modal .modal-content,
   #changelogModal.modal .modal-content {
-    border-radius: 0 0 50px 50px;
+    border-radius: 0 0 var(--rd-window-radius, 48px) var(--rd-window-radius, 48px);
   }
 }
 @media (hover: hover) and (pointer: fine) {
   html.is-standalone .player-section {
-    border-radius: 50px;
+    border-radius: var(--rd-window-radius, 48px);
   }
   html.is-standalone .notes-panel--mobile,
   html.is-standalone .sync-panel--mobile,
   html.is-standalone .add-panel--mobile,
   html.is-standalone #infoModal.modal .modal-content,
   html.is-standalone #changelogModal.modal .modal-content {
-    border-radius: 0 0 50px 50px;
+    border-radius: 0 0 var(--rd-window-radius, 48px) var(--rd-window-radius, 48px);
   }
 }
