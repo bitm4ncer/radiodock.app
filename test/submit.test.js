@@ -33,3 +33,28 @@ test('throws SubmitError with status + server message on 409', async () => {
     },
   );
 });
+
+test('rejects an oversized submission locally before it hits the network', async () => {
+  let fetched = false;
+  await withFetch(
+    async () => {
+      fetched = true;
+      return new Response(JSON.stringify({ ok: true, id: 1 }), { status: 201 });
+    },
+    async () => {
+      await assert.rejects(
+        () => submitStation({
+          name: 'Big logo',
+          streamUrl: 'https://ex.com/s',
+          logoData: `data:image/png;base64,${'A'.repeat(300 * 1024)}`,
+        }),
+        (err) =>
+          err instanceof SubmitError &&
+          err.status === 413 &&
+          /256 KB/.test(err.message) &&
+          /logo/i.test(err.message),
+      );
+    },
+  );
+  assert.equal(fetched, false, 'the body guard must run before fetch');
+});
