@@ -304,7 +304,12 @@
 
   #infoModal .modal-body,
   #changelogModal .modal-body {
-    padding-bottom: calc(var(--app-page-bottom, 0px) + 20px) !important;
+    /* The scroll body must stop at the player's top edge, not run underneath
+       it: otherwise feature cards paint in the player's rounded bottom
+       corners. The modal-content background still extends behind the player;
+       the margin is that reserved dock area. */
+    padding-bottom: 20px !important;
+    margin-bottom: var(--app-page-bottom, 0px);
     overflow-y: auto;
     flex: 1;
     min-height: 0;
@@ -429,6 +434,7 @@
     border: 0;
     border-radius: 0;
     box-shadow: none;
+    overflow: hidden;
   }
 
   /* Light mode: `:root.theme-light .{panel}` (0,3,0) out-specifies the opaque
