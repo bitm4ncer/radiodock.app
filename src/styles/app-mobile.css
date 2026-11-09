@@ -280,6 +280,19 @@
     height: auto;
   }
 
+  /* Destination surfaces sit BEHIND the floating player. Extend their opaque
+     background to the viewport bottom, so the player's rounded top corners
+     reveal the page surface instead of the station list behind it, and reserve
+     the player's height as bottom padding so the list/footer can still scroll
+     fully above the player. */
+  .notes-panel--mobile,
+  .sync-panel--mobile,
+  .add-panel--mobile {
+    bottom: 0 !important;
+    padding-bottom: var(--app-page-bottom, 0px) !important;
+    box-sizing: border-box;
+  }
+
   /* sync.css + add.css pin their panels with `inset: 0 !important`, so match
      that weight. Add is a full-page surface too — it navigates between the top
      bar and the player bar like Sync/Notes, not over them. */
