@@ -256,6 +256,21 @@ test('a healthy background stream is not interrupted on return', () => {
   }
 });
 
+test('foregrounding defers to an in-flight escalation', () => {
+  const h = harness();
+  stubGlobals(h);
+  try {
+    attachRecovery(h.player);
+    h.setUserPaused(false);
+    h.player.isEscalating = () => true;
+    h.audio.paused = true;
+    h.setVisibility('visible');
+    assert.equal(h.plays.length, 0, 'the HLS/native handoff must not be torn down');
+  } finally {
+    restoreGlobals(h);
+  }
+});
+
 test('pageshow also reconnects after a background pause', () => {
   const h = harness();
   stubGlobals(h);
