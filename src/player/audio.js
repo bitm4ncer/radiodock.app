@@ -431,6 +431,12 @@ async function playStation(station) {
     hlsConfirmed = false;
     hlsProbeTried = false;
     escalationGraceUntil = 0;
+  } else if (!hlsConfirmed) {
+    // A new attempt for the same station (foreground reconnect, recovery
+    // retry, a second tap) tears down any in-flight HLS probe with
+    // destroyHls(). Let the ladder probe HLS again instead of treating the
+    // destroyed attempt as "already tried" and failing without a transport.
+    hlsProbeTried = false;
   }
   currentStation = station;
   currentUuid = uuid;

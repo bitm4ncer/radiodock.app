@@ -267,6 +267,10 @@ export function attachRecovery(player) {
     const station = player.getCurrentStation();
     if (!station) return;
     if (userPaused || userIntentPause()) return;
+    // An escalation is already running (native relay or HLS manifest load).
+    // Re-entering playStation would destroy that attempt before it can produce
+    // audio; recovery owns the retry if it really fails.
+    if (player.isEscalating?.()) return;
     // A stream that genuinely kept playing in the background is healthy; do
     // not cut it and create a gap.
     if (!audio.paused && (audio.readyState ?? 0) >= 2) return;
