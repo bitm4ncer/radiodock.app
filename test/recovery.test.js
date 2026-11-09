@@ -5,19 +5,28 @@ import { attachRecovery } from '../src/player/recovery.js';
 function harness() {
   const listeners = {};
   const windowListeners = {};
+  const docListeners = {};
   const timers = [];
-  const audio = { addEventListener: (t, fn) => { (listeners[t] ??= []).push(fn); }, paused: true };
+  const audio = { addEventListener: (t, fn) => { (listeners[t] ??= []).push(fn); }, paused: true, readyState: 0 };
   const station = { id: 's1', url: 'http://s1' };
   const plays = [];
+  let userPaused = false;
   const player = {
     _element: () => audio,
     getCurrentStation: () => station,
+    isUserPaused: () => userPaused,
     events: new EventTarget(),
     on: (t, fn) => { player.events.addEventListener(t, fn); },
     playStation: () => { plays.push('playStation'); },
   };
   return {
-    audio, listeners, windowListeners, timers, player, plays,
+    audio, listeners, windowListeners, docListeners, timers, player, plays,
+    document: null,
+    setUserPaused: (v) => { userPaused = v; },
+    setVisibility(state) {
+      this.document.visibilityState = state;
+      docListeners.visibilitychange?.forEach((fn) => fn());
+    },
     fire: (t) => listeners[t]?.forEach((fn) => fn()),
     fireWindow: (t) => windowListeners[t]?.forEach((fn) => fn()),
     invokeTimers: () => {
@@ -30,9 +39,15 @@ function harness() {
 function stubGlobals(h) {
   h.originalWindow = globalThis.window;
   h.navigatorDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'navigator');
+  h.documentDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'document');
   h.originalSetTimeout = globalThis.setTimeout;
   h.originalClearTimeout = globalThis.clearTimeout;
   globalThis.window = { addEventListener: (t, fn) => { (h.windowListeners[t] ??= []).push(fn); } };
+  h.document = {
+    visibilityState: 'visible',
+    addEventListener: (t, fn) => { (h.docListeners[t] ??= []).push(fn); },
+  };
+  Object.defineProperty(globalThis, 'document', { value: h.document, configurable: true, writable: true });
   Object.defineProperty(globalThis, 'navigator', { value: { onLine: true }, configurable: true, writable: true });
   globalThis.setTimeout = (fn) => { const id = { fn, cleared: false }; h.timers.push(id); return id; };
   globalThis.clearTimeout = (id) => { if (id) id.cleared = true; };
@@ -45,6 +60,11 @@ function restoreGlobals(h) {
   } else {
     delete globalThis.navigator;
   }
+  if (h.documentDescriptor) {
+    Object.defineProperty(globalThis, 'document', h.documentDescriptor);
+  } else {
+    delete globalThis.document;
+  }
   globalThis.setTimeout = h.originalSetTimeout;
   globalThis.clearTimeout = h.originalClearTimeout;
 }
@@ -55,6 +75,7 @@ test('error then pause does not call playStation', () => {
   try {
     attachRecovery(h.player);
     h.fire('error');        // schedules a retry
+    h.setUserPaused(true);
     h.fire('pause');        // user pauses
     h.fireWindow('online'); // online recovery must not override the pause
     h.invokeTimers();       // a cleared retry must not fire
@@ -105,6 +126,7 @@ test('a cold-start pause is a user pause, not an internal one', () => {
     // flag must not swallow the user's later pause.
     h.player.events.dispatchEvent(new CustomEvent('stationchange', { detail: { station: { id: 's1' } } }));
     h.fire('error'); // the stream fails before playing; schedules a retry
+    h.setUserPaused(true);
     h.fire('pause'); // the user genuinely pauses
     h.fireWindow('online'); // online recovery must not override the pause
     h.invokeTimers(); // a cleared retry must not fire
@@ -144,6 +166,67 @@ test('replaying the same station after stop gets a fresh attempt budget', () => 
     h.fire('error');
     h.invokeTimers();
     assert.equal(h.plays.length, 1, 'the replay is not stuck in gave-up state');
+  } finally {
+    restoreGlobals(h);
+  }
+});
+
+test('a background pause is not user intent and foregrounding reconnects', () => {
+  const h = harness();
+  stubGlobals(h);
+  try {
+    attachRecovery(h.player);
+    h.setUserPaused(false);
+    h.setVisibility('hidden');
+    h.fire('pause'); // OS/background pause, no user intent
+    h.setVisibility('visible');
+    assert.equal(h.plays.length, 1, 'foregrounding reconnects to the live edge');
+  } finally {
+    restoreGlobals(h);
+  }
+});
+
+test('an explicit pause survives foregrounding', () => {
+  const h = harness();
+  stubGlobals(h);
+  try {
+    attachRecovery(h.player);
+    h.setUserPaused(true);
+    h.setVisibility('hidden');
+    h.fire('pause'); // lock-screen/user pause while backgrounded
+    h.setVisibility('visible');
+    assert.equal(h.plays.length, 0, 'the app must not override a real pause');
+  } finally {
+    restoreGlobals(h);
+  }
+});
+
+test('a healthy background stream is not interrupted on return', () => {
+  const h = harness();
+  stubGlobals(h);
+  try {
+    attachRecovery(h.player);
+    h.setUserPaused(false);
+    h.audio.paused = false;
+    h.audio.readyState = 4;
+    h.setVisibility('visible');
+    assert.equal(h.plays.length, 0, 'a still-playing stream keeps its buffer');
+  } finally {
+    restoreGlobals(h);
+  }
+});
+
+test('pageshow also reconnects after a background pause', () => {
+  const h = harness();
+  stubGlobals(h);
+  try {
+    attachRecovery(h.player);
+    h.setUserPaused(false);
+    h.setVisibility('hidden');
+    h.fire('pause');
+    h.document.visibilityState = 'visible';
+    h.fireWindow('pageshow');
+    assert.equal(h.plays.length, 1);
   } finally {
     restoreGlobals(h);
   }

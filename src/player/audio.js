@@ -3,6 +3,7 @@
 // Emits events via a private EventTarget; consumers subscribe with on(event, handler).
 import { relayHlsUrl, relayUrl } from '../data/relay.js';
 import { getStationInfo } from '../data/stations-api.js';
+import { lowestBitrateLevelIndex } from './hls-levels.js';
 
 const events = new EventTarget();
 const emit = (type, detail) => events.dispatchEvent(new CustomEvent(type, { detail }));
@@ -31,6 +32,11 @@ const PLAY_START_TIMEOUT_MS = 12000;
 // upgrade silently fails on hosts that serve no TLS.
 let currentUuid = '';
 let currentIsHls = false;
+// User intent, not element state. The OS may pause the element when the app
+// goes to the background, and that pause must not be mistaken for the user
+// tapping pause. Only pause()/media-session pause sets this; playStation(),
+// resume() and stop() clear it.
+let userPaused = false;
 let assignedSrc = '';
 let relayTried = false;
 let directFailed = false;
@@ -184,6 +190,19 @@ async function startHlsSource(token, url) {
     });
     hls = instance;
 
+    // Radio is audio-only. hls.js sorts levels lowest→highest; start there and
+    // cap automatic switching so a phone never pulls a 1080p/3 Mbps rendition
+    // just to hear the same audio. This is the difference between a stable
+    // background stream and constant rebuffering on mobile networks.
+    instance.startLevel = 0;
+    instance.on(Hls.Events.MANIFEST_PARSED, () => {
+      const lowest = lowestBitrateLevelIndex(instance.levels);
+      if (lowest < 0) return;
+      instance.startLevel = lowest;
+      instance.currentLevel = lowest;
+      instance.autoLevelCapping = lowest;
+    });
+
     instance.on(Hls.Events.FRAG_PARSING_METADATA, (_evt, data) => {
       const samples = data?.samples ?? [];
       for (const sample of samples) {
@@ -271,6 +290,7 @@ async function playStation(station) {
     return;
   }
 
+  userPaused = false;
   const token = ++playToken;
   // A favorite can hold an old http:// stream after the database URL has been
   // repaired. Resolve the current record before the relay/decode path.
@@ -342,11 +362,13 @@ async function playStation(station) {
 }
 
 function pause() {
+  userPaused = true;
   const audio = getElement();
   audio.pause();
 }
 
 function resume() {
+  userPaused = false;
   // Live radio has no meaningful "paused position". While paused, the <audio>
   // element keeps the buffer captured at pause time, so audio.play() would
   // replay that stale audio and then glitch as the browser scrambles back to
@@ -361,6 +383,7 @@ function resume() {
 
 function stop() {
   playToken++;
+  userPaused = false;
   destroyHls();
   const audio = getElement();
   try {
@@ -400,6 +423,10 @@ function isPlaying() {
   return Boolean(element) && !element.paused;
 }
 
+function isUserPaused() {
+  return userPaused;
+}
+
 function isEscalating() {
   return Date.now() < escalationGraceUntil;
 }
@@ -425,6 +452,7 @@ export const player = {
   getVolume,
   getCurrentStation,
   isPlaying,
+  isUserPaused,
   isEscalating,
   on,
   prefetchHls,

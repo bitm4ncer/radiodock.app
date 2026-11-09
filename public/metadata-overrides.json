@@ -1,0 +1,1132 @@
+﻿{
+  "version": "1.0",
+  "generatedAt": "2026-11-09T10:06:14.831Z",
+  "stations": {
+    "28d98f25-5e5d-4565-ba3b-0958356bab7b": {
+      "strategy": "icecast-json",
+      "endpoint": "http://16bitfm.com:8000/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "7811e960-53ef-4e2c-a739-e2dff567ae86": {
+      "strategy": "json-generic",
+      "endpoint": "https://api.radiocult.fm/api/station/aaja/schedule/live",
+      "mapping": {
+        "show": "result.content.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "8f18579b-ffe4-49cb-970c-16712b154392": {
+      "strategy": "icecast-json",
+      "endpoint": "https://icecast.callshopradio.com/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "356a337d-4552-4b2d-bfdb-d381a6d85a9d": {
+      "strategy": "json-generic",
+      "endpoint": "https://cashmereradio.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "24e3676a-8de5-474c-8ed2-288fbb66d447": {
+      "strategy": "icecast-json",
+      "endpoint": "https://icecast.walmradio.com:8443/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "214f3da4-7795-491e-b5e7-91a18b18d089": {
+      "strategy": "json-generic",
+      "endpoint": "https://live.clubradio.ro/api/nowplaying/clubradio",
+      "mapping": {
+        "artist": "now_playing.song.artist",
+        "title": "now_playing.song.title",
+        "show": "now_playing.song.text"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "9609ed67-0601-11e8-ae97-52543be04c81": {
+      "strategy": "icecast-json",
+      "endpoint": "http://streams.echoesofbluemars.org:8000/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "5649bc0b-c5bc-11e8-aaf2-52543be04c81": {
+      "strategy": "icecast-json",
+      "endpoint": "https://streampusher-relay.club/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "165eab56-4a14-11e9-a4d7-52543be04c81": {
+      "strategy": "icecast-json",
+      "endpoint": "https://dfm-disc90.hostingradio.ru/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "128d5561-8439-4e2a-9e6c-4e48ad4f0cc0": {
+      "strategy": "json-generic",
+      "endpoint": "https://doyouworld.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "0bb84fe1-e899-11e9-a96c-52543be04c81": {
+      "strategy": "json-generic",
+      "endpoint": "https://dublab.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "652e1061-5de4-442f-8b7e-cd0dfbd37048": {
+      "strategy": "json-generic",
+      "endpoint": "https://dublabde.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "176a6a11-7111-4d32-bd04-202dbb501f09": {
+      "strategy": "json-generic",
+      "endpoint": "https://radio.egrego.re/api/nowplaying/egregore_collective",
+      "mapping": {
+        "artist": "now_playing.song.artist",
+        "title": "now_playing.song.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "57c21dab-3c40-4ca6-b49b-8755bd7a3dcd": {
+      "strategy": "json-generic",
+      "endpoint": "https://ehfm.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "70b5b316-8810-41eb-bfb1-8c76a7cd7df3": {
+      "strategy": "json-generic",
+      "endpoint": "https://api.radiocult.fm/api/station/eist-radio/schedule/live",
+      "mapping": {
+        "title": "result.content.title",
+        "show": "result.content.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "5aaddcc0-1695-11e9-a80b-52543be04c81": {
+      "strategy": "icecast-json",
+      "endpoint": "http://www.radiofaaz.com:8000/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "960efe59-0601-11e8-ae97-52543be04c81": {
+      "strategy": "json-generic",
+      "endpoint": null,
+      "mapping": {},
+      "ttl": null,
+      "exclusive": false
+    },
+    "608e7565-2e27-4881-9b6d-3806e6c43e8e": {
+      "strategy": "json-generic",
+      "endpoint": "https://azuracast.gatekeeperradio.com/api/nowplaying/gatekeeper_radio",
+      "mapping": {
+        "artist": "now_playing.song.artist",
+        "title": "now_playing.song.title",
+        "show": "now_playing.song.text"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "af6f51b1-0ca9-11ea-a87e-52543be04c81": {
+      "strategy": "icecast-json",
+      "endpoint": "http://secure.live-streams.nl/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "961ee9aa-0601-11e8-ae97-52543be04c81": {
+      "strategy": "icecast-json",
+      "endpoint": "http://streaming2.toutech.net:8000/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "2ee81ee8-9e0f-4fbb-84f3-d7f255f26299": {
+      "strategy": "json-generic",
+      "endpoint": "https://radioadmin.kwsx.online/api/nowplaying/kwsx",
+      "mapping": {
+        "artist": "now_playing.song.artist",
+        "title": "now_playing.song.title",
+        "show": "now_playing.song.text"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "960ebcf5-0601-11e8-ae97-52543be04c81": {
+      "strategy": "icecast-json",
+      "endpoint": "http://hd.lagrosseradio.info/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "1af63c5f-4112-11ea-a9fa-52543be04c81": {
+      "strategy": "json-generic",
+      "endpoint": "https://streaming.lahmacun.hu/api/nowplaying/lahmacun_radio",
+      "mapping": {
+        "artist": "now_playing.song.artist",
+        "title": "now_playing.song.title",
+        "show": "now_playing.song.text"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "964cc978-0601-11e8-ae97-52543be04c81": {
+      "strategy": "lautfm",
+      "endpoint": "https://api.laut.fm/station/katzenpuff/current_song",
+      "mapping": {
+        "artist": "artist.name",
+        "title": "title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "e11c170a-474f-11e9-aa55-52543be04c81": {
+      "strategy": "icecast-json",
+      "endpoint": "https://icecast.lyl.live/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "78012206-1aa1-11e9-a80b-52543be04c81": {
+      "strategy": "lautfm",
+      "endpoint": "https://api.laut.fm/station/mangoradio/current_song",
+      "mapping": {
+        "artist": "artist.name",
+        "title": "title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "e81caf1f-5049-48ad-99b7-b5ebdd03d3f3": {
+      "strategy": "radioking",
+      "endpoint": "https://api.radioking.io/widget/radio/mutant-radio/track/current",
+      "mapping": {
+        "artist": "artist",
+        "title": "title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "6329a6ad-02e4-49ae-b870-8e0e189fb8c0": {
+      "strategy": "json-generic",
+      "endpoint": "https://api.radiocult.fm/api/station/narr-f63a1220/schedule/live",
+      "mapping": {
+        "show": "result.content.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "2a85a1c6-0cec-428a-a7df-126e4d8a90d9": {
+      "strategy": "json-generic",
+      "endpoint": "https://netilradio.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "5dcf8a28-dc2f-47a1-9f18-ca70df4ac89d": {
+      "strategy": "json-generic",
+      "endpoint": "https://api.radiocult.fm/api/station/noods-radio/schedule/live",
+      "mapping": {
+        "title": "result.content.title",
+        "show": "result.content.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "9634ab94-0601-11e8-ae97-52543be04c81": {
+      "strategy": "json-generic",
+      "endpoint": "https://www.nts.live/api/v2/live",
+      "mapping": {
+        "title": "results.1.now.broadcast_title",
+        "show": "results.1.now.broadcast_title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "045f3748-7488-4249-bf43-6feb7bb8db3d": {
+      "strategy": "json-generic",
+      "endpoint": "https://pass.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "6b4c2748-07ee-11e8-ae97-52543be04c81": {
+      "strategy": "json-generic",
+      "endpoint": "https://radio80k.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "d62fa52b-7c1c-492c-9861-cd2c0ec02f00": {
+      "strategy": "json-generic",
+      "endpoint": "https://www.radiojar.com/api/stations/78cxy6wkxtzuv/now_playing/",
+      "mapping": {
+        "artist": "artist",
+        "title": "title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "14582ba2-827c-4dba-b4db-19d0320741af": {
+      "strategy": "json-generic",
+      "endpoint": "https://flouka.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "e6639188-dc36-4441-ba83-4b6832a58c83": {
+      "strategy": "icecast-json",
+      "endpoint": "https://live.radiogrenouille.com:8443/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "a1c99f81-f8d1-4f6d-b9e3-714763a72b7d": {
+      "strategy": "json-generic",
+      "endpoint": "https://radioraheem.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "a33cdadf-a415-4844-b679-745d4f1795d2": {
+      "strategy": "json-generic",
+      "endpoint": "https://public.radio.co/stations/sd6131729c/status",
+      "mapping": {
+        "title": "current_track.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "1d9bcb57-1445-4ade-84d5-9285c37f6b76": {
+      "strategy": "shoutcast",
+      "endpoint": "https://stream.radiostaddenhaag.com/stats?json=1",
+      "mapping": {
+        "title": "songtitle"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "93b6eecb-d160-4fc6-8edc-e1c3d1f0613a": {
+      "strategy": "json-generic",
+      "endpoint": "https://public.radio.co/stations/s1df61e0af/status",
+      "mapping": {
+        "title": "current_track.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "cac4c694-99b2-40eb-8957-6361e7d3768e": {
+      "strategy": "json-generic",
+      "endpoint": "https://testform.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "ac5cf76c-20ba-11e9-a80b-52543be04c81": {
+      "strategy": "json-generic",
+      "endpoint": "https://retreatradio.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "artist": "tracks.current.metadata.artist_name",
+        "title": "tracks.current.metadata.track_title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "204b0d57-2c17-11e8-91bf-52543be04c81": {
+      "strategy": "icecast-json",
+      "endpoint": "http://lin3.ash.fast-serv.com:6026/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "38c667f9-5091-11e9-a4d7-52543be04c81": {
+      "strategy": "icecast-json",
+      "endpoint": "http://stream.skylab-radio.com:8000/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "20bcbbc0-75b1-43ab-9919-6230ce0d8bba": {
+      "strategy": "icecast-json",
+      "endpoint": "https://sohoradiomusic.doughunt.co.uk:8010/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "6e2a1c0a-4c87-498e-9371-86e571f21eb9": {
+      "strategy": "json-generic",
+      "endpoint": "https://movementathens.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "1dbdc89f-f0d1-4bf7-8922-266edeb912dd": {
+      "strategy": "json-generic",
+      "endpoint": "https://subtle.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "434e9a4b-018a-4557-8ca1-8c328bb1e09d": {
+      "strategy": "thelotradio",
+      "endpoint": "https://www.thelotradio.com/",
+      "mapping": {},
+      "ttl": 60,
+      "exclusive": false
+    },
+    "9e4b8fb7-65d0-487c-afe2-8e5b52464d4f": {
+      "strategy": "radioking",
+      "endpoint": "https://api.radioking.io/widget/radio/tsugi-radio/track/current",
+      "mapping": {
+        "artist": "artist",
+        "title": "title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "b4684acd-cf54-47a9-9bcf-dfe17f3f7245": {
+      "strategy": "json-generic",
+      "endpoint": "https://voicesradio.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "1d734b4e-3282-4b57-8cc0-6d01b75bcea9": {
+      "strategy": "json-generic",
+      "endpoint": "https://azuracast.wearevarious.com/api/nowplaying/we_are_various",
+      "mapping": {
+        "artist": "now_playing.song.artist",
+        "title": "now_playing.song.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "9d78c2eb-8a8e-4964-9b0f-ec5505d61c97": {
+      "strategy": "icecast-json",
+      "endpoint": "https://listen.kusf.org/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "326db2f8-52ed-498f-a89e-46d70eb56584": {
+      "strategy": "json-generic",
+      "endpoint": "https://api.radiocult.fm/api/station/parea-radio-b7474105/schedule/live",
+      "mapping": {
+        "title": "result.content.title",
+        "show": "result.content.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "fd8d7a0c-7820-4f0d-b428-61bfcac13f20": {
+      "strategy": "json-generic",
+      "endpoint": "https://a1.asurahosting.com/api/nowplaying/rukh",
+      "mapping": {
+        "artist": "now_playing.song.artist",
+        "title": "now_playing.song.title"
+      },
+      "ttl": null,
+      "exclusive": false
+    },
+    "9d2b52c2-566d-4780-bc54-8047f53879f4": {
+      "strategy": "azuracast",
+      "endpoint": "https://azuracast.radioparanoia1000.com/api/nowplaying",
+      "mapping": {},
+      "ttl": null,
+      "exclusive": false
+    }
+  },
+  "byHost": {
+    "16bitfm.com": {
+      "strategy": "icecast-json",
+      "endpoint": "http://16bitfm.com:8000/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "28d98f25-5e5d-4565-ba3b-0958356bab7b"
+    },
+    "aaja.radiocult.fm": {
+      "strategy": "json-generic",
+      "endpoint": "https://api.radiocult.fm/api/station/aaja/schedule/live",
+      "mapping": {
+        "show": "result.content.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "7811e960-53ef-4e2c-a739-e2dff567ae86"
+    },
+    "icecast.callshopradio.com": {
+      "strategy": "icecast-json",
+      "endpoint": "https://icecast.callshopradio.com/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "8f18579b-ffe4-49cb-970c-16712b154392"
+    },
+    "cashmereradio.out.airtime.pro": {
+      "strategy": "json-generic",
+      "endpoint": "https://cashmereradio.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "356a337d-4552-4b2d-bfdb-d381a6d85a9d"
+    },
+    "icecast.walmradio.com": {
+      "strategy": "icecast-json",
+      "endpoint": "https://icecast.walmradio.com:8443/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "24e3676a-8de5-474c-8ed2-288fbb66d447"
+    },
+    "live.clubradio.ro": {
+      "strategy": "json-generic",
+      "endpoint": "https://live.clubradio.ro/api/nowplaying/clubradio",
+      "mapping": {
+        "artist": "now_playing.song.artist",
+        "title": "now_playing.song.title",
+        "show": "now_playing.song.text"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "214f3da4-7795-491e-b5e7-91a18b18d089"
+    },
+    "streams.echoesofbluemars.org": {
+      "strategy": "icecast-json",
+      "endpoint": "http://streams.echoesofbluemars.org:8000/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "9609ed67-0601-11e8-ae97-52543be04c81"
+    },
+    "streampusher-relay.club": {
+      "strategy": "icecast-json",
+      "endpoint": "https://streampusher-relay.club/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "5649bc0b-c5bc-11e8-aaf2-52543be04c81"
+    },
+    "dfm-disc90.hostingradio.ru": {
+      "strategy": "icecast-json",
+      "endpoint": "https://dfm-disc90.hostingradio.ru/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "165eab56-4a14-11e9-a4d7-52543be04c81"
+    },
+    "doyouworld.out.airtime.pro": {
+      "strategy": "json-generic",
+      "endpoint": "https://doyouworld.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "128d5561-8439-4e2a-9e6c-4e48ad4f0cc0"
+    },
+    "dublab.out.airtime.pro": {
+      "strategy": "json-generic",
+      "endpoint": "https://dublab.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "0bb84fe1-e899-11e9-a96c-52543be04c81"
+    },
+    "dublabde.out.airtime.pro": {
+      "strategy": "json-generic",
+      "endpoint": "https://dublabde.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "652e1061-5de4-442f-8b7e-cd0dfbd37048"
+    },
+    "radio.egrego.re": {
+      "strategy": "json-generic",
+      "endpoint": "https://radio.egrego.re/api/nowplaying/egregore_collective",
+      "mapping": {
+        "artist": "now_playing.song.artist",
+        "title": "now_playing.song.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "176a6a11-7111-4d32-bd04-202dbb501f09"
+    },
+    "ehfm.out.airtime.pro": {
+      "strategy": "json-generic",
+      "endpoint": "https://ehfm.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "57c21dab-3c40-4ca6-b49b-8755bd7a3dcd"
+    },
+    "eist-radio.radiocult.fm": {
+      "strategy": "json-generic",
+      "endpoint": "https://api.radiocult.fm/api/station/eist-radio/schedule/live",
+      "mapping": {
+        "title": "result.content.title",
+        "show": "result.content.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "70b5b316-8810-41eb-bfb1-8c76a7cd7df3"
+    },
+    "www.radiofaaz.com": {
+      "strategy": "icecast-json",
+      "endpoint": "http://www.radiofaaz.com:8000/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "5aaddcc0-1695-11e9-a80b-52543be04c81"
+    },
+    "stream.funradio.sk": {
+      "strategy": "json-generic",
+      "endpoint": null,
+      "mapping": {},
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "960efe59-0601-11e8-ae97-52543be04c81"
+    },
+    "azuracast.gatekeeperradio.com": {
+      "strategy": "json-generic",
+      "endpoint": "https://azuracast.gatekeeperradio.com/api/nowplaying/gatekeeper_radio",
+      "mapping": {
+        "artist": "now_playing.song.artist",
+        "title": "now_playing.song.title",
+        "show": "now_playing.song.text"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "608e7565-2e27-4881-9b6d-3806e6c43e8e"
+    },
+    "secure.live-streams.nl": {
+      "strategy": "icecast-json",
+      "endpoint": "http://secure.live-streams.nl/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "af6f51b1-0ca9-11ea-a87e-52543be04c81"
+    },
+    "streaming2.toutech.net": {
+      "strategy": "icecast-json",
+      "endpoint": "http://streaming2.toutech.net:8000/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "961ee9aa-0601-11e8-ae97-52543be04c81"
+    },
+    "radioadmin.kwsx.online": {
+      "strategy": "json-generic",
+      "endpoint": "https://radioadmin.kwsx.online/api/nowplaying/kwsx",
+      "mapping": {
+        "artist": "now_playing.song.artist",
+        "title": "now_playing.song.title",
+        "show": "now_playing.song.text"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "2ee81ee8-9e0f-4fbb-84f3-d7f255f26299"
+    },
+    "hd.lagrosseradio.info": {
+      "strategy": "icecast-json",
+      "endpoint": "http://hd.lagrosseradio.info/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "960ebcf5-0601-11e8-ae97-52543be04c81"
+    },
+    "streaming.lahmacun.hu": {
+      "strategy": "json-generic",
+      "endpoint": "https://streaming.lahmacun.hu/api/nowplaying/lahmacun_radio",
+      "mapping": {
+        "artist": "now_playing.song.artist",
+        "title": "now_playing.song.title",
+        "show": "now_playing.song.text"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "1af63c5f-4112-11ea-a9fa-52543be04c81"
+    },
+    "stream.laut.fm": {
+      "strategy": "lautfm",
+      "endpoint": "https://api.laut.fm/station/katzenpuff/current_song",
+      "mapping": {
+        "artist": "artist.name",
+        "title": "title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "964cc978-0601-11e8-ae97-52543be04c81"
+    },
+    "icecast.lyl.live": {
+      "strategy": "icecast-json",
+      "endpoint": "https://icecast.lyl.live/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "e11c170a-474f-11e9-aa55-52543be04c81"
+    },
+    "mangoradio.stream.laut.fm": {
+      "strategy": "lautfm",
+      "endpoint": "https://api.laut.fm/station/mangoradio/current_song",
+      "mapping": {
+        "artist": "artist.name",
+        "title": "title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "78012206-1aa1-11e9-a80b-52543be04c81"
+    },
+    "listen.radioking.com": {
+      "strategy": "radioking",
+      "endpoint": "https://api.radioking.io/widget/radio/mutant-radio/track/current",
+      "mapping": {
+        "artist": "artist",
+        "title": "title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "e81caf1f-5049-48ad-99b7-b5ebdd03d3f3"
+    },
+    "narr-f63a1220.radiocult.fm": {
+      "strategy": "json-generic",
+      "endpoint": "https://api.radiocult.fm/api/station/narr-f63a1220/schedule/live",
+      "mapping": {
+        "show": "result.content.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "6329a6ad-02e4-49ae-b870-8e0e189fb8c0"
+    },
+    "netilradio.out.airtime.pro": {
+      "strategy": "json-generic",
+      "endpoint": "https://netilradio.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "2a85a1c6-0cec-428a-a7df-126e4d8a90d9"
+    },
+    "noods-radio.radiocult.fm": {
+      "strategy": "json-generic",
+      "endpoint": "https://api.radiocult.fm/api/station/noods-radio/schedule/live",
+      "mapping": {
+        "title": "result.content.title",
+        "show": "result.content.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "5dcf8a28-dc2f-47a1-9f18-ca70df4ac89d"
+    },
+    "stream-relay-geo.ntslive.net": {
+      "strategy": "json-generic",
+      "endpoint": "https://www.nts.live/api/v2/live",
+      "mapping": {
+        "title": "results.1.now.broadcast_title",
+        "show": "results.1.now.broadcast_title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "9634ab94-0601-11e8-ae97-52543be04c81"
+    },
+    "pass.out.airtime.pro": {
+      "strategy": "json-generic",
+      "endpoint": "https://pass.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "045f3748-7488-4249-bf43-6feb7bb8db3d"
+    },
+    "radio80k.out.airtime.pro": {
+      "strategy": "json-generic",
+      "endpoint": "https://radio80k.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "6b4c2748-07ee-11e8-ae97-52543be04c81"
+    },
+    "stream.radioalhara.net": {
+      "strategy": "json-generic",
+      "endpoint": "https://www.radiojar.com/api/stations/78cxy6wkxtzuv/now_playing/",
+      "mapping": {
+        "artist": "artist",
+        "title": "title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "d62fa52b-7c1c-492c-9861-cd2c0ec02f00"
+    },
+    "flouka.out.airtime.pro": {
+      "strategy": "json-generic",
+      "endpoint": "https://flouka.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "14582ba2-827c-4dba-b4db-19d0320741af"
+    },
+    "live.radiogrenouille.com": {
+      "strategy": "icecast-json",
+      "endpoint": "https://live.radiogrenouille.com:8443/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "e6639188-dc36-4441-ba83-4b6832a58c83"
+    },
+    "radioraheem.out.airtime.pro": {
+      "strategy": "json-generic",
+      "endpoint": "https://radioraheem.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "a1c99f81-f8d1-4f6d-b9e3-714763a72b7d"
+    },
+    "streamer.radio.co": {
+      "strategy": "json-generic",
+      "endpoint": "https://public.radio.co/stations/sd6131729c/status",
+      "mapping": {
+        "title": "current_track.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "a33cdadf-a415-4844-b679-745d4f1795d2"
+    },
+    "stream.radiostaddenhaag.com": {
+      "strategy": "shoutcast",
+      "endpoint": "https://stream.radiostaddenhaag.com/stats?json=1",
+      "mapping": {
+        "title": "songtitle"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "1d9bcb57-1445-4ade-84d5-9285c37f6b76"
+    },
+    "streams.radio.co": {
+      "strategy": "json-generic",
+      "endpoint": "https://public.radio.co/stations/s1df61e0af/status",
+      "mapping": {
+        "title": "current_track.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "93b6eecb-d160-4fc6-8edc-e1c3d1f0613a"
+    },
+    "testform.out.airtime.pro": {
+      "strategy": "json-generic",
+      "endpoint": "https://testform.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "cac4c694-99b2-40eb-8957-6361e7d3768e"
+    },
+    "retreatradio.out.airtime.pro": {
+      "strategy": "json-generic",
+      "endpoint": "https://retreatradio.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "artist": "tracks.current.metadata.artist_name",
+        "title": "tracks.current.metadata.track_title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "ac5cf76c-20ba-11e9-a80b-52543be04c81"
+    },
+    "lin3.ash.fast-serv.com": {
+      "strategy": "icecast-json",
+      "endpoint": "http://lin3.ash.fast-serv.com:6026/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "204b0d57-2c17-11e8-91bf-52543be04c81"
+    },
+    "stream.skylab-radio.com": {
+      "strategy": "icecast-json",
+      "endpoint": "http://stream.skylab-radio.com:8000/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "38c667f9-5091-11e9-a4d7-52543be04c81"
+    },
+    "sohoradiomusic.doughunt.co.uk": {
+      "strategy": "icecast-json",
+      "endpoint": "https://sohoradiomusic.doughunt.co.uk:8010/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "20bcbbc0-75b1-43ab-9919-6230ce0d8bba"
+    },
+    "movementathens.out.airtime.pro": {
+      "strategy": "json-generic",
+      "endpoint": "https://movementathens.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "6e2a1c0a-4c87-498e-9371-86e571f21eb9"
+    },
+    "subtle-radio-dd2656d9.radiocult.fm": {
+      "strategy": "json-generic",
+      "endpoint": "https://subtle.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "1dbdc89f-f0d1-4bf7-8922-266edeb912dd"
+    },
+    "livepeercdn.studio": {
+      "strategy": "thelotradio",
+      "endpoint": "https://www.thelotradio.com/",
+      "mapping": {},
+      "ttl": 60,
+      "exclusive": false,
+      "stationuuid": "434e9a4b-018a-4557-8ca1-8c328bb1e09d"
+    },
+    "voicesradio.out.airtime.pro": {
+      "strategy": "json-generic",
+      "endpoint": "https://voicesradio.airtime.pro/api/live-info-v2",
+      "mapping": {
+        "title": "tracks.current.name",
+        "show": "shows.current.name"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "b4684acd-cf54-47a9-9bcf-dfe17f3f7245"
+    },
+    "azuracast.wearevarious.com": {
+      "strategy": "json-generic",
+      "endpoint": "https://azuracast.wearevarious.com/api/nowplaying/we_are_various",
+      "mapping": {
+        "artist": "now_playing.song.artist",
+        "title": "now_playing.song.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "1d734b4e-3282-4b57-8cc0-6d01b75bcea9"
+    },
+    "listen.kusf.org": {
+      "strategy": "icecast-json",
+      "endpoint": "https://listen.kusf.org/status-json.xsl",
+      "mapping": {
+        "artist": "icestats.source.artist",
+        "title": "icestats.source.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "9d78c2eb-8a8e-4964-9b0f-ec5505d61c97"
+    },
+    "parea-radio-b7474105.radiocult.fm": {
+      "strategy": "json-generic",
+      "endpoint": "https://api.radiocult.fm/api/station/parea-radio-b7474105/schedule/live",
+      "mapping": {
+        "title": "result.content.title",
+        "show": "result.content.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "326db2f8-52ed-498f-a89e-46d70eb56584"
+    },
+    "a1.asurahosting.com": {
+      "strategy": "json-generic",
+      "endpoint": "https://a1.asurahosting.com/api/nowplaying/rukh",
+      "mapping": {
+        "artist": "now_playing.song.artist",
+        "title": "now_playing.song.title"
+      },
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "fd8d7a0c-7820-4f0d-b428-61bfcac13f20"
+    },
+    "azuracast.radioparanoia1000.com": {
+      "strategy": "azuracast",
+      "endpoint": "https://azuracast.radioparanoia1000.com/api/nowplaying",
+      "mapping": {},
+      "ttl": null,
+      "exclusive": false,
+      "stationuuid": "9d2b52c2-566d-4780-bc54-8047f53879f4"
+    }
+  }
+}

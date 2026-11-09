@@ -16,6 +16,17 @@ export function attachRecovery(player) {
   let waitingForNetwork = false;
   let userPaused = false;
   let internalPauseExpected = false;
+  let lastBackgroundResumeAt = 0;
+
+  const isHidden = () =>
+    typeof document !== 'undefined' && document.visibilityState === 'hidden';
+
+  // audio.js owns the distinction between an explicit pause (player.pause(),
+  // lock-screen pause) and a pause imposed by the OS when the app goes to the
+  // background. Older/minimal test doubles do not expose it; default to the
+  // historical "pause means user intent" behaviour for those.
+  const userIntentPause = () =>
+    typeof player.isUserPaused === 'function' ? player.isUserPaused() === true : true;
 
   const emit = (type, detail) =>
     player.events?.dispatchEvent(new CustomEvent(type, { detail }));
@@ -108,6 +119,18 @@ export function attachRecovery(player) {
       internalPauseExpected = false;
       return;
     }
+    // A backgrounded app / audio-focus loss pauses the element without the
+    // user asking. Treating that as a user pause used to strand the player:
+    // isUserPaused() stayed true, so returning to the app never reconnected.
+    if (!userIntentPause()) {
+      if (isHidden()) {
+        // Do not burn retry attempts against a frozen tab; visibilitychange
+        // reconnects when the app is foregrounded again.
+        clearStallTimer();
+        clearRecoveryTimer();
+      }
+      return;
+    }
     userPaused = true;
     clearStallTimer();
     clearRecoveryTimer();
@@ -165,7 +188,7 @@ export function attachRecovery(player) {
   });
 
   window.addEventListener('online', () => {
-    if (userPaused) return;
+    if (userPaused || userIntentPause()) return;
     const station = player.getCurrentStation();
     if (!station) return;
     if (!waitingForNetwork && !recoveryTimer && !gaveUp) return;
@@ -176,4 +199,43 @@ export function attachRecovery(player) {
     clearStallTimer();
     player.playStation(station);
   });
+
+  // Mobile app switch: the OS generally suspends (or pauses) a backgrounded
+  // audio element. On return the element can be paused, stuck at readyState 0,
+  // or holding a stale HLS buffer. Reconnect to the live edge instead of
+  // waiting for a stall event that may never fire in a frozen tab.
+  const resumeAfterBackground = () => {
+    if (typeof document !== 'undefined' && document.visibilityState !== 'visible') return;
+    const station = player.getCurrentStation();
+    if (!station) return;
+    if (userPaused || userIntentPause()) return;
+    // A stream that genuinely kept playing in the background is healthy; do
+    // not cut it and create a gap.
+    if (!audio.paused && (audio.readyState ?? 0) >= 2) return;
+    // visibilitychange + pageshow can both fire on the same return.
+    const now = Date.now();
+    if (now - lastBackgroundResumeAt < 1500) return;
+    lastBackgroundResumeAt = now;
+    attempts = 0;
+    gaveUp = false;
+    waitingForNetwork = false;
+    clearRecoveryTimer();
+    clearStallTimer();
+    player.playStation(station);
+  };
+
+  if (typeof document !== 'undefined') {
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        // The tab is frozen; pending attempts would only expire unseen.
+        clearStallTimer();
+        clearRecoveryTimer();
+        return;
+      }
+      resumeAfterBackground();
+    });
+  }
+  if (typeof window !== 'undefined') {
+    window.addEventListener('pageshow', resumeAfterBackground);
+  }
 }
