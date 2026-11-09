@@ -22,7 +22,11 @@ export function attachMediaSession(player) {
       return;
     }
     const title = currentNowPlaying || currentStation.name || 'RadioDock';
-    const artist = currentNowPlaying ? currentStation.name : (currentStation.countrycode || 'RadioDock');
+    // Never put the country code on the lock screen; before the first metadata
+    // response it reads as "station / country" and never changes while the app
+    // is backgrounded. The brand is a stable placeholder and the real
+    // now-playing line replaces it as soon as the poller answers.
+    const artist = currentNowPlaying ? currentStation.name : 'RadioDock';
     const artwork = buildArtwork(currentStation);
     try {
       navigator.mediaSession.metadata = new MediaMetadata({
@@ -67,6 +71,9 @@ export function attachMediaSession(player) {
 
   player.on('playing', () => {
     navigator.mediaSession.playbackState = 'playing';
+    // Re-apply the metadata after the audio session transitions; iOS otherwise
+    // keeps the pre-switch card in some background hand-offs.
+    update();
   });
   player.on('paused', () => {
     navigator.mediaSession.playbackState = 'paused';

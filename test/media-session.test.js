@@ -79,3 +79,22 @@ test('media session re-registers on every playing event and on return', () => {
   docListeners.visibilitychange?.forEach((fn) => fn());
   assert.ok(calls.length > beforeVisible, 'foregrounding re-registers the actions');
 });
+
+test('station change shows the brand, not the country, until metadata arrives', () => {
+  handlers.clear();
+  calls.length = 0;
+  const player = makePlayer();
+  attachMediaSession(player);
+
+  player.events.dispatchEvent(new CustomEvent('stationchange', {
+    detail: { station: { id: 's1', name: 'Sender', countrycode: 'DE' } },
+  }));
+  assert.equal(navigator.mediaSession.metadata.title, 'Sender');
+  assert.equal(navigator.mediaSession.metadata.artist, 'RadioDock');
+
+  player.events.dispatchEvent(new CustomEvent('metadata', {
+    detail: { nowPlaying: 'Track', artist: null, title: null },
+  }));
+  assert.equal(navigator.mediaSession.metadata.title, 'Track');
+  assert.equal(navigator.mediaSession.metadata.artist, 'Sender');
+});

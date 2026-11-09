@@ -58,12 +58,13 @@ async function advance(ms, step = 1000) {
 
 const STATION = { url: 'http://stream-relay-geo.ntslive.net/stream', id: 'nts1' };
 
-async function withPoller(run) {
+async function withPoller(run, { hidden = false } = {}) {
   const h = makeHarness();
   mock.timers.enable({ apis: ['setTimeout', 'Date'] });
   const { attachMetadataPoller } = await import('../src/player/metadata-poller.js');
   try {
     attachMetadataPoller(h.player);
+    if (hidden) h.setVisibility('hidden');
     h.player.emit('stationchange', { station: STATION });
     await flush();
     await run(h);
@@ -183,4 +184,14 @@ test('polling stops when the player stops', async () => {
     await advance(120_000);
     assert.equal(h.fetches.length, before);
   });
+});
+
+test('a lock-screen station switch fetches metadata once while hidden', async () => {
+  await withPoller(async (h) => {
+    assert.equal(h.fetches.length, 1, 'the first poll must run while hidden');
+    assert.equal(h.dispatched.at(-1)?.nowPlaying, 'Show A');
+    const afterFirst = h.fetches.length;
+    await advance(120_000);
+    assert.equal(h.fetches.length, afterFirst, 'later hidden polls still sleep');
+  }, { hidden: true });
 });

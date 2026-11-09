@@ -36,7 +36,10 @@ export function attachMetadataPoller(player) {
 
   async function poll({ isFirst = false } = {}) {
     if (!currentStation) return;
-    if (document.visibilityState === 'hidden') {
+    // The first poll after a station change must run even while hidden:
+    // lock-screen next/previous happens in the background, and without this
+    // fetch the media session stays on the station+country fallback.
+    if (!isFirst && document.visibilityState === 'hidden') {
       // Sleep and recheck — visibilitychange listener will resume immediately on focus.
       scheduleNext(intervalMs);
       return;
