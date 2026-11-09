@@ -501,3 +501,18 @@
     flex: 0 0 auto;
   }
 }
+
+/* Desktop PWA: the fixed player dock is the app's bottom edge. Mirror the
+   rounded top of the dock (and the shell's rounded window) at the bottom.
+   Phones stay flush with the screen edge; Electron keeps its 48px window
+   radius from search.css. */
+@media (hover: hover) and (pointer: fine) and (max-width: 699px) {
+  .player-section {
+    border-radius: 50px;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  html.is-standalone .player-section {
+    border-radius: 50px;
+  }
+}
