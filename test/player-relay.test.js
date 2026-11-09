@@ -3,6 +3,7 @@ import test from 'node:test';
 import { relayHlsUrl, relayUrl } from '../src/data/relay.js';
 import { isMixedContentStream, refreshMixedContentStation } from '../src/player/audio.js';
 import { isHlsStation, isRelayProbe, probeUrl } from '../src/player/stream-prober.js';
+import { nextStreamTransport } from '../src/player/transport-ladder.js';
 
 const UUID = '11111111-1111-4111-8111-111111111111';
 
@@ -54,4 +55,29 @@ test('only mixed-content probes are relay probes', () => {
   assert.equal(isRelayProbe({ id: UUID, url: 'https://stream.example/live' }, true), false);
   assert.equal(isRelayProbe({ id: UUID, url: 'http://stream.example/live' }, false), false);
   assert.equal(isRelayProbe({ url: 'http://stream.example/live' }, true), false);
+});
+
+test('the native ladder is direct -> native relay -> HLS relay', () => {
+  assert.equal(nextStreamTransport({ directTried: false }), 'direct');
+  assert.equal(nextStreamTransport({}), 'native-relay');
+  assert.equal(nextStreamTransport({ nativeRelayTried: true }), 'hls-relay');
+  assert.equal(nextStreamTransport({ nativeRelayTried: true, hlsRelayTried: true }), null);
+});
+
+test('the HLS ladder never detours through the native relay', () => {
+  assert.equal(nextStreamTransport({ isHls: true }), 'hls-relay');
+  assert.equal(nextStreamTransport({ isHls: true, nativeRelayTried: true }), 'hls-relay');
+  assert.equal(nextStreamTransport({ isHls: true, hlsRelayTried: true }), null);
+});
+
+test('a hanging mixed-content refresh yields instead of blocking the tap', async () => {
+  const station = { id: '22222222-2222-4222-8222-222222222222', url: 'http://slow.example/live' };
+  const started = Date.now();
+  const fresh = await refreshMixedContentStation(station, {
+    secureContext: true,
+    timeoutMs: 40,
+    fetchInfo: () => new Promise(() => {}),
+  });
+  assert.equal(fresh, station, 'the stale snapshot is still returned');
+  assert.ok(Date.now() - started < 1000, 'the refresh honoured its deadline');
 });
