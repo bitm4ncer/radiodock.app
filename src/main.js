@@ -1288,6 +1288,10 @@ player.on('recoveryfailed', () => {
   // Reconnect attempts exhausted → the station we're on is off-air right now.
   playingStationOffline = true;
   recomputeOffline();
+  const name = player.getCurrentStation()?.name ?? 'This station';
+  // The slow retry keeps trying in the background; say so instead of leaving
+  // the user with a play icon and no explanation.
+  toast(`Can't reach ${name}. Retrying…`);
   track('stream-dead', {
     station: player.getCurrentStation()?.name ?? '',
     uuid: player.getCurrentStation()?.id ?? '',
