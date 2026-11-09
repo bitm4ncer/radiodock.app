@@ -1,4 +1,4 @@
-import { getAnalyticsOptOut } from '../data/analytics-prefs.js';
+import { isOptedOut } from './listen-session.js';
 import { STATIONS_BASE } from '../data/stations-api.js';
 
 // Fire-and-forget playback outcome. This is intentionally separate from the
@@ -7,6 +7,7 @@ export function reportStreamOutcome(payload, {
   endpoint = `${STATIONS_BASE}/api/stream-events`,
   isDev = import.meta.env?.DEV === true,
   storage = globalThis.localStorage,
+  nav = globalThis.navigator,
   doc = globalThis.document,
   beacon = globalThis.navigator?.sendBeacon
     ? globalThis.navigator.sendBeacon.bind(globalThis.navigator)
@@ -14,7 +15,7 @@ export function reportStreamOutcome(payload, {
   fetchImpl = globalThis.fetch,
 } = {}) {
   try {
-    if (isDev || getAnalyticsOptOut(storage, doc)) return false;
+    if (isDev || isOptedOut(storage, nav, doc)) return false;
     const json = JSON.stringify(payload);
 
     if (typeof beacon === 'function') {

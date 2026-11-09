@@ -45,6 +45,18 @@ test('sends nothing when opted out or in dev', () => {
   assert.equal(called, 0);
 });
 
+test('honors Do Not Track like the sibling anonymous ingest', () => {
+  let called = 0;
+  const ok = reportStreamOutcome(payload, {
+    beacon: () => { called += 1; return true; },
+    storage: storage(),
+    nav: { doNotTrack: '1' },
+    doc: { cookie: '' },
+  });
+  assert.equal(ok, false);
+  assert.equal(called, 0);
+});
+
 test('cookie opt-out and all transport errors are swallowed', () => {
   assert.equal(reportStreamOutcome(payload, {
     beacon: () => { throw new Error('boom'); },
