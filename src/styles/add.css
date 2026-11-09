@@ -120,6 +120,26 @@ body.add-overlay-open { overflow: hidden; }
   overflow-y: auto;
   flex: 1;
   min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--overlay-hard) transparent;
+}
+
+.add-panel__body::-webkit-scrollbar {
+  display: block;
+  width: 6px;
+}
+
+.add-panel__body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.add-panel__body::-webkit-scrollbar-thumb {
+  background: var(--overlay-hard);
+  border-radius: 999px;
+}
+
+.add-panel__body::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 
 /* Forms */
