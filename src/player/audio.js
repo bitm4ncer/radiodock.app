@@ -328,6 +328,9 @@ async function startHlsSource(token, url, { viaRelay = false } = {}) {
         if (!hlsConfirmed) {
           hlsProbeTried = false;
           currentIsHls = false;
+          // The probe has failed for real; do not make recovery wait out the
+          // slow-start grace meant for a probe that is still loading.
+          escalationGraceUntil = 0;
         }
         destroyHls();
         emit('error', { message: 'HLS relay unavailable', name: 'HlsRelayError' });
@@ -409,6 +412,7 @@ function escalateThroughRelay(token) {
       if (!hlsConfirmed) {
         hlsProbeTried = false;
         currentIsHls = false;
+        escalationGraceUntil = 0;
       }
       emit('error', { message: err?.message ?? 'Playback failed', name: err?.name });
     });
