@@ -981,7 +981,13 @@ function prefetchAdjacentMetadata() {
   const stations = findList(state.currentListId)?.stations;
   if (!stations?.length) return;
   const idx = stations.findIndex((s) => s.id === state.currentStation?.id);
-  if (idx < 0) return;
+  if (idx < 0) {
+    // Same edge behaviour as playAdjacentStation: a station played from
+    // search/Discover steps into the active list from the edge.
+    metadataPoller?.prefetch(stations[0]);
+    metadataPoller?.prefetch(stations[stations.length - 1]);
+    return;
+  }
   if (stations.length > 1) {
     metadataPoller?.prefetch(stations[(idx + 1) % stations.length]);
     metadataPoller?.prefetch(stations[(idx - 1 + stations.length) % stations.length]);
