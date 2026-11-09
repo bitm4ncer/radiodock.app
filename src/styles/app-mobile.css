@@ -304,7 +304,7 @@
 
   #infoModal .modal-body,
   #changelogModal .modal-body {
-    padding-bottom: calc(var(--app-page-bottom, 0px) + 20px);
+    padding-bottom: calc(var(--app-page-bottom, 0px) + 20px) !important;
     overflow-y: auto;
     flex: 1;
     min-height: 0;
@@ -331,6 +331,16 @@
     top: var(--app-page-top, 0px) !important;
     bottom: var(--app-page-bottom, 0px) !important;
     height: auto !important;
+  }
+
+  /* The rule above (and sync.css/add.css's inset) still wins by source order
+     and pins these pages to the player's top. Use a more specific selector to
+     put every destination surface on the real viewport bottom; the panel
+     padding-bottom keeps the content above the player. */
+  body .notes-panel--mobile,
+  body .sync-panel--mobile,
+  body .add-panel--mobile {
+    bottom: 0 !important;
   }
 
   /* Search is the fifth page. It used to cover the whole window, which put its
