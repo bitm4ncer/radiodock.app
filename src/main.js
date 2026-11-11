@@ -24,6 +24,7 @@ import { HISTORY_LIST_ID, addToHistory } from './data/history.js';
 import * as storage from './data/storage.js';
 import { downloadList, parseExport, applyImport } from './data/import-export.js';
 import { buildShareUrl, tryDecodeShareHash } from './data/share.js';
+import { stationUuidFromSearch, withoutStationParam } from './data/deep-link.js';
 import { searchStations, setBackendOverride, browseStations } from './data/stations-source.js';
 import { getBrowseMeta, getRandomStation, getStationByUuid } from './data/stations-api.js';
 import { loadDiscover, clearDiscoverCache } from './data/discover.js';
@@ -1667,6 +1668,43 @@ listDropdown.onImport(async (file) => {
 //             IDB failure instead of throwing, so this whole phase is
 //             effectively `try { … } catch (ignored)`. If IDB is dead,
 //             the help banner picks it up via the health observable.
+async function handleStationDeepLink() {
+  const uuid = stationUuidFromSearch(window.location.search);
+  if (!uuid) return;
+
+  // Drop the parameter before any async work so a reload cannot replay it.
+  history.replaceState(
+    null,
+    '',
+    window.location.pathname + withoutStationParam(window.location.search) + window.location.hash,
+  );
+
+  let station = [
+    ...(state.community?.stations ?? []),
+    ...state.history.stations,
+    ...state.userLists.flatMap((list) => list.stations),
+  ].find((candidate) => candidate.id === uuid) ?? null;
+
+  if (!station) {
+    try {
+      station = await getStationByUuid(uuid);
+    } catch {
+      station = null;
+    }
+  }
+
+  if (!station) {
+    toast('That station is no longer available');
+    return;
+  }
+
+  state.currentStation = station;
+  playerCard.setStation(station);
+  setActiveStationEverywhere(station.id);
+  updateFavoriteHeart();
+  playerCard.setNowPlaying('Tap ▶ to play');
+}
+
 async function bootstrap() {
   // --- Phase 1: community list (critical) -------------------------------
   let communityRes = null;
@@ -1759,6 +1797,7 @@ async function bootstrap() {
 }
 
 bootstrap().then(async () => {
+  await handleStationDeepLink();
   await handleInboundShareHash();
   await handleInboundSyncHash();
   await handleSharedTokenFromQuery();
