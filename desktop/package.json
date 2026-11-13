@@ -44,7 +44,11 @@
     "linux": {
       "target": ["AppImage", "flatpak"],
       "icon": "icons/icon.png",
-      "category": "Audio"
+      "executableName": "radiodock-desktop",
+      "category": "AudioVideo;Audio",
+      "desktop": {
+        "StartupWMClass": "radiodock-desktop"
+      }
     },
     "nsis": {
       "oneClick": false,
